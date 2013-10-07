@@ -1,0 +1,31 @@
+TitanIM
+---------
+
+TitanIM is cross-platform client of the social network VK. It is based on Qt.
+
+TitanIM is released under the terms of the GNU General Public License,
+version 3 or later.
+
+Web Site:
+  http://titanim.ru
+  http://gitorious.org/titanim
+  http://bitbucket.org/rusnazarov/titanim
+
+Source:
+  http://gitorious.org/titanim
+  http://bitbucket.org/rusnazarov/titanim
+
+VK group:
+  http://vk.com/titanim
+
+
+Portable Version
+----------------
+  To make TitanIM portable just create file settings.ini (for Windows) 
+  in the directory where TitanIM.exe is located.
+
+
+Known Issues
+------------
+  - not native look and feel in Mac OS
+
