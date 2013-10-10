@@ -13,10 +13,27 @@ qml.target = share
 DEPLOYMENTFOLDERS = qml
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    vk/client.cpp \
+    vk/connection.cpp \
+    vk/longpoll.cpp \
+    vk/signup.cpp \
+    vk/packet.cpp \
+    vk/k8json.cpp \
+    vk/errorresponse.cpp \
+    vk/utils.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    vk/client.h \
+    vk/connection.h \
+    vk/longpoll.h \
+    vk/signup.h \
+    vk/packet.h \
+    vk/global.h \
+    vk/k8json.h \
+    vk/errorresponse.h \
+    vk/utils.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc

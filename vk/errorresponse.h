@@ -11,19 +11,36 @@
  ***************************************************************************
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ERRORRESPONSE_H
+#define ERRORRESPONSE_H
 
-#include <QQmlContext>
-#include "qtquick2applicationviewer.h"
-#include "vk/client.h"
+#include <QObject>
+#include <QVariant>
+#include "global.h"
 
-class MainWindow : public QtQuick2ApplicationViewer
+class ErrorResponse : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWindow *parent = 0);
+    ErrorResponse(const QVariantMap &response);
+    ErrorResponse(const Error &code, const QString &msg);
+    Error code() const;
+    QString msg() const;
+    bool global() const;
+    bool fatal() const;
+    QString captchaSid() const;
+    QString captchaImg() const;
+    static bool isGlobal(const Error &code);
+    static bool isFatal(const Error &code);
+
+private:
+    Error _code;
+    QString _msg;
+    bool _global;
+    bool _fatal;
+    QString _captchaSid;
+    QString _captchaImg;
 };
 
-#endif // MAINWINDOW_H
+#endif // ERRORRESPONSE_H

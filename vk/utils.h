@@ -11,19 +11,21 @@
  ***************************************************************************
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef UTILS_H
+#define UTILS_H
 
-#include <QQmlContext>
-#include "qtquick2applicationviewer.h"
-#include "vk/client.h"
+#include <QCryptographicHash>
+#include <QStringBuilder>
+#include <QMap>
+#include "k8json.h"
 
-class MainWindow : public QtQuick2ApplicationViewer
+class Utils
 {
-    Q_OBJECT
-
 public:
-    explicit MainWindow(QWindow *parent = 0);
+    static QVariant parseJSON(const QByteArray &data);
+    static QString getMd5String(const QString &source);
+    static QString join(const QMap<QString, QString> &list, const QChar &separator);
+    static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
 };
 
-#endif // MAINWINDOW_H
+#endif // UTILS_H

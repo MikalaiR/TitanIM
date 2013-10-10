@@ -11,19 +11,21 @@
  ***************************************************************************
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef SIGNUP_H
+#define SIGNUP_H
 
-#include <QQmlContext>
-#include "qtquick2applicationviewer.h"
-#include "vk/client.h"
+#include <QObject>
 
-class MainWindow : public QtQuick2ApplicationViewer
+class Signup : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit MainWindow(QWindow *parent = 0);
+    explicit Signup(QString client_id, QString client_secret, QObject *parent = 0);
+
+signals:
+
+public slots:
+
 };
 
-#endif // MAINWINDOW_H
+#endif // SIGNUP_H

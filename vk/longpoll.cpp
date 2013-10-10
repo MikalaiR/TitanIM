@@ -11,19 +11,9 @@
  ***************************************************************************
 */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "longpoll.h"
 
-#include <QQmlContext>
-#include "qtquick2applicationviewer.h"
-#include "vk/client.h"
-
-class MainWindow : public QtQuick2ApplicationViewer
+LongPoll::LongPoll(QObject *parent) :
+    QObject(parent)
 {
-    Q_OBJECT
-
-public:
-    explicit MainWindow(QWindow *parent = 0);
-};
-
-#endif // MAINWINDOW_H
+}
