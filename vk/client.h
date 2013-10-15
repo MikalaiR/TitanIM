@@ -52,10 +52,10 @@ private:
     QString _photoMediumRec;
 
 private slots:
-    void onConnected(const QString &token, const QString &secret, const int uid);
+    void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
     void onError(const Error &error, const QString &text, const bool global, const bool fatal);
-    void onSelfProfile(const QVariantMap &result);
+    void onSelfProfile(const Packet *sender, const QVariantMap &response);
 };
 
 #endif // CLIENT_H

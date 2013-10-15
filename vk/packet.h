@@ -15,6 +15,7 @@
 #define PACKET_H
 
 #include <QObject>
+#include <QDebug>
 #include <QMap>
 #include "global.h"
 #include "errorresponse.h"
@@ -25,17 +26,21 @@ class Packet : public QObject
     Q_OBJECT
 
 public:
-    Packet(QString method);
+    Packet(const QString &method, const QString &version="5.2");
     int id() const;
     void setId(const int id);
     QString method() const;
     QString dataUser() const;
     void setDataUser(const QString &dataUser);
     QVariantMap result() const;
-    QString genQuery(const QString &token, const QString &secret);
+    QVariantMap response() const;
+    void signPacket(const QString &secret);
+    QString urlPath() const;
+    QByteArray urlQuery() const;
     void addParam(const QString &key, const QString &value);
     void addParam(const QString &key, const int value);
-    QString operator[](QString key);
+    void removeParam(const QString &key);
+    QString value(const QString &key);
     void setResult(const QVariantMap &result);
     void setError(const ErrorResponse *errorResponse);
     bool contains(const QString &key);
@@ -48,8 +53,10 @@ private:
     QVariantMap _result;
 
 signals:
-    void finished(const QVariantMap &result);
+    void finished(const Packet *sender, const QVariantMap &response);
     void error(const Error &error, const QString &text, const bool global, const bool fatal);
 };
+
+QDebug operator<<(QDebug dbg, const Packet &packet);
 
 #endif // PACKET_H

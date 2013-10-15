@@ -26,13 +26,17 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
 
             QString errorString = tempError.toString().toLower();
 
-            if (errorString.contains("captcha"))
+            if (errorString.contains("need_captcha"))
             {
                 _code = captchaNeeded;
             }
             else if (errorString.contains("invalid_client"))
             {
                 _code = userAuthorizationFailed;
+            }
+            else if (errorString.contains("need_validation"))
+            {
+                _code = validationRequired;
             }
             else
             {
@@ -67,6 +71,10 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
         {
             _captchaSid = error["captcha_sid"].toString();
             _captchaImg = error["captcha_img"].toString();
+        }
+        else if (_code == validationRequired)
+        {
+            _validationUri = error["redirect_uri"].toString();
         }
     }
     catch(...)
@@ -117,6 +125,11 @@ QString ErrorResponse::captchaImg() const
     return _captchaImg;
 }
 
+QString ErrorResponse::validationUri() const
+{
+    return _validationUri;
+}
+
 bool ErrorResponse::isGlobal(const Error &code)
 {
     if (code == loadTokenFailed ||
@@ -128,7 +141,9 @@ bool ErrorResponse::isGlobal(const Error &code)
         code == incorrectSignature ||
         code == userAuthorizationFailed ||
         code == tooManyRequestsPerSecond ||
-        code == captchaNeeded)
+        code == captchaNeeded ||
+        code == httpAuthorizationFailed ||
+        code == validationRequired)
     {
         return true;
     }
@@ -142,7 +157,8 @@ bool ErrorResponse::isFatal(const Error &code)
 {
     if (code == loadTokenFailed ||
         code == applicationIsDisabled ||
-        code == userAuthorizationFailed)
+        code == userAuthorizationFailed ||
+        code == validationRequired)
     {
         return true;
     }

@@ -15,17 +15,87 @@
 #define LONGPOLL_H
 
 #include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include "connection.h"
+#include "global.h"
+#include "profileitem.h"
+#include "profileparser.h"
+#include "messageitem.h"
+#include "messageparser.h"
 
 class LongPoll : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit LongPoll(QObject *parent = 0);
+    enum UpdateType
+    {
+        MessageDeleted = 0,
+        MessageFlagsReplaced = 1,
+        MessageFlagsSet = 2,
+        MessageFlagsReseted = 3,
+        MessageAdded = 101,
+        UserOnline = 8,
+        UserOffline = 9,
+        GroupChatUpdated = 51,
+        ChatTyping = 61,
+        GroupChatTyping = 62,
+        UserCall = 70
+    };
+
+    LongPoll(Connection *connection);
+    int wait() const;
+    void setWait(const int sec);
+    bool isRunning() const;
+    void setRunning(const bool running);
+    void pause();
+    void resume();
+
+private:
+    void getLongPollServer();
+    void longPoll();
+    void getLongPollHistory();
+    void handler(const QVariantList &updates);
+
+private:
+    LongPollVars _longPollVars;
+    Connection *_connection;
+    QNetworkAccessManager *httpLongPoll;
+    bool _running;
+
+protected:
+    void onMessageDeleted(const QVariantList &update);
+    void onMessageFlagsReplaced(const QVariantList &update);
+    void onMessageFlagsSet(const QVariantList &update);
+    void onMessageFlagsReseted(const QVariantList &update);
+    void onMessageAdded(const QVariantList &update);
+    void onUserOnline(const QVariantList &update);
+    void onUserOffline(const QVariantList &update);
+    void onGroupChatUpdated(const QVariantList &update);
+    void onChatTyping(const QVariantList &update);
+    void onGroupChatTyping(const QVariantList &update);
+    void onUserCall(const QVariantList &update);
+
+private slots:
+    void onRunningChanged(const bool running);
+    void getLongPollServerFinished(const Packet *sender, const QVariantMap &response);
+    void longPollResponse(QNetworkReply *networkReply);
+    void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &response);
+    void getLongPollHistoryError(const Error &error, const QString &text, const bool global, const bool fatal);
 
 signals:
-
-public slots:
-
+    void messageDeleted(const int mid);
+    void messageFlagsReplaced(const int mid, const int flags);
+    void messageFlagsSet(const int mid, const int mask, const int uid);
+    void messageFlagsReseted(const int mid, const int mask, const int uid);
+    void messageAdded(const MessageItem *message);
+    void userStatusChanged(const int uid, const bool online);
+    void groupChatUpdated(const int chatId, const bool self);
+    void chatTyping(const int uid, const int flags);
+    void groupChatTyping(const int uid, const int chatId);
+    void userCall(const int uid, const QString &callId);
 };
 
 #endif // LONGPOLL_H

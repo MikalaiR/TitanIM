@@ -47,9 +47,30 @@ QString Utils::joinAndEscape(const QMap<QString, QString> &list, const QChar &se
     while (i.hasNext())
     {
         i.next();
-        s.append(i.key() % "=" % i.value().toHtmlEscaped() % separator);
+        s.append(i.key() % "=" % QUrl::toPercentEncoding(i.value()) % separator);
     }
 
     s.resize(s.length() - 1);
     return s;
+}
+
+QString Utils::decode(const QString &str)
+{
+    QString temp = str;
+    temp = temp.replace("<br>", "\n");
+    temp = temp.replace("&amp;", "&");
+    temp = temp.replace("&lt;", "<");
+    temp = temp.replace("&gt;", ">");
+    temp = temp.replace("&quot;", "\"");
+    temp = temp.replace("&#33;", "!");
+    temp = temp.replace("&#036;", "$");
+    temp = temp.replace("&#092;", "\\");
+    temp = temp.replace("&#39;", "'");
+
+    return temp;
+}
+
+QString Utils::photoUrlFix(const QString &url)
+{
+    return url.endsWith(".gif") ? "Images/camera_b.png" : url;
 }

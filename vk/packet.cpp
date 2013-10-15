@@ -13,9 +13,13 @@
 
 #include "packet.h"
 
-Packet::Packet(QString method)
+Packet::Packet(const QString &method, const QString &version)
 {
     _method = method;
+    _id = 0;
+    _paramsPacket.clear();
+
+    addParam("v", version);
 }
 
 int Packet::id() const
@@ -43,22 +47,30 @@ void Packet::setDataUser(const QString &dataUser)
     _dataUser = dataUser;
 }
 
-QString Packet::genQuery(const QString &token, const QString &secret)
+void Packet::signPacket(const QString &secret)
 {
-    addParam("access_token", token);
+    if (!secret.isEmpty())
+    {
+        removeParam("sig");
 
-    QString query = QString("/method/%1?%2")
-            .arg(_method)
-            .arg(Utils::join(_paramsPacket, '&'));
+        QString query = QString("%1?%2")
+                .arg(urlPath())
+                .arg(Utils::join(_paramsPacket, '&'));
 
-    QString sig = QString("&sig=%1")
-            .arg(Utils::getMd5String(query + secret));
+        QString sig = Utils::getMd5String(query + secret);
 
-    query = QString("/method/%1?%2")
-            .arg(_method)
-            .arg(Utils::joinAndEscape(_paramsPacket, '&'));
+        addParam("sig", sig);
+    }
+}
 
-    return query + sig;
+QString Packet::urlPath() const
+{
+    return QString("/method/%1").arg(_method);
+}
+
+QByteArray Packet::urlQuery() const
+{
+    return Utils::joinAndEscape(_paramsPacket, '&').toLatin1();
 }
 
 void Packet::addParam(const QString &key, const QString &value)
@@ -71,16 +83,14 @@ void Packet::addParam(const QString &key, const int value)
     addParam(key, QString::number(value));
 }
 
-QString Packet::operator[](QString key)
+void Packet::removeParam(const QString &key)
 {
-    if (_paramsPacket.contains(key))
-    {
-        return _paramsPacket[key];
-    }
-    else
-    {
-        return "";
-    }
+    _paramsPacket.remove(key);
+}
+
+QString Packet::value(const QString &key)
+{
+    return _paramsPacket.value(key);
 }
 
 QVariantMap Packet::result() const
@@ -88,10 +98,16 @@ QVariantMap Packet::result() const
     return _result;
 }
 
+QVariantMap Packet::response() const
+{
+    return _result.value("response").toMap();
+}
+
 void Packet::setResult(const QVariantMap &result)
 {
     _result = result;
-    emit finished(_result);
+
+    emit finished(this, response());
 }
 
 void Packet::setError(const ErrorResponse *errorResponse)
@@ -102,4 +118,14 @@ void Packet::setError(const ErrorResponse *errorResponse)
 bool Packet::contains(const QString &key)
 {
     return _paramsPacket.contains(key);
+}
+
+QDebug operator <<(QDebug dbg, const Packet &packet)
+{
+    dbg.nospace() << "Packet ("
+                  << "\n  METHOD: "   << packet.method()
+                  << "\n  QUERY: "    << packet.urlQuery()
+                  << "\n  RESULT: "   << packet.result()
+                  << "\n)";
+    return dbg.space();
 }

@@ -11,24 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef PROFILEPARSER_H
+#define PROFILEPARSER_H
 
-#include <QCryptographicHash>
-#include <QStringBuilder>
-#include <QMap>
-#include <QUrl>
-#include "k8json.h"
+#include <QVariantMap>
+#include "profileitem.h"
+#include "utils.h"
 
-class Utils
+class ProfileParser : public QObject
 {
 public:
-    static QVariant parseJSON(const QByteArray &data);
-    static QString getMd5String(const QString &source);
-    static QString join(const QMap<QString, QString> &list, const QChar &separator);
-    static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
-    static QString decode(const QString &str);
-    static QString photoUrlFix(const QString &url);
+    static ProfileItem* parser(QVariantMap json);
 };
 
-#endif // UTILS_H
+#endif // PROFILEPARSER_H

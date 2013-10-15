@@ -10,7 +10,8 @@ TEMPLATE = app
 qml.source = data/qml-desktop/qml
 qml.target = share
 
-DEPLOYMENTFOLDERS = qml
+CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -21,7 +22,11 @@ SOURCES += main.cpp \
     vk/packet.cpp \
     vk/k8json.cpp \
     vk/errorresponse.cpp \
-    vk/utils.cpp
+    vk/utils.cpp \
+    vk/profileitem.cpp \
+    vk/profileparser.cpp \
+    vk/messageitem.cpp \
+    vk/messageparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -33,7 +38,11 @@ HEADERS += \
     vk/global.h \
     vk/k8json.h \
     vk/errorresponse.h \
-    vk/utils.h
+    vk/utils.h \
+    vk/profileitem.h \
+    vk/profileparser.h \
+    vk/messageitem.h \
+    vk/messageparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc

@@ -42,10 +42,25 @@ struct UrlServers
     QString api_server;
 };
 
+struct LongPollVars
+{
+    QString server;
+    QString key;
+    QString ts;
+    int wait;
+};
+
 enum Status
 {
     offline,
     online
+};
+
+enum Sex
+{
+    unknown,
+    woman,
+    man
 };
 
 enum Error
@@ -63,6 +78,8 @@ enum Error
     internalServerError = 10,
     captchaNeeded = 14,
     accessDenied = 15,
+    httpAuthorizationFailed = 16,
+    validationRequired = 17,
     outOfLimits = 103,
     phoneUsedAnotherUser = 1004,
     tryLater = 1112

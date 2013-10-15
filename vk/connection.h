@@ -15,6 +15,7 @@
 #define CONNECTION_H
 
 #include <QObject>
+#include <QDebug>
 #include <QQueue>
 #include <QTimer>
 #include <QNetworkAccessManager>
@@ -32,16 +33,18 @@ class Connection : public QObject
 public:
     Connection(const QString &clientId, const QString &clientSecret);
     ~Connection();
-    bool isOnline();
-    bool isOffline();
-    void connectToVk(const QString &username, const QString &password);
-    void connectToVk(const int uid, const QString &token, const QString &secret);
+    bool isOnline() const;
+    bool isOffline() const;
+    bool isHttps() const;
+    void connectToVk(const QString &username, const QString &password, const bool https=true);
+    void connectToVk(const int uid, const QString &token, const QString &secret="");
     void disconnectVk();
     void appendQuery(Packet *packet);
     void setCaptcha(const QString &sid, const QString &text);
 
 private:
     void setStatus(const Status &status);
+    void setHttpsMode(const bool isHttps);
     void getToken();
     void loginSuccess(const QVariantMap &response);
     void loginFailure(const QVariantMap &response);
@@ -52,14 +55,16 @@ private:
     SessionVars _sessionVars;
     UrlServers _urlServers;
     Status _status;
+    bool _isHttps;
     bool _isProcessing;
     QQueue<Packet*> _queryList;
     QTimer *tooManyRequestsTimer;
     QNetworkAccessManager *httpAuth;
-    QNetworkAccessManager *http;
+    QNetworkAccessManager *httpApi;
 
 protected:
     void onStatusChanged(const Status &status);
+    void onHttpsModeChanged(const bool isHttps);
     void onConnected();
     void onDisconnected();
     void onError(const ErrorResponse *errorResponse);
@@ -71,10 +76,11 @@ private slots:
     void onTooManyRequestsTimerTick();
 
 signals:
-    void connected(const QString &token, const QString &secret, const int uid);
+    void connected(const int uid, const QString &token, const QString &secret);
     void disconnected();
     void error(const Error &error, const QString &text, const bool global, const bool fatal);
     void captcha(const QString &captchaSid, const QString &captchaImg);
+    void validation(const QString &validationUri);
 };
 
 #endif // CONNECTION_H

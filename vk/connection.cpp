@@ -18,12 +18,13 @@ Connection::Connection(const QString &clientId, const QString &clientSecret)
     _loginVars.grant_type = "password";
     _loginVars.client_id = clientId;
     _loginVars.client_secret = clientSecret;
-    _loginVars.scope = "friends,photos,audio,video,docs,notes,status,wall,groups,messages,notifications,nohttps";
+    _loginVars.scope = "friends,photos,audio,video,docs,notes,status,wall,groups,messages,notifications";
 
-    _urlServers.auth_server = QString("https://api.vk.com/oauth/token");
-    _urlServers.api_server = "http://api.vk.com";
+    _urlServers.auth_server = "https://oauth.vk.com/token";
+    _urlServers.api_server = "https://api.vk.com";
 
     _status = offline;
+    _isHttps = true;
     _isProcessing = false;
 
     tooManyRequestsTimer = new QTimer();
@@ -45,25 +46,32 @@ void Connection::setStatus(const Status &status)
     }
 }
 
-bool Connection::isOnline()
+bool Connection::isOnline() const
 {
     return _status == online;
 }
 
-bool Connection::isOffline()
+bool Connection::isOffline() const
 {
-    return _status ==offline;
+    return _status == offline;
 }
 
-void Connection::connectToVk(const QString &username, const QString &password)
+bool Connection::isHttps() const
+{
+    return _isHttps;
+}
+
+void Connection::connectToVk(const QString &username, const QString &password, const bool https)
 {
     if (!isOffline() || username.isEmpty() || password.isEmpty())
     {
         return;
     }
 
-    http = new QNetworkAccessManager(this);
-    connect(http, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    setHttpsMode(https);
+
+    httpApi = new QNetworkAccessManager(this);
+    connect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
 
     _loginVars.username = username;
     _loginVars.password = password;
@@ -78,9 +86,15 @@ void Connection::connectToVk(const int uid, const QString &token, const QString 
         return;
     }
 
+    httpApi = new QNetworkAccessManager(this);
+    connect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+
     _sessionVars.user_id = uid;
     _sessionVars.access_token = token;
     _sessionVars.secret = secret;
+
+    setHttpsMode(_sessionVars.secret.isEmpty());
+
     setStatus(online);
 }
 
@@ -89,12 +103,21 @@ void Connection::disconnectVk()
     setStatus(offline);
 }
 
+void Connection::setHttpsMode(const bool isHttps)
+{
+    if (_isHttps != isHttps)
+    {
+        _isHttps = isHttps;
+        onHttpsModeChanged(_isHttps);
+    }
+}
+
 void Connection::getToken()
 {
     httpAuth = new QNetworkAccessManager(this);
     connect(httpAuth, SIGNAL(finished(QNetworkReply*)), this, SLOT(getTokenFinished(QNetworkReply*)));
 
-    QString authUrl = QString("%1?grant_type=%2&client_id=%3&client_secret=%4&scope=%5&username=%6&password=%7")
+    QString authUrl = QString("%1?grant_type=%2&client_id=%3&client_secret=%4&scope=%5&username=%6&password=%7&v=5.2")
             .arg(_urlServers.auth_server)
             .arg(_loginVars.grant_type)
             .arg(_loginVars.client_id)
@@ -144,6 +167,13 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
     QVariantMap response = Utils::parseJSON(networkReply->readAll()).toMap();
     networkReply->deleteLater();
 
+    if (response.contains("https_required"))
+    {
+        httpAuth->deleteLater();
+        onError(httpAuthorizationFailed, "HTTP authorization failed");
+        return;
+    }
+
     if (response.contains("access_token"))
     {
         loginSuccess(response);
@@ -158,10 +188,10 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
 
 void Connection::loginSuccess(const QVariantMap &response)
 {
-    _sessionVars.access_token = response["access_token"].toString();
-    _sessionVars.secret = response["secret"].toString();
-    _sessionVars.user_id = response["user_id"].toInt();
-    _sessionVars.expires_in = response["expires_in"].toString();
+    _sessionVars.access_token = response.value("access_token").toString();
+    _sessionVars.user_id = response.value("user_id").toInt();
+    _sessionVars.expires_in = response.value("expires_in").toString();
+    _sessionVars.secret = response.contains("secret") ? response.value("secret").toString() : "";
 
     if (!_sessionVars.access_token.isEmpty())
     {
@@ -205,12 +235,14 @@ void Connection::execQuery()
 
     _isProcessing = true;
 
-    QString query = _queryList.head()->genQuery(_sessionVars.access_token, _sessionVars.secret);
-    QUrl requestUrl = QUrl(_urlServers.api_server + query);
+    Packet *currentPacket = _queryList.head();
+    currentPacket->addParam("access_token", _sessionVars.access_token);
+    currentPacket->signPacket(_sessionVars.secret);
 
     QNetworkRequest request;
-    request.setUrl(requestUrl);
-    http->get(request);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(QUrl(_urlServers.api_server + currentPacket->urlPath()));
+    httpApi->post(request, currentPacket->urlQuery());
 }
 
 void Connection::apiResponse(QNetworkReply *networkReply)
@@ -324,15 +356,29 @@ void Connection::onStatusChanged(const Status &status)
     }
 }
 
+void Connection::onHttpsModeChanged(const bool isHttps)
+{
+    if (isHttps)
+    {
+        _loginVars.scope.remove(",nohttps");
+        _urlServers.api_server.replace("http://", "https://");
+    }
+    else
+    {
+        _loginVars.scope += ",nohttps";
+        _urlServers.api_server.replace("https://", "http://");
+    }
+}
+
 void Connection::onConnected()
 {
-    emit connected(_sessionVars.access_token, _sessionVars.secret, _sessionVars.user_id);
+    emit connected(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
 }
 
 void Connection::onDisconnected()
 {
-    disconnect(http, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
-    http->deleteLater();
+    disconnect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    httpApi->deleteLater();
     _queryList.clear();
     _isProcessing = false;
 
@@ -351,6 +397,29 @@ void Connection::onError(const ErrorResponse *errorResponse)
     case captchaNeeded:
     {
         emit captcha(errorResponse->captchaSid(), errorResponse->captchaImg());
+        break;
+    }
+
+    case httpAuthorizationFailed:
+    {
+        setHttpsMode(true);
+
+        if (!_queryList.isEmpty())
+        {
+            _isProcessing = false;
+            execQuery();
+        }
+        else
+        {
+            getToken();
+        }
+
+        break;
+    }
+
+    case validationRequired:
+    {
+        emit validation(errorResponse->validationUri());
         break;
     }
 

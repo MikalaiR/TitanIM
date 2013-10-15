@@ -11,38 +11,42 @@
  ***************************************************************************
 */
 
-#ifndef ERRORRESPONSE_H
-#define ERRORRESPONSE_H
+#ifndef PROFILEITEM_H
+#define PROFILEITEM_H
 
 #include <QObject>
-#include <QVariant>
 #include "global.h"
 
-class ErrorResponse : public QObject
+class ProfileItem : public QObject
 {
     Q_OBJECT
 
 public:
-    ErrorResponse(const QVariantMap &response);
-    ErrorResponse(const Error &code, const QString &msg);
-    Error code() const;
-    QString msg() const;
-    bool global() const;
-    bool fatal() const;
-    QString captchaSid() const;
-    QString captchaImg() const;
-    QString validationUri() const;
-    static bool isGlobal(const Error &code);
-    static bool isFatal(const Error &code);
+    ProfileItem();
+    int uid();
+    void setUid(const int uid);
+    QString firstName();
+    void setFirstName(const QString &firstName);
+    QString lastName();
+    void setLastName(const QString &lastName);
+    QString fullName();
+    Sex sex();
+    void setSex(const Sex sex);
+    QString photoMediumRect();
+    void setPhotoMediumRect(const QString &photoMediumRect);
+    bool online();
+    void setOnline(const bool online);
+    int lastSeen();
+    void setLastSeen(const int lastSeen);
 
 private:
-    Error _code;
-    QString _msg;
-    bool _global;
-    bool _fatal;
-    QString _captchaSid;
-    QString _captchaImg;
-    QString _validationUri;
+    int _uid;
+    QString _firstName;
+    QString _lastName;
+    Sex _sex;
+    QString _photoMediumRect;
+    bool _online;
+    int _lastSeen;
 };
 
-#endif // ERRORRESPONSE_H
+#endif // PROFILEITEM_H

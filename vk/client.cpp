@@ -33,11 +33,11 @@ void Client::destroy()
 Client::Client()
 {
     _connection = new Connection(clientId, clientSecret);
-    connect(_connection, SIGNAL(connected(QString,QString,int)), this, SLOT(onConnected(QString,QString,int)));
+    connect(_connection, SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(_connection, SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
 
-//    _longPoll = new LongPoll(connection);
+    _longPoll = new LongPoll(_connection);
 
     _authSignup = 0;
     _uid = 0;
@@ -92,16 +92,15 @@ void Client::getProfileSelf()//todo перенести
     selfProfile->addParam("uids", _uid);
     selfProfile->addParam("fields", "photo_medium_rec");
 
-    connect(selfProfile, SIGNAL(finished(QVariantMap)), this, SLOT(onSelfProfile(QVariantMap)));
-
+    connect(selfProfile, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSelfProfile(const Packet*,QVariantMap)));
     _connection->appendQuery(selfProfile);
 }
 
-void Client::onConnected(const QString &token, const QString &secret, const int uid)
+void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
     _uid = uid;
 
-//    _longPoll.setRunning(true);
+    _longPoll->setRunning(true);
     qDebug() << "connecting" << " " << token << " " << secret;
 }
 
@@ -111,7 +110,7 @@ void Client::onDisconnected()
     _fullName = "";
     _photoMediumRec = "";
 
-//    _longPoll.setRunning(false);
+    _longPoll->setRunning(false);
     qDebug() << "disconnecting";
 }
 
@@ -120,9 +119,9 @@ void Client::onError(const Error &error, const QString &text, const bool global,
     qDebug() << error << text;
 }
 
-void Client::onSelfProfile(const QVariantMap &result)
+void Client::onSelfProfile(const Packet *sender, const QVariantMap &response)
 {
-//    ProfileItem profile = ProfileParser.parser(result);
-//    _fullName = profile.fullName();
-//    _photoMediumRec = profile.photoMediumRec();
+    ProfileItem *profile = ProfileParser::parser(response);
+    _fullName = profile->fullName();
+    _photoMediumRec = profile->photoMediumRect();
 }
