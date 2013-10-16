@@ -16,12 +16,14 @@
 
 #include <QVariantMap>
 #include "profileitem.h"
+#include "profilelist.h"
 #include "utils.h"
 
 class ProfileParser : public QObject
 {
 public:
-    static ProfileItem* parser(QVariantMap json);
+    static ProfileItem* parser(const QVariantMap &item);
+    static ProfileList* parser(const QVariantList &items);
 };
 
 #endif // PROFILEPARSER_H

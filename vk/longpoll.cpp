@@ -48,16 +48,6 @@ void LongPoll::setRunning(const bool running)
     }
 }
 
-void LongPoll::pause()
-{
-    setRunning(false);
-}
-
-void LongPoll::resume()
-{
-    getLongPollHistory();
-}
-
 void LongPoll::getLongPollServer()
 {
     if (!isRunning())
@@ -208,81 +198,6 @@ void LongPoll::handler(const QVariantList &updates)
     }
 }
 
-void LongPoll::getLongPollHistory()
-{
-    Packet *packet = new Packet("execute");
-    QString script = "var l=API.messages.getLongPollHistory({\"ts\":" + _longPollVars.ts + "});"
-                   + "var p=API.getProfiles({\"uids\":l.messages@.uid+l.messages@.chat_active,\"fields\":\"photo_medium_rec,online,last_seen,sex\"});"
-                   + "return {\"longPoll\":l,\"profiles\":p};";
-
-    packet->addParam("code", script);
-
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollHistoryFinished(const Packet*,QVariantMap)));
-    connect(packet, SIGNAL(error(Error,QString,bool,bool)), this, SLOT(getLongPollHistoryError(Error,QString,bool,bool)));
-
-    _connection->appendQuery(packet);
-}
-
-void LongPoll::getLongPollHistoryFinished(const Packet *sender, const QVariantMap &response)
-{
-    QMap<int, ProfileItem*> profiles;
-
-    foreach (QVariant item, response["profiles"].toList())
-    {
-        ProfileItem *profile = ProfileParser::parser(item.toMap());
-        profiles[profile->uid()] = profile;
-    }
-
-    QVariantList messagesArray = response["longPoll"].toMap()["messages"].toList();
-    for (int i = 1; i < messagesArray.count(); i++)
-    {
-        QVariantMap messageToken = messagesArray[i].toMap();
-
-        if (messageToken.contains("deleted"))
-        {
-            continue;
-        }
-
-        MessageItem *message = MessageParser::parser(messageToken);
-        message->setFirstName(profiles[message->uid()]->firstName());
-        message->setLastName(profiles[message->uid()]->lastName());
-        message->setSex(profiles[message->uid()]->sex());
-
-        if (message->isGroupChat())
-        {
-            message->setDisplayName(message->title());
-
-
-//            string[] chatUsers = message.chatActive.Split(',');
-//            message.photoMediumRec = profiles[int.Parse(chatUsers[0])].photoMediumRec;
-//            message.photoMediumRec2 = profiles[int.Parse(chatUsers[1])].photoMediumRec;
-//            message.photoMediumRec3 = profiles[int.Parse(chatUsers[2])].photoMediumRec;
-//            message.photoMediumRec4 = profiles[int.Parse(chatUsers[3])].photoMediumRec;
-
-
-            message->setOnline(false);
-        }
-        else
-        {
-            message->setDisplayName(profiles[message->uid()]->fullName());
-            message->setPhotoMediumRec(profiles[message->uid()]->photoMediumRect());
-            message->setOnline(profiles[message->uid()]->online());
-        }
-
-        message->setLastSeen(profiles[message->uid()]->lastSeen());
-
-        emit messageAdded(message);
-    }
-}
-
-void LongPoll::getLongPollHistoryError(const Error &error, const QString &text, const bool global, const bool fatal)
-{
-    if (!fatal)
-    {
-        setRunning(true);
-    }
-}
-
 void LongPoll::onRunningChanged(const bool running)
 {
     if (running)
@@ -328,31 +243,8 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 {
     QVariantMap response = update.value(1).toMap();
 
-    QMap<int, ProfileItem*> profiles;
-
-    foreach (QVariant item, response.value("profiles").toList())
-    {
-        ProfileItem *profile = ProfileParser::parser(item.toMap());
-        profiles[profile->uid()] = profile;
-    }
-
-    MessageItem *message = MessageParser::parser(response.value("message").toMap());
-
-    message->setFirstName(profiles[message->uid()]->firstName());
-    message->setLastName(profiles[message->uid()]->lastName());
-    message->setDisplayName(message->isGroupChat() ? message->title() : profiles[message->uid()]->fullName());
-    message->setSex(profiles[message->uid()]->sex());
-    message->setPhotoMediumRec(profiles[message->uid()]->photoMediumRect());
-    message->setLastSeen(profiles[message->uid()]->lastSeen());
-
-    if (message->lastSeen() != 0 && !message->isGroupChat())
-    {
-        message->setOnline(profiles[message->uid()]->online());
-    }
-    else
-    {
-        message->setOnline(false);
-    }
+    ProfileList *profiles = ProfileParser::parser(response.value("profiles").toList());
+    MessageItem *message = MessageParser::parser(response.value("message").toMap(), profiles);
 
     emit messageAdded(message);
 }

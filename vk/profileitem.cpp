@@ -17,7 +17,7 @@ ProfileItem::ProfileItem()
 {
 }
 
-int ProfileItem::uid()
+int ProfileItem::uid() const
 {
     return _uid;
 }
@@ -30,7 +30,7 @@ void ProfileItem::setUid(const int uid)
     }
 }
 
-QString ProfileItem::firstName()
+QString ProfileItem::firstName() const
 {
     return _firstName;
 }
@@ -43,7 +43,7 @@ void ProfileItem::setFirstName(const QString &firstName)
     }
 }
 
-QString ProfileItem::lastName()
+QString ProfileItem::lastName() const
 {
     return _lastName;
 }
@@ -56,12 +56,12 @@ void ProfileItem::setLastName(const QString &lastName)
     }
 }
 
-QString ProfileItem::fullName()
+QString ProfileItem::fullName() const
 {
     return _firstName + " " + _lastName;
 }
 
-Sex ProfileItem::sex()
+Sex ProfileItem::sex() const
 {
     return _sex;
 }
@@ -74,7 +74,7 @@ void ProfileItem::setSex(const Sex sex)
     }
 }
 
-QString ProfileItem::photoMediumRect()
+QString ProfileItem::photoMediumRect() const
 {
     return _photoMediumRect;
 }
@@ -87,7 +87,7 @@ void ProfileItem::setPhotoMediumRect(const QString &photoMediumRect)
     }
 }
 
-bool ProfileItem::online()
+bool ProfileItem::online() const
 {
     return _online;
 }
@@ -100,7 +100,7 @@ void ProfileItem::setOnline(const bool online)
     }
 }
 
-int ProfileItem::lastSeen()
+int ProfileItem::lastSeen() const
 {
     return _lastSeen;
 }

@@ -16,12 +16,16 @@
 
 #include <QVariantMap>
 #include "messageitem.h"
+#include "messagelist.h"
+#include "profilelist.h"
 #include "utils.h"
 
 class MessageParser : public QObject
 {
 public:
-    static MessageItem* parser(QVariantMap json);
+    static MessageItem* parser(const QVariantMap &item);
+    static MessageItem* parser(const QVariantMap &item, const ProfileList *profiles);
+    static MessageList* parser(const QVariantList &items, const ProfileList *profiles=0);
 };
 
 #endif // MESSAGEPARSER_H

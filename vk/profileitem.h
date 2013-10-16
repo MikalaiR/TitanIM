@@ -23,20 +23,20 @@ class ProfileItem : public QObject
 
 public:
     ProfileItem();
-    int uid();
+    int uid() const;
     void setUid(const int uid);
-    QString firstName();
+    QString firstName() const;
     void setFirstName(const QString &firstName);
-    QString lastName();
+    QString lastName() const;
     void setLastName(const QString &lastName);
-    QString fullName();
-    Sex sex();
+    QString fullName() const;
+    Sex sex() const;
     void setSex(const Sex sex);
-    QString photoMediumRect();
+    QString photoMediumRect() const;
     void setPhotoMediumRect(const QString &photoMediumRect);
-    bool online();
+    bool online() const;
     void setOnline(const bool online);
-    int lastSeen();
+    int lastSeen() const;
     void setLastSeen(const int lastSeen);
 
 private:

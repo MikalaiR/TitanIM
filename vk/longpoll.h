@@ -20,9 +20,7 @@
 #include <QNetworkReply>
 #include "connection.h"
 #include "global.h"
-#include "profileitem.h"
 #include "profileparser.h"
-#include "messageitem.h"
 #include "messageparser.h"
 
 class LongPoll : public QObject
@@ -50,13 +48,10 @@ public:
     void setWait(const int sec);
     bool isRunning() const;
     void setRunning(const bool running);
-    void pause();
-    void resume();
 
 private:
     void getLongPollServer();
     void longPoll();
-    void getLongPollHistory();
     void handler(const QVariantList &updates);
 
 private:
@@ -82,8 +77,6 @@ private slots:
     void onRunningChanged(const bool running);
     void getLongPollServerFinished(const Packet *sender, const QVariantMap &response);
     void longPollResponse(QNetworkReply *networkReply);
-    void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &response);
-    void getLongPollHistoryError(const Error &error, const QString &text, const bool global, const bool fatal);
 
 signals:
     void messageDeleted(const int mid);

@@ -26,7 +26,10 @@ SOURCES += main.cpp \
     vk/profileitem.cpp \
     vk/profileparser.cpp \
     vk/messageitem.cpp \
-    vk/messageparser.cpp
+    vk/messageparser.cpp \
+    vk/profilelist.cpp \
+    vk/messagelist.cpp \
+    vk/dialogspacket.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -42,7 +45,10 @@ HEADERS += \
     vk/profileitem.h \
     vk/profileparser.h \
     vk/messageitem.h \
-    vk/messageparser.h
+    vk/messageparser.h \
+    vk/profilelist.h \
+    vk/messagelist.h \
+    vk/dialogspacket.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc

@@ -21,4 +21,6 @@ MainWindow::MainWindow(QWindow *parent) :
     setSource(QUrl("qrc:/qml/main.qml"));
 
     showExpanded();
+
+    Client::instance()->connection()->connectToVk("818151@mail.ru", "9fg8${AwLucsBk", false);
 }
