@@ -2,7 +2,7 @@
 #define MESSAGELIST_H
 
 #include <QObject>
-#include <QMap>
+#include <QVector>
 #include "messageitem.h"
 
 class MessageList : public QObject
@@ -12,12 +12,16 @@ class MessageList : public QObject
 public:
     MessageList();
     void add(MessageItem *message);
-    void add(MessageList *messages);
-    MessageItem* at(const int mid) const;
+    void add(const MessageList *messages);
+    int indexOf(const int mid) const;
+    MessageItem* at(const int i) const;
+    MessageItem* item(const int mid) const;
+    void remove(const int i);
     int count() const;
+    QVector<MessageItem*> toVector() const;
 
 private:
-    QMap<int, MessageItem*> _messages;
+    QVector<MessageItem*> _messages;
 };
 
 #endif // MESSAGELIST_H

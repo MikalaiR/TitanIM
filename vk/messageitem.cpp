@@ -210,12 +210,12 @@ void MessageItem::setSex(const Sex sex)
     }
 }
 
-QString MessageItem::photoMediumRec() const
+QString MessageItem::photoMediumRect() const
 {
     return _photoMediumRec;
 }
 
-void MessageItem::setPhotoMediumRec(const QString &photoMediumRec)
+void MessageItem::setPhotoMediumRect(const QString &photoMediumRec)
 {
     if (_photoMediumRec != photoMediumRec)
     {
@@ -223,12 +223,12 @@ void MessageItem::setPhotoMediumRec(const QString &photoMediumRec)
     }
 }
 
-QString MessageItem::photoMediumRec2() const
+QString MessageItem::photoMediumRect2() const
 {
     return _photoMediumRec2;
 }
 
-void MessageItem::setPhotoMediumRec2(const QString &photoMediumRec2)
+void MessageItem::setPhotoMediumRect2(const QString &photoMediumRec2)
 {
     if (_photoMediumRec2 != photoMediumRec2)
     {
@@ -236,12 +236,12 @@ void MessageItem::setPhotoMediumRec2(const QString &photoMediumRec2)
     }
 }
 
-QString MessageItem::photoMediumRec3() const
+QString MessageItem::photoMediumRect3() const
 {
     return _photoMediumRec3;
 }
 
-void MessageItem::setPhotoMediumRec3(const QString &photoMediumRec3)
+void MessageItem::setPhotoMediumRect3(const QString &photoMediumRec3)
 {
     if (_photoMediumRec3 != photoMediumRec3)
     {
@@ -249,12 +249,12 @@ void MessageItem::setPhotoMediumRec3(const QString &photoMediumRec3)
     }
 }
 
-QString MessageItem::photoMediumRec4() const
+QString MessageItem::photoMediumRect4() const
 {
     return _photoMediumRec4;
 }
 
-void MessageItem::setPhotoMediumRec4(const QString &photoMediumRec4)
+void MessageItem::setPhotoMediumRect4(const QString &photoMediumRec4)
 {
     if (_photoMediumRec4 != photoMediumRec4)
     {

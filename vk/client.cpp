@@ -99,9 +99,7 @@ void Client::getProfileSelf()//todo перенести
 void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
     _uid = uid;
-
     _longPoll->setRunning(true);
-    qDebug() << "connecting" << " " << token << " " << secret;
 }
 
 void Client::onDisconnected()
@@ -111,12 +109,10 @@ void Client::onDisconnected()
     _photoMediumRec = "";
 
     _longPoll->setRunning(false);
-    qDebug() << "disconnecting";
 }
 
 void Client::onError(const Error &error, const QString &text, const bool global, const bool fatal)
 {
-    qDebug() << error << text;
 }
 
 void Client::onSelfProfile(const Packet *sender, const QVariantMap &response)

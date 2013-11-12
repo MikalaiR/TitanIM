@@ -15,8 +15,10 @@
 #define MAINWINDOW_H
 
 #include <QQmlContext>
+#include <QDebug>
 #include "qtquick2applicationviewer.h"
 #include "vk/client.h"
+#include "chat/dialogsmodel.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {
@@ -24,6 +26,14 @@ class MainWindow : public QtQuick2ApplicationViewer
 
 public:
     explicit MainWindow(QWindow *parent = 0);
+
+private:
+    DialogsModel *dialogsModel;
+
+private slots:
+    void onConnected(const int uid, const QString &token, const QString &secret);
+    void onDisconnected();
+//    void onError(const Error &error, const QString &text, const bool global, const bool fatal);
 };
 
 #endif // MAINWINDOW_H

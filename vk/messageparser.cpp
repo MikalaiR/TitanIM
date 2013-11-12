@@ -58,7 +58,7 @@ MessageItem* MessageParser::parser(const QVariantMap &item, const ProfileList *p
         QString lastName = profile->lastName();
         QString displayName = message->isGroupChat() ? message->title() : profile->fullName();
         Sex sex = profile->sex();
-        QString photoMediumRec = profile->photoMediumRect();
+        QString photoMediumRect = profile->photoMediumRect();
         int lastSeen = profile->lastSeen();
 
         bool online = false;
@@ -71,7 +71,7 @@ MessageItem* MessageParser::parser(const QVariantMap &item, const ProfileList *p
         message->setLastName(lastName);
         message->setDisplayName(displayName);
         message->setSex(sex);
-        message->setPhotoMediumRec(photoMediumRec);
+        message->setPhotoMediumRect(photoMediumRect);
         message->setLastSeen(lastSeen);
         message->setOnline(online);
     }

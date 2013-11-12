@@ -70,7 +70,33 @@ QString Utils::decode(const QString &str)
     return temp;
 }
 
-QString Utils::photoUrlFix(const QString &url)
+QString Utils::dateToText(const QDateTime &date)
 {
-    return url.endsWith(".gif") ? "Images/camera_b.png" : url;
+    int days = date.daysTo(QDateTime::currentDateTime());
+
+    switch (days)
+    {
+    case 0:
+        return date.time().toString("hh:mm");
+
+    case 1:
+        return QObject::tr("yesterday");
+
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        return date.date().toString("ddd");
+
+    default:
+        if (date.date().year() == QDate::currentDate().year())
+        {
+            return date.date().toString("d MMM");
+        }
+        else
+        {
+            return date.date().toString("dd.MM.yy");
+        }
+    }
 }

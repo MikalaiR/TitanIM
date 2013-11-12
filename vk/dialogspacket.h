@@ -13,15 +13,19 @@ class DialogsPacket : public QObject
 public:
     DialogsPacket(Connection *connection);
     void load(const int offset=0, const int count=20);
+    int offset() const;
+    int count() const;
 
 private:
     Connection *_connection;
+    int _offset;
+    int _count;
 
 private slots:
     void loadFinished(const Packet *sender, const QVariantMap &response);
 
 signals:
-    void dialogs(const MessageList *dialogs);
+    void dialogs(const DialogsPacket *sender, const MessageList *dialogs);
 };
 
 #endif // DIALOGSPACKET_H

@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     vk/messageparser.cpp \
     vk/profilelist.cpp \
     vk/messagelist.cpp \
-    vk/dialogspacket.cpp
+    vk/dialogspacket.cpp \
+    chat/dialogsmodel.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -48,7 +49,8 @@ HEADERS += \
     vk/messageparser.h \
     vk/profilelist.h \
     vk/messagelist.h \
-    vk/dialogspacket.h
+    vk/dialogspacket.h \
+    chat/dialogsmodel.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc
