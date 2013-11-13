@@ -52,7 +52,7 @@ MessageItem* MessageParser::parser(const QVariantMap &item, const ProfileList *p
     MessageItem *message = parser(item);
 
     if (profiles && profiles->count()){
-        ProfileItem *profile = profiles->at(message->uid());
+        ProfileItem *profile = profiles->item(message->uid());
 
         QString firstName = profile->firstName();
         QString lastName = profile->lastName();

@@ -2,7 +2,7 @@
 #define PROFILELIST_H
 
 #include <QObject>
-#include <QMap>
+#include <QVector>
 #include "profileitem.h"
 
 class ProfileList : public QObject
@@ -12,12 +12,16 @@ class ProfileList : public QObject
 public:
     ProfileList();
     void add(ProfileItem *profile);
-    void add(ProfileList *profiles);
-    ProfileItem* at(const int uid) const;
+    void add(const ProfileList *profiles);
+    int indexOf(const int uid) const;
+    ProfileItem* at(const int i) const;
+    ProfileItem* item(const int uid) const;
+    void remove(const int i);
     int count() const;
+    QVector<ProfileItem*> toVector() const;
 
 private:
-    QMap<int, ProfileItem*> _profiles;
+    QVector<ProfileItem*> _profiles;
 };
 
 #endif // PROFILELIST_H
