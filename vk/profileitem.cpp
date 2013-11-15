@@ -112,3 +112,26 @@ void ProfileItem::setLastSeen(const int lastSeen)
         _lastSeen = lastSeen;
     }
 }
+
+QString ProfileItem::activity() const
+{
+    return _activity;
+}
+
+void ProfileItem::setActivity(const QString &activity)
+{
+    if (_activity != activity)
+    {
+        _activity = activity;
+    }
+}
+
+QString ProfileItem::alphabet() const
+{
+    return _alphabet;
+}
+
+void ProfileItem::setAlphabet(const QString &alphabet)
+{
+    _alphabet = alphabet;
+}

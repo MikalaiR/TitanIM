@@ -15,33 +15,33 @@ DialogsModel::~DialogsModel()
     delete _dialogs;
 }
 
-void DialogsModel::loadDialogs(const int count)
+void DialogsModel::load(const int count)
 {
     _dialogsPacket->load(0, count);
 }
 
-void DialogsModel::loadNextDialogs(const int count)
+void DialogsModel::loadNext(const int count)
 {
     _dialogsPacket->load(_dialogs->count(), count);
 }
 
-void DialogsModel::appendDialogs(const MessageList *dialogs)
+void DialogsModel::append(const MessageList *items)
 {
-    if (!dialogs->count())
+    if (!items->count())
         return;
 
-    beginInsertRows(QModelIndex(), _dialogs->count(), _dialogs->count() + dialogs->count() - 1);
-    _dialogs->add(dialogs);
+    beginInsertRows(QModelIndex(), _dialogs->count(), _dialogs->count() + items->count() - 1);
+    _dialogs->add(items);
     endInsertRows();
 }
 
-void DialogsModel::replaceDialogs(const MessageList *dialogs)
+void DialogsModel::replace(const MessageList *items)
 {
-    removeDialog(0, rowCount());
-    appendDialogs(dialogs);
+    remove(0, rowCount());
+    append(items);
 }
 
-bool DialogsModel::removeDialog(int row, int count)
+bool DialogsModel::remove(int row, int count)
 {
     if (count <= 0 || row < 0)
         return false;
@@ -152,10 +152,10 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const MessageLis
 {
     if (!sender->offset())
     {
-        replaceDialogs(dialogs);
+        replace(dialogs);
     }
     else
     {
-        appendDialogs(dialogs);
+        append(dialogs);
     }
 }

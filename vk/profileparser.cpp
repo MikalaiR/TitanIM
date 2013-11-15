@@ -25,6 +25,7 @@ ProfileItem* ProfileParser::parser(const QVariantMap &item)
                                                                 : item.value("photo_medium").toString();
     int lastSeen = item.contains("last_seen") ? item.value("last_seen").toMap().value("time").toInt() : 0;
     bool online = item.value("online").toInt() == 1 ? true : false;
+    QString activity = item.contains("status") ? item.value("status").toString() : "";
 
     profile->setUid(uid);
     profile->setFirstName(firstName);
@@ -33,6 +34,8 @@ ProfileItem* ProfileParser::parser(const QVariantMap &item)
     profile->setPhotoMediumRect(photoMediumRect);
     profile->setLastSeen(lastSeen);
     profile->setOnline(online);
+    profile->setActivity(activity);
+    profile->setAlphabet(firstName.at(0));
 
     return profile;
 }

@@ -5,7 +5,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#f2f2f2"
+        color: "#f9f9f9"
     }
 
     ListView{

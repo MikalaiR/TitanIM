@@ -38,6 +38,10 @@ public:
     void setOnline(const bool online);
     int lastSeen() const;
     void setLastSeen(const int lastSeen);
+    QString activity() const;
+    void setActivity(const QString &activity);
+    QString alphabet() const;
+    void setAlphabet(const QString &alphabet);
 
 private:
     int _uid;
@@ -47,6 +51,8 @@ private:
     QString _photoMediumRect;
     bool _online;
     int _lastSeen;
+    QString _activity;
+    QString _alphabet;
 };
 
 #endif // PROFILEITEM_H

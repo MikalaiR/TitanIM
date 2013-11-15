@@ -19,6 +19,7 @@
 #include "qtquick2applicationviewer.h"
 #include "vk/client.h"
 #include "chat/dialogsmodel.h"
+#include "roster/rostermodel.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {
@@ -29,6 +30,7 @@ public:
 
 private:
     DialogsModel *dialogsModel;
+    RosterModel *rosterModel;
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);

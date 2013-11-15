@@ -12,7 +12,7 @@ class DialogsPacket : public QObject
 
 public:
     DialogsPacket(Connection *connection);
-    void load(const int offset=0, const int count=20);
+    void load(const int offset, const int count);
     int offset() const;
     int count() const;
 

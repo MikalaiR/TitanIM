@@ -26,7 +26,7 @@ Rectangle {
             TabBarItem {
                 title: "2"
                 icon: "images/contacts_tab.png"
-                Text{text: "2"}
+                Roster { }
             }
 
             TabBarItem {

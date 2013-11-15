@@ -19,22 +19,26 @@ MainWindow::MainWindow(QWindow *parent) :
     setSource(QUrl("qrc:/qml/main.qml"));
     showExpanded();
 
-    Client::instance()->connection()->connectToVk("", "", false);
     connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 //    connect(Client::instance()->connection(), SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
 
     dialogsModel = new DialogsModel(this);
+    rosterModel = new RosterModel(this);
 
     rootContext()->setContextProperty("main", this);
     rootContext()->setContextProperty("dialogsModel", dialogsModel);
+    rootContext()->setContextProperty("rosterModel", rosterModel);
+
+    Client::instance()->connection()->connectToVk("", "");
 }
 
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
 {
     qDebug() << "connecting" << " " << token << " " << secret;
 
-    dialogsModel->loadDialogs();
+    dialogsModel->load();
+    rosterModel->load();
 }
 
 void MainWindow::onDisconnected()

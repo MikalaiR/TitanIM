@@ -11,5 +11,9 @@
         <file>images/settings_tab.png</file>
         <file>Dialogs.qml</file>
         <file>DialogsDelegate.qml</file>
+        <file>Roster.qml</file>
+        <file>RosterDelegate.qml</file>
+        <file>images/ic_online_up.png</file>
+        <file>SectionHeading.qml</file>
     </qresource>
 </RCC>
