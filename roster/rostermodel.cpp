@@ -1,20 +1,32 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "rostermodel.h"
 
 RosterModel::RosterModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    _roster = new ProfileList();
+    _roster = ProfileList::create();
 
     _rosterPacket = new RosterPacket(Client::instance()->connection());
     _rosterPacket->setFields("first_name,last_name,photo_medium_rec");
     _rosterPacket->setNeedFavorites(true);
-    connect(_rosterPacket, SIGNAL(roster(const RosterPacket*,const ProfileList*)), SLOT(onRosterLoaded(const RosterPacket*,const ProfileList*)));
+    connect(_rosterPacket, SIGNAL(roster(const RosterPacket*,const ProfileList)), SLOT(onRosterLoaded(const RosterPacket*,const ProfileList)));
 }
 
 RosterModel::~RosterModel()
 {
     delete _rosterPacket;
-    delete _roster;
 }
 
 void RosterModel::load(const int count)
@@ -27,17 +39,17 @@ void RosterModel::loadNext(const int count)
     _rosterPacket->load(_roster->count(), count);
 }
 
-void RosterModel::append(const ProfileList *items)
+void RosterModel::append(const ProfileList items)
 {
     if (!items->count())
         return;
 
     beginInsertRows(QModelIndex(), _roster->count(), _roster->count() + items->count() - 1);
-    _roster->add(items);
+    _roster->add(items->toVector());
     endInsertRows();
 }
 
-void RosterModel::replace(const ProfileList *items)
+void RosterModel::replace(const ProfileList items)
 {
     remove(0, rowCount());
     append(items);
@@ -79,7 +91,7 @@ QVariant RosterModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    ProfileItem *profile = _roster->at(index.row());
+    ProfileItem profile = _roster->at(index.row());
 
     switch (role)
     {
@@ -134,7 +146,7 @@ Qt::ItemFlags RosterModel::flags(const QModelIndex &index) const
     }
 }
 
-void RosterModel::onRosterLoaded(const RosterPacket *sender, const ProfileList *roster)
+void RosterModel::onRosterLoaded(const RosterPacket *sender, const ProfileList &roster)
 {
     if (!sender->offset())
     {

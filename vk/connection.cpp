@@ -435,6 +435,8 @@ void Connection::onError(const ErrorResponse *errorResponse)
         break;
     }
     }
+
+    delete errorResponse;
 }
 
 void Connection::onError(const Error &code, const QString &msg)

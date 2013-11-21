@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "dialogspacket.h"
 
 DialogsPacket::DialogsPacket(Connection *connection)
@@ -42,13 +55,16 @@ int DialogsPacket::count() const
     return _count;
 }
 
-void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &response)
+void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &result)
 {
-    ProfileList *profiles = ProfileParser::parser(response.value("profiles").toList());
-    MessageList *messageList = MessageParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
+    QVariantMap response = result.value("response").toMap();
+
+    ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
+    MessageList messageList = MessageParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
 
     int countNewMessages = response.value("countNewMsg").toInt();
     int countRequestsFriends = response.value("countNewFriends").toInt();
 
     emit dialogs(this, messageList);
+    delete sender;
 }

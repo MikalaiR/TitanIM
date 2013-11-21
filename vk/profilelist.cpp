@@ -1,53 +1,74 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "profilelist.h"
 
-ProfileList::ProfileList()
+ProfileListPrivate::ProfileListPrivate()
 {
 }
 
-void ProfileList::add(ProfileItem *profile)
+ProfileListPrivate::~ProfileListPrivate()
+{
+}
+
+void ProfileListPrivate::add(ProfileItem profile)
 {
     _profiles.append(profile);
 }
 
-void ProfileList::add(const ProfileList *profiles)
+void ProfileListPrivate::add(const QVector<ProfileItem> &profiles)
 {
-    _profiles << profiles->toVector();
+    _profiles << profiles;
 }
 
-int ProfileList::indexOf(const int uid) const
+int ProfileListPrivate::indexOf(const int uid) const
 {
     for (int i = 0; i < _profiles.count(); i++)
     {
         if (_profiles.at(i)->uid() == uid)
             return i;
     }
+
+    return -1;
 }
 
-ProfileItem* ProfileList::at(const int i) const
+ProfileItem ProfileListPrivate::at(const int i) const
 {
     return _profiles.at(i);
 }
 
-ProfileItem *ProfileList::item(const int uid) const
+ProfileItem ProfileListPrivate::item(const int uid) const
 {
-    foreach (ProfileItem *item, _profiles)
+    foreach (ProfileItem item, _profiles)
     {
         if (item->uid() == uid)
             return item;
     }
+
+    return ProfileItem();
 }
 
-void ProfileList::remove(const int i)
+void ProfileListPrivate::remove(const int i)
 {
     _profiles.remove(i);
 }
 
-int ProfileList::count() const
+int ProfileListPrivate::count() const
 {
     return _profiles.count();
 }
 
-QVector<ProfileItem *> ProfileList::toVector() const
+QVector<ProfileItem> ProfileListPrivate::toVector() const
 {
     return _profiles;
 }

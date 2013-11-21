@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #ifndef ROSTERPACKET_H
 #define ROSTERPACKET_H
 
@@ -27,10 +40,10 @@ private:
     bool _needFavorites;
 
 private slots:
-    void loadFinished(const Packet *sender, const QVariantMap &response);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
-    void roster(const RosterPacket *sender, const ProfileList *roster);
+    void roster(const RosterPacket *sender, const ProfileList &roster);
 };
 
 #endif // ROSTERPACKET_H

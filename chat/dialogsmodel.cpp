@@ -1,18 +1,30 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "dialogsmodel.h"
 
 DialogsModel::DialogsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    _dialogs = new MessageList();
+    _dialogs = MessageList::create();
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
-    connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const MessageList*)), SLOT(onDialogsLoaded(const DialogsPacket*,const MessageList*)));
+    connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const MessageList)), SLOT(onDialogsLoaded(const DialogsPacket*,const MessageList)));
 }
 
 DialogsModel::~DialogsModel()
 {
     delete _dialogsPacket;
-    delete _dialogs;
 }
 
 void DialogsModel::load(const int count)
@@ -25,17 +37,17 @@ void DialogsModel::loadNext(const int count)
     _dialogsPacket->load(_dialogs->count(), count);
 }
 
-void DialogsModel::append(const MessageList *items)
+void DialogsModel::append(const MessageList items)
 {
     if (!items->count())
         return;
 
     beginInsertRows(QModelIndex(), _dialogs->count(), _dialogs->count() + items->count() - 1);
-    _dialogs->add(items);
+    _dialogs->add(items->toVector());
     endInsertRows();
 }
 
-void DialogsModel::replace(const MessageList *items)
+void DialogsModel::replace(const MessageList items)
 {
     remove(0, rowCount());
     append(items);
@@ -81,7 +93,7 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    MessageItem *dialog = _dialogs->at(index.row());
+    MessageItem dialog = _dialogs->at(index.row());
 
     switch (role)
     {
@@ -148,7 +160,7 @@ Qt::ItemFlags DialogsModel::flags(const QModelIndex &index) const
     }
 }
 
-void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const MessageList *dialogs)
+void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const MessageList &dialogs)
 {
     if (!sender->offset())
     {

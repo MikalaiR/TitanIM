@@ -1,53 +1,74 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "messagelist.h"
 
-MessageList::MessageList()
+MessageListPrivate::MessageListPrivate()
 {
 }
 
-void MessageList::add(MessageItem *message)
+MessageListPrivate::~MessageListPrivate()
+{
+}
+
+void MessageListPrivate::add(MessageItem message)
 {
     _messages.append(message);
 }
 
-void MessageList::add(const MessageList *messages)
+void MessageListPrivate::add(const QVector<MessageItem> &messages)
 {
-    _messages << messages->toVector();
+    _messages << messages;
 }
 
-int MessageList::indexOf(const int mid) const
+int MessageListPrivate::indexOf(const int mid) const
 {
     for (int i = 0; i < _messages.count(); i++)
     {
         if (_messages.at(i)->mid() == mid)
             return i;
     }
+
+    return -1;
 }
 
-MessageItem *MessageList::at(const int i) const
+MessageItem MessageListPrivate::at(const int i) const
 {
     return _messages.at(i);
 }
 
-MessageItem *MessageList::item(const int mid) const
+MessageItem MessageListPrivate::item(const int mid) const
 {
-    foreach (MessageItem *item, _messages)
+    foreach (MessageItem item, _messages)
     {
         if (item->mid() == mid)
             return item;
     }
+
+    return MessageItem();
 }
 
-void MessageList::remove(const int i)
+void MessageListPrivate::remove(const int i)
 {
     _messages.remove(i);
 }
 
-int MessageList::count() const
+int MessageListPrivate::count() const
 {
     return _messages.count();
 }
 
-QVector<MessageItem *> MessageList::toVector() const
+QVector<MessageItem> MessageListPrivate::toVector() const
 {
     return _messages;
 }

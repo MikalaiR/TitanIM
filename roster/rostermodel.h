@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #ifndef ROSTERMODEL_H
 #define ROSTERMODEL_H
 
@@ -22,8 +35,8 @@ public:
     ~RosterModel();
     void load(const int count=0);
     void loadNext(const int count=20);
-    void append(const ProfileList *items);
-    void replace(const ProfileList *items);
+    void append(const ProfileList items);
+    void replace(const ProfileList items);
     bool remove(int row, int count);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -32,11 +45,11 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
-    ProfileList *_roster;
+    ProfileList _roster;
     RosterPacket *_rosterPacket;
 
 protected slots:
-    void onRosterLoaded(const RosterPacket *sender, const ProfileList *roster);
+    void onRosterLoaded(const RosterPacket *sender, const ProfileList &roster);
 };
 
 #endif // ROSTERMODEL_H

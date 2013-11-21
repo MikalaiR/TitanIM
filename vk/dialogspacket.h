@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #ifndef DIALOGSPACKET_H
 #define DIALOGSPACKET_H
 
@@ -22,10 +35,10 @@ private:
     int _count;
 
 private slots:
-    void loadFinished(const Packet *sender, const QVariantMap &response);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
-    void dialogs(const DialogsPacket *sender, const MessageList *dialogs);
+    void dialogs(const DialogsPacket *sender, const MessageList &dialogs);
 };
 
 #endif // DIALOGSPACKET_H

@@ -15,15 +15,16 @@
 #define MESSAGEITEM_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include <QDateTime>
 #include "global.h"
 
-class MessageItem : public QObject
+class MessageItemPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    MessageItem();
+    MessageItemPrivate();
     int mid() const;
     void setMid(const int mid);
     int uid() const;
@@ -92,5 +93,7 @@ private:
     int _lastSeen;
 //    AttachmentList _attachments;
 };
+
+typedef QSharedPointer<MessageItemPrivate> MessageItem;
 
 #endif // MESSAGEITEM_H

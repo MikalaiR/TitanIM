@@ -64,11 +64,15 @@ void LongPoll::getLongPollServer()
     _connection->appendQuery(packet);
 }
 
-void LongPoll::getLongPollServerFinished(const Packet *sender, const QVariantMap &response)
+void LongPoll::getLongPollServerFinished(const Packet *sender, const QVariantMap &result)
 {
+    QVariantMap response = result.value("response").toMap();
+
     _longPollVars.server = sender->dataUser() + response.value("server").toString();
     _longPollVars.key = response.value("key").toString();
     _longPollVars.ts = response.value("ts").toString();
+
+    delete sender;
 
     longPoll();
 }
@@ -243,8 +247,8 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 {
     QVariantMap response = update.value(1).toMap();
 
-    ProfileList *profiles = ProfileParser::parser(response.value("profiles").toList());
-    MessageItem *message = MessageParser::parser(response.value("message").toMap(), profiles);
+    ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
+    MessageItem message = MessageParser::parser(response.value("message").toMap(), profiles);
 
     emit messageAdded(message);
 }

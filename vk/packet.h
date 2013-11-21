@@ -27,6 +27,7 @@ class Packet : public QObject
 
 public:
     Packet(const QString &method, const QString &version="5.2");
+    ~Packet();
     int id() const;
     void setId(const int id);
     QString method() const;
@@ -34,6 +35,7 @@ public:
     void setDataUser(const QString &dataUser);
     QVariantMap result() const;
     QVariantMap response() const;
+    ErrorResponse *errorResponse() const;
     void signPacket(const QString &secret);
     QString urlPath() const;
     QByteArray urlQuery() const;
@@ -42,7 +44,7 @@ public:
     void removeParam(const QString &key);
     QString value(const QString &key);
     void setResult(const QVariantMap &result);
-    void setError(const ErrorResponse *errorResponse);
+    void setError(ErrorResponse *errorResponse);
     bool contains(const QString &key);
 
 private:
@@ -51,9 +53,10 @@ private:
     QMap<QString, QString> _paramsPacket;
     QString _dataUser;
     QVariantMap _result;
+    ErrorResponse *_errorResponse;
 
 signals:
-    void finished(const Packet *sender, const QVariantMap &response);
+    void finished(const Packet *sender, const QVariantMap &result);
     void error(const Error &error, const QString &text, const bool global, const bool fatal);
 };
 

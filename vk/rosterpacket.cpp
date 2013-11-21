@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "rosterpacket.h"
 
 RosterPacket::RosterPacket(Connection *connection)
@@ -67,22 +80,23 @@ void RosterPacket::setNeedFavorites(const bool needFavorites)
     _needFavorites = needFavorites;
 }
 
-void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &response)
+void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
 {
-    ProfileList *profiles;
+    QVariantMap response = result.value("response").toMap();
+    ProfileList profiles;
 
     if (sender->method() == "execute")
     {
-        profiles = new ProfileList();
+        profiles = ProfileList::create();
 
         foreach (QVariant item, response.value("favorites").toMap().value("items").toList())
         {
-            ProfileItem *profile = ProfileParser::parser(item.toMap());
+            ProfileItem profile = ProfileParser::parser(item.toMap());
             profile->setAlphabet(tr("Favorites"));
             profiles->add(profile);
         }
 
-        profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList()));
+        profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList())->toVector());
     }
     else
     {
@@ -90,4 +104,5 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &respons
     }
 
     emit roster(this, profiles);
+    delete sender;
 }

@@ -18,8 +18,17 @@ Packet::Packet(const QString &method, const QString &version)
     _method = method;
     _id = 0;
     _paramsPacket.clear();
+    _errorResponse = 0;
 
     addParam("v", version);
+}
+
+Packet::~Packet()
+{
+    if (_errorResponse)
+    {
+        delete _errorResponse;
+    }
 }
 
 int Packet::id() const
@@ -103,16 +112,23 @@ QVariantMap Packet::response() const
     return _result.value("response").toMap();
 }
 
+ErrorResponse *Packet::errorResponse() const
+{
+    return _errorResponse;
+}
+
 void Packet::setResult(const QVariantMap &result)
 {
     _result = result;
 
-    emit finished(this, response());
+    emit finished(this, _result);
 }
 
-void Packet::setError(const ErrorResponse *errorResponse)
+void Packet::setError(ErrorResponse *errorResponse)
 {
-    emit error(errorResponse->code(), errorResponse->msg(), errorResponse->global(), errorResponse->fatal());
+    _errorResponse = errorResponse;
+
+    emit error(_errorResponse->code(), _errorResponse->msg(), _errorResponse->global(), _errorResponse->fatal());
 }
 
 bool Packet::contains(const QString &key)

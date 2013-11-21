@@ -13,17 +13,17 @@
 
 #include "messageitem.h"
 
-MessageItem::MessageItem()
+MessageItemPrivate::MessageItemPrivate()
 {
     _chatId = -1;
 }
 
-int MessageItem::mid() const
+int MessageItemPrivate::mid() const
 {
     return _mid;
 }
 
-void MessageItem::setMid(const int mid)
+void MessageItemPrivate::setMid(const int mid)
 {
     if (_mid != mid)
     {
@@ -31,12 +31,12 @@ void MessageItem::setMid(const int mid)
     }
 }
 
-int MessageItem::uid() const
+int MessageItemPrivate::uid() const
 {
     return _uid;
 }
 
-void MessageItem::setUid(const int uid)
+void MessageItemPrivate::setUid(const int uid)
 {
     if (_uid != uid)
     {
@@ -44,12 +44,12 @@ void MessageItem::setUid(const int uid)
     }
 }
 
-QDateTime MessageItem::date() const
+QDateTime MessageItemPrivate::date() const
 {
     return _date;
 }
 
-void MessageItem::setDate(const QDateTime &date)
+void MessageItemPrivate::setDate(const QDateTime &date)
 {
     if (_date != date)
     {
@@ -57,12 +57,12 @@ void MessageItem::setDate(const QDateTime &date)
     }
 }
 
-bool MessageItem::isUnread() const
+bool MessageItemPrivate::isUnread() const
 {
     return _isUnread;
 }
 
-void MessageItem::setIsUnread(const bool isUnread)
+void MessageItemPrivate::setIsUnread(const bool isUnread)
 {
     if (_isUnread != isUnread)
     {
@@ -70,12 +70,12 @@ void MessageItem::setIsUnread(const bool isUnread)
     }
 }
 
-bool MessageItem::isOut() const
+bool MessageItemPrivate::isOut() const
 {
     return _isOut;
 }
 
-void MessageItem::setIsOut(const bool isOut)
+void MessageItemPrivate::setIsOut(const bool isOut)
 {
     if (_isOut != isOut)
     {
@@ -83,12 +83,12 @@ void MessageItem::setIsOut(const bool isOut)
     }
 }
 
-bool MessageItem::isError() const
+bool MessageItemPrivate::isError() const
 {
     return _isError;
 }
 
-void MessageItem::setIsError(const bool isError)
+void MessageItemPrivate::setIsError(const bool isError)
 {
     if (_isError != isError)
     {
@@ -96,17 +96,17 @@ void MessageItem::setIsError(const bool isError)
     }
 }
 
-bool MessageItem::isSending() const
+bool MessageItemPrivate::isSending() const
 {
     return _mid < 0;
 }
 
-bool MessageItem::deliveryReport() const
+bool MessageItemPrivate::deliveryReport() const
 {
     return _deliveryReport;
 }
 
-void MessageItem::setDeliveryReport(const bool deliveryReport)
+void MessageItemPrivate::setDeliveryReport(const bool deliveryReport)
 {
     if (_deliveryReport != deliveryReport)
     {
@@ -114,12 +114,12 @@ void MessageItem::setDeliveryReport(const bool deliveryReport)
     }
 }
 
-QString MessageItem::title() const
+QString MessageItemPrivate::title() const
 {
     return _title;
 }
 
-void MessageItem::setTitle(const QString &title)
+void MessageItemPrivate::setTitle(const QString &title)
 {
     if (_title != title)
     {
@@ -127,12 +127,12 @@ void MessageItem::setTitle(const QString &title)
     }
 }
 
-QString MessageItem::body() const
+QString MessageItemPrivate::body() const
 {
     return _body;
 }
 
-void MessageItem::setBody(const QString &body)
+void MessageItemPrivate::setBody(const QString &body)
 {
     if (_body != body)
     {
@@ -140,12 +140,12 @@ void MessageItem::setBody(const QString &body)
     }
 }
 
-int MessageItem::chatId() const
+int MessageItemPrivate::chatId() const
 {
     return _chatId;
 }
 
-void MessageItem::setChatId(const int chatId)
+void MessageItemPrivate::setChatId(const int chatId)
 {
     if (_chatId != chatId)
     {
@@ -153,17 +153,17 @@ void MessageItem::setChatId(const int chatId)
     }
 }
 
-bool MessageItem::isGroupChat() const
+bool MessageItemPrivate::isGroupChat() const
 {
     return _chatId == -1 ? false : true;
 }
 
-QString MessageItem::firstName() const
+QString MessageItemPrivate::firstName() const
 {
     return _firstName;
 }
 
-void MessageItem::setFirstName(const QString &firstName)
+void MessageItemPrivate::setFirstName(const QString &firstName)
 {
     if (_firstName != firstName)
     {
@@ -171,12 +171,12 @@ void MessageItem::setFirstName(const QString &firstName)
     }
 }
 
-QString MessageItem::lastName() const
+QString MessageItemPrivate::lastName() const
 {
     return _lastName;
 }
 
-void MessageItem::setLastName(const QString &lastName)
+void MessageItemPrivate::setLastName(const QString &lastName)
 {
     if (_lastName != lastName)
     {
@@ -184,12 +184,12 @@ void MessageItem::setLastName(const QString &lastName)
     }
 }
 
-QString MessageItem::displayName() const
+QString MessageItemPrivate::displayName() const
 {
     return _displayName;
 }
 
-void MessageItem::setDisplayName(const QString &displayName)
+void MessageItemPrivate::setDisplayName(const QString &displayName)
 {
     if (_displayName != displayName)
     {
@@ -197,12 +197,12 @@ void MessageItem::setDisplayName(const QString &displayName)
     }
 }
 
-Sex MessageItem::sex() const
+Sex MessageItemPrivate::sex() const
 {
     return _sex;
 }
 
-void MessageItem::setSex(const Sex sex)
+void MessageItemPrivate::setSex(const Sex sex)
 {
     if (_sex != sex)
     {
@@ -210,12 +210,12 @@ void MessageItem::setSex(const Sex sex)
     }
 }
 
-QString MessageItem::photoMediumRect() const
+QString MessageItemPrivate::photoMediumRect() const
 {
     return _photoMediumRec;
 }
 
-void MessageItem::setPhotoMediumRect(const QString &photoMediumRec)
+void MessageItemPrivate::setPhotoMediumRect(const QString &photoMediumRec)
 {
     if (_photoMediumRec != photoMediumRec)
     {
@@ -223,12 +223,12 @@ void MessageItem::setPhotoMediumRect(const QString &photoMediumRec)
     }
 }
 
-QString MessageItem::photoMediumRect2() const
+QString MessageItemPrivate::photoMediumRect2() const
 {
     return _photoMediumRec2;
 }
 
-void MessageItem::setPhotoMediumRect2(const QString &photoMediumRec2)
+void MessageItemPrivate::setPhotoMediumRect2(const QString &photoMediumRec2)
 {
     if (_photoMediumRec2 != photoMediumRec2)
     {
@@ -236,12 +236,12 @@ void MessageItem::setPhotoMediumRect2(const QString &photoMediumRec2)
     }
 }
 
-QString MessageItem::photoMediumRect3() const
+QString MessageItemPrivate::photoMediumRect3() const
 {
     return _photoMediumRec3;
 }
 
-void MessageItem::setPhotoMediumRect3(const QString &photoMediumRec3)
+void MessageItemPrivate::setPhotoMediumRect3(const QString &photoMediumRec3)
 {
     if (_photoMediumRec3 != photoMediumRec3)
     {
@@ -249,12 +249,12 @@ void MessageItem::setPhotoMediumRect3(const QString &photoMediumRec3)
     }
 }
 
-QString MessageItem::photoMediumRect4() const
+QString MessageItemPrivate::photoMediumRect4() const
 {
     return _photoMediumRec4;
 }
 
-void MessageItem::setPhotoMediumRect4(const QString &photoMediumRec4)
+void MessageItemPrivate::setPhotoMediumRect4(const QString &photoMediumRec4)
 {
     if (_photoMediumRec4 != photoMediumRec4)
     {
@@ -262,12 +262,12 @@ void MessageItem::setPhotoMediumRect4(const QString &photoMediumRec4)
     }
 }
 
-bool MessageItem::online() const
+bool MessageItemPrivate::online() const
 {
     return _online;
 }
 
-void MessageItem::setOnline(const bool online)
+void MessageItemPrivate::setOnline(const bool online)
 {
     if (_online != online)
     {
@@ -275,12 +275,12 @@ void MessageItem::setOnline(const bool online)
     }
 }
 
-int MessageItem::lastSeen() const
+int MessageItemPrivate::lastSeen() const
 {
     return _lastSeen;
 }
 
-void MessageItem::setLastSeen(const int lastSeen)
+void MessageItemPrivate::setLastSeen(const int lastSeen)
 {
     if (_lastSeen != lastSeen)
     {

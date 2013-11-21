@@ -27,6 +27,7 @@ class MainWindow : public QtQuick2ApplicationViewer
 
 public:
     explicit MainWindow(QWindow *parent = 0);
+    ~MainWindow();
 
 private:
     DialogsModel *dialogsModel;

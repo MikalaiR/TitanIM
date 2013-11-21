@@ -23,9 +23,9 @@
 class MessageParser : public QObject
 {
 public:
-    static MessageItem* parser(const QVariantMap &item);
-    static MessageItem* parser(const QVariantMap &item, const ProfileList *profiles);
-    static MessageList* parser(const QVariantList &items, const ProfileList *profiles=0);
+    static MessageItem parser(const QVariantMap &item);
+    static MessageItem parser(const QVariantMap &item, const ProfileList &profiles);
+    static MessageList parser(const QVariantList &items, const ProfileList &profiles=ProfileList());
 };
 
 #endif // MESSAGEPARSER_H

@@ -55,7 +55,7 @@ private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
     void onError(const Error &error, const QString &text, const bool global, const bool fatal);
-    void onSelfProfile(const Packet *sender, const QVariantMap &response);
+    void onSelfProfile(const Packet *sender, const QVariantMap &result);
 };
 
 #endif // CLIENT_H

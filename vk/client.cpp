@@ -115,9 +115,13 @@ void Client::onError(const Error &error, const QString &text, const bool global,
 {
 }
 
-void Client::onSelfProfile(const Packet *sender, const QVariantMap &response)
+void Client::onSelfProfile(const Packet *sender, const QVariantMap &result)
 {
-    ProfileItem *profile = ProfileParser::parser(response);
+    QVariantList response = result.value("response").toList();
+
+    ProfileItem profile = ProfileParser::parser(response.at(0).toMap());
     _fullName = profile->fullName();
     _photoMediumRec = profile->photoMediumRect();
+
+    delete sender;
 }

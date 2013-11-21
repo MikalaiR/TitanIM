@@ -75,7 +75,7 @@ protected:
 
 private slots:
     void onRunningChanged(const bool running);
-    void getLongPollServerFinished(const Packet *sender, const QVariantMap &response);
+    void getLongPollServerFinished(const Packet *sender, const QVariantMap &result);
     void longPollResponse(QNetworkReply *networkReply);
 
 signals:
@@ -83,7 +83,7 @@ signals:
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int uid);
     void messageFlagsReseted(const int mid, const int mask, const int uid);
-    void messageAdded(const MessageItem *message);
+    void messageAdded(const MessageItem message);
     void userStatusChanged(const int uid, const bool online);
     void groupChatUpdated(const int chatId, const bool self);
     void chatTyping(const int uid, const int flags);

@@ -13,9 +13,9 @@
 
 #include "profileparser.h"
 
-ProfileItem* ProfileParser::parser(const QVariantMap &item)
+ProfileItem ProfileParser::parser(const QVariantMap &item)
 {
-    ProfileItem *profile = new ProfileItem();
+    ProfileItem profile = ProfileItem::create();
 
     int uid = item.contains("id") ? item.value("id").toInt() : item.value("uid").toInt();
     QString firstName = item.value("first_name").toString();
@@ -26,6 +26,7 @@ ProfileItem* ProfileParser::parser(const QVariantMap &item)
     int lastSeen = item.contains("last_seen") ? item.value("last_seen").toMap().value("time").toInt() : 0;
     bool online = item.value("online").toInt() == 1 ? true : false;
     QString activity = item.contains("status") ? item.value("status").toString() : "";
+    QString alphabet = !firstName.isEmpty() ? QString(firstName.at(0)) : "";
 
     profile->setUid(uid);
     profile->setFirstName(firstName);
@@ -35,18 +36,18 @@ ProfileItem* ProfileParser::parser(const QVariantMap &item)
     profile->setLastSeen(lastSeen);
     profile->setOnline(online);
     profile->setActivity(activity);
-    profile->setAlphabet(firstName.at(0));
+    profile->setAlphabet(alphabet);
 
     return profile;
 }
 
-ProfileList* ProfileParser::parser(const QVariantList &items)
+ProfileList ProfileParser::parser(const QVariantList &items)
 {
-    ProfileList *profiles = new ProfileList();
+    ProfileList profiles = ProfileList::create();
 
     foreach (QVariant item, items)
     {
-        ProfileItem *profile = parser(item.toMap());
+        ProfileItem profile = parser(item.toMap());
         profiles->add(profile);
     }
 

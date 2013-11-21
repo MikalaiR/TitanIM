@@ -13,9 +13,9 @@
 
 #include "messageparser.h"
 
-MessageItem* MessageParser::parser(const QVariantMap &item)
+MessageItem MessageParser::parser(const QVariantMap &item)
 {
-    MessageItem *message = new MessageItem();
+    MessageItem message = MessageItem::create();
 
     int mid = -1;
     if (item.contains("id"))
@@ -47,12 +47,12 @@ MessageItem* MessageParser::parser(const QVariantMap &item)
     return message;
 }
 
-MessageItem* MessageParser::parser(const QVariantMap &item, const ProfileList *profiles)
+MessageItem MessageParser::parser(const QVariantMap &item, const ProfileList &profiles)
 {
-    MessageItem *message = parser(item);
+    MessageItem message = parser(item);
 
     if (profiles && profiles->count()){
-        ProfileItem *profile = profiles->item(message->uid());
+        ProfileItem profile = profiles->item(message->uid());
 
         QString firstName = profile->firstName();
         QString lastName = profile->lastName();
@@ -79,13 +79,13 @@ MessageItem* MessageParser::parser(const QVariantMap &item, const ProfileList *p
     return message;
 }
 
-MessageList* MessageParser::parser(const QVariantList &items, const ProfileList *profiles)
+MessageList MessageParser::parser(const QVariantList &items, const ProfileList &profiles)
 {
-    MessageList *messages = new MessageList();
+    MessageList messages = MessageList::create();
 
     foreach (QVariant item, items)
     {
-        MessageItem *message = parser(item.toMap(), profiles);
+        MessageItem message = parser(item.toMap(), profiles);
         messages->add(message);
     }
 

@@ -13,16 +13,16 @@
 
 #include "profileitem.h"
 
-ProfileItem::ProfileItem()
+ProfileItemPrivate::ProfileItemPrivate()
 {
 }
 
-int ProfileItem::uid() const
+int ProfileItemPrivate::uid() const
 {
     return _uid;
 }
 
-void ProfileItem::setUid(const int uid)
+void ProfileItemPrivate::setUid(const int uid)
 {
     if (_uid != uid)
     {
@@ -30,12 +30,12 @@ void ProfileItem::setUid(const int uid)
     }
 }
 
-QString ProfileItem::firstName() const
+QString ProfileItemPrivate::firstName() const
 {
     return _firstName;
 }
 
-void ProfileItem::setFirstName(const QString &firstName)
+void ProfileItemPrivate::setFirstName(const QString &firstName)
 {
     if (_firstName != firstName)
     {
@@ -43,12 +43,12 @@ void ProfileItem::setFirstName(const QString &firstName)
     }
 }
 
-QString ProfileItem::lastName() const
+QString ProfileItemPrivate::lastName() const
 {
     return _lastName;
 }
 
-void ProfileItem::setLastName(const QString &lastName)
+void ProfileItemPrivate::setLastName(const QString &lastName)
 {
     if (_lastName != lastName)
     {
@@ -56,17 +56,17 @@ void ProfileItem::setLastName(const QString &lastName)
     }
 }
 
-QString ProfileItem::fullName() const
+QString ProfileItemPrivate::fullName() const
 {
     return _firstName + " " + _lastName;
 }
 
-Sex ProfileItem::sex() const
+Sex ProfileItemPrivate::sex() const
 {
     return _sex;
 }
 
-void ProfileItem::setSex(const Sex sex)
+void ProfileItemPrivate::setSex(const Sex sex)
 {
     if (_sex != sex)
     {
@@ -74,12 +74,12 @@ void ProfileItem::setSex(const Sex sex)
     }
 }
 
-QString ProfileItem::photoMediumRect() const
+QString ProfileItemPrivate::photoMediumRect() const
 {
     return _photoMediumRect;
 }
 
-void ProfileItem::setPhotoMediumRect(const QString &photoMediumRect)
+void ProfileItemPrivate::setPhotoMediumRect(const QString &photoMediumRect)
 {
     if (_photoMediumRect != photoMediumRect)
     {
@@ -87,12 +87,12 @@ void ProfileItem::setPhotoMediumRect(const QString &photoMediumRect)
     }
 }
 
-bool ProfileItem::online() const
+bool ProfileItemPrivate::online() const
 {
     return _online;
 }
 
-void ProfileItem::setOnline(const bool online)
+void ProfileItemPrivate::setOnline(const bool online)
 {
     if (_online != online)
     {
@@ -100,12 +100,12 @@ void ProfileItem::setOnline(const bool online)
     }
 }
 
-int ProfileItem::lastSeen() const
+int ProfileItemPrivate::lastSeen() const
 {
     return _lastSeen;
 }
 
-void ProfileItem::setLastSeen(const int lastSeen)
+void ProfileItemPrivate::setLastSeen(const int lastSeen)
 {
     if (_lastSeen != lastSeen)
     {
@@ -113,12 +113,12 @@ void ProfileItem::setLastSeen(const int lastSeen)
     }
 }
 
-QString ProfileItem::activity() const
+QString ProfileItemPrivate::activity() const
 {
     return _activity;
 }
 
-void ProfileItem::setActivity(const QString &activity)
+void ProfileItemPrivate::setActivity(const QString &activity)
 {
     if (_activity != activity)
     {
@@ -126,12 +126,12 @@ void ProfileItem::setActivity(const QString &activity)
     }
 }
 
-QString ProfileItem::alphabet() const
+QString ProfileItemPrivate::alphabet() const
 {
     return _alphabet;
 }
 
-void ProfileItem::setAlphabet(const QString &alphabet)
+void ProfileItemPrivate::setAlphabet(const QString &alphabet)
 {
     _alphabet = alphabet;
 }

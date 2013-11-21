@@ -22,8 +22,8 @@
 class ProfileParser : public QObject
 {
 public:
-    static ProfileItem* parser(const QVariantMap &item);
-    static ProfileList* parser(const QVariantList &items);
+    static ProfileItem parser(const QVariantMap &item);
+    static ProfileList parser(const QVariantList &items);
 };
 
 #endif // PROFILEPARSER_H

@@ -15,14 +15,15 @@
 #define PROFILEITEM_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include "global.h"
 
-class ProfileItem : public QObject
+class ProfileItemPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    ProfileItem();
+    ProfileItemPrivate();
     int uid() const;
     void setUid(const int uid);
     QString firstName() const;
@@ -54,5 +55,7 @@ private:
     QString _activity;
     QString _alphabet;
 };
+
+typedef QSharedPointer<ProfileItemPrivate> ProfileItem;
 
 #endif // PROFILEITEM_H
