@@ -17,6 +17,7 @@ DialogsModel::DialogsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _dialogs = MessageList::create();
+    connect(_dialogs.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
     connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const MessageList)), SLOT(onDialogsLoaded(const DialogsPacket*,const MessageList)));
@@ -68,6 +69,11 @@ bool DialogsModel::remove(int row, int count)
     endRemoveRows();
 
     return true;
+}
+
+MessageItem DialogsModel::at(const int row)
+{
+    return _dialogs->at(row);
 }
 
 QHash<int, QByteArray> DialogsModel::roleNames() const
@@ -170,4 +176,10 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const MessageLis
     {
         append(dialogs);
     }
+}
+
+void DialogsModel::onItemChanged(const int i)
+{
+    QModelIndex idx = index(i, 0);
+    emit dataChanged(idx, idx);
 }

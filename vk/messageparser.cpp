@@ -54,26 +54,14 @@ MessageItem MessageParser::parser(const QVariantMap &item, const ProfileList &pr
     if (profiles && profiles->count()){
         ProfileItem profile = profiles->item(message->uid());
 
-        QString firstName = profile->firstName();
-        QString lastName = profile->lastName();
-        QString displayName = message->isGroupChat() ? message->title() : profile->fullName();
-        Sex sex = profile->sex();
-        QString photoMediumRect = profile->photoMediumRect();
-        int lastSeen = profile->lastSeen();
-
-        bool online = false;
-        if (message->lastSeen() != 0 && !message->isGroupChat())
+        if (profile)
         {
-            bool online = profile->online();
+            message->setProfile(profile);
         }
-
-        message->setFirstName(firstName);
-        message->setLastName(lastName);
-        message->setDisplayName(displayName);
-        message->setSex(sex);
-        message->setPhotoMediumRect(photoMediumRect);
-        message->setLastSeen(lastSeen);
-        message->setOnline(online);
+        else
+        {
+            message->setProfile(ProfileItem::create());
+        }
     }
 
     return message;

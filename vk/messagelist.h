@@ -37,6 +37,12 @@ public:
 
 private:
     QVector<MessageItem> _messages;
+
+protected slots:
+    void onItemChanged(const int mid, const QString &propertyName);
+
+signals:
+    void itemChanged(const int i);
 };
 
 typedef QSharedPointer<MessageListPrivate> MessageList;

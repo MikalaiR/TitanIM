@@ -24,11 +24,15 @@ ProfileListPrivate::~ProfileListPrivate()
 void ProfileListPrivate::add(ProfileItem profile)
 {
     _profiles.append(profile);
+    connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
 }
 
 void ProfileListPrivate::add(const QVector<ProfileItem> &profiles)
 {
-    _profiles << profiles;
+    for (int i = 0; i < profiles.count(); i++)
+    {
+        add(profiles.at(i));
+    }
 }
 
 int ProfileListPrivate::indexOf(const int uid) const
@@ -60,6 +64,7 @@ ProfileItem ProfileListPrivate::item(const int uid) const
 
 void ProfileListPrivate::remove(const int i)
 {
+    disconnect(_profiles.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
     _profiles.remove(i);
 }
 
@@ -71,4 +76,9 @@ int ProfileListPrivate::count() const
 QVector<ProfileItem> ProfileListPrivate::toVector() const
 {
     return _profiles;
+}
+
+void ProfileListPrivate::onItemChanged(const int uid, const QString &propertyName)
+{
+    emit itemChanged(indexOf(uid));
 }

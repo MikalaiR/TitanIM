@@ -15,6 +15,10 @@
 
 ProfileItemPrivate::ProfileItemPrivate()
 {
+    _uid = -1;
+    _sex = unknown;
+    _online = false;
+    _lastSeen = 0;
 }
 
 int ProfileItemPrivate::uid() const
@@ -27,6 +31,7 @@ void ProfileItemPrivate::setUid(const int uid)
     if (_uid != uid)
     {
         _uid = uid;
+        emit propertyChanged(_uid, "uid");
     }
 }
 
@@ -40,6 +45,7 @@ void ProfileItemPrivate::setFirstName(const QString &firstName)
     if (_firstName != firstName)
     {
         _firstName = firstName;
+        emit propertyChanged(_uid, "firstName");
     }
 }
 
@@ -53,6 +59,7 @@ void ProfileItemPrivate::setLastName(const QString &lastName)
     if (_lastName != lastName)
     {
         _lastName = lastName;
+        emit propertyChanged(_uid, "lastName");
     }
 }
 
@@ -71,6 +78,7 @@ void ProfileItemPrivate::setSex(const Sex sex)
     if (_sex != sex)
     {
         _sex = sex;
+        emit propertyChanged(_uid, "sex");
     }
 }
 
@@ -84,6 +92,7 @@ void ProfileItemPrivate::setPhotoMediumRect(const QString &photoMediumRect)
     if (_photoMediumRect != photoMediumRect)
     {
         _photoMediumRect = photoMediumRect;
+        emit propertyChanged(_uid, "photoMediumRect");
     }
 }
 
@@ -97,6 +106,7 @@ void ProfileItemPrivate::setOnline(const bool online)
     if (_online != online)
     {
         _online = online;
+        emit propertyChanged(_uid, "online");
     }
 }
 
@@ -110,6 +120,7 @@ void ProfileItemPrivate::setLastSeen(const int lastSeen)
     if (_lastSeen != lastSeen)
     {
         _lastSeen = lastSeen;
+        emit propertyChanged(_uid, "lastSeen");
     }
 }
 
@@ -123,6 +134,7 @@ void ProfileItemPrivate::setActivity(const QString &activity)
     if (_activity != activity)
     {
         _activity = activity;
+        emit propertyChanged(_uid, "activity");
     }
 }
 

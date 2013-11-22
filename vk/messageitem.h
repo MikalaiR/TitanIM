@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 #include <QDateTime>
 #include "global.h"
+#include "profileitem.h"
 
 class MessageItemPrivate : public QObject
 {
@@ -47,26 +48,14 @@ public:
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;
-    QString firstName() const;
-    void setFirstName(const QString &firstName);
-    QString lastName() const;
-    void setLastName(const QString &lastName);
     QString displayName() const;
-    void setDisplayName(const QString &displayName);
+    void setProfile(const ProfileItem profile);
+    QString firstName() const;
+    QString lastName() const;
     Sex sex() const;
-    void setSex(const Sex sex);
     QString photoMediumRect() const;
-    void setPhotoMediumRect(const QString &photoMediumRec);
-    QString photoMediumRect2() const;
-    void setPhotoMediumRect2(const QString &photoMediumRec2);
-    QString photoMediumRect3() const;
-    void setPhotoMediumRect3(const QString &photoMediumRec3);
-    QString photoMediumRect4() const;
-    void setPhotoMediumRect4(const QString &photoMediumRec4);
     bool online() const;
-    void setOnline(const bool online);
     int lastSeen() const;
-    void setLastSeen(const int lastSeen);
 
 private:
     int _mid;
@@ -81,17 +70,14 @@ private:
     int _chatId;
     QString _chatActive;
     int _chatUsersCount;
-    QString _firstName;
-    QString _lastName;
-    QString _displayName;
-    Sex _sex;
-    QString _photoMediumRec;
-    QString _photoMediumRec2;
-    QString _photoMediumRec3;
-    QString _photoMediumRec4;
-    bool _online;
-    int _lastSeen;
+    ProfileItem _profile;
 //    AttachmentList _attachments;
+
+protected slots:
+    void onProfilePropertyChanged(const int uid, const QString &propertyName);
+
+signals:
+    void propertyChanged(const int mid, const QString &propertyName);
 };
 
 typedef QSharedPointer<MessageItemPrivate> MessageItem;

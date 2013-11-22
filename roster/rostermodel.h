@@ -38,6 +38,7 @@ public:
     void append(const ProfileList items);
     void replace(const ProfileList items);
     bool remove(int row, int count);
+    ProfileItem at(const int row);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -50,6 +51,7 @@ private:
 
 protected slots:
     void onRosterLoaded(const RosterPacket *sender, const ProfileList &roster);
+    void onItemChanged(const int i);
 };
 
 #endif // ROSTERMODEL_H

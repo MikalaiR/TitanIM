@@ -24,11 +24,15 @@ MessageListPrivate::~MessageListPrivate()
 void MessageListPrivate::add(MessageItem message)
 {
     _messages.append(message);
+    connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
 }
 
 void MessageListPrivate::add(const QVector<MessageItem> &messages)
 {
-    _messages << messages;
+    for (int i = 0; i < messages.count(); i++)
+    {
+        add(messages.at(i));
+    }
 }
 
 int MessageListPrivate::indexOf(const int mid) const
@@ -60,6 +64,7 @@ MessageItem MessageListPrivate::item(const int mid) const
 
 void MessageListPrivate::remove(const int i)
 {
+    disconnect(_messages.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
     _messages.remove(i);
 }
 
@@ -71,4 +76,9 @@ int MessageListPrivate::count() const
 QVector<MessageItem> MessageListPrivate::toVector() const
 {
     return _messages;
+}
+
+void MessageListPrivate::onItemChanged(const int mid, const QString &propertyName)
+{
+    emit itemChanged(indexOf(mid));
 }

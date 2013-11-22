@@ -17,6 +17,7 @@ RosterModel::RosterModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _roster = ProfileList::create();
+    connect(_roster.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
 
     _rosterPacket = new RosterPacket(Client::instance()->connection());
     _rosterPacket->setFields("first_name,last_name,photo_medium_rec");
@@ -70,6 +71,11 @@ bool RosterModel::remove(int row, int count)
     endRemoveRows();
 
     return true;
+}
+
+ProfileItem RosterModel::at(const int row)
+{
+    return _roster->at(row);
 }
 
 QHash<int, QByteArray> RosterModel::roleNames() const
@@ -156,4 +162,10 @@ void RosterModel::onRosterLoaded(const RosterPacket *sender, const ProfileList &
     {
         append(roster);
     }
+}
+
+void RosterModel::onItemChanged(const int i)
+{
+    QModelIndex idx = index(i, 0);
+    emit dataChanged(idx, idx);
 }

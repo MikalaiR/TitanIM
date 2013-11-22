@@ -54,6 +54,9 @@ private:
     int _lastSeen;
     QString _activity;
     QString _alphabet;
+
+signals:
+    void propertyChanged(const int uid, const QString &propertyName);
 };
 
 typedef QSharedPointer<ProfileItemPrivate> ProfileItem;

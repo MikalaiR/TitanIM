@@ -37,6 +37,12 @@ public:
 
 private:
     QVector<ProfileItem> _profiles;
+
+protected slots:
+    void onItemChanged(const int uid, const QString &propertyName);
+
+signals:
+    void itemChanged(const int i);
 };
 
 typedef QSharedPointer<ProfileListPrivate> ProfileList;

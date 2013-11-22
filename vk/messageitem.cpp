@@ -15,7 +15,10 @@
 
 MessageItemPrivate::MessageItemPrivate()
 {
+    _uid = -1;
+    _isError = false;
     _chatId = -1;
+    _chatUsersCount = 0;
 }
 
 int MessageItemPrivate::mid() const
@@ -28,6 +31,7 @@ void MessageItemPrivate::setMid(const int mid)
     if (_mid != mid)
     {
         _mid = mid;
+        emit propertyChanged(_mid, "mid");
     }
 }
 
@@ -41,6 +45,7 @@ void MessageItemPrivate::setUid(const int uid)
     if (_uid != uid)
     {
         _uid = uid;
+        emit propertyChanged(_mid, "uid");
     }
 }
 
@@ -54,6 +59,7 @@ void MessageItemPrivate::setDate(const QDateTime &date)
     if (_date != date)
     {
         _date = date;
+        emit propertyChanged(_mid, "date");
     }
 }
 
@@ -67,6 +73,7 @@ void MessageItemPrivate::setIsUnread(const bool isUnread)
     if (_isUnread != isUnread)
     {
         _isUnread = isUnread;
+        emit propertyChanged(_mid, "isUnread");
     }
 }
 
@@ -80,6 +87,7 @@ void MessageItemPrivate::setIsOut(const bool isOut)
     if (_isOut != isOut)
     {
         _isOut = isOut;
+        emit propertyChanged(_mid, "isOut");
     }
 }
 
@@ -93,6 +101,7 @@ void MessageItemPrivate::setIsError(const bool isError)
     if (_isError != isError)
     {
         _isError = isError;
+        emit propertyChanged(_mid, "isError");
     }
 }
 
@@ -111,6 +120,7 @@ void MessageItemPrivate::setDeliveryReport(const bool deliveryReport)
     if (_deliveryReport != deliveryReport)
     {
         _deliveryReport = deliveryReport;
+        emit propertyChanged(_mid, "deliveryReport");
     }
 }
 
@@ -124,6 +134,7 @@ void MessageItemPrivate::setTitle(const QString &title)
     if (_title != title)
     {
         _title = title;
+        emit propertyChanged(_mid, "title");
     }
 }
 
@@ -137,6 +148,7 @@ void MessageItemPrivate::setBody(const QString &body)
     if (_body != body)
     {
         _body = body;
+        emit propertyChanged(_mid, "body");
     }
 }
 
@@ -150,6 +162,7 @@ void MessageItemPrivate::setChatId(const int chatId)
     if (_chatId != chatId)
     {
         _chatId = chatId;
+        emit propertyChanged(_mid, "chatId");
     }
 }
 
@@ -158,132 +171,57 @@ bool MessageItemPrivate::isGroupChat() const
     return _chatId == -1 ? false : true;
 }
 
-QString MessageItemPrivate::firstName() const
+QString MessageItemPrivate::displayName() const
 {
-    return _firstName;
+    return isGroupChat() ? title() : _profile->fullName();
 }
 
-void MessageItemPrivate::setFirstName(const QString &firstName)
+void MessageItemPrivate::setProfile(const ProfileItem profile)
 {
-    if (_firstName != firstName)
+    if (_profile.data() != profile.data())
     {
-        _firstName = firstName;
+        if (_profile)
+        {
+            disconnect(_profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
+        }
+
+        _profile = profile;
+        connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
+        emit propertyChanged(_mid, "profile");
     }
+}
+
+QString MessageItemPrivate::firstName() const
+{
+    return _profile->firstName();
 }
 
 QString MessageItemPrivate::lastName() const
 {
-    return _lastName;
-}
-
-void MessageItemPrivate::setLastName(const QString &lastName)
-{
-    if (_lastName != lastName)
-    {
-        _lastName = lastName;
-    }
-}
-
-QString MessageItemPrivate::displayName() const
-{
-    return _displayName;
-}
-
-void MessageItemPrivate::setDisplayName(const QString &displayName)
-{
-    if (_displayName != displayName)
-    {
-        _displayName = displayName;
-    }
+    return _profile->lastName();
 }
 
 Sex MessageItemPrivate::sex() const
 {
-    return _sex;
-}
-
-void MessageItemPrivate::setSex(const Sex sex)
-{
-    if (_sex != sex)
-    {
-        _sex = sex;
-    }
+    return _profile->sex();
 }
 
 QString MessageItemPrivate::photoMediumRect() const
 {
-    return _photoMediumRec;
-}
-
-void MessageItemPrivate::setPhotoMediumRect(const QString &photoMediumRec)
-{
-    if (_photoMediumRec != photoMediumRec)
-    {
-        _photoMediumRec = photoMediumRec;
-    }
-}
-
-QString MessageItemPrivate::photoMediumRect2() const
-{
-    return _photoMediumRec2;
-}
-
-void MessageItemPrivate::setPhotoMediumRect2(const QString &photoMediumRec2)
-{
-    if (_photoMediumRec2 != photoMediumRec2)
-    {
-        _photoMediumRec2 = photoMediumRec2;
-    }
-}
-
-QString MessageItemPrivate::photoMediumRect3() const
-{
-    return _photoMediumRec3;
-}
-
-void MessageItemPrivate::setPhotoMediumRect3(const QString &photoMediumRec3)
-{
-    if (_photoMediumRec3 != photoMediumRec3)
-    {
-        _photoMediumRec3 = photoMediumRec3;
-    }
-}
-
-QString MessageItemPrivate::photoMediumRect4() const
-{
-    return _photoMediumRec4;
-}
-
-void MessageItemPrivate::setPhotoMediumRect4(const QString &photoMediumRec4)
-{
-    if (_photoMediumRec4 != photoMediumRec4)
-    {
-        _photoMediumRec4 = photoMediumRec4;
-    }
+    return _profile->photoMediumRect();
 }
 
 bool MessageItemPrivate::online() const
 {
-    return _online;
-}
-
-void MessageItemPrivate::setOnline(const bool online)
-{
-    if (_online != online)
-    {
-        _online = online;
-    }
+    return _profile->online();
 }
 
 int MessageItemPrivate::lastSeen() const
 {
-    return _lastSeen;
+    return _profile->lastSeen();
 }
 
-void MessageItemPrivate::setLastSeen(const int lastSeen)
+void MessageItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
 {
-    if (_lastSeen != lastSeen)
-    {
-        _lastSeen = lastSeen;
-    }
+    emit propertyChanged(_mid, propertyName);
 }

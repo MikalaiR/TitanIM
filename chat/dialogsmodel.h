@@ -42,6 +42,7 @@ public:
     void append(const MessageList items);
     void replace(const MessageList items);
     bool remove(int row, int count);
+    MessageItem at(const int row);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -54,6 +55,7 @@ private:
 
 protected slots:
     void onDialogsLoaded(const DialogsPacket *sender, const MessageList &dialogs);
+    void onItemChanged(const int i);
 };
 
 #endif // DIALOGSMODEL_H
