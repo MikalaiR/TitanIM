@@ -15,5 +15,7 @@
         <file>RosterDelegate.qml</file>
         <file>images/ic_online_up.png</file>
         <file>SectionHeading.qml</file>
+        <file>AvatarItem.qml</file>
+        <file>SeparatorItem.qml</file>
     </qresource>
 </RCC>

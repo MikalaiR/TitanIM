@@ -20,28 +20,12 @@ Item {
         x: 10
         spacing: 7
 
-        Rectangle {
+        AvatarItem {
             id: avatarBorder
-            width: (avatar.width + 2)
-            height: (avatar.height + 2)
+            width: 41
+            height: 41
             anchors.verticalCenter: parent.verticalCenter
-            scale: 0.0
-            color: "black"
-
-            Behavior on scale {
-                NumberAnimation {
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            Image {
-                id: avatar
-                width: 39
-                height: 39
-                anchors.centerIn: parent
-                smooth: true
-                source: model.decoration
-            }
+            source: model.decoration
 
             MouseArea {
                 anchors.fill: parent
@@ -106,33 +90,8 @@ Item {
         }
     }
 
-    Column {
+    SeparatorItem {
         id: separator
-        width: parent.width
-        height: dialogsView.spacing
         anchors.top: dialogsDelegate.bottom
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: "#dbd7d4"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: "#fcfcfc"
-        }
     }
-
-    states: [
-        State {
-            name: "Show"
-            when: avatar.status == Image.Ready
-            PropertyChanges {
-                target: avatarBorder
-                scale: 1
-            }
-        }
-    ]
 }

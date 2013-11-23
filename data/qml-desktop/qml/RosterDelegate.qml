@@ -11,28 +11,12 @@ Item {
         x: 10;
         spacing: 7;
 
-        Rectangle {
-            id: avatarBorder;
-            width: (avatar.width + 2);
-            height: (avatar.height + 2);
-            anchors.verticalCenter: parent.verticalCenter;
-            scale: 0.0;
-            color: "black";
-
-            Behavior on scale {
-                NumberAnimation {
-                    easing.type: Easing.InOutQuad;
-                }
-            }
-
-            Image {
-                id: avatar;
-                width: 28;
-                height: 28;
-                anchors.centerIn: parent;
-                smooth: true;
-                source: model.decoration;
-            }
+        AvatarItem {
+            id: avatarBorder
+            width: 30
+            height: 30
+            anchors.verticalCenter: parent.verticalCenter
+            source: model.decoration
         }
 
         Column {
@@ -83,23 +67,9 @@ Item {
         }
     }
 
-    Column {
+    SeparatorItem {
         id: separator
-        width: parent.width
-        height: rosterView.spacing
         anchors.top: rosterDelegate.bottom
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: "#dbd7d4"
-        }
-
-        Rectangle {
-            width: parent.width
-            height: 1
-            color: "#fcfcfc"
-        }
     }
 
     MouseArea{
@@ -113,15 +83,4 @@ Item {
 //            mainView.pageStack.push(profilePage);
         }
     }
-
-    states:[
-        State{
-            name: "Show";
-            when: avatar.status == Image.Ready;
-            PropertyChanges {
-                target: avatarBorder;
-                scale: 1;
-            }
-        }
-    ]
 }
