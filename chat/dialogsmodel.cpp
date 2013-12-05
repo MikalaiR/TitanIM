@@ -100,14 +100,16 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     }
 
     MessageItem dialog = _dialogs->at(index.row());
+    ProfileItem profile = dialog->profile();
+    GroupChatHandler *groupChatHandler = dialog->groupChatHandler();
 
     switch (role)
     {
     case Qt::DisplayRole:
-        return dialog->displayName().isEmpty() ? QString::number(dialog->uid()) : dialog->displayName();
+        return dialog->displayName();
 
     case Qt::DecorationRole:
-        return dialog->photoMediumRect();
+        return groupChatHandler ? groupChatHandler->avatars() : QStringList(profile->photoMediumRect());
 
     case bodyRole:
         return dialog->body();
@@ -131,7 +133,7 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return dialog->isOut();
 
     case onlineRole:
-        return dialog->online();
+        return profile->online();
     }
 
     return QVariant();

@@ -17,5 +17,7 @@
         <file>SectionHeading.qml</file>
         <file>AvatarItem.qml</file>
         <file>SeparatorItem.qml</file>
+        <file>AvatarImage.qml</file>
+        <file>HighlightListView.qml</file>
     </qresource>
 </RCC>

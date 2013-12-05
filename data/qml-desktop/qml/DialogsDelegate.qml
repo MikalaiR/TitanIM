@@ -3,7 +3,7 @@ import QtQuick 2.0
 Item {
     id: dialogsDelegate
     width: dialogsDelegate.ListView.view.width
-    height: avatarBorder.height + 13
+    height: avatar.height + 13
 
     MouseArea {
         anchors.fill: parent
@@ -21,10 +21,11 @@ Item {
         spacing: 7
 
         AvatarItem {
-            id: avatarBorder
-            width: 41
-            height: 41
+            id: avatar
+            width: 40
+            height: 40
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -1
             source: model.decoration
 
             MouseArea {
@@ -42,8 +43,8 @@ Item {
         }
 
         Column {
-            width: dialogsDelegate.width - dialog.x - avatarBorder.width - dialog.spacing
-            anchors.top: avatarBorder.top
+            width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
+            anchors.top: avatar.top
             anchors.topMargin: 1
             spacing: -2
 

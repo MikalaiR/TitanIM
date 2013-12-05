@@ -3,7 +3,7 @@ import QtQuick 2.0
 Item {
     id: rosterDelegate;
     width: rosterDelegate.ListView.view.width
-    height: avatarBorder.height + 13
+    height: avatar.height + 13
 
     Row {
         id: contact;
@@ -11,18 +11,19 @@ Item {
         x: 10;
         spacing: 7;
 
-        AvatarItem {
-            id: avatarBorder
+        AvatarImage {
+            id: avatar
             width: 30
             height: 30
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -1
             source: model.decoration
         }
 
         Column {
-            width: rosterDelegate.width - contact.x - avatarBorder.width - contact.spacing - 15
-            anchors.verticalCenter: avatarBorder.verticalCenter
-            anchors.verticalCenterOffset: -1
+            width: rosterDelegate.width - contact.x - avatar.width - contact.spacing - 15
+            anchors.verticalCenter: avatar.verticalCenter
+
             spacing: -2
 
             Item {

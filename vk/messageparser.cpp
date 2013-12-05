@@ -32,8 +32,20 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     bool isUnread = (item.contains("read_state") && !item.value("read_state").toInt()) ? true : false;
     bool isOut = (item.contains("out") && item.value("out").toInt()) ? true : false;
     QString body = Utils::decode(item.value("body").toString());
-    QString title = item.value("title").toString();
+    QString title = item.contains("title") ? item.value("title").toString() : "";
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : -1;
+
+    if (item.contains("chat_active"))
+    {
+        GroupChatHandler *groupChatHandler = new GroupChatHandler(chatId);
+        QVector<int> chatActive = Utils::toVectorInt(item.value("chat_active").toList());
+        groupChatHandler->setChatActive(chatActive);
+        groupChatHandler->setTitle(title);
+        groupChatHandler->setUsersCount(item.value("users_count").toInt());
+        groupChatHandler->setCover(item.value("photo_50").toString());
+        groupChatHandler->setAdminId(item.value("admin_id").toInt());
+        message->setGroupChatHandler(groupChatHandler);
+    }
 
     message->setMid(mid);
     message->setUid(uid);
@@ -53,14 +65,15 @@ MessageItem MessageParser::parser(const QVariantMap &item, const ProfileList &pr
 
     if (profiles && profiles->count()){
         ProfileItem profile = profiles->item(message->uid());
+        message->setProfile(profile);
 
-        if (profile)
+        if (message->groupChatHandler())
         {
-            message->setProfile(profile);
-        }
-        else
-        {
-            message->setProfile(ProfileItem::create());
+            QVector<int> groupChatUsers = message->groupChatHandler()->chatActive();
+
+            foreach (int uid, groupChatUsers) {
+                message->groupChatHandler()->addUser(profiles->item(uid));
+            }
         }
     }
 

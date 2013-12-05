@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QUrl>
 #include <QDateTime>
+#include <QVector>
 #include "k8json.h"
 
 class Utils
@@ -30,6 +31,7 @@ public:
     static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
     static QString decode(const QString &str);
     static QString dateToText(const QDateTime &date);
+    static QVector<int> toVectorInt(const QVariantList &list);
 };
 
 #endif // UTILS_H

@@ -59,7 +59,7 @@ ProfileItem ProfileListPrivate::item(const int uid) const
             return item;
     }
 
-    return ProfileItem();
+    return ProfileItem::create();
 }
 
 void ProfileListPrivate::remove(const int i)

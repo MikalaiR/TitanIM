@@ -12,7 +12,7 @@ Item {
         id: rosterView;
         anchors.fill: parent
         model: rosterModel;
-        highlight: Rectangle { color: "lightsteelblue" }
+        highlight: HighlightListView { }
         delegate: RosterDelegate { }
         spacing: 2
         section.property: "alphabet"

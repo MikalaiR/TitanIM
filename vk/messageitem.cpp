@@ -18,7 +18,15 @@ MessageItemPrivate::MessageItemPrivate()
     _uid = -1;
     _isError = false;
     _chatId = -1;
-    _chatUsersCount = 0;
+    _groupChatHandler = 0;
+}
+
+MessageItemPrivate::~MessageItemPrivate()
+{
+    if (_groupChatHandler)
+    {
+        delete _groupChatHandler;
+    }
 }
 
 int MessageItemPrivate::mid() const
@@ -176,6 +184,11 @@ QString MessageItemPrivate::displayName() const
     return isGroupChat() ? title() : _profile->fullName();
 }
 
+ProfileItem MessageItemPrivate::profile() const
+{
+    return _profile;
+}
+
 void MessageItemPrivate::setProfile(const ProfileItem profile)
 {
     if (_profile.data() != profile.data())
@@ -191,34 +204,20 @@ void MessageItemPrivate::setProfile(const ProfileItem profile)
     }
 }
 
-QString MessageItemPrivate::firstName() const
+GroupChatHandler *MessageItemPrivate::groupChatHandler() const
 {
-    return _profile->firstName();
+    return _groupChatHandler;
 }
 
-QString MessageItemPrivate::lastName() const
+void MessageItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
 {
-    return _profile->lastName();
-}
+    if (_groupChatHandler)
+    {
+        delete _groupChatHandler;
+    }
 
-Sex MessageItemPrivate::sex() const
-{
-    return _profile->sex();
-}
-
-QString MessageItemPrivate::photoMediumRect() const
-{
-    return _profile->photoMediumRect();
-}
-
-bool MessageItemPrivate::online() const
-{
-    return _profile->online();
-}
-
-int MessageItemPrivate::lastSeen() const
-{
-    return _profile->lastSeen();
+    _groupChatHandler = groupChatHandler;
+    connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
 }
 
 void MessageItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)

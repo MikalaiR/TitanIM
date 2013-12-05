@@ -19,6 +19,7 @@
 #include <QDateTime>
 #include "global.h"
 #include "profileitem.h"
+#include "groupchathandler.h"
 
 class MessageItemPrivate : public QObject
 {
@@ -26,6 +27,7 @@ class MessageItemPrivate : public QObject
 
 public:
     MessageItemPrivate();
+    ~MessageItemPrivate();
     int mid() const;
     void setMid(const int mid);
     int uid() const;
@@ -49,13 +51,10 @@ public:
     void setChatId(const int chatId);
     bool isGroupChat() const;
     QString displayName() const;
+    ProfileItem profile() const;
     void setProfile(const ProfileItem profile);
-    QString firstName() const;
-    QString lastName() const;
-    Sex sex() const;
-    QString photoMediumRect() const;
-    bool online() const;
-    int lastSeen() const;
+    GroupChatHandler* groupChatHandler() const;
+    void setGroupChatHandler(GroupChatHandler *groupChatHandler);
 
 private:
     int _mid;
@@ -68,9 +67,8 @@ private:
     QString _title;
     QString _body;
     int _chatId;
-    QString _chatActive;
-    int _chatUsersCount;
     ProfileItem _profile;
+    GroupChatHandler *_groupChatHandler;
 //    AttachmentList _attachments;
 
 protected slots:

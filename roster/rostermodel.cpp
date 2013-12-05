@@ -20,7 +20,6 @@ RosterModel::RosterModel(QObject *parent) :
     connect(_roster.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
 
     _rosterPacket = new RosterPacket(Client::instance()->connection());
-    _rosterPacket->setFields("first_name,last_name,photo_medium_rec");
     _rosterPacket->setNeedFavorites(true);
     connect(_rosterPacket, SIGNAL(roster(const RosterPacket*,const ProfileList)), SLOT(onRosterLoaded(const RosterPacket*,const ProfileList)));
 }

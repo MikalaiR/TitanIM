@@ -28,11 +28,14 @@ public:
     void load(const int offset, const int count);
     int offset() const;
     int count() const;
+    QString fields() const;
+    void setFields(const QString &fields);
 
 private:
     Connection *_connection;
     int _offset;
     int _count;
+    QString _fields;
 
 private slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);

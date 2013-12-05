@@ -16,6 +16,7 @@
 DialogsPacket::DialogsPacket(Connection *connection)
 {
     _connection = connection;
+    _fields = "photo_medium_rec,online,last_seen,sex";
 }
 
 void DialogsPacket::load(const int offset, const int count)
@@ -28,7 +29,9 @@ void DialogsPacket::load(const int offset, const int count)
     if (offset == 0)
     {
         script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset) + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
-               + "var p=API.users.get({\"user_ids\":d.items@.user_id+d.items@.chat_active,\"fields\":\"photo_medium_rec,online,last_seen,sex\"});"
+               + "var i=0;var s=\"\";"
+               + "while(i<d.items.length){s=s+\",\"+d.items[i].chat_active;i=i+1;};"
+               + "var p=API.users.get({\"user_ids\":d.items@.user_id+s,\"fields\":\"" + _fields + "\"});"
                + "var m=API.messages.get({\"filters\":1,\"preview_length\":1});"
                + "var f=API.friends.getRequests({\"count\":1000});"
                + "return {\"dialogs\":d,\"profiles\":p,\"countNewMsg\":m.count,\"countNewFriends\":f.count};";
@@ -36,7 +39,9 @@ void DialogsPacket::load(const int offset, const int count)
     else
     {
         script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset) + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
-               + "var p=API.getProfiles({\"uids\":d@.uid+d@.chat_active,\"fields\":\"photo_medium_rec,online,last_seen,sex\"});"
+               + "var i=0;var s=\"\";"
+               + "while(i<d.items.length){s=s+\",\"+d.items[i].chat_active;i=i+1;};"
+               + "var p=API.users.get({\"user_ids\":d.items@.user_id+s,\"fields\":\"" + _fields + "\"});"
                + "return {\"dialogs\":d,\"profiles\":p};";
     }
 
@@ -53,6 +58,16 @@ int DialogsPacket::offset() const
 int DialogsPacket::count() const
 {
     return _count;
+}
+
+QString DialogsPacket::fields() const
+{
+    return _fields;
+}
+
+void DialogsPacket::setFields(const QString &fields)
+{
+    _fields = fields;
 }
 
 void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &result)

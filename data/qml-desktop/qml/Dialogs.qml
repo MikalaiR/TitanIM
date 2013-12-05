@@ -12,7 +12,7 @@ Item {
         id: dialogsView;
         anchors.fill: parent
         model: dialogsModel;
-        highlight: Rectangle { color: "lightsteelblue" }
+        highlight: HighlightListView { }
         delegate: DialogsDelegate { }
         spacing: 2
     }

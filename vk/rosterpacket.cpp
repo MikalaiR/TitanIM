@@ -16,6 +16,7 @@
 RosterPacket::RosterPacket(Connection *connection)
 {
     _connection = connection;
+    _fields = "photo_medium_rec,online";
     _needFavorites = false;
 }
 
