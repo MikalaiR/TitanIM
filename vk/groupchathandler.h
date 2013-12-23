@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include "global.h"
 #include "connection.h"
 #include "profileparser.h"
 
@@ -12,10 +13,10 @@ class GroupChatHandler : public QObject
 
 public:
     GroupChatHandler(const int chatId);
+    int id() const;
     int chatId() const;
-    QVector<int> chatActive();
-    void setChatActive(const QVector<int> &chatActive);
     void addUser(ProfileItem profile);
+    ProfileItem user(const int uid);
     QStringList avatars() const;
     int usersCount() const;
     void setUsersCount(const int usersCount);
@@ -28,8 +29,8 @@ public:
     void getAllFields(Connection *connection);
 
 private:
+    int _id;
     int _chatId;
-    QVector<int> _chatActive;
     ProfileList _users;
     QStringList _avatars;
     int _usersCount;

@@ -41,8 +41,6 @@ Client::Client()
 
     _authSignup = 0;
     _uid = 0;
-    _fullName = "";
-    _photoMediumRec = "";
 }
 
 Client::~Client()
@@ -76,17 +74,12 @@ int Client::uid() const
     return _uid;
 }
 
-QString Client::fullName() const
+ProfileItem Client::profile() const
 {
-    return _fullName;
+    return _profile;
 }
 
-QString Client::photoMediumRec() const
-{
-    return _photoMediumRec;
-}
-
-void Client::getProfileSelf()//todo перенести
+void Client::getProfile()
 {
     Packet *selfProfile = new Packet("users.get");
     selfProfile->addParam("uids", _uid);
@@ -99,14 +92,14 @@ void Client::getProfileSelf()//todo перенести
 void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
     _uid = uid;
+    getProfile();
     _longPoll->setRunning(true);
 }
 
 void Client::onDisconnected()
 {
     _uid = 0;
-    _fullName = "";
-    _photoMediumRec = "";
+    _profile.clear();
 
     _longPoll->setRunning(false);
 }
@@ -118,10 +111,7 @@ void Client::onError(const Error &error, const QString &text, const bool global,
 void Client::onSelfProfile(const Packet *sender, const QVariantMap &result)
 {
     QVariantList response = result.value("response").toList();
-
-    ProfileItem profile = ProfileParser::parser(response.at(0).toMap());
-    _fullName = profile->fullName();
-    _photoMediumRec = profile->photoMediumRect();
+    _profile = ProfileParser::parser(response.at(0).toMap());
 
     delete sender;
 }

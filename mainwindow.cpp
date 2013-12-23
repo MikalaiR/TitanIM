@@ -26,7 +26,9 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("main", this);
     rootContext()->setContextProperty("dialogsModel", dialogsModel);
     rootContext()->setContextProperty("rosterModel", rosterModel);
+    rootContext()->setContextProperty("chats", Chats::instance());
 
+    setTitle("TitanIM");
     setSource(QUrl("qrc:/qml/main.qml"));
     showExpanded();
 
@@ -37,7 +39,23 @@ MainWindow::~MainWindow()
 {
     delete rosterModel;
     delete dialogsModel;
+    Chats::instance()->destroy();
     Client::instance()->destroy();
+}
+
+void MainWindow::dialogCurrentIndexChanged(const int i)
+{
+    DialogItem dialog = dialogsModel->at(i);
+    Chats::instance()->openChat(dialog);
+}
+
+void MainWindow::rosterCurrentIndexChanged(const int i)
+{
+    DialogItem dialog = DialogItem::create();
+    ProfileItem profile = rosterModel->at(i);
+    dialog->setProfile(profile);
+//    dialogsModel->append(dialog); //todo
+    Chats::instance()->openChat(dialog);
 }
 
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)

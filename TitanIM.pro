@@ -33,7 +33,15 @@ SOURCES += main.cpp \
     chat/dialogsmodel.cpp \
     roster/rostermodel.cpp \
     vk/rosterpacket.cpp \
-    vk/groupchathandler.cpp
+    vk/groupchathandler.cpp \
+    chat/chatmodel.cpp \
+    chat/chats.cpp \
+    vk/historypacket.cpp \
+    chat/chat.cpp \
+    vk/dialogitem.cpp \
+    vk/dialoglist.cpp \
+    vk/dialogparser.cpp \
+    chat/chatshandler.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -56,7 +64,15 @@ HEADERS += \
     chat/dialogsmodel.h \
     roster/rostermodel.h \
     vk/rosterpacket.h \
-    vk/groupchathandler.h
+    vk/groupchathandler.h \
+    chat/chatmodel.h \
+    chat/chats.h \
+    vk/historypacket.h \
+    chat/chat.h \
+    vk/dialogitem.h \
+    vk/dialoglist.h \
+    vk/dialogparser.h \
+    chat/chatshandler.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc

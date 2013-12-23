@@ -17,9 +17,6 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QDateTime>
-#include "global.h"
-#include "profileitem.h"
-#include "groupchathandler.h"
 
 class MessageItemPrivate : public QObject
 {
@@ -50,11 +47,6 @@ public:
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;
-    QString displayName() const;
-    ProfileItem profile() const;
-    void setProfile(const ProfileItem profile);
-    GroupChatHandler* groupChatHandler() const;
-    void setGroupChatHandler(GroupChatHandler *groupChatHandler);
 
 private:
     int _mid;
@@ -67,12 +59,7 @@ private:
     QString _title;
     QString _body;
     int _chatId;
-    ProfileItem _profile;
-    GroupChatHandler *_groupChatHandler;
 //    AttachmentList _attachments;
-
-protected slots:
-    void onProfilePropertyChanged(const int uid, const QString &propertyName);
 
 signals:
     void propertyChanged(const int mid, const QString &propertyName);

@@ -18,15 +18,10 @@ MessageItemPrivate::MessageItemPrivate()
     _uid = -1;
     _isError = false;
     _chatId = -1;
-    _groupChatHandler = 0;
 }
 
 MessageItemPrivate::~MessageItemPrivate()
 {
-    if (_groupChatHandler)
-    {
-        delete _groupChatHandler;
-    }
 }
 
 int MessageItemPrivate::mid() const
@@ -177,50 +172,4 @@ void MessageItemPrivate::setChatId(const int chatId)
 bool MessageItemPrivate::isGroupChat() const
 {
     return _chatId == -1 ? false : true;
-}
-
-QString MessageItemPrivate::displayName() const
-{
-    return isGroupChat() ? title() : _profile->fullName();
-}
-
-ProfileItem MessageItemPrivate::profile() const
-{
-    return _profile;
-}
-
-void MessageItemPrivate::setProfile(const ProfileItem profile)
-{
-    if (_profile.data() != profile.data())
-    {
-        if (_profile)
-        {
-            disconnect(_profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
-        }
-
-        _profile = profile;
-        connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
-        emit propertyChanged(_mid, "profile");
-    }
-}
-
-GroupChatHandler *MessageItemPrivate::groupChatHandler() const
-{
-    return _groupChatHandler;
-}
-
-void MessageItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
-{
-    if (_groupChatHandler)
-    {
-        delete _groupChatHandler;
-    }
-
-    _groupChatHandler = groupChatHandler;
-    connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
-}
-
-void MessageItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
-{
-    emit propertyChanged(_mid, propertyName);
 }

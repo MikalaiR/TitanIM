@@ -16,11 +16,11 @@
 DialogsModel::DialogsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    _dialogs = MessageList::create();
+    _dialogs = DialogList::create();
     connect(_dialogs.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
-    connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const MessageList)), SLOT(onDialogsLoaded(const DialogsPacket*,const MessageList)));
+    connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const DialogList)), SLOT(onDialogsLoaded(const DialogsPacket*,const DialogList)));
 }
 
 DialogsModel::~DialogsModel()
@@ -38,7 +38,7 @@ void DialogsModel::loadNext(const int count)
     _dialogsPacket->load(_dialogs->count(), count);
 }
 
-void DialogsModel::append(const MessageList items)
+void DialogsModel::append(const DialogList items)
 {
     if (!items->count())
         return;
@@ -48,7 +48,7 @@ void DialogsModel::append(const MessageList items)
     endInsertRows();
 }
 
-void DialogsModel::replace(const MessageList items)
+void DialogsModel::replace(const DialogList items)
 {
     remove(0, rowCount());
     append(items);
@@ -71,9 +71,14 @@ bool DialogsModel::remove(int row, int count)
     return true;
 }
 
-MessageItem DialogsModel::at(const int row)
+DialogItem DialogsModel::at(const int row)
 {
     return _dialogs->at(row);
+}
+
+DialogItem DialogsModel::at(const QModelIndex &index)
+{
+    return _dialogs->at(index.row());
 }
 
 QHash<int, QByteArray> DialogsModel::roleNames() const
@@ -99,7 +104,8 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    MessageItem dialog = _dialogs->at(index.row());
+    DialogItem dialog = _dialogs->at(index.row());
+    MessageItem message = dialog->message();
     ProfileItem profile = dialog->profile();
     GroupChatHandler *groupChatHandler = dialog->groupChatHandler();
 
@@ -109,28 +115,28 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return dialog->displayName();
 
     case Qt::DecorationRole:
-        return groupChatHandler ? groupChatHandler->avatars() : QStringList(profile->photoMediumRect());
+        return dialog->decoration();
 
     case bodyRole:
-        return dialog->body();
+        return message->body();
 
     case dateRole:
-        return dialog->date();
+        return message->date();
 
     case dateStrRole:
-        return Utils::dateToText(dialog->date());
+        return Utils::dateToText(message->date());
 
     case uidRole:
-        return dialog->uid();
+        return message->uid();
 
     case midRole:
-        return dialog->mid();
+        return message->mid();
 
     case isUnreadRole:
-        return dialog->isUnread();
+        return message->isUnread();
 
     case isOutRole:
-        return dialog->isOut();
+        return message->isOut();
 
     case onlineRole:
         return profile->online();
@@ -168,7 +174,7 @@ Qt::ItemFlags DialogsModel::flags(const QModelIndex &index) const
     }
 }
 
-void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const MessageList &dialogs)
+void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs)
 {
     if (!sender->offset())
     {

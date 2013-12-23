@@ -21,7 +21,7 @@
 #include "connection.h"
 #include "global.h"
 #include "profileparser.h"
-#include "messageparser.h"
+#include "dialogparser.h"
 
 class LongPoll : public QObject
 {
@@ -83,7 +83,7 @@ signals:
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int uid);
     void messageFlagsReseted(const int mid, const int mask, const int uid);
-    void messageAdded(const MessageItem message);
+    void messageAdded(const DialogItem dialog);
     void userStatusChanged(const int uid, const bool online);
     void groupChatUpdated(const int chatId, const bool self);
     void chatTyping(const int uid, const int flags);

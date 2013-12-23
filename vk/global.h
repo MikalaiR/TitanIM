@@ -85,4 +85,6 @@ enum Error
     tryLater = 1112
 };
 
+const int GROUP_CHAT_OFFSET = 2000000000;
+
 #endif // GLOBAL_H

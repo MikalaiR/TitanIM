@@ -9,8 +9,6 @@ Item {
         anchors.fill: parent
         onClicked: {
             dialogsView.currentIndex = index
-//            titanim.slotOpenChatWindow(model.uid);
-//            mainView.pageStack.push(chatPage);
         }
     }
 

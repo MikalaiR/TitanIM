@@ -75,11 +75,11 @@ void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &result
     QVariantMap response = result.value("response").toMap();
 
     ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
-    MessageList messageList = MessageParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
+    DialogList dialogList = DialogParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
 
     int countNewMessages = response.value("countNewMsg").toInt();
     int countRequestsFriends = response.value("countNewFriends").toInt();
 
-    emit dialogs(this, messageList);
+    emit dialogs(this, dialogList);
     delete sender;
 }

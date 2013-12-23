@@ -20,6 +20,7 @@
 #include "longpoll.h"
 #include "signup.h"
 #include "global.h"
+#include "profileitem.h"
 
 class Client : public QObject
 {
@@ -32,9 +33,8 @@ public:
     LongPoll* longPoll() const;
     Signup* authSignup() const;
     int uid() const;
-    QString fullName() const;
-    QString photoMediumRec() const;
-    void getProfileSelf();
+    ProfileItem profile() const;
+    void getProfile();
 
 private:
     Client();
@@ -48,8 +48,7 @@ private:
     LongPoll *_longPoll;
     Signup *_authSignup;
     int _uid;
-    QString _fullName;
-    QString _photoMediumRec;
+    ProfileItem _profile;
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);

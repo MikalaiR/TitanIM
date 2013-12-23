@@ -17,7 +17,7 @@
 #include <QObject>
 #include "connection.h"
 #include "profileparser.h"
-#include "messageparser.h"
+#include "dialogparser.h"
 
 class DialogsPacket : public QObject
 {
@@ -41,7 +41,7 @@ private slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
-    void dialogs(const DialogsPacket *sender, const MessageList &dialogs);
+    void dialogs(const DialogsPacket *sender, const DialogList &dialogs);
 };
 
 #endif // DIALOGSPACKET_H

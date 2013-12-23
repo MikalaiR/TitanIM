@@ -13,7 +13,12 @@ Item {
         anchors.fill: parent
         model: dialogsModel;
         highlight: HighlightListView { }
+        highlightMoveVelocity: -1
         delegate: DialogsDelegate { }
         spacing: 2
+
+        onCurrentIndexChanged: {
+            main.dialogCurrentIndexChanged(currentIndex);
+        }
     }
 }

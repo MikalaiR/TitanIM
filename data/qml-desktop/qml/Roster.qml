@@ -13,10 +13,16 @@ Item {
         anchors.fill: parent
         model: rosterModel;
         highlight: HighlightListView { }
+        highlightMoveVelocity: -1
         delegate: RosterDelegate { }
         spacing: 2
         section.property: "alphabet"
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
         section.delegate: SectionHeading { }
+        currentIndex: -1
+
+        onCurrentIndexChanged: {
+            main.rosterCurrentIndexChanged(currentIndex);
+        }
     }
 }

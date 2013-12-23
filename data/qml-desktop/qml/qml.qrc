@@ -19,5 +19,13 @@
         <file>SeparatorItem.qml</file>
         <file>AvatarImage.qml</file>
         <file>HighlightListView.qml</file>
+        <file>Chat.qml</file>
+        <file>ChatDelegate.qml</file>
+        <file>images/grey_bubble_selected.png</file>
+        <file>images/grey_bubble.png</file>
+        <file>images/grey_bubble.sci</file>
+        <file>images/blue_bubble_selected.png</file>
+        <file>images/blue_bubble.png</file>
+        <file>images/blue_bubble.sci</file>
     </qresource>
 </RCC>

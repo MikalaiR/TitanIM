@@ -3,10 +3,16 @@
 GroupChatHandler::GroupChatHandler(const int chatId)
 {
     _chatId = chatId;
+    _id = _chatId + GROUP_CHAT_OFFSET;
     _users = ProfileList::create();
     _cover.clear();
     _usersCount = 0;
     _adminId = 0;
+}
+
+int GroupChatHandler::id() const
+{
+    return _id;
 }
 
 int GroupChatHandler::chatId() const
@@ -14,25 +20,16 @@ int GroupChatHandler::chatId() const
     return _chatId;
 }
 
-QVector<int> GroupChatHandler::chatActive()
-{
-    return _chatActive;
-}
-
-void GroupChatHandler::setChatActive(const QVector<int> &chatActive)
-{
-    if (_chatActive != chatActive)
-    {
-        _chatActive = chatActive;
-        emit propertyChanged(_chatId, "chatActive");
-    }
-}
-
 void GroupChatHandler::addUser(ProfileItem profile)
 {
     _users->add(profile);
     _avatars.append(profile->photoMediumRect());
     emit propertyChanged(_chatId, "users");
+}
+
+ProfileItem GroupChatHandler::user(const int uid)
+{
+    return _users->item(uid);
 }
 
 QStringList GroupChatHandler::avatars() const

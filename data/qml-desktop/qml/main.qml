@@ -42,9 +42,8 @@ Rectangle {
             }
         }
 
-        Rectangle {
+        Chat {
             Layout.fillWidth: true
-            color: "darkgray"
         }
     }
 }

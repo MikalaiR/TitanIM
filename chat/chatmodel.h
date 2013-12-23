@@ -11,19 +11,21 @@
  ***************************************************************************
 */
 
-#ifndef DIALOGSMODEL_H
-#define DIALOGSMODEL_H
+#ifndef CHATMODEL_H
+#define CHATMODEL_H
 
 #include <QAbstractListModel>
-#include "vk/client.h"
-#include "vk/dialogspacket.h"
+#include <QStringList>
+#include "vk/messagelist.h"
+#include "vk/dialogitem.h"
+#include "vk/utils.h"
 
-class DialogsModel : public QAbstractListModel
+class ChatModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    enum dialogsRole
+    enum chatRole
     {
         bodyRole = Qt::UserRole,
         dateRole,
@@ -31,19 +33,15 @@ public:
         uidRole,
         midRole,
         isUnreadRole,
-        isOutRole,
-        onlineRole
+        isOutRole
     };
 
-    explicit DialogsModel(QObject *parent = 0);
-    ~DialogsModel();
-    void load(const int count=20);
-    void loadNext(const int count=20);
-    void append(const DialogList items);
-    void replace(const DialogList items);
+    explicit ChatModel(const DialogItem dialog, const ProfileItem ownProfile, QObject *parent = 0);
+    ~ChatModel();
+    void append(const MessageList items);
+    void replace(const MessageList items);
     bool remove(int row, int count);
-    DialogItem at(const int row);
-    DialogItem at(const QModelIndex &index);
+    MessageItem at(const int row);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -51,12 +49,12 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
-    DialogList _dialogs;
-    DialogsPacket *_dialogsPacket;
+    MessageList _chat;
+    DialogItem _dialog;
+    ProfileItem _ownProfile;
 
 protected slots:
-    void onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs);
     void onItemChanged(const int i);
 };
 
-#endif // DIALOGSMODEL_H
+#endif // CHATMODEL_H

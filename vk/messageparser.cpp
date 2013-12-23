@@ -35,18 +35,6 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     QString title = item.contains("title") ? item.value("title").toString() : "";
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : -1;
 
-    if (item.contains("chat_active"))
-    {
-        GroupChatHandler *groupChatHandler = new GroupChatHandler(chatId);
-        QVector<int> chatActive = Utils::toVectorInt(item.value("chat_active").toList());
-        groupChatHandler->setChatActive(chatActive);
-        groupChatHandler->setTitle(title);
-        groupChatHandler->setUsersCount(item.value("users_count").toInt());
-        groupChatHandler->setCover(item.value("photo_50").toString());
-        groupChatHandler->setAdminId(item.value("admin_id").toInt());
-        message->setGroupChatHandler(groupChatHandler);
-    }
-
     message->setMid(mid);
     message->setUid(uid);
     message->setDate(date);
@@ -59,34 +47,13 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     return message;
 }
 
-MessageItem MessageParser::parser(const QVariantMap &item, const ProfileList &profiles)
-{
-    MessageItem message = parser(item);
-
-    if (profiles && profiles->count()){
-        ProfileItem profile = profiles->item(message->uid());
-        message->setProfile(profile);
-
-        if (message->groupChatHandler())
-        {
-            QVector<int> groupChatUsers = message->groupChatHandler()->chatActive();
-
-            foreach (int uid, groupChatUsers) {
-                message->groupChatHandler()->addUser(profiles->item(uid));
-            }
-        }
-    }
-
-    return message;
-}
-
-MessageList MessageParser::parser(const QVariantList &items, const ProfileList &profiles)
+MessageList MessageParser::parser(const QVariantList &items)
 {
     MessageList messages = MessageList::create();
 
     foreach (QVariant item, items)
     {
-        MessageItem message = parser(item.toMap(), profiles);
+        MessageItem message = parser(item.toMap());
         messages->add(message);
     }
 

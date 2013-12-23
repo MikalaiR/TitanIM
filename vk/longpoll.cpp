@@ -248,9 +248,9 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     QVariantMap response = update.value(1).toMap();
 
     ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
-    MessageItem message = MessageParser::parser(response.value("message").toMap(), profiles);
+    DialogItem dialog = DialogParser::parser(response.value("message").toMap(), profiles);
 
-    emit messageAdded(message);
+    emit messageAdded(dialog);
 }
 
 void LongPoll::onUserOnline(const QVariantList &update)
