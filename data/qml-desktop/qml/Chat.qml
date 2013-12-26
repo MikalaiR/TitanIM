@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.0
 
 Item {
 
@@ -62,6 +63,20 @@ Item {
             height: 1
             anchors.top: parent.top
             color: "#9E9E9E"
+        }
+
+        TextField {
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            placeholderText: "Message"
+
+            onAccepted: {
+                chats.currentChat.sendMessage(text)
+                text = ""
+            }
         }
     }
 }

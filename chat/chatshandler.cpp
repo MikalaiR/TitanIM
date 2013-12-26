@@ -16,7 +16,7 @@ void ChatsHandler::create(const DialogItem dialog)
 {
     int id = dialog->id();
 
-    _chats[id] = new Chat(dialog, Client::instance()->profile());
+    _chats[id] = new Chat(dialog);
     _historyPacket->load(id);
 }
 

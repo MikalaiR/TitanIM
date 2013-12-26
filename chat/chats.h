@@ -11,16 +11,17 @@ class Chats : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(Chat* currentChat READ currentChat NOTIFY currentChatChanged)
+    Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY currentChatChanged)
     Q_PROPERTY(QSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
-    Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY changedCurrentChat)
 
 public:
     static Chats *instance();
     static void destroy();
     int currentChatId() const;
     Chat* currentChat() const;
-    QSortFilterProxyModel* currentChatModel() const;
     DialogItemPrivate* currentChatDialog() const;
+    QSortFilterProxyModel* currentChatModel() const;
 
 private:
     explicit Chats();
@@ -40,7 +41,7 @@ public slots:
     void openChat(const DialogItem dialog);
 
 signals:
-    void changedCurrentChat(const int id);
+    void currentChatChanged(const int id);
 };
 
 #endif // CHATS_H

@@ -2,7 +2,10 @@
 #define CHAT_H
 
 #include <QObject>
+#include <QDateTime>
+#include "vk/client.h"
 #include "vk/dialogitem.h"
+#include "vk/sendmessagehandler.h"
 #include "chatmodel.h"
 
 class Chat : public QObject
@@ -10,14 +13,22 @@ class Chat : public QObject
     Q_OBJECT
 
 public:
-    explicit Chat(const DialogItem dialog, const ProfileItem ownProfile);
+    Chat();
+    Chat(const DialogItem dialog);
     ~Chat();
+    int id() const;
+    bool isGroupChat() const;
     DialogItem dialog() const;
     ChatModel* model() const;
 
 private:
     DialogItem _dialog;
     ChatModel *_model;
+    SendMessageHandler *_sendMessageHandler;
+    static int _internalMessageId;
+
+public slots:
+    void sendMessage(const QString &text);
 };
 
 #endif // CHAT_H

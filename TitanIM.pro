@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     vk/dialogitem.cpp \
     vk/dialoglist.cpp \
     vk/dialogparser.cpp \
-    chat/chatshandler.cpp
+    chat/chatshandler.cpp \
+    vk/sendmessagehandler.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -72,7 +73,8 @@ HEADERS += \
     vk/dialogitem.h \
     vk/dialoglist.h \
     vk/dialogparser.h \
-    chat/chatshandler.h
+    chat/chatshandler.h \
+    vk/sendmessagehandler.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc

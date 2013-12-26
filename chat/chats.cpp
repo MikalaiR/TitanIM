@@ -28,8 +28,9 @@ Chats::Chats()
 //    _proxy->setSortRole(Qt::UserRole);
 //    _proxy->sort(0, Qt::DescendingOrder);
 
-    qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
+    qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
+    qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
 }
 
 Chats::~Chats()
@@ -47,14 +48,14 @@ Chat *Chats::currentChat() const
     return _chatsHandler->chat(_currentChatId);
 }
 
-QSortFilterProxyModel* Chats::currentChatModel() const
-{
-    return _proxy;
-}
-
 DialogItemPrivate *Chats::currentChatDialog() const
 {
     return _dialog;
+}
+
+QSortFilterProxyModel* Chats::currentChatModel() const
+{
+    return _proxy;
 }
 
 void Chats::setCurrentChat(const int id)
@@ -65,7 +66,7 @@ void Chats::setCurrentChat(const int id)
         _proxy->setSourceModel(_chatsHandler->chat(id)->model());
         _dialog = _chatsHandler->chat(id)->dialog().data();
 
-        emit changedCurrentChat(id);
+        emit currentChatChanged(id);
     }
 }
 
