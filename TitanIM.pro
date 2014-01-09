@@ -42,7 +42,8 @@ SOURCES += main.cpp \
     vk/dialoglist.cpp \
     vk/dialogparser.cpp \
     chat/chatshandler.cpp \
-    vk/sendmessagehandler.cpp
+    vk/sendmessagehandler.cpp \
+    chat/dialogshandler.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -74,10 +75,12 @@ HEADERS += \
     vk/dialoglist.h \
     vk/dialogparser.h \
     chat/chatshandler.h \
-    vk/sendmessagehandler.h
+    vk/sendmessagehandler.h \
+    chat/dialogshandler.h
 
 RESOURCES += \
-    data/qml-desktop/qml/qml.qrc
+    data/qml-desktop/qml/qml.qrc \
+    images/images.qrc
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =

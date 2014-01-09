@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "dialoglist.h"
 
 DialogListPrivate::DialogListPrivate()
@@ -21,6 +34,28 @@ void DialogListPrivate::add(const QVector<DialogItem> &dialogs)
     {
         add(dialogs.at(i));
     }
+}
+
+bool DialogListPrivate::replace(const DialogItem item)
+{
+    int i = indexOf(item->id());
+
+    if (i > -1)
+    {
+        replace(i, item);
+        return true;
+    }
+
+    return false;
+}
+
+void DialogListPrivate::replace(const int i, const DialogItem item)
+{
+    disconnect(_dialogs.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    _dialogs.replace(i, item);
+    connect(item.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+
+    emit itemChanged(i);
 }
 
 int DialogListPrivate::indexOf(const int id) const

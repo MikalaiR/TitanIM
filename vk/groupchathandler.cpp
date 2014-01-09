@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "groupchathandler.h"
 
 GroupChatHandler::GroupChatHandler(const int chatId)
@@ -97,7 +110,7 @@ void GroupChatHandler::getAllFields(Connection *connection)
 {
     Packet *packet = new Packet("messages.getChat");
     packet->addParam("chat_id", _chatId);
-    packet->addParam("fields", "photo_medium_rec");
+    packet->addParam("fields", "photo_100");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);
@@ -109,7 +122,7 @@ void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &res
 
     _title = response.value("title").toString();
     _adminId = response.value("adminId").toInt();
-    _cover = response.value("photo_50").toString();
+    _cover = response.value("photo_100").toString();
     ProfileList profiles = ProfileParser::parser(response.value("users").toList());
 
     _users->add(profiles->toVector());

@@ -5,6 +5,23 @@ Item {
     width: rosterDelegate.ListView.view.width
     height: avatar.height + 13
 
+    MouseArea{
+        anchors.fill: parent;
+        onClicked: {
+            main.rosterCurrentIndexChanged(index);
+//            profilePage.clear();
+//            titanim.slotShowProfile(model.uid);
+//            titanim.slotWallGet(model.uid);
+//            profilePage.uid = model.uid;
+//            mainView.pageStack.push(profilePage);
+        }
+    }
+
+    HighlightListView {
+        anchors.fill: parent
+        visible: currentChatId === model.uid
+    }
+
     Row {
         id: contact;
         height: parent.height;
@@ -71,17 +88,5 @@ Item {
     SeparatorItem {
         id: separator
         anchors.top: rosterDelegate.bottom
-    }
-
-    MouseArea{
-        anchors.fill: parent;
-        onClicked: {
-            rosterView.currentIndex = index
-//            profilePage.clear();
-//            titanim.slotShowProfile(model.uid);
-//            titanim.slotWallGet(model.uid);
-//            profilePage.uid = model.uid;
-//            mainView.pageStack.push(profilePage);
-        }
     }
 }

@@ -27,12 +27,40 @@ void MessageListPrivate::add(MessageItem message)
     connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
 }
 
-void MessageListPrivate::add(const QVector<MessageItem> &messages)
+void MessageListPrivate::add(const QList<MessageItem> &messages)
 {
     for (int i = 0; i < messages.count(); i++)
     {
         add(messages.at(i));
     }
+}
+
+void MessageListPrivate::prepend(MessageItem message)
+{
+    _messages.prepend(message);
+    connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+}
+
+bool MessageListPrivate::replace(const MessageItem item)
+{
+    int i = indexOf(item->mid());
+
+    if (i > -1)
+    {
+        replace(i, item);
+        return true;
+    }
+
+    return false;
+}
+
+void MessageListPrivate::replace(const int i, const MessageItem item)
+{
+    disconnect(_messages.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    _messages.replace(i, item);
+    connect(item.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+
+    emit itemChanged(i);
 }
 
 int MessageListPrivate::indexOf(const int mid) const
@@ -62,10 +90,10 @@ MessageItem MessageListPrivate::item(const int mid) const
     return MessageItem();
 }
 
-void MessageListPrivate::remove(const int i)
+void MessageListPrivate::removeAt(const int i)
 {
     disconnect(_messages.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
-    _messages.remove(i);
+    _messages.removeAt(i);
 }
 
 int MessageListPrivate::count() const
@@ -73,9 +101,14 @@ int MessageListPrivate::count() const
     return _messages.count();
 }
 
-QVector<MessageItem> MessageListPrivate::toVector() const
+QList<MessageItem> MessageListPrivate::toList() const
 {
     return _messages;
+}
+
+QVector<MessageItem> MessageListPrivate::toVector() const
+{
+    return _messages.toVector();
 }
 
 void MessageListPrivate::onItemChanged(const int mid, const QString &propertyName)

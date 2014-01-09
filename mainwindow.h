@@ -18,7 +18,7 @@
 #include <QDebug>
 #include "qtquick2applicationviewer.h"
 #include "vk/client.h"
-#include "chat/dialogsmodel.h"
+#include "chat/dialogshandler.h"
 #include "roster/rostermodel.h"
 #include "chat/chats.h"
 
@@ -31,7 +31,7 @@ public:
     ~MainWindow();
 
 private:
-    DialogsModel *dialogsModel;
+    DialogsHandler *dialogsHandler;
     RosterModel *rosterModel;
 
 public slots:

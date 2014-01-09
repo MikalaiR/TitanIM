@@ -21,8 +21,8 @@ ProfileItem ProfileParser::parser(const QVariantMap &item)
     QString firstName = item.value("first_name").toString();
     QString lastName = item.value("last_name").toString();
     Sex sex = item.contains("sex") ? (Sex)(item.value("sex").toInt()) : unknown;
-    QString photoMediumRect = item.contains("photo_medium_rec") ? item.value("photo_medium_rec").toString()
-                                                                : item.value("photo_medium").toString();
+    QString photoMediumRect = item.contains("photo_100") ? item.value("photo_100").toString()
+                                                         : item.value("photo_medium_rec").toString();
     int lastSeen = item.contains("last_seen") ? item.value("last_seen").toMap().value("time").toInt() : 0;
     bool online = item.value("online").toInt() == 1 ? true : false;
     QString activity = item.contains("status") ? item.value("status").toString() : "";

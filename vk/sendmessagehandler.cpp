@@ -1,10 +1,22 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "sendmessagehandler.h"
 
 SendMessageHandler::SendMessageHandler(Connection *connection)
 {
     _connection = connection;
     _isProcessing = false;
-
 }
 
 void SendMessageHandler::send(MessageItem message)
@@ -42,6 +54,8 @@ void SendMessageHandler::execSendMessageQuery()
 void SendMessageHandler::sendMessage()
 {
     MessageItem message = _messageQuery.dequeue();
+    int internalMid = message->mid();
+    _messagesInProcessing[internalMid] = message;
 
     Packet *packet = new Packet("messages.send");
     packet->addParam("message", message->body());
@@ -61,9 +75,9 @@ void SendMessageHandler::sendMessage()
 
 //    }
 
-    packet->setId(message->mid());
+    packet->setId(internalMid);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(sendMessageFinished(const Packet*,QVariantMap)));
-    emit sending();
+    emit sending(internalMid);
     _connection->appendQuery(packet);
 
     _isProcessing = false;
@@ -76,6 +90,10 @@ void SendMessageHandler::sendMessageFinished(const Packet *sender, const QVarian
 
     int internalMid = sender->id();
     int serverMid = response;
+
+    MessageItem message = _messagesInProcessing.take(internalMid);
+    message->setMid(serverMid);
+    message->setDeliveryReport(true);
 
     emit successfullyMessageSent(internalMid, serverMid);
     delete sender;

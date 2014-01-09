@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #include "dialogitem.h"
 
 DialogItemPrivate::DialogItemPrivate()
@@ -49,7 +62,12 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
         }
 
         _profile = profile;
-        _id = _profile->uid();
+
+        if (!_groupChatHandler)
+        {
+            _id = _profile->uid();
+        }
+
         connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
         emit propertyChanged(_id, "profile");
     }
@@ -70,7 +88,12 @@ void DialogItemPrivate::setMessage(const MessageItem message)
         }
 
         _message = message;
-        _id = _message->uid();
+
+        if (!_profile && !_groupChatHandler)
+        {
+            _id = _message->uid();
+        }
+
         connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onMessagePropertyChanged(int,QString)));
         emit propertyChanged(_id, "message");
     }
@@ -92,7 +115,9 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
         }
 
         _groupChatHandler = groupChatHandler;
+
         _id = groupChatHandler->id();
+
         connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
         emit propertyChanged(_id, "groupChat");
     }

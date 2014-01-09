@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 #ifndef CHATS_H
 #define CHATS_H
 
@@ -11,6 +24,7 @@ class Chats : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int currentChatId READ currentChatId NOTIFY currentChatChanged)
     Q_PROPERTY(Chat* currentChat READ currentChat NOTIFY currentChatChanged)
     Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY currentChatChanged)
     Q_PROPERTY(QSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)

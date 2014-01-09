@@ -16,7 +16,7 @@
 DialogsPacket::DialogsPacket(Connection *connection)
 {
     _connection = connection;
-    _fields = "photo_medium_rec,online,last_seen,sex";
+    _fields = "photo_100,online,last_seen,sex";
 }
 
 void DialogsPacket::load(const int offset, const int count)

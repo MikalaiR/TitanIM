@@ -8,8 +8,13 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            dialogsView.currentIndex = index
+            main.dialogCurrentIndexChanged(index);
         }
+    }
+
+    HighlightListView {
+        anchors.fill: parent
+        visible: currentChatId === model.id
     }
 
     Row {

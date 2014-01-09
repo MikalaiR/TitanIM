@@ -16,6 +16,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QList>
 #include <QVector>
 #include "messageitem.h"
 
@@ -27,16 +28,20 @@ public:
     MessageListPrivate();
     ~MessageListPrivate();
     void add(MessageItem message);
-    void add(const QVector<MessageItem> &messages);
+    void add(const QList<MessageItem> &messages);
+    void prepend(MessageItem message);
+    bool replace(const MessageItem item);
+    void replace(const int i, const MessageItem item);
     int indexOf(const int mid) const;
     MessageItem at(const int i) const;
     MessageItem item(const int mid) const;
-    void remove(const int i);
+    void removeAt(const int i);
     int count() const;
+    QList<MessageItem> toList() const;
     QVector<MessageItem> toVector() const;
 
 private:
-    QVector<MessageItem> _messages;
+    QList<MessageItem> _messages;
 
 protected slots:
     void onItemChanged(const int mid, const QString &propertyName);

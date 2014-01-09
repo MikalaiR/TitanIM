@@ -83,7 +83,7 @@ void Client::getProfile()
 {
     Packet *selfProfile = new Packet("users.get");
     selfProfile->addParam("uids", _uid);
-    selfProfile->addParam("fields", "photo_medium_rec");
+    selfProfile->addParam("fields", "photo_100");
 
     connect(selfProfile, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSelfProfile(const Packet*,QVariantMap)));
     _connection->appendQuery(selfProfile);

@@ -11,29 +11,31 @@
  ***************************************************************************
 */
 
-#ifndef HISTORYPACKET_H
-#define HISTORYPACKET_H
+#ifndef DIALOGSHANDLER_H
+#define DIALOGSHANDLER_H
 
 #include <QObject>
-#include "connection.h"
-#include "messageparser.h"
+#include <QSortFilterProxyModel>
+#include "dialogsmodel.h"
+#include "vk/client.h"
 
-class HistoryPacket : public QObject
+class DialogsHandler : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit HistoryPacket(Connection *connection);
-    void load(const int id, const int offset=0, const int count=20);
+    DialogsHandler();
+    ~DialogsHandler();
+    DialogsModel* model() const;
+    QSortFilterProxyModel* proxy() const;
+    DialogItem dialog(const int index, const bool isProxyIndex=true) const;
 
 private:
-    Connection *_connection;
+    DialogsModel *_model;
+    QSortFilterProxyModel *_proxy;
 
-private slots:
-    void loadFinished(const Packet *sender, const QVariantMap &result);
-
-signals:
-    void history(const HistoryPacket *sender, const int id, const MessageList &messages);
+protected slots:
+    void onLongPollMessageAdded(const DialogItem dialog);
 };
 
-#endif // HISTORYPACKET_H
+#endif // DIALOGSHANDLER_H

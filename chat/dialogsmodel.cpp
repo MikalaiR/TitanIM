@@ -48,7 +48,19 @@ void DialogsModel::append(const DialogList items)
     endInsertRows();
 }
 
-void DialogsModel::replace(const DialogList items)
+void DialogsModel::append(const DialogItem item, const bool replace)
+{
+    if (replace && _dialogs->replace(item))
+    {
+        return;
+    }
+
+    beginInsertRows(QModelIndex(), _dialogs->count(), _dialogs->count());
+    _dialogs->add(item);
+    endInsertRows();
+}
+
+void DialogsModel::replaceAll(const DialogList items)
 {
     remove(0, rowCount());
     append(items);
@@ -81,6 +93,11 @@ DialogItem DialogsModel::at(const QModelIndex &index)
     return _dialogs->at(index.row());
 }
 
+int DialogsModel::indexOf(const int id) const
+{
+    return _dialogs->indexOf(id);
+}
+
 QHash<int, QByteArray> DialogsModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
@@ -90,6 +107,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[dateStrRole] = "dateStr";
     roles[uidRole] = "uid";
     roles[midRole] = "mid";
+    roles[idRole] = "id";
     roles[isUnreadRole] = "isUnread";
     roles[isOutRole] = "isOut";
     roles[onlineRole] = "online";
@@ -131,6 +149,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case midRole:
         return message->mid();
+
+    case idRole:
+        return dialog->id();
 
     case isUnreadRole:
         return message->isUnread();
@@ -178,7 +199,7 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList
 {
     if (!sender->offset())
     {
-        replace(dialogs);
+        replaceAll(dialogs);
     }
     else
     {

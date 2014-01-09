@@ -30,6 +30,7 @@ public:
         dateStrRole,
         uidRole,
         midRole,
+        idRole,
         isUnreadRole,
         isOutRole,
         onlineRole
@@ -40,10 +41,12 @@ public:
     void load(const int count=20);
     void loadNext(const int count=20);
     void append(const DialogList items);
-    void replace(const DialogList items);
+    void append(const DialogItem item, const bool replace=false);
+    void replaceAll(const DialogList items);
     bool remove(int row, int count);
     DialogItem at(const int row);
     DialogItem at(const QModelIndex &index);
+    int indexOf(const int id) const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);

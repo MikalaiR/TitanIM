@@ -39,9 +39,12 @@ public:
     explicit ChatModel(const DialogItem dialog, const ProfileItem ownProfile, QObject *parent = 0);
     ~ChatModel();
     void append(const MessageList items);
-    void replace(const MessageList items);
+    void append(const MessageItem item, const bool replace=false);
+    void prepend(const MessageItem item, const bool replace=false);
+    void replaceAll(const MessageList items);
     bool remove(int row, int count);
-    MessageItem at(const int row);
+    MessageItem at(const int row) const;
+    int indexOf(const int mid) const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -49,12 +52,13 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
-    MessageList _chat;
+    MessageList _messages;
     DialogItem _dialog;
     ProfileItem _ownProfile;
 
 protected slots:
     void onItemChanged(const int i);
+    void onRowsChanged(const QModelIndex &parent, int first, int last);
 };
 
 #endif // CHATMODEL_H

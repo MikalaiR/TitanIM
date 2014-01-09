@@ -3,6 +3,8 @@ import QtQuick 2.1
 Item {
     anchors.fill: parent
 
+    property int currentChatId: chats.currentChatId
+
     Rectangle {
         anchors.fill: parent
         color: "#f9f9f9"
@@ -12,17 +14,10 @@ Item {
         id: rosterView;
         anchors.fill: parent
         model: rosterModel;
-        highlight: HighlightListView { }
-        highlightMoveVelocity: -1
         delegate: RosterDelegate { }
         spacing: 2
         section.property: "alphabet"
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
         section.delegate: SectionHeading { }
-        currentIndex: -1
-
-        onCurrentIndexChanged: {
-            main.rosterCurrentIndexChanged(currentIndex);
-        }
     }
 }
