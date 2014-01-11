@@ -27,5 +27,8 @@
         <file>images/blue_bubble_selected.png</file>
         <file>images/blue_bubble.png</file>
         <file>images/blue_bubble.sci</file>
+        <file>images/header_separator.png</file>
+        <file>HeaderSeparator.qml</file>
+        <file>images/input_field.png</file>
     </qresource>
 </RCC>
