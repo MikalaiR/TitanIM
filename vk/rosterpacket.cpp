@@ -97,7 +97,7 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
             profiles->add(profile);
         }
 
-        profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList())->toVector());
+        profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList())->toList());
     }
     else
     {

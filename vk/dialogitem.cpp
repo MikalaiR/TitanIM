@@ -65,7 +65,7 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
 
         if (!_groupChatHandler)
         {
-            _id = _profile->uid();
+            _id = _profile->id();
         }
 
         connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));

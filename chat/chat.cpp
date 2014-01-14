@@ -79,7 +79,7 @@ void Chat::sendMessage(const QString &text)
     }
 
     MessageItem message = MessageItem::create();
-    message->setMid(--_internalMessageId);
+    message->setId(--_internalMessageId);
 
     if (isGroupChat())
     {
@@ -88,7 +88,7 @@ void Chat::sendMessage(const QString &text)
     }
     else
     {
-        message->setUid(_dialog->profile()->uid());
+        message->setUid(_dialog->profile()->id());
     }
 
     message->setDate(QDateTime::currentDateTime());

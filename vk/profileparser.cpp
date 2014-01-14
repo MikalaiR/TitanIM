@@ -28,7 +28,7 @@ ProfileItem ProfileParser::parser(const QVariantMap &item)
     QString activity = item.contains("status") ? item.value("status").toString() : "";
     QString alphabet = !firstName.isEmpty() ? QString(firstName.at(0)) : "";
 
-    profile->setUid(uid);
+    profile->setId(uid);
     profile->setFirstName(firstName);
     profile->setLastName(lastName);
     profile->setSex(sex);

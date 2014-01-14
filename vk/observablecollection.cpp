@@ -11,22 +11,14 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGELIST_H
-#define MESSAGELIST_H
-
-#include <QSharedPointer>
 #include "observablecollection.h"
-#include "messageitem.h"
 
-class MessageListPrivate : public ObservableCollection<MessageItem>
+ObservableCollectionPrivate::ObservableCollectionPrivate(QObject *parent) :
+    QObject(parent)
 {
-    Q_OBJECT
+}
 
-public:
-    MessageListPrivate();
-};
-
-
-typedef QSharedPointer<MessageListPrivate> MessageList;
-
-#endif // MESSAGELIST_H
+void ObservableCollectionPrivate::onItemChanged(const int id, const QString &propertyName)
+{
+    emit itemChanged(indexOf(id));
+}

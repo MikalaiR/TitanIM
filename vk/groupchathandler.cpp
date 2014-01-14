@@ -125,7 +125,7 @@ void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &res
     _cover = response.value("photo_100").toString();
     ProfileList profiles = ProfileParser::parser(response.value("users").toList());
 
-    _users->add(profiles->toVector());
+    _users->add(profiles->toList());
 
     emit propertyChanged(_chatId, "users");
     delete sender;

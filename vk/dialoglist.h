@@ -14,38 +14,18 @@
 #ifndef DIALOGLIST_H
 #define DIALOGLIST_H
 
-#include <QObject>
 #include <QSharedPointer>
-#include <QVector>
+#include "observablecollection.h"
 #include "dialogitem.h"
 
-class DialogListPrivate : public QObject
+class DialogListPrivate : public ObservableCollection<DialogItem>
 {
     Q_OBJECT
 
 public:
     DialogListPrivate();
-    ~DialogListPrivate();
-    void add(DialogItem dialog);
-    void add(const QVector<DialogItem> &dialogs);
-    bool replace(const DialogItem item);
-    void replace(const int i, const DialogItem item);
-    int indexOf(const int id) const;
-    DialogItem at(const int i) const;
-    DialogItem item(const int id) const;
-    void remove(const int i);
-    int count() const;
-    QVector<DialogItem> toVector() const;
-
-private:
-    QVector<DialogItem> _dialogs;
-
-protected slots:
-    void onItemChanged(const int id, const QString &propertyName);
-
-signals:
-    void itemChanged(const int i);
 };
+
 
 typedef QSharedPointer<DialogListPrivate> DialogList;
 

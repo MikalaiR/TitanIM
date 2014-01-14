@@ -24,8 +24,8 @@ class ProfileItemPrivate : public QObject
 
 public:
     ProfileItemPrivate();
-    int uid() const;
-    void setUid(const int uid);
+    int id() const;
+    void setId(const int id);
     QString firstName() const;
     void setFirstName(const QString &firstName);
     QString lastName() const;
@@ -45,7 +45,7 @@ public:
     void setAlphabet(const QString &alphabet);
 
 private:
-    int _uid;
+    int _id;
     QString _firstName;
     QString _lastName;
     Sex _sex;
@@ -56,7 +56,7 @@ private:
     QString _alphabet;
 
 signals:
-    void propertyChanged(const int uid, const QString &propertyName);
+    void propertyChanged(const int id, const QString &propertyName);
 };
 
 typedef QSharedPointer<ProfileItemPrivate> ProfileItem;

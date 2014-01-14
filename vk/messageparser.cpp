@@ -17,7 +17,7 @@ MessageItem MessageParser::parser(const QVariantMap &item)
 {
     MessageItem message = MessageItem::create();
 
-    int mid = -1;
+    int mid = 0;
     if (item.contains("id"))
     {
         mid = item.value("id").toInt();
@@ -35,7 +35,7 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     QString title = item.contains("title") ? item.value("title").toString() : "";
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : -1;
 
-    message->setMid(mid);
+    message->setId(mid);
     message->setUid(uid);
     message->setDate(date);
     message->setIsUnread(isUnread);

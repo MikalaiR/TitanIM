@@ -54,7 +54,7 @@ void SendMessageHandler::execSendMessageQuery()
 void SendMessageHandler::sendMessage()
 {
     MessageItem message = _messageQuery.dequeue();
-    int internalMid = message->mid();
+    int internalMid = message->id();
     _messagesInProcessing[internalMid] = message;
 
     Packet *packet = new Packet("messages.send");
@@ -92,7 +92,7 @@ void SendMessageHandler::sendMessageFinished(const Packet *sender, const QVarian
     int serverMid = response;
 
     MessageItem message = _messagesInProcessing.take(internalMid);
-    message->setMid(serverMid);
+    message->setId(serverMid);
     message->setDeliveryReport(true);
 
     emit successfullyMessageSent(internalMid, serverMid);

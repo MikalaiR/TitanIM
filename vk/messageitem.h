@@ -25,8 +25,8 @@ class MessageItemPrivate : public QObject
 public:
     MessageItemPrivate();
     ~MessageItemPrivate();
-    int mid() const;
-    void setMid(const int mid);
+    int id() const;
+    void setId(const int id);
     int uid() const;
     void setUid(const int uid);
     QDateTime date() const;
@@ -49,7 +49,7 @@ public:
     bool isGroupChat() const;
 
 private:
-    int _mid;
+    int _id;
     int _uid;
     QDateTime _date;
     bool _isUnread;
@@ -62,7 +62,7 @@ private:
 //    AttachmentList _attachments;
 
 signals:
-    void propertyChanged(const int mid, const QString &propertyName);
+    void propertyChanged(const int id, const QString &propertyName);
 };
 
 typedef QSharedPointer<MessageItemPrivate> MessageItem;

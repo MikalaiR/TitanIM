@@ -45,7 +45,7 @@ void RosterModel::append(const ProfileList items)
         return;
 
     beginInsertRows(QModelIndex(), _roster->count(), _roster->count() + items->count() - 1);
-    _roster->add(items->toVector());
+    _roster->add(items->toList());
     endInsertRows();
 }
 
@@ -64,7 +64,7 @@ bool RosterModel::remove(int row, int count)
 
     for (int i = 0; i < count; ++i)
     {
-        _roster->remove(row);
+        _roster->removeAt(row);
     }
 
     endRemoveRows();
@@ -101,13 +101,13 @@ QVariant RosterModel::data(const QModelIndex &index, int role) const
     switch (role)
     {
     case Qt::DisplayRole:
-        return profile->fullName().isEmpty() ? QString::number(profile->uid()) : profile->fullName();
+        return profile->fullName().isEmpty() ? QString::number(profile->id()) : profile->fullName();
 
     case Qt::DecorationRole:
         return profile->photoMediumRect();
 
     case uidRole:
-        return profile->uid();
+        return profile->id();
 
     case onlineRole:
         return profile->online();

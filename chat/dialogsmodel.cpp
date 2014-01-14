@@ -44,7 +44,7 @@ void DialogsModel::append(const DialogList items)
         return;
 
     beginInsertRows(QModelIndex(), _dialogs->count(), _dialogs->count() + items->count() - 1);
-    _dialogs->add(items->toVector());
+    _dialogs->add(items->toList());
     endInsertRows();
 }
 
@@ -75,7 +75,7 @@ bool DialogsModel::remove(int row, int count)
 
     for (int i = 0; i < count; ++i)
     {
-        _dialogs->remove(row);
+        _dialogs->removeAt(row);
     }
 
     endRemoveRows();
@@ -148,7 +148,7 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return message->uid();
 
     case midRole:
-        return message->mid();
+        return message->id();
 
     case idRole:
         return dialog->id();

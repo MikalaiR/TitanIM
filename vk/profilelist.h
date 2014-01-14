@@ -14,36 +14,18 @@
 #ifndef PROFILELIST_H
 #define PROFILELIST_H
 
-#include <QObject>
 #include <QSharedPointer>
-#include <QVector>
+#include "observablecollection.h"
 #include "profileitem.h"
 
-class ProfileListPrivate : public QObject
+class ProfileListPrivate : public ObservableCollection<ProfileItem>
 {
     Q_OBJECT
 
 public:
     ProfileListPrivate();
-    ~ProfileListPrivate();
-    void add(ProfileItem profile);
-    void add(const QVector<ProfileItem> &profiles);
-    int indexOf(const int uid) const;
-    ProfileItem at(const int i) const;
-    ProfileItem item(const int uid) const;
-    void remove(const int i);
-    int count() const;
-    QVector<ProfileItem> toVector() const;
-
-private:
-    QVector<ProfileItem> _profiles;
-
-protected slots:
-    void onItemChanged(const int uid, const QString &propertyName);
-
-signals:
-    void itemChanged(const int i);
 };
+
 
 typedef QSharedPointer<ProfileListPrivate> ProfileList;
 
