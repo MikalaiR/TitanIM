@@ -132,70 +132,71 @@ void LongPoll::handler(const QVariantList &updates)
 
         switch (updateType) {
         case MessageDeleted:
-            {
-                onMessageDeleted(update);
-                break;
-            }
-
+        {
+            onMessageDeleted(update);
+            break;
+        }
+            
         case MessageFlagsReplaced:
-            {
-                onMessageFlagsReplaced(update);
-                break;
-            }
-
+        {
+            onMessageFlagsReplaced(update);
+            break;
+        }
+            
         case MessageFlagsSet:
-            {
-                onMessageFlagsSet(update);
-                break;
-            }
-
+        {
+            onMessageFlagsSet(update);
+            break;
+        }
+            
         case MessageFlagsReseted:
-            {
-                onMessageFlagsReseted(update);
-                break;
-            }
-
+        {
+            onMessageFlagsReseted(update);
+            break;
+        }
+            
         case MessageAdded:
-            {
-                onMessageAdded(update);
-                break;
-            }
-
+        {
+            onMessageAdded(update);
+            break;
+        }
+            
         case UserOnline:
-            {
-                onUserOnline(update);
-                break;
-            }
-
+        {
+            onUserOnline(update);
+            break;
+        }
+            
         case UserOffline:
-            {
-                onUserOffline(update);
-                break;
-            }
-
+        {
+            onUserOffline(update);
+            break;
+        }
+            
         case GroupChatUpdated:
-            {
-                onGroupChatUpdated(update);
-                break;
-            }
-
+        {
+            onGroupChatUpdated(update);
+            break;
+        }
+            
         case ChatTyping:
-            {
-                onChatTyping(update);
-                break;
-            }
-
+        {
+            onChatTyping(update);
+            break;
+        }
+            
         case GroupChatTyping:
-            {
-                onGroupChatTyping(update);
-                break;
-            }
-
+        {
+            onGroupChatTyping(update);
+            break;
+        }
+            
         case UserCall:
-            {
-                onUserCall(update);
-                break;
-            }
+        {
+            onUserCall(update);
+            break;
+        }
+
         default:
             break;
         }

@@ -44,7 +44,13 @@ SOURCES += main.cpp \
     chat/chatshandler.cpp \
     vk/sendmessagehandler.cpp \
     chat/dialogshandler.cpp \
-    vk/observablecollection.cpp
+    vk/observablecollection.cpp \
+    vk/attachmentitem.cpp \
+    vk/attachmentlist.cpp \
+    vk/photoitem.cpp \
+    vk/notifypropertybase.cpp \
+    vk/attachmentsparser.cpp \
+    vk/photoparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -78,7 +84,13 @@ HEADERS += \
     chat/chatshandler.h \
     vk/sendmessagehandler.h \
     chat/dialogshandler.h \
-    vk/observablecollection.h
+    vk/observablecollection.h \
+    vk/attachmentitem.h \
+    vk/attachmentlist.h \
+    vk/photoitem.h \
+    vk/notifypropertybase.h \
+    vk/attachmentsparser.h \
+    vk/photoparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

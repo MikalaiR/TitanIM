@@ -15,8 +15,10 @@
 
 DialogItemPrivate::DialogItemPrivate()
 {
-    _id = 0;
     _groupChatHandler = 0;
+
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
 }
 
 DialogItemPrivate::~DialogItemPrivate()
@@ -25,11 +27,6 @@ DialogItemPrivate::~DialogItemPrivate()
     {
         delete _groupChatHandler;
     }
-}
-
-int DialogItemPrivate::id() const
-{
-    return _id;
 }
 
 QString DialogItemPrivate::displayName() const
@@ -69,7 +66,7 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
         }
 
         connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
-        emit propertyChanged(_id, "profile");
+        emitPropertyChanged("profile");
     }
 }
 
@@ -95,7 +92,7 @@ void DialogItemPrivate::setMessage(const MessageItem message)
         }
 
         connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onMessagePropertyChanged(int,QString)));
-        emit propertyChanged(_id, "message");
+        emitPropertyChanged("message");
     }
 }
 
@@ -119,24 +116,24 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
         _id = groupChatHandler->id();
 
         connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
-        emit propertyChanged(_id, "groupChat");
+        emitPropertyChanged("groupChat");
     }
 }
 
 void DialogItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
 {
     QString property = QString("profile.%1").arg(propertyName);
-    emit propertyChanged(_id, property);
+    emitPropertyChanged(property);
 }
 
 void DialogItemPrivate::onMessagePropertyChanged(const int mid, const QString &propertyName)
 {
     QString property = QString("message.%1").arg(propertyName);
-    emit propertyChanged(_id, property);
+    emitPropertyChanged(property);
 }
 
 void DialogItemPrivate::onGroupChatPropertyChanged(const int chatId, const QString &propertyName)
 {
     QString property = QString("groupChat.%1").arg(propertyName);
-    emit propertyChanged(_id, property);
+    emitPropertyChanged(property);
 }

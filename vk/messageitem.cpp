@@ -15,28 +15,13 @@
 
 MessageItemPrivate::MessageItemPrivate()
 {
-    _id = 0;
-    _uid = -1;
+    _uid = 0;
     _isError = false;
-    _chatId = -1;
+    _chatId = 0;
 }
 
 MessageItemPrivate::~MessageItemPrivate()
 {
-}
-
-int MessageItemPrivate::id() const
-{
-    return _id;
-}
-
-void MessageItemPrivate::setId(const int id)
-{
-    if (_id != id)
-    {
-        _id = id;
-        emit propertyChanged(_id, "id");
-    }
 }
 
 int MessageItemPrivate::uid() const
@@ -49,7 +34,7 @@ void MessageItemPrivate::setUid(const int uid)
     if (_uid != uid)
     {
         _uid = uid;
-        emit propertyChanged(_id, "uid");
+        emitPropertyChanged("uid");
     }
 }
 
@@ -63,7 +48,7 @@ void MessageItemPrivate::setDate(const QDateTime &date)
     if (_date != date)
     {
         _date = date;
-        emit propertyChanged(_id, "date");
+        emitPropertyChanged("date");
     }
 }
 
@@ -77,7 +62,7 @@ void MessageItemPrivate::setIsUnread(const bool isUnread)
     if (_isUnread != isUnread)
     {
         _isUnread = isUnread;
-        emit propertyChanged(_id, "isUnread");
+        emitPropertyChanged("isUnread");
     }
 }
 
@@ -91,7 +76,7 @@ void MessageItemPrivate::setIsOut(const bool isOut)
     if (_isOut != isOut)
     {
         _isOut = isOut;
-        emit propertyChanged(_id, "isOut");
+        emitPropertyChanged("isOut");
     }
 }
 
@@ -105,7 +90,7 @@ void MessageItemPrivate::setIsError(const bool isError)
     if (_isError != isError)
     {
         _isError = isError;
-        emit propertyChanged(_id, "isError");
+        emitPropertyChanged("isError");
     }
 }
 
@@ -124,7 +109,7 @@ void MessageItemPrivate::setDeliveryReport(const bool deliveryReport)
     if (_deliveryReport != deliveryReport)
     {
         _deliveryReport = deliveryReport;
-        emit propertyChanged(_id, "deliveryReport");
+        emitPropertyChanged("deliveryReport");
     }
 }
 
@@ -138,7 +123,7 @@ void MessageItemPrivate::setTitle(const QString &title)
     if (_title != title)
     {
         _title = title;
-        emit propertyChanged(_id, "title");
+        emitPropertyChanged("title");
     }
 }
 
@@ -152,7 +137,7 @@ void MessageItemPrivate::setBody(const QString &body)
     if (_body != body)
     {
         _body = body;
-        emit propertyChanged(_id, "body");
+        emitPropertyChanged("body");
     }
 }
 
@@ -166,11 +151,25 @@ void MessageItemPrivate::setChatId(const int chatId)
     if (_chatId != chatId)
     {
         _chatId = chatId;
-        emit propertyChanged(_id, "chatId");
+        emitPropertyChanged("chatId");
     }
 }
 
 bool MessageItemPrivate::isGroupChat() const
 {
-    return _chatId == -1 ? false : true;
+    return _chatId == 0 ? false : true;
+}
+
+AttachmentList MessageItemPrivate::attachments() const
+{
+    return _attachments;
+}
+
+void MessageItemPrivate::setAttachments(const AttachmentList attachments)
+{
+    if (_attachments != attachments)
+    {
+        _attachments = attachments;
+        emitPropertyChanged("attachments");
+    }
 }

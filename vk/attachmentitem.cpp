@@ -11,20 +11,23 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#include "attachmentitem.h"
 
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "utils.h"
-
-class MessageParser : public QObject
+AttachmentItemPrivate::AttachmentItemPrivate()
 {
-public:
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
+    _attachmentType = unknown;
+}
 
-#endif // MESSAGEPARSER_H
+AttachmentItemPrivate::AttachmentType AttachmentItemPrivate::attachmentType() const
+{
+    return _attachmentType;
+}
+
+void AttachmentItemPrivate::setAttachmentType(const AttachmentType attachmentType)
+{
+    if (_attachmentType != attachmentType)
+    {
+        _attachmentType = attachmentType;
+        emitPropertyChanged("attachmentType");
+    }
+}

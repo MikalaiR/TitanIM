@@ -23,7 +23,7 @@ Connection::Connection(const QString &clientId, const QString &clientSecret)
     _urlServers.auth_server = "https://oauth.vk.com/token";
     _urlServers.api_server = "https://api.vk.com";
 
-    _status = offline;
+    _status = Offline;
     _isHttps = true;
     _isProcessing = false;
 
@@ -48,12 +48,12 @@ void Connection::setStatus(const Status &status)
 
 bool Connection::isOnline() const
 {
-    return _status == online;
+    return _status == Online;
 }
 
 bool Connection::isOffline() const
 {
-    return _status == offline;
+    return _status == Offline;
 }
 
 bool Connection::isHttps() const
@@ -95,12 +95,12 @@ void Connection::connectToVk(const int uid, const QString &token, const QString 
 
     setHttpsMode(_sessionVars.secret.isEmpty());
 
-    setStatus(online);
+    setStatus(Online);
 }
 
 void Connection::disconnectVk()
 {
-    setStatus(offline);
+    setStatus(Offline);
 }
 
 void Connection::setHttpsMode(const bool isHttps)
@@ -158,7 +158,7 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
         {
             networkReply->deleteLater();
             httpAuth->deleteLater();
-            onError(serverIsNotAvailable, "Server is not available");
+            onError(ServerIsNotAvailable, "Server is not available");
         }
 
         return;
@@ -170,7 +170,7 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
     if (response.contains("https_required"))
     {
         httpAuth->deleteLater();
-        onError(httpAuthorizationFailed, "HTTP authorization failed");
+        onError(HttpAuthorizationFailed, "HTTP authorization failed");
         return;
     }
 
@@ -195,11 +195,11 @@ void Connection::loginSuccess(const QVariantMap &response)
 
     if (!_sessionVars.access_token.isEmpty())
     {
-        setStatus(online);
+        setStatus(Online);
     }
     else
     {
-        onError(loadTokenFailed, "Load token failed");
+        onError(LoadTokenFailed, "Load token failed");
     }
 }
 
@@ -258,7 +258,7 @@ void Connection::apiResponse(QNetworkReply *networkReply)
         if (networkReply->error() == QNetworkReply::UnknownNetworkError)
         {
             networkReply->deleteLater();
-            onError(serverIsNotAvailable, "Server is not available");
+            onError(ServerIsNotAvailable, "Server is not available");
         }
         else
         {
@@ -324,7 +324,7 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
     }
     else
     {
-        onError(userAuthorizationFailed, "User authorization failed");
+        onError(UserAuthorizationFailed, "User authorization failed");
     }
 }
 
@@ -342,13 +342,13 @@ void Connection::onStatusChanged(const Status &status)
 {
     switch (status)
     {
-    case online:
+    case Online:
     {
         onConnected();
         break;
     }
 
-    case offline:
+    case Offline:
     {
         onDisconnected();
         break;
@@ -389,18 +389,18 @@ void Connection::onError(const ErrorResponse *errorResponse)
 {
     if (errorResponse->fatal())
     {
-        setStatus(offline);
+        setStatus(Offline);
     }
 
     switch (errorResponse->code())
     {
-    case captchaNeeded:
+    case CaptchaNeeded:
     {
         emit captcha(errorResponse->captchaSid(), errorResponse->captchaImg());
         break;
     }
 
-    case httpAuthorizationFailed:
+    case HttpAuthorizationFailed:
     {
         setHttpsMode(true);
 
@@ -417,13 +417,13 @@ void Connection::onError(const ErrorResponse *errorResponse)
         break;
     }
 
-    case validationRequired:
+    case ValidationRequired:
     {
         emit validation(errorResponse->validationUri());
         break;
     }
 
-    case tooManyRequestsPerSecond:
+    case TooManyRequestsPerSecond:
     {
         tooManyRequestsTimer->start();
         break;

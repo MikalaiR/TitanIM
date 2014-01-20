@@ -33,7 +33,13 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     bool isOut = (item.contains("out") && item.value("out").toInt()) ? true : false;
     QString body = Utils::decode(item.value("body").toString());
     QString title = item.contains("title") ? item.value("title").toString() : "";
-    int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : -1;
+    int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
+
+    if (item.contains("attachments"))
+    {
+        AttachmentList attachments = AttachmentsParser::parser(item.value("attachments").toList());
+        message->setAttachments(attachments);
+    }
 
     message->setId(mid);
     message->setUid(uid);

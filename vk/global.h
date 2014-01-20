@@ -52,37 +52,37 @@ struct LongPollVars
 
 enum Status
 {
-    offline,
-    online
+    Offline,
+    Online
 };
 
 enum Sex
 {
-    unknown,
-    woman,
-    man
+    Unknown,
+    Woman,
+    Man
 };
 
 enum Error
 {
-    loadTokenFailed = -3,
-    timeoutLongPollServer = -2,
-    serverIsNotAvailable = -1,
-    unknownErrorOccured = 1,
-    applicationIsDisabled = 2,
-    unknownMethodPassed = 3,
-    incorrectSignature = 4,
-    userAuthorizationFailed = 5,
-    tooManyRequestsPerSecond = 6,
-    deniedByUser = 7,
-    internalServerError = 10,
-    captchaNeeded = 14,
-    accessDenied = 15,
-    httpAuthorizationFailed = 16,
-    validationRequired = 17,
-    outOfLimits = 103,
-    phoneUsedAnotherUser = 1004,
-    tryLater = 1112
+    LoadTokenFailed = -3,
+    TimeoutLongPollServer = -2,
+    ServerIsNotAvailable = -1,
+    UnknownErrorOccured = 1,
+    ApplicationIsDisabled = 2,
+    UnknownMethodPassed = 3,
+    IncorrectSignature = 4,
+    UserAuthorizationFailed = 5,
+    TooManyRequestsPerSecond = 6,
+    DeniedByUser = 7,
+    InternalServerError = 10,
+    CaptchaNeeded = 14,
+    AccessDenied = 15,
+    HttpAuthorizationFailed = 16,
+    ValidationRequired = 17,
+    OutOfLimits = 103,
+    PhoneUsedAnotherUser = 1004,
+    TryLater = 1112
 };
 
 const int GROUP_CHAT_OFFSET = 2000000000;

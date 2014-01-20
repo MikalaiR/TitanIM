@@ -17,16 +17,16 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QDateTime>
+#include "notifypropertybase.h"
+#include "attachmentlist.h"
 
-class MessageItemPrivate : public QObject
+class MessageItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
 
 public:
     MessageItemPrivate();
     ~MessageItemPrivate();
-    int id() const;
-    void setId(const int id);
     int uid() const;
     void setUid(const int uid);
     QDateTime date() const;
@@ -47,9 +47,10 @@ public:
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;
+    AttachmentList attachments() const;
+    void setAttachments(const AttachmentList attachments);
 
 private:
-    int _id;
     int _uid;
     QDateTime _date;
     bool _isUnread;
@@ -59,10 +60,7 @@ private:
     QString _title;
     QString _body;
     int _chatId;
-//    AttachmentList _attachments;
-
-signals:
-    void propertyChanged(const int id, const QString &propertyName);
+    AttachmentList _attachments;
 };
 
 typedef QSharedPointer<MessageItemPrivate> MessageItem;

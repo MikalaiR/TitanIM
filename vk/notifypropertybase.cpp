@@ -11,20 +11,18 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#include "notifypropertybase.h"
 
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "utils.h"
-
-class MessageParser : public QObject
+NotifyPropertyBase::NotifyPropertyBase()
 {
-public:
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
+    _id = 0;
+}
 
-#endif // MESSAGEPARSER_H
+void NotifyPropertyBase::setId(const int id)
+{
+    if (_id != id)
+    {
+        _id = id;
+        emit propertyChanged(_id, "id");
+    }
+}

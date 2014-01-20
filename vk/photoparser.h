@@ -11,20 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#ifndef PHOTOPARSER_H
+#define PHOTOPARSER_H
 
+#include <QObject>
 #include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "utils.h"
+#include "photoitem.h"
 
-class MessageParser : public QObject
+class PhotoParser : public QObject
 {
 public:
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
+    static PhotoItem parser(const QVariantMap &item);
 };
 
-#endif // MESSAGEPARSER_H
+#endif // PHOTOPARSER_H

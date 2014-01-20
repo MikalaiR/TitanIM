@@ -16,16 +16,15 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include "notifypropertybase.h"
 #include "global.h"
 
-class ProfileItemPrivate : public QObject
+class ProfileItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
 
 public:
     ProfileItemPrivate();
-    int id() const;
-    void setId(const int id);
     QString firstName() const;
     void setFirstName(const QString &firstName);
     QString lastName() const;
@@ -45,7 +44,6 @@ public:
     void setAlphabet(const QString &alphabet);
 
 private:
-    int _id;
     QString _firstName;
     QString _lastName;
     Sex _sex;
@@ -54,9 +52,6 @@ private:
     int _lastSeen;
     QString _activity;
     QString _alphabet;
-
-signals:
-    void propertyChanged(const int id, const QString &propertyName);
 };
 
 typedef QSharedPointer<ProfileItemPrivate> ProfileItem;

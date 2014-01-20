@@ -11,20 +11,8 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#include "attachmentlist.h"
 
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "utils.h"
-
-class MessageParser : public QObject
+AttachmentListPrivate::AttachmentListPrivate()
 {
-public:
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
-
-#endif // MESSAGEPARSER_H
+}

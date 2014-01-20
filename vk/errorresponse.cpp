@@ -28,19 +28,19 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
 
             if (errorString.contains("need_captcha"))
             {
-                _code = captchaNeeded;
+                _code = CaptchaNeeded;
             }
             else if (errorString.contains("invalid_client"))
             {
-                _code = userAuthorizationFailed;
+                _code = UserAuthorizationFailed;
             }
             else if (errorString.contains("need_validation"))
             {
-                _code = validationRequired;
+                _code = ValidationRequired;
             }
             else
             {
-                _code = unknownErrorOccured;
+                _code = UnknownErrorOccured;
             }
 
             _msg = tempError.toString();
@@ -67,19 +67,19 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
         }
         }
 
-        if (_code == captchaNeeded)
+        if (_code == CaptchaNeeded)
         {
             _captchaSid = error["captcha_sid"].toString();
             _captchaImg = error["captcha_img"].toString();
         }
-        else if (_code == validationRequired)
+        else if (_code == ValidationRequired)
         {
             _validationUri = error["redirect_uri"].toString();
         }
     }
     catch(...)
     {
-        _code = unknownErrorOccured;
+        _code = UnknownErrorOccured;
         _msg = "Unknown error occurred";
     }
 
@@ -132,18 +132,18 @@ QString ErrorResponse::validationUri() const
 
 bool ErrorResponse::isGlobal(const Error &code)
 {
-    if (code == loadTokenFailed ||
-        code == timeoutLongPollServer ||
-        code == serverIsNotAvailable ||
-        code == unknownErrorOccured ||
-        code == applicationIsDisabled ||
-        code == unknownMethodPassed ||
-        code == incorrectSignature ||
-        code == userAuthorizationFailed ||
-        code == tooManyRequestsPerSecond ||
-        code == captchaNeeded ||
-        code == httpAuthorizationFailed ||
-        code == validationRequired)
+    if (code == LoadTokenFailed ||
+        code == TimeoutLongPollServer ||
+        code == ServerIsNotAvailable ||
+        code == UnknownErrorOccured ||
+        code == ApplicationIsDisabled ||
+        code == UnknownMethodPassed ||
+        code == IncorrectSignature ||
+        code == UserAuthorizationFailed ||
+        code == TooManyRequestsPerSecond ||
+        code == CaptchaNeeded ||
+        code == HttpAuthorizationFailed ||
+        code == ValidationRequired)
     {
         return true;
     }
@@ -155,10 +155,10 @@ bool ErrorResponse::isGlobal(const Error &code)
 
 bool ErrorResponse::isFatal(const Error &code)
 {
-    if (code == loadTokenFailed ||
-        code == applicationIsDisabled ||
-        code == userAuthorizationFailed ||
-        code == validationRequired)
+    if (code == LoadTokenFailed ||
+        code == ApplicationIsDisabled ||
+        code == UserAuthorizationFailed ||
+        code == ValidationRequired)
     {
         return true;
     }

@@ -16,21 +16,21 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include "notifypropertybase.h"
 #include "profileitem.h"
 #include "messageitem.h"
 #include "groupchathandler.h"
 
-class DialogItemPrivate : public QObject
+class DialogItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString displayName READ displayName NOTIFY propertyChanged)
-    Q_PROPERTY(QStringList decoration READ decoration NOTIFY propertyChanged)
+    Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
+    Q_PROPERTY(QStringList decoration READ decoration NOTIFY decorationChanged)
 
 public:
     DialogItemPrivate();
     ~DialogItemPrivate();
-    int id() const;
     QString displayName() const;
     QStringList decoration() const;
     bool isGroupChat() const;
@@ -42,7 +42,6 @@ public:
     void setGroupChatHandler(GroupChatHandler *groupChatHandler);
 
 private:
-    int _id;
     ProfileItem _profile;
     MessageItem _message;
     GroupChatHandler *_groupChatHandler;
@@ -53,7 +52,8 @@ protected slots:
     void onGroupChatPropertyChanged(const int chatId, const QString &propertyName);
 
 signals:
-    void propertyChanged(const int id, const QString &propertyName);
+    void displayNameChanged();
+    void decorationChanged();
 };
 
 typedef QSharedPointer<DialogItemPrivate> DialogItem;

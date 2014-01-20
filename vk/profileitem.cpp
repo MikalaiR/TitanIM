@@ -15,24 +15,9 @@
 
 ProfileItemPrivate::ProfileItemPrivate()
 {
-    _id = -1;
-    _sex = unknown;
+    _sex = Unknown;
     _online = false;
     _lastSeen = 0;
-}
-
-int ProfileItemPrivate::id() const
-{
-    return _id;
-}
-
-void ProfileItemPrivate::setId(const int id)
-{
-    if (_id != id)
-    {
-        _id = id;
-        emit propertyChanged(_id, "id");
-    }
 }
 
 QString ProfileItemPrivate::firstName() const
@@ -45,7 +30,7 @@ void ProfileItemPrivate::setFirstName(const QString &firstName)
     if (_firstName != firstName)
     {
         _firstName = firstName;
-        emit propertyChanged(_id, "firstName");
+        emitPropertyChanged("firstName");
     }
 }
 
@@ -59,7 +44,7 @@ void ProfileItemPrivate::setLastName(const QString &lastName)
     if (_lastName != lastName)
     {
         _lastName = lastName;
-        emit propertyChanged(_id, "lastName");
+        emitPropertyChanged("lastName");
     }
 }
 
@@ -78,7 +63,7 @@ void ProfileItemPrivate::setSex(const Sex sex)
     if (_sex != sex)
     {
         _sex = sex;
-        emit propertyChanged(_id, "sex");
+        emitPropertyChanged("sex");
     }
 }
 
@@ -92,7 +77,7 @@ void ProfileItemPrivate::setPhotoMediumRect(const QString &photoMediumRect)
     if (_photoMediumRect != photoMediumRect)
     {
         _photoMediumRect = photoMediumRect;
-        emit propertyChanged(_id, "photoMediumRect");
+        emitPropertyChanged("photoMediumRect");
     }
 }
 
@@ -106,7 +91,7 @@ void ProfileItemPrivate::setOnline(const bool online)
     if (_online != online)
     {
         _online = online;
-        emit propertyChanged(_id, "online");
+        emitPropertyChanged("online");
     }
 }
 
@@ -120,7 +105,7 @@ void ProfileItemPrivate::setLastSeen(const int lastSeen)
     if (_lastSeen != lastSeen)
     {
         _lastSeen = lastSeen;
-        emit propertyChanged(_id, "lastSeen");
+        emitPropertyChanged("lastSeen");
     }
 }
 
@@ -134,7 +119,7 @@ void ProfileItemPrivate::setActivity(const QString &activity)
     if (_activity != activity)
     {
         _activity = activity;
-        emit propertyChanged(_id, "activity");
+        emitPropertyChanged("activity");
     }
 }
 
