@@ -11,24 +11,22 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTLIST_H
-#define ATTACHMENTLIST_H
+import QtQuick 2.0
+import TitanIM 2.0
 
-#include <QSharedPointer>
-#include <QVariant>
-#include "observablecollection.h"
-#include "attachmentitem.h"
+Item {
+    id: attachmentsView
 
-class AttachmentList : public ObservableCollection<AttachmentItem>
-{
-    Q_OBJECT
+    property int maximumWidth
+    property var attachments
+    readonly property alias photoCount: photoAttachments.count
 
-public:
-    AttachmentList();
-    Q_INVOKABLE int count() const;
+    implicitWidth: photoAttachments.implicitWidth
+    implicitHeight: photoAttachments.implicitHeight
 
-public slots:
-    QVariantList filterByType(const Attachment::AttachmentType type) const;
-};
-
-#endif // ATTACHMENTLIST_H
+    PhotoAttachments {
+        id: photoAttachments
+        maximumWidth: attachmentsView.maximumWidth
+        photoList: attachments.filterByType(Attachment.photo)
+    }
+}

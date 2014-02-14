@@ -18,10 +18,12 @@ MessageItemPrivate::MessageItemPrivate()
     _uid = 0;
     _isError = false;
     _chatId = 0;
+    _attachments = 0;
 }
 
 MessageItemPrivate::~MessageItemPrivate()
 {
+    if (_attachments) delete _attachments;
 }
 
 int MessageItemPrivate::uid() const
@@ -160,15 +162,17 @@ bool MessageItemPrivate::isGroupChat() const
     return _chatId == 0 ? false : true;
 }
 
-AttachmentList MessageItemPrivate::attachments() const
+AttachmentList* MessageItemPrivate::attachments() const
 {
     return _attachments;
 }
 
-void MessageItemPrivate::setAttachments(const AttachmentList attachments)
+void MessageItemPrivate::setAttachments(AttachmentList *attachments)
 {
     if (_attachments != attachments)
     {
+        if (_attachments) delete _attachments;
+
         _attachments = attachments;
         emitPropertyChanged("attachments");
     }

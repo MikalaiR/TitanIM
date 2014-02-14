@@ -13,17 +13,17 @@
 
 #include "attachmentitem.h"
 
-AttachmentItemPrivate::AttachmentItemPrivate()
+Attachment::Attachment()
 {
     _attachmentType = unknown;
 }
 
-AttachmentItemPrivate::AttachmentType AttachmentItemPrivate::attachmentType() const
+Attachment::AttachmentType Attachment::attachmentType() const
 {
     return _attachmentType;
 }
 
-void AttachmentItemPrivate::setAttachmentType(const AttachmentType attachmentType)
+void Attachment::setAttachmentType(const AttachmentType attachmentType)
 {
     if (_attachmentType != attachmentType)
     {

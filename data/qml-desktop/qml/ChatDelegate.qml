@@ -1,3 +1,16 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 import QtQuick 2.0
 
 Item {
@@ -6,7 +19,6 @@ Item {
     height: bubble.height + 9
 
     Row {
-        id: msg
         height: parent.height
         anchors.left: parent.left
         anchors.leftMargin: 10
@@ -25,27 +37,14 @@ Item {
             visible: model.decoration
         }
 
-        BorderImage {
+        BubbleItem {
             id: bubble
-            width: body.contentWidth + 32
-            height: body.contentHeight + 11
+            maximumWidth: chatDelegate.width * 0.6
             anchors.bottom: avatar.bottom
             anchors.bottomMargin: -2
-            source: model.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
-            smooth: true
-
-            Text {
-                id: body
-                width: Math.min(body.implicitWidth, chatDelegate.width * 0.6)
-                anchors.left: bubble.left
-                anchors.leftMargin: model.isOut ? 12 : 17
-                anchors.top: bubble.top
-                anchors.topMargin: 3
-                font.pointSize: 13 - 1
-                lineHeight: 0.9
-                wrapMode: Text.Wrap
-                text: model.body
-            }
+            isOut: model.isOut
+            text: model.body
+            attachments: model.attachments
         }
     }
 }

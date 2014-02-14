@@ -17,9 +17,13 @@
 #include <QObject>
 #include "attachmentitem.h"
 
-class PhotoItemPrivate : public AttachmentItemPrivate
+class PhotoItemPrivate : public Attachment
 {
     Q_OBJECT
+    Q_PROPERTY(QString src READ src CONSTANT) //todo signal
+    Q_PROPERTY(QString srcBig READ srcBig CONSTANT)
+    Q_PROPERTY(int width READ width CONSTANT)
+    Q_PROPERTY(int height READ height CONSTANT)
 
 public:
     PhotoItemPrivate();

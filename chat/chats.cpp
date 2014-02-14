@@ -44,6 +44,9 @@ Chats::Chats()
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
     qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
+    qmlRegisterType<AttachmentList>("TitanIM", 2, 0, "AttachmentList");
+    qmlRegisterType<Attachment>("TitanIM", 2, 0, "Attachment");
+    qRegisterMetaType<Attachment::AttachmentType>("Attachment::AttachmentType");
 }
 
 Chats::~Chats()

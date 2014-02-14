@@ -30,6 +30,7 @@ public:
         bodyRole = Qt::UserRole,
         dateRole,
         dateStrRole,
+        attachmentsRole,
         uidRole,
         midRole,
         isUnreadRole,

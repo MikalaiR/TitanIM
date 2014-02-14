@@ -13,6 +13,26 @@
 
 #include "attachmentlist.h"
 
-AttachmentListPrivate::AttachmentListPrivate()
+AttachmentList::AttachmentList()
 {
+}
+
+int AttachmentList::count() const
+{
+    return ObservableCollection::count();
+}
+
+QVariantList AttachmentList::filterByType(const Attachment::AttachmentType type) const
+{
+    QVariantList list;
+
+    for (int i = 0; i < count(); i++)
+    {
+        if (at(i)->attachmentType() == type)
+        {
+            list.append(QVariant::fromValue(at(i).data()));
+        }
+    }
+
+    return list;
 }

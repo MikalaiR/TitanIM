@@ -37,7 +37,7 @@ MessageItem MessageParser::parser(const QVariantMap &item)
 
     if (item.contains("attachments"))
     {
-        AttachmentList attachments = AttachmentsParser::parser(item.value("attachments").toList());
+        AttachmentList *attachments = AttachmentsParser::parser(item.value("attachments").toList());
         message->setAttachments(attachments);
     }
 

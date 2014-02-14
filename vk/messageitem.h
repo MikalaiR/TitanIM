@@ -47,8 +47,8 @@ public:
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;
-    AttachmentList attachments() const;
-    void setAttachments(const AttachmentList attachments);
+    AttachmentList* attachments() const;
+    void setAttachments(AttachmentList *attachments);
 
 private:
     int _uid;
@@ -60,7 +60,7 @@ private:
     QString _title;
     QString _body;
     int _chatId;
-    AttachmentList _attachments;
+    AttachmentList *_attachments;
 };
 
 typedef QSharedPointer<MessageItemPrivate> MessageItem;

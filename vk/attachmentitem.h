@@ -18,10 +18,11 @@
 #include <QSharedPointer>
 #include "notifypropertybase.h"
 
-class AttachmentItemPrivate : public NotifyPropertyBase
+class Attachment : public NotifyPropertyBase
 {
     Q_OBJECT
     Q_ENUMS(AttachmentType)
+    Q_PROPERTY(AttachmentType type READ attachmentType) //todo
 
 public:
     enum AttachmentType
@@ -35,7 +36,7 @@ public:
         unknown = -1
     }; //VK types in lower case. QMetaObject
 
-    AttachmentItemPrivate();
+    Attachment();
     AttachmentType attachmentType() const;
 
 protected:
@@ -45,6 +46,6 @@ private:
     AttachmentType _attachmentType;
 };
 
-typedef QSharedPointer<AttachmentItemPrivate> AttachmentItem;
+typedef QSharedPointer<Attachment> AttachmentItem;
 
 #endif // ATTACHMENTITEM_H
