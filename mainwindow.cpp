@@ -32,7 +32,19 @@ MainWindow::MainWindow(QWindow *parent) :
     setSource(QUrl("qrc:/qml/main.qml"));
     showExpanded();
 
-    Client::instance()->connection()->connectToVk("", "");
+    if (Settings::instance()->lastUid().isEmpty())
+    {
+        qDebug() << "show auth form"; //todo
+        Client::instance()->connection()->connectToVk("", "");
+    }
+    else
+    {
+        QString uid = Settings::instance()->lastUid();
+        Settings::instance()->setCurrentUid(uid);
+        QString token = Settings::instance()->loadProfile("main/token", "").toString();
+        QString secret = Settings::instance()->loadProfile("main/secret", "").toString();
+        Client::instance()->connection()->connectToVk(uid.toInt(), token, secret);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +73,12 @@ void MainWindow::rosterCurrentIndexChanged(const int i)
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
 {
     qDebug() << "connecting" << " " << token << " " << secret;
+
+    Settings::instance()->setCurrentUid(QString::number(uid));
+    Settings::instance()->saveProfile("main/uid", uid);
+    Settings::instance()->saveProfile("main/token", token);
+    Settings::instance()->saveProfile("main/secret", secret);
+    Settings::instance()->saveMain("profiles/last", uid);
 
     dialogsHandler->model()->load();
     rosterModel->load();
