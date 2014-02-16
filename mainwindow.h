@@ -21,6 +21,7 @@
 #include "chat/dialogshandler.h"
 #include "roster/rostermodel.h"
 #include "chat/chats.h"
+#include "settings.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {
