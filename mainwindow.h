@@ -15,13 +15,14 @@
 #define MAINWINDOW_H
 
 #include <QQmlContext>
+#include <QScreen>
 #include <QDebug>
 #include "qtquick2applicationviewer.h"
 #include "vk/client.h"
+#include "authorization.h"
 #include "chat/dialogshandler.h"
 #include "roster/rostermodel.h"
 #include "chat/chats.h"
-#include "settings.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {
@@ -30,12 +31,17 @@ class MainWindow : public QtQuick2ApplicationViewer
 public:
     explicit MainWindow(QWindow *parent = 0);
     ~MainWindow();
+    void moveToCenter();
+    void showExpanded();
 
 private:
+    Authorization *authorization;
     DialogsHandler *dialogsHandler;
     RosterModel *rosterModel;
 
 public slots:
+    void showAuthPage();
+    void showMainPage();
     void dialogCurrentIndexChanged(const int i);
     void rosterCurrentIndexChanged(const int i);
 
