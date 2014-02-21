@@ -50,7 +50,9 @@ SOURCES += main.cpp \
     vk/photoitem.cpp \
     vk/notifypropertybase.cpp \
     vk/attachmentsparser.cpp \
-    vk/photoparser.cpp
+    vk/photoparser.cpp \
+    settings.cpp \
+    authorization.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -90,7 +92,9 @@ HEADERS += \
     vk/photoitem.h \
     vk/notifypropertybase.h \
     vk/attachmentsparser.h \
-    vk/photoparser.h
+    vk/photoparser.h \
+    settings.h \
+    authorization.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

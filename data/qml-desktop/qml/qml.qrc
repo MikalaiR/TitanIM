@@ -34,5 +34,7 @@
         <file>ImageMask.qml</file>
         <file>BubbleItem.qml</file>
         <file>PhotoAttachments.qml</file>
+        <file>Authorization.qml</file>
+        <file>images/logo_full.png</file>
     </qresource>
 </RCC>

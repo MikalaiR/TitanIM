@@ -16,6 +16,11 @@
 MainWindow::MainWindow(QWindow *parent) :
     QtQuick2ApplicationViewer(parent)
 {
+    authorization = new Authorization();
+
+    connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
+    connect(authorization, SIGNAL(showMainPage()), this, SLOT(showMainPage()));
+
     connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
 //    connect(Client::instance()->connection(), SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
@@ -23,24 +28,39 @@ MainWindow::MainWindow(QWindow *parent) :
     dialogsHandler = new DialogsHandler();
     rosterModel = new RosterModel(this);
 
+    rootContext()->setContextProperty("authorization", authorization);
     rootContext()->setContextProperty("main", this);
     rootContext()->setContextProperty("dialogsModel", dialogsHandler->proxy());
     rootContext()->setContextProperty("rosterModel", rosterModel);
     rootContext()->setContextProperty("chats", Chats::instance());
 
     setTitle("TitanIM");
-    setSource(QUrl("qrc:/qml/main.qml"));
-    showExpanded();
-
-    Client::instance()->connection()->connectToVk("", "");
+    authorization->connectToVk();
 }
 
 MainWindow::~MainWindow()
 {
     delete rosterModel;
     delete dialogsHandler;
+    delete authorization;
     Chats::instance()->destroy();
     Client::instance()->destroy();
+}
+
+void MainWindow::showAuthPage()
+{
+    setWidth(350);
+    setHeight(160);
+    setSource(QUrl("qrc:/qml/Authorization.qml"));
+    showExpanded();
+}
+
+void MainWindow::showMainPage()
+{
+    setWidth(720);
+    setHeight(520);
+    setSource(QUrl("qrc:/qml/main.qml"));
+    showExpanded();
 }
 
 void MainWindow::dialogCurrentIndexChanged(const int i)
@@ -58,17 +78,28 @@ void MainWindow::rosterCurrentIndexChanged(const int i)
     Chats::instance()->openChat(dialog);
 }
 
+void MainWindow::moveToCenter()
+{
+    QScreen *screen = this->screen();
+    int x = (screen->virtualGeometry().width() / 2) - (this->width() / 2);
+    int y = (screen->virtualGeometry().height() / 2) - (this->height() / 2);
+    this->setPosition(x, y);
+}
+
+void MainWindow::showExpanded()
+{
+    QtQuick2ApplicationViewer::showExpanded();
+    moveToCenter();
+}
+
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
 {
-    qDebug() << "connecting" << " " << token << " " << secret;
-
     dialogsHandler->model()->load();
     rosterModel->load();
 }
 
 void MainWindow::onDisconnected()
 {
-    qDebug() << "disconnecting";
 }
 
 //void MainWindow::onError(const QQuickView::Error &error, const QString &text, const bool global, const bool fatal)

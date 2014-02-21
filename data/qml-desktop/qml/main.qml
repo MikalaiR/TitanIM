@@ -16,9 +16,6 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 Rectangle {
-    height: 520;
-    width: 720;
-
     SplitView {
         anchors.fill: parent
         orientation: Qt.Horizontal
