@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(codec);
 
     QCoreApplication::setApplicationName("TitanIM");
-    QCoreApplication::setApplicationVersion("2.0.0");
+    QCoreApplication::setApplicationVersion("2.0.1");
     QCoreApplication::setOrganizationName("Ruslan Nazarov");
     QCoreApplication::setOrganizationDomain("http://titanim.ru");
 
