@@ -18,19 +18,19 @@ Item {
     width: chatDelegate.ListView.view.width
     height: Math.max(avatar.height + 4, bubble.height + 9)
 
-    Row {
+    Item {
         height: parent.height
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.right: parent.right
         anchors.rightMargin: 10
-        spacing: 3
-        LayoutMirroring.enabled: model.isOut
 
         AvatarImage {
             id: avatar
             width: 32
             height: 32
+            LayoutMirroring.enabled: model.isOut
+            anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 1
             source: model.decoration
@@ -39,7 +39,10 @@ Item {
 
         BubbleItem {
             id: bubble
+            LayoutMirroring.enabled: model.isOut
             maximumWidth: chatDelegate.width * 0.6
+            anchors.left: avatar.right
+            anchors.leftMargin: 3
             anchors.bottom: avatar.bottom
             anchors.bottomMargin: -2
             isOut: model.isOut
