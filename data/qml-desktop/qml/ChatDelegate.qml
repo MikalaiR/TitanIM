@@ -16,7 +16,7 @@ import QtQuick 2.0
 Item {
     id: chatDelegate
     width: chatDelegate.ListView.view.width
-    height: bubble.height + 9
+    height: Math.max(avatar.height + 4, bubble.height + 9)
 
     Row {
         height: parent.height
@@ -32,7 +32,7 @@ Item {
             width: 32
             height: 32
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 5
+            anchors.bottomMargin: 1
             source: model.decoration
             visible: model.decoration
         }
