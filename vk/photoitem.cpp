@@ -17,7 +17,6 @@ PhotoItemPrivate::PhotoItemPrivate()
 {
     setAttachmentType(photo);
     _albumId = 0;
-    _ownerId = 0;
     _width = 0;
     _height = 0;
 }
@@ -36,26 +35,12 @@ void PhotoItemPrivate::setAlbumId(const int albumId)
     }
 }
 
-int PhotoItemPrivate::ownerId() const
-{
-    return _ownerId;
-}
-
-void PhotoItemPrivate::setOwnerId(const int ownerId)
-{
-    if (_ownerId != ownerId)
-    {
-        _ownerId = ownerId;
-        emitPropertyChanged("ownerId");
-    }
-}
-
-QString PhotoItemPrivate::src() const
+QUrl PhotoItemPrivate::src() const
 {
     return _src;
 }
 
-void PhotoItemPrivate::setSrc(const QString &src)
+void PhotoItemPrivate::setSrc(const QUrl &src)
 {
     if (_src != src)
     {
@@ -64,12 +49,12 @@ void PhotoItemPrivate::setSrc(const QString &src)
     }
 }
 
-QString PhotoItemPrivate::srcBig() const
+QUrl PhotoItemPrivate::srcBig() const
 {
     return _srcBig;
 }
 
-void PhotoItemPrivate::setSrcBig(const QString &srcBig)
+void PhotoItemPrivate::setSrcBig(const QUrl &srcBig)
 {
     if (_srcBig != srcBig)
     {

@@ -18,6 +18,7 @@
 #include <QQueue>
 #include "connection.h"
 #include "messageitem.h"
+#include "uploadattachments.h"
 
 class SendMessageHandler : public QObject
 {
@@ -25,6 +26,7 @@ class SendMessageHandler : public QObject
 
 public:
     explicit SendMessageHandler(Connection *connection);
+    ~SendMessageHandler();
     void send(MessageItem message);
 
 private:
@@ -32,12 +34,11 @@ private:
     QQueue<MessageItem> _messageQuery;
     bool _isProcessing;
     QMap<int,MessageItem> _messagesInProcessing;
-
-private:
-    void execSendMessageQuery();
-    void sendMessage();
+    UploadAttachments *_uploadAttachments;
 
 private slots:
+    void execSendMessageQuery();
+    void sendMessage();
     void sendMessageFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
