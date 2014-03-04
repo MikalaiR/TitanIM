@@ -52,7 +52,9 @@ SOURCES += main.cpp \
     vk/attachmentsparser.cpp \
     vk/photoparser.cpp \
     settings.cpp \
-    authorization.cpp
+    authorization.cpp \
+    vk/uploadattachments.cpp \
+    vk/uploadfile.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -94,7 +96,9 @@ HEADERS += \
     vk/attachmentsparser.h \
     vk/photoparser.h \
     settings.h \
-    authorization.h
+    authorization.h \
+    vk/uploadattachments.h \
+    vk/uploadfile.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \
