@@ -43,9 +43,11 @@ private:
     static int _internalMessageId;
     int _countUnsent;
     QVector<MessageItem> _tempMessageQueue;
+    AttachmentList *_outAttachments;
 
 public slots:
     void sendMessage(const QString &text);
+    void addAttachments(const QList<QUrl> &list);
 
 protected slots:
     void onMessageSending(const int internalMid);

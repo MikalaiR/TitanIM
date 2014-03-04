@@ -14,6 +14,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.0
+import QtQuick.Dialogs 1.0
 
 Item {
 
@@ -67,6 +68,17 @@ Item {
         }
     }
 
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp *.gif)"]
+        selectMultiple: true
+
+        onAccepted: {
+            chats.currentChat.addAttachments(fileDialog.fileUrls)
+        }
+    }
+
     Item {
         id: footer
         z: 1
@@ -77,6 +89,21 @@ Item {
         HeaderSeparator {
             id: footerSeparator
             anchors.top: parent.top
+        }
+
+        Image {
+            id: uploadBtn
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            source: "images/attach.png"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    fileDialog.open()
+                }
+            }
         }
 
         TextField {
@@ -97,8 +124,8 @@ Item {
                 padding { top: 6 ; left: 12 ; right: 12; bottom:4 }
             }
 
-            anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.left: uploadBtn.right
+            anchors.leftMargin: 5
             anchors.right: parent.right
             anchors.rightMargin: 10
             anchors.verticalCenter: parent.verticalCenter

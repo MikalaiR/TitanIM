@@ -16,6 +16,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QMetaEnum>
 #include "notifypropertybase.h"
 
 class Attachment : public NotifyPropertyBase
@@ -38,12 +39,20 @@ public:
 
     Attachment();
     AttachmentType attachmentType() const;
+    int ownerId() const;
+    void setOwnerId(const int ownerId);
+    int uploadProgress() const;
+    void setUploadProgress(const int progress);
+    bool isUploading() const;
+    QString toString() const;
 
 protected:
     void setAttachmentType(const AttachmentType attachmentType);
 
 private:
     AttachmentType _attachmentType;
+    int _ownerId;
+    int _uploadProgress;
 };
 
 typedef QSharedPointer<Attachment> AttachmentItem;

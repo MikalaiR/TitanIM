@@ -36,5 +36,6 @@
         <file>PhotoAttachments.qml</file>
         <file>Authorization.qml</file>
         <file>images/logo_full.png</file>
+        <file>images/attach.png</file>
     </qresource>
 </RCC>

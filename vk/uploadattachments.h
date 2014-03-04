@@ -11,39 +11,37 @@
  ***************************************************************************
 */
 
-#ifndef SENDMESSAGEHANDLER_H
-#define SENDMESSAGEHANDLER_H
+#ifndef UPLOADATTACHMENTS_H
+#define UPLOADATTACHMENTS_H
 
 #include <QObject>
-#include <QQueue>
 #include "connection.h"
-#include "messageitem.h"
-#include "uploadattachments.h"
+#include "uploadfile.h"
+#include "attachmentlist.h"
+#include "photoitem.h"
 
-class SendMessageHandler : public QObject
+class UploadAttachments : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit SendMessageHandler(Connection *connection);
-    ~SendMessageHandler();
-    void send(MessageItem message);
+    explicit UploadAttachments(Connection *connection);
+    void setAttachments(AttachmentList *attachments);
+    void upload();
 
 private:
     Connection *_connection;
-    QQueue<MessageItem> _messageQuery;
-    bool _isProcessing;
-    QMap<int,MessageItem> _messagesInProcessing;
-    UploadAttachments *_uploadAttachments;
+    AttachmentList *_attachments;
+    int _index;
+    int _countUpload;
 
-private slots:
-    void execSendMessageQuery();
-    void sendMessage();
-    void sendMessageFinished(const Packet *sender, const QVariantMap &result);
+protected slots:
+    void onGetUploadServerFinished(const Packet *sender, const QVariantMap &result);
+    void onUploadFileFinished(const int id, const QByteArray &result);
+    void onSaveMessagesPhotoFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
-    void sending(const int internalMid);
-    void successfullyMessageSent(const int internalMid, const int serverMid);
+    void finished();
 };
 
-#endif // SENDMESSAGEHANDLER_H
+#endif // UPLOADATTACHMENTS_H
