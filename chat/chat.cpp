@@ -18,6 +18,7 @@ int Chat::_internalMessageId = 0;
 Chat::Chat()
 {
     _countUnsent = 0;
+    _outAttachments = 0;
 
     _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
     connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
@@ -29,6 +30,7 @@ Chat::Chat(const DialogItem dialog)
     _dialog = dialog;
     _model = new ChatModel(_dialog, Client::instance()->profile(), this);
     _countUnsent = 0;
+    _outAttachments = 0;
 
     _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
     connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
@@ -37,6 +39,8 @@ Chat::Chat(const DialogItem dialog)
 
 Chat::~Chat()
 {
+    if (_outAttachments) delete _outAttachments;
+
     delete _sendMessageHandler;
     delete _model;
 }
@@ -73,7 +77,7 @@ void Chat::addTempMessageQueue(MessageItem message)
 
 void Chat::sendMessage(const QString &text)
 {
-    if (text.isEmpty() /*&& outAttachmentsCount == 0*/)//todo
+    if (text.isEmpty() && (!_outAttachments || !_outAttachments->count()))
     {
         return;
     }
@@ -97,10 +101,27 @@ void Chat::sendMessage(const QString &text)
     message->setIsError(false);
     message->setBody(text);
 
-//    message->setAttachments(_outAttachments);
-//    _outAttachments = null;
+    message->setAttachments(_outAttachments);
+    _outAttachments = 0;
     _model->prepend(message);
     _sendMessageHandler->send(message);
+}
+
+void Chat::addAttachments(const QList<QUrl> &list)
+{
+    if (!_outAttachments)
+    {
+        _outAttachments = new AttachmentList();
+    }
+
+    for (int i = 0; i < list.count(); i++)
+    {
+        PhotoItem photo = PhotoItem::create();
+        photo->setSrc(list.at(i));
+        photo->setSrcBig(list.at(i));
+
+        _outAttachments->add(photo);
+    }
 }
 
 void Chat::onMessageSending(const int internalMid)
