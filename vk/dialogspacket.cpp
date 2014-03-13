@@ -16,6 +16,10 @@
 DialogsPacket::DialogsPacket(Connection *connection)
 {
     _connection = connection;
+
+    _offset = 0;
+    _count = 0;
+    _serverCount = 0;
     _fields = "photo_100,online,last_seen,sex";
 }
 
@@ -60,6 +64,11 @@ int DialogsPacket::count() const
     return _count;
 }
 
+int DialogsPacket::serverCount() const
+{
+    return _serverCount;
+}
+
 QString DialogsPacket::fields() const
 {
     return _fields;
@@ -76,6 +85,8 @@ void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &result
 
     ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
     DialogList dialogList = DialogParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
+
+    _serverCount = response.value("dialogs").toMap()["count"].toInt();
 
     int countNewMessages = response.value("countNewMsg").toInt();
     int countRequestsFriends = response.value("countNewFriends").toInt();

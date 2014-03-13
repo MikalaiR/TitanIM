@@ -24,10 +24,16 @@ class HistoryPacket : public QObject
 
 public:
     explicit HistoryPacket(Connection *connection);
-    void load(const int id, const int offset=0, const int count=20);
+    void load(const int id, const int offset, const int count);
+    int offset() const;
+    int count() const;
+    int serverCount() const;
 
 private:
     Connection *_connection;
+    int _offset;
+    int _count;
+    int _serverCount;
 
 private slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);
