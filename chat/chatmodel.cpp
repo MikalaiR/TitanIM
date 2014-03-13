@@ -13,21 +13,38 @@
 
 #include "chatmodel.h"
 
-ChatModel::ChatModel(const DialogItem dialog, const ProfileItem ownProfile, QObject *parent) :
+ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     QAbstractListModel(parent)
 {
     _dialog = dialog;
-    _ownProfile = ownProfile;
+    _ownProfile = Client::instance()->profile();
 
     _messages = MessageList::create();
     connect(_messages.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
 
+    _historyPacket = new HistoryPacket(Client::instance()->connection());
+    connect(_historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onHistoryLoaded(const HistoryPacket*,int,MessageList)));
+
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(onRowsChanged(QModelIndex,int,int)));
     connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(onRowsChanged(QModelIndex,int,int)));
+
+    _serverCount = 0;
+    _isLoading = false;
 }
 
 ChatModel::~ChatModel()
 {
+    delete _historyPacket;
+}
+
+void ChatModel::load(const int count)
+{
+    _historyPacket->load(_dialog->id(), 0, count);
+}
+
+void ChatModel::loadNext(const int count)
+{
+    _historyPacket->load(_dialog->id(), _messages->count(), count);
 }
 
 void ChatModel::append(const MessageList items)
@@ -186,6 +203,38 @@ Qt::ItemFlags ChatModel::flags(const QModelIndex &index) const
     {
         return Qt::NoItemFlags;
     }
+}
+
+bool ChatModel::canFetchMore(const QModelIndex &parent) const
+{
+    if (_isLoading || _messages->count() >= _serverCount)
+    {
+        return false;
+    }
+
+    _isLoading = true;
+    return true;
+}
+
+void ChatModel::fetchMore(const QModelIndex &parent)
+{
+    loadNext();
+}
+
+void ChatModel::onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages)
+{
+    _serverCount = sender->serverCount();
+
+    if (!sender->offset())
+    {
+        replaceAll(messages);
+    }
+    else
+    {
+        append(messages);
+    }
+
+    _isLoading = false;
 }
 
 void ChatModel::onItemChanged(const int i)

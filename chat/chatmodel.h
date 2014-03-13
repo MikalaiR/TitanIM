@@ -18,6 +18,8 @@
 #include <QStringList>
 #include "vk/messagelist.h"
 #include "vk/dialogitem.h"
+#include "vk/client.h"
+#include "vk/historypacket.h"
 #include "vk/utils.h"
 
 class ChatModel : public QAbstractListModel
@@ -37,8 +39,10 @@ public:
         isOutRole
     };
 
-    explicit ChatModel(const DialogItem dialog, const ProfileItem ownProfile, QObject *parent = 0);
+    explicit ChatModel(const DialogItem dialog, QObject *parent = 0);
     ~ChatModel();
+    void load(const int count=20);
+    void loadNext(const int count=20);
     void append(const MessageList items);
     void append(const MessageItem item, const bool replace=false);
     void prepend(const MessageItem item, const bool replace=false);
@@ -56,8 +60,16 @@ private:
     MessageList _messages;
     DialogItem _dialog;
     ProfileItem _ownProfile;
+    HistoryPacket *_historyPacket;
+    int _serverCount;
+    mutable bool _isLoading;
+
+protected:
+    bool canFetchMore(const QModelIndex &parent) const;
+    void fetchMore(const QModelIndex &parent);
 
 protected slots:
+    void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
     void onItemChanged(const int i);
     void onRowsChanged(const QModelIndex &parent, int first, int last);
 };

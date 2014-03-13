@@ -56,6 +56,12 @@ public:
 private:
     DialogList _dialogs;
     DialogsPacket *_dialogsPacket;
+    int _serverCount;
+    mutable bool _isLoading;
+
+protected:
+    bool canFetchMore(const QModelIndex &parent) const;
+    void fetchMore(const QModelIndex &parent);
 
 protected slots:
     void onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs);

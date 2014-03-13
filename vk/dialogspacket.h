@@ -28,6 +28,7 @@ public:
     void load(const int offset, const int count);
     int offset() const;
     int count() const;
+    int serverCount() const;
     QString fields() const;
     void setFields(const QString &fields);
 
@@ -35,6 +36,7 @@ private:
     Connection *_connection;
     int _offset;
     int _count;
+    int _serverCount;
     QString _fields;
 
 private slots:
