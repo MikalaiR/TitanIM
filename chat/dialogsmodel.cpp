@@ -21,6 +21,9 @@ DialogsModel::DialogsModel(QObject *parent) :
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
     connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const DialogList)), SLOT(onDialogsLoaded(const DialogsPacket*,const DialogList)));
+
+    _serverCount = 0;
+    _isLoading = false;
 }
 
 DialogsModel::~DialogsModel()
@@ -195,8 +198,26 @@ Qt::ItemFlags DialogsModel::flags(const QModelIndex &index) const
     }
 }
 
+bool DialogsModel::canFetchMore(const QModelIndex &parent) const
+{
+    if (_isLoading || _dialogs->count() >= _serverCount)
+    {
+        return false;
+    }
+
+    _isLoading = true;
+    return true;
+}
+
+void DialogsModel::fetchMore(const QModelIndex &parent)
+{
+    loadNext();
+}
+
 void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs)
 {
+    _serverCount = sender->serverCount();
+
     if (!sender->offset())
     {
         replaceAll(dialogs);
@@ -205,6 +226,8 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList
     {
         append(dialogs);
     }
+
+    _isLoading = false;
 }
 
 void DialogsModel::onItemChanged(const int i)
