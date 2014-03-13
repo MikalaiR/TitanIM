@@ -28,7 +28,7 @@ Chat::Chat()
 Chat::Chat(const DialogItem dialog)
 {
     _dialog = dialog;
-    _model = new ChatModel(_dialog, Client::instance()->profile(), this);
+    _model = new ChatModel(_dialog, this);
     _countUnsent = 0;
     _outAttachments = 0;
 

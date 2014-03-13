@@ -17,14 +17,10 @@ ChatsHandler::ChatsHandler()
 {
     connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
-
-    _historyPacket = new HistoryPacket(Client::instance()->connection());
-    connect(_historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onHistoryLoaded(const HistoryPacket*,int,MessageList)));
 }
 
 ChatsHandler::~ChatsHandler()
 {
-    delete _historyPacket;
     clear();
 }
 
@@ -33,7 +29,7 @@ void ChatsHandler::create(const DialogItem dialog)
     int id = dialog->id();
 
     _chats[id] = new Chat(dialog);
-    _historyPacket->load(id);
+    _chats[id]->model()->load();
 }
 
 bool ChatsHandler::contains(const int id) const
@@ -82,13 +78,5 @@ void ChatsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
         {
             chat->model()->prepend(message, true);
         }
-    }
-}
-
-void ChatsHandler::onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages)
-{
-    if (contains(id))
-    {
-        chat(id)->model()->replaceAll(messages);
     }
 }

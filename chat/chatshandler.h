@@ -18,7 +18,6 @@
 #include <QMap>
 #include "chat.h"
 #include "vk/client.h"
-#include "vk/historypacket.h"
 
 class ChatsHandler : public QObject
 {
@@ -34,12 +33,10 @@ public:
 
 private:
     QMap<int, Chat*> _chats;
-    HistoryPacket *_historyPacket;
 
 protected slots:
     void onLongPollMessageInAdded(const DialogItem dialog);
     void onLongPollMessageOutAdded(const DialogItem dialog);
-    void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
 };
 
 #endif // CHATSHANDLER_H
