@@ -27,6 +27,7 @@ DialogsHandler::DialogsHandler()
 
     connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
 }
 
 DialogsHandler::~DialogsHandler()
@@ -72,5 +73,15 @@ void DialogsHandler::onLongPollMessageAdded(const DialogItem dialog)
     else
     {
         _model->append(dialog);
+    }
+}
+
+void DialogsHandler::onUserStatusChanged(const int uid, const bool online)
+{
+    int i = _model->indexOf(uid);
+
+    if (i > -1)
+    {
+        _model->at(i)->profile()->setOnline(online);
     }
 }

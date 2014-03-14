@@ -37,5 +37,6 @@
         <file>Authorization.qml</file>
         <file>images/logo_full.png</file>
         <file>images/attach.png</file>
+        <file>OnlineIcon.qml</file>
     </qresource>
 </RCC>

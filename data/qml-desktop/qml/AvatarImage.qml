@@ -18,6 +18,7 @@ Rectangle {
 
     property string source: ""
     property int border: 2
+    property bool online: false
 
     scale: 0.0
     color: "#868a8f"
@@ -36,6 +37,17 @@ Rectangle {
         fillMode: Image.PreserveAspectCrop
         smooth: true
         source: avatarImage.source
+    }
+
+    OnlineIcon {
+        id: onlineIcon
+        width: 12
+        height: 12
+        anchors.left: parent.left
+        anchors.leftMargin: -3
+        anchors.top: parent.top
+        anchors.topMargin: -3
+        visible: avatarImage.online;
     }
 
     states: [

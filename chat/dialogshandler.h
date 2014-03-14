@@ -36,6 +36,7 @@ private:
 
 protected slots:
     void onLongPollMessageAdded(const DialogItem dialog);
+    void onUserStatusChanged(const int uid, const bool online);
 };
 
 #endif // DIALOGSHANDLER_H

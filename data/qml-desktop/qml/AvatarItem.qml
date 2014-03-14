@@ -17,6 +17,7 @@ Item {
     id: avatarItem
 
     property var source
+    property bool online: false
 
     Component {
         id: avatarImage
@@ -41,6 +42,7 @@ Item {
                 width: parent.width
                 height: i3.active ? parent.height / 2 - 1 : parent.height
                 source: avatarItem.source[0]
+                online: avatarItem.online && avatarItem.source.length === 1
             }
 
             Loader {

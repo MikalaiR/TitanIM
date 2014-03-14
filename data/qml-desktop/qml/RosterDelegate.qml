@@ -48,6 +48,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -1
             source: model.decoration
+            online: model.online
         }
 
         Column {
@@ -56,31 +57,15 @@ Item {
 
             spacing: -2
 
-            Item {
+            Text {
+                id: name
                 width: parent.width
-                height: name.height
-
-                Text {
-                    id: name
-                    width: Math.min(implicitWidth, parent.width - onlineImg.width)
-                    anchors.left: parent.left
-                    color: "black"
-                    font.pointSize: 13
-                    font.bold: true
-                    font.family: "Helvetica"
-                    elide: Text.ElideRight
-                    text: model.display
-                }
-
-                Image {
-                    id: onlineImg
-                    width: visible ? implicitWidth : 0
-                    anchors.left: name.right
-                    anchors.leftMargin: 6
-                    anchors.verticalCenter: name.verticalCenter
-                    visible: model.online;
-                    source: "images/ic_online_up.png";
-                }
+                color: "black"
+                font.pointSize: 13
+                font.bold: true
+                font.family: "Helvetica"
+                elide: Text.ElideRight
+                text: model.display
             }
 
             Text {

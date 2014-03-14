@@ -43,6 +43,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -1
             source: model.decoration
+            online: model.online
 
             MouseArea {
                 anchors.fill: parent
