@@ -16,7 +16,14 @@ import QtQuick 2.0
 Item {
     id: chatDelegate
     width: chatDelegate.ListView.view.width
-    height: Math.max(avatar.height + 4, bubble.height + 9)
+    height: Math.max(avatar.height + 4, bubble.height + 9) + sectionText.height
+
+    SectionText {
+        id: sectionText
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: chatDelegate.ListView.nextSection !== chatDelegate.ListView.section
+        text: model.section
+    }
 
     Item {
         height: parent.height

@@ -62,6 +62,7 @@ Item {
         delegate: ChatDelegate { }
         verticalLayoutDirection: ListView.BottomToTop
         clip: true
+        section.property: "section"
 
         onContentYChanged: {
             footerSeparator.opacity = (-chatView.contentY - chatView.height) / 20

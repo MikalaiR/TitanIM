@@ -38,5 +38,7 @@
         <file>images/logo_full.png</file>
         <file>images/attach.png</file>
         <file>OnlineIcon.qml</file>
+        <file>TextShadow.qml</file>
+        <file>SectionText.qml</file>
     </qresource>
 </RCC>

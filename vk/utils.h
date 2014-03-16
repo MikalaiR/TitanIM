@@ -30,7 +30,9 @@ public:
     static QString join(const QMap<QString, QString> &list, const QChar &separator);
     static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
     static QString decode(const QString &str);
-    static QString dateToText(const QDateTime &date);
+    static QString dateToText(const QDateTime &dateTime);
+    static QString dateToSection(const QDateTime &dateTime);
+    static QString firstUpper(const QString &str);
     static QVector<int> toVectorInt(const QVariantList &list);
 };
 

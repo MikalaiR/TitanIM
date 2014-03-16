@@ -37,7 +37,8 @@ public:
         midRole,
         isUnreadRole,
         isOutRole,
-        onlineRole
+        onlineRole,
+        sectionRole
     };
 
     explicit ChatModel(const DialogItem dialog, QObject *parent = 0);

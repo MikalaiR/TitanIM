@@ -70,14 +70,14 @@ QString Utils::decode(const QString &str)
     return temp;
 }
 
-QString Utils::dateToText(const QDateTime &date)
+QString Utils::dateToText(const QDateTime &dateTime)
 {
-    int days = date.daysTo(QDateTime::currentDateTime());
+    int days = dateTime.daysTo(QDateTime::currentDateTime());
 
     switch (days)
     {
     case 0:
-        return date.time().toString("hh:mm");
+        return dateTime.time().toString("hh:mm");
 
     case 1:
         return QObject::tr("yesterday");
@@ -87,18 +87,58 @@ QString Utils::dateToText(const QDateTime &date)
     case 4:
     case 5:
     case 6:
-        return date.date().toString("ddd");
+        return dateTime.date().toString("ddd");
 
     default:
-        if (date.date().year() == QDate::currentDate().year())
+        if (dateTime.date().year() == QDate::currentDate().year())
         {
-            return date.date().toString("d MMM");
+            return dateTime.date().toString("d MMM");
         }
         else
         {
-            return date.date().toString("dd.MM.yy");
+            return dateTime.date().toString("dd.MM.yy");
         }
     }
+}
+
+QString Utils::dateToSection(const QDateTime &dateTime)
+{
+    int days = dateTime.daysTo(QDateTime::currentDateTime());
+    QString dateStr = dateTime.date().toString("d MMMM");
+
+    switch (days)
+    {
+    case 0:
+        return QObject::tr("Today, %1").arg(dateStr);
+
+    case 1:
+        return QObject::tr("Yesterday, %1").arg(dateStr);
+
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        return firstUpper(dateTime.date().toString("dddd, %1").arg(dateStr));
+
+    default:
+        if (dateTime.date().year() == QDate::currentDate().year())
+        {
+            return dateStr;
+        }
+        else
+        {
+            return dateTime.date().toString("d MMM yyyy");
+        }
+    }
+}
+
+QString Utils::firstUpper(const QString &str)
+{
+    QString result = str;
+    result[0] = result.at(0).toUpper();
+
+    return result;
 }
 
 QVector<int> Utils::toVectorInt(const QVariantList &list)

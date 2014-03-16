@@ -127,6 +127,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[isUnreadRole] = "isUnread";
     roles[isOutRole] = "isOut";
     roles[onlineRole] = "online";
+    roles[sectionRole] = "section";
 
     return roles;
 }
@@ -175,6 +176,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
     case onlineRole:
         return message->isOut() ? _ownProfile->online() : profile->online();
+
+    case sectionRole:
+        return Utils::dateToSection(message->date());
     }
 
     return QVariant();
