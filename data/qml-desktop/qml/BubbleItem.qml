@@ -19,6 +19,7 @@ Item {
     property int maximumWidth
     property bool isOut: false
     property alias text: body.text
+    property alias time: time.text
     property var attachments
 
     implicitWidth: bubble.width
@@ -61,6 +62,17 @@ Item {
                 }
             }
         }
+    }
+
+    TextShadow {
+        id: time
+        LayoutMirroring.enabled: !bubbleItem.isOut
+        anchors.right: parent.left
+        anchors.rightMargin: 4
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 6
+        font.pointSize: 13 - 4
+        color: "#8B92A4"
     }
 
     Loader {

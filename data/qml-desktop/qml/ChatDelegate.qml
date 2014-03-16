@@ -54,6 +54,7 @@ Item {
             anchors.bottomMargin: -2
             isOut: model.isOut
             text: model.body
+            time: model.timeStr
             attachments: model.attachments
         }
     }

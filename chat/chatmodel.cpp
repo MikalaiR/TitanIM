@@ -120,7 +120,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
 
     roles[bodyRole] = "body";
     roles[dateRole] = "date";
-    roles[dateStrRole] = "dateStr";
+    roles[timeStrRole] = "timeStr";
     roles[attachmentsRole] = "attachments";
     roles[uidRole] = "uid";
     roles[midRole] = "mid";
@@ -156,8 +156,8 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case dateRole:
         return message->date();
 
-    case dateStrRole:
-        return Utils::dateToText(message->date());
+    case timeStrRole:
+        return message->date().toString("hh:mm");
 
     case attachmentsRole:
         return QVariant::fromValue(message->attachments());
