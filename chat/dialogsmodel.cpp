@@ -163,7 +163,7 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return message->isOut();
 
     case onlineRole:
-        return profile->online();
+        return !dialog->isGroupChat() && profile->online();
     }
 
     return QVariant();
