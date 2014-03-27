@@ -141,6 +141,99 @@ QString Utils::firstUpper(const QString &str)
     return result;
 }
 
+QString Utils::pluralForm(const int n, const QString &form1, const QString &form2, const QString &form5)
+{
+    int n1 = n % 100;
+    int n2 = n1 % 10;
+
+    if (n1 > 10 && n1 < 20)
+    {
+        return QString("%1 %2").arg(n).arg(form5);
+    }
+
+    if (n2 > 1 && n2 < 5)
+    {
+        return QString("%1 %2").arg(n).arg(form2);
+    }
+
+    if (n2 == 1)
+    {
+        return QString("%1 %2").arg(n).arg(form1);
+    }
+
+    return QString("%1 %2").arg(n).arg(form5);
+}
+
+QString Utils::lastSeenToString(const uint lastSeen, const Sex sex)
+{
+    if (lastSeen == 0)
+    {
+        return QObject::tr("offline");
+    }
+
+    QDateTime dateTime = QDateTime::fromTime_t(lastSeen);
+
+    QString prefix = (sex == Woman) ? QObject::tr("last seen", "woman") : QObject::tr("last seen", "man");
+    int days = dateTime.daysTo(QDateTime::currentDateTime());
+
+    switch (days) {
+    case 0:
+    {
+        int minutes = dateTime.secsTo(QDateTime::currentDateTime()) / 60;
+
+        if (minutes == 0)
+        {
+            return QString("%1 %2")
+                    .arg(prefix)
+                    .arg(QObject::tr("just now"));
+        }
+
+        if (minutes < 60)
+        {
+            QString suffix = pluralForm(minutes, QObject::tr("minute", "1"), QObject::tr("minutes", "2"), QObject::tr("minutes", "5"));
+            return QString("%1 %2 %3")
+                    .arg(prefix)
+                    .arg(suffix)
+                    .arg(QObject::tr("ago"));
+        }
+
+        if (minutes < 240)
+        {
+            int hours = minutes / 60;
+
+            QString suffix = pluralForm(hours, QObject::tr("hour", "1"), QObject::tr("hours", "2"), QObject::tr("hours", "5"));
+            return QString("%1 %2 %3")
+                    .arg(prefix)
+                    .arg(suffix)
+                    .arg(QObject::tr("ago"));
+        }
+        else
+        {
+            return QString("%1 %2 %3").arg(prefix).arg(QObject::tr("today at")).arg(dateTime.toString("h:mm"));
+        }
+
+        break;
+    }
+
+    case 1:
+        return QString("%1 %2 %3").arg(prefix).arg(QObject::tr("yesterday at")).arg(dateTime.toString("h:mm"));
+        break;
+
+    default:
+        return QString("%1 %2").arg(prefix).arg(dateTime.toString("d MMMM yyyy h:mm"));
+    }
+}
+
+QString Utils::peopleConversation(const int count)
+{
+    if (count == 0)
+    {
+        return QObject::tr("no members");
+    }
+
+    return pluralForm(count, QObject::tr("member", "1"), QObject::tr("members", "2"), QObject::tr("members", "5"));
+}
+
 QVector<int> Utils::toVectorInt(const QVariantList &list)
 {
     QVector<int> v;

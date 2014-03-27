@@ -21,6 +21,7 @@
 #include <QDateTime>
 #include <QVector>
 #include "k8json.h"
+#include "global.h"
 
 class Utils
 {
@@ -33,6 +34,9 @@ public:
     static QString dateToText(const QDateTime &dateTime);
     static QString dateToSection(const QDateTime &dateTime);
     static QString firstUpper(const QString &str);
+    static QString pluralForm(const int n, const QString &form1, const QString &form2, const QString &form5);
+    static QString lastSeenToString(const uint lastSeen, const Sex sex=Unknown);
+    static QString peopleConversation(const int count);
     static QVector<int> toVectorInt(const QVariantList &list);
 };
 

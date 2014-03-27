@@ -45,11 +45,29 @@ Item {
             source: chats.currentChatDialog.decoration
         }
 
-        Text {
+        Column {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: avatar.right
             anchors.leftMargin: 10
-            text: chats.currentChatDialog.displayName
+            spacing: -3
+
+            Text {
+                id: name
+                text: chats.currentChatDialog.displayName
+            }
+
+            TextShadow {
+                font.pointSize: 13 - 2
+                color: "gray"
+                text: chats.currentChatDialog.description
+            }
+        }
+
+        Image {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            source: "images/actions.png"
         }
     }
 

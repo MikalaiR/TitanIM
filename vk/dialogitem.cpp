@@ -19,6 +19,7 @@ DialogItemPrivate::DialogItemPrivate()
 
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(descriptionChanged())); //todo
 }
 
 DialogItemPrivate::~DialogItemPrivate()
@@ -37,6 +38,18 @@ QString DialogItemPrivate::displayName() const
 QStringList DialogItemPrivate::decoration() const
 {
     return isGroupChat() ? _groupChatHandler->avatars() : QStringList(_profile->photoMediumRect());
+}
+
+QString DialogItemPrivate::description() const
+{
+    if (isGroupChat())
+    {
+        return Utils::peopleConversation(_groupChatHandler->usersCount());
+    }
+    else
+    {
+        return _profile->online() ? tr("online") : Utils::lastSeenToString(_profile->lastSeen(), _profile->sex());
+    }
 }
 
 bool DialogItemPrivate::isGroupChat() const

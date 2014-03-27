@@ -40,5 +40,6 @@
         <file>OnlineIcon.qml</file>
         <file>TextShadow.qml</file>
         <file>SectionText.qml</file>
+        <file>images/actions.png</file>
     </qresource>
 </RCC>

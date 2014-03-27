@@ -31,7 +31,10 @@ DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &prof
         }
 
         groupChatHandler->setTitle(message->title());
-        groupChatHandler->setUsersCount(item.value("users_count").toInt());
+        if (item.contains("users_count"))
+        {
+            groupChatHandler->setUsersCount(item.value("users_count").toInt());
+        }
         groupChatHandler->setCover(item.value("photo_100").toString());
         groupChatHandler->setAdminId(item.value("admin_id").toInt());
     }

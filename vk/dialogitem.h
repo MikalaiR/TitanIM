@@ -27,12 +27,14 @@ class DialogItemPrivate : public NotifyPropertyBase
 
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_PROPERTY(QStringList decoration READ decoration NOTIFY decorationChanged)
+    Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
 
 public:
     DialogItemPrivate();
     ~DialogItemPrivate();
     QString displayName() const;
     QStringList decoration() const;
+    QString description() const;
     bool isGroupChat() const;
     ProfileItem profile() const;
     void setProfile(const ProfileItem profile);
@@ -54,6 +56,7 @@ protected slots:
 signals:
     void displayNameChanged();
     void decorationChanged();
+    void descriptionChanged();
 };
 
 typedef QSharedPointer<DialogItemPrivate> DialogItem;
