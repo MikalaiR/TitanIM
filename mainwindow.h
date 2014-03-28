@@ -21,7 +21,7 @@
 #include "vk/client.h"
 #include "authorization.h"
 #include "chat/dialogshandler.h"
-#include "roster/rostermodel.h"
+#include "roster/rosterhandler.h"
 #include "chat/chats.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
@@ -37,7 +37,7 @@ public:
 private:
     Authorization *authorization;
     DialogsHandler *dialogsHandler;
-    RosterModel *rosterModel;
+    RosterHandler *rosterHandler;
 
 public slots:
     void showAuthPage();

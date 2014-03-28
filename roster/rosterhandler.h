@@ -11,36 +11,35 @@
  ***************************************************************************
 */
 
-#ifndef DIALOGSHANDLER_H
-#define DIALOGSHANDLER_H
+#ifndef ROSTERHANDLER_H
+#define ROSTERHANDLER_H
 
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include "dialogsmodel.h"
+#include "rostermodel.h"
 #include "vk/client.h"
 
-class DialogsHandler : public QObject
+class RosterHandler : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(DialogsModel* model READ model CONSTANT)
+    Q_PROPERTY(RosterModel* model READ model CONSTANT)
     Q_PROPERTY(QSortFilterProxyModel* proxy READ proxy CONSTANT)
 
 public:
-    DialogsHandler();
-    ~DialogsHandler();
-    DialogsModel* model() const;
+    RosterHandler();
+    ~RosterHandler();
+    RosterModel* model() const;
     QSortFilterProxyModel* proxy() const;
-    DialogItem dialog(const int index, const bool isProxyIndex=true) const;
+    ProfileItem profile(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
 
 private:
-    DialogsModel *_model;
+    RosterModel *_model;
     QSortFilterProxyModel *_proxy;
 
 protected slots:
-    void onLongPollMessageAdded(const DialogItem dialog);
     void onUserStatusChanged(const int uid, const bool online);
 };
 
-#endif // DIALOGSHANDLER_H
+#endif // ROSTERHANDLER_H

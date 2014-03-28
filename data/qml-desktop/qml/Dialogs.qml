@@ -26,8 +26,17 @@ Item {
     ListView{
         id: dialogsView;
         anchors.fill: parent
-        model: dialogsModel;
+        model: dialogsHandler.proxy;
         delegate: DialogsDelegate { }
         spacing: 2
+    }
+
+    onCurrentChatIdChanged: {
+        if (tabBar.currentIndex === 0)
+            return;
+
+        var index = dialogsHandler.indexOf(currentChatId)
+        if (index === -1) index = 0
+        dialogsView.positionViewAtIndex(index, ListView.Center)
     }
 }

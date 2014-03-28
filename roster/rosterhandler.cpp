@@ -11,44 +11,39 @@
  ***************************************************************************
 */
 
-#include "dialogshandler.h"
+#include "rosterhandler.h"
 
-DialogsHandler::DialogsHandler()
+RosterHandler::RosterHandler()
 {
-    _model = new DialogsModel(this);
+    _model = new RosterModel(this);
 
     _proxy = new QSortFilterProxyModel(_model);
     _proxy->setDynamicSortFilter(true);
-    _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    _proxy->setSortRole(DialogsModel::dateRole);
-    _proxy->sort(0, Qt::DescendingOrder);
     _proxy->setSourceModel(_model);
 
-    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
 
-    qRegisterMetaType<DialogsModel*>("DialogsModel*");
+    qRegisterMetaType<RosterModel*>("RosterModel*");
 }
 
-DialogsHandler::~DialogsHandler()
+RosterHandler::~RosterHandler()
 {
     delete _proxy;
     delete _model;
 }
 
-DialogsModel *DialogsHandler::model() const
+RosterModel *RosterHandler::model() const
 {
     return _model;
 }
 
-QSortFilterProxyModel *DialogsHandler::proxy() const
+QSortFilterProxyModel *RosterHandler::proxy() const
 {
     return _proxy;
 }
 
-DialogItem DialogsHandler::dialog(const int index, const bool isProxyIndex) const
+ProfileItem RosterHandler::profile(const int index, const bool isProxyIndex) const
 {
     if (isProxyIndex)
     {
@@ -63,7 +58,7 @@ DialogItem DialogsHandler::dialog(const int index, const bool isProxyIndex) cons
     }
 }
 
-int DialogsHandler::indexOf(const int id, const bool proxyIndex) const
+int RosterHandler::indexOf(const int id, const bool proxyIndex) const
 {
     int index = _model->indexOf(id);
 
@@ -80,27 +75,12 @@ int DialogsHandler::indexOf(const int id, const bool proxyIndex) const
     }
 }
 
-void DialogsHandler::onLongPollMessageAdded(const DialogItem dialog)
-{
-    int id = dialog->id();
-    int i = _model->indexOf(id);
-
-    if (i > -1)
-    {
-        _model->at(i)->setMessage(dialog->message());
-    }
-    else
-    {
-        _model->append(dialog);
-    }
-}
-
-void DialogsHandler::onUserStatusChanged(const int uid, const bool online)
+void RosterHandler::onUserStatusChanged(const int uid, const bool online)
 {
     int i = _model->indexOf(uid);
 
     if (i > -1)
     {
-        _model->at(i)->profile()->setOnline(online);
+        _model->at(i)->setOnline(online);
     }
 }

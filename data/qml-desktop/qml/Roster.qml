@@ -26,11 +26,20 @@ Item {
     ListView {
         id: rosterView;
         anchors.fill: parent
-        model: rosterModel;
+        model: rosterHandler.proxy;
         delegate: RosterDelegate { }
         spacing: 2
         section.property: "alphabet"
         section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
         section.delegate: SectionHeading { }
+    }
+
+    onCurrentChatIdChanged: {
+        if (tabBar.currentIndex === 1)
+            return;
+
+        var index = rosterHandler.indexOf(currentChatId)
+        if (index === -1) index = 0
+        rosterView.positionViewAtIndex(index, ListView.Center)
     }
 }

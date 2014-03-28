@@ -49,7 +49,7 @@ void RosterModel::append(const ProfileList items)
     endInsertRows();
 }
 
-void RosterModel::replace(const ProfileList items)
+void RosterModel::replaceAll(const ProfileList items)
 {
     remove(0, rowCount());
     append(items);
@@ -75,6 +75,16 @@ bool RosterModel::remove(int row, int count)
 ProfileItem RosterModel::at(const int row)
 {
     return _roster->at(row);
+}
+
+ProfileItem RosterModel::at(const QModelIndex &index)
+{
+    return _roster->at(index.row());
+}
+
+int RosterModel::indexOf(const int id) const
+{
+    return _roster->indexOf(id);
 }
 
 QHash<int, QByteArray> RosterModel::roleNames() const
@@ -155,7 +165,7 @@ void RosterModel::onRosterLoaded(const RosterPacket *sender, const ProfileList &
 {
     if (!sender->offset())
     {
-        replace(roster);
+        replaceAll(roster);
     }
     else
     {

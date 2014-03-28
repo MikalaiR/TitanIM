@@ -26,12 +26,12 @@ MainWindow::MainWindow(QWindow *parent) :
 //    connect(Client::instance()->connection(), SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
 
     dialogsHandler = new DialogsHandler();
-    rosterModel = new RosterModel(this);
+    rosterHandler = new RosterHandler();
 
     rootContext()->setContextProperty("authorization", authorization);
     rootContext()->setContextProperty("main", this);
-    rootContext()->setContextProperty("dialogsModel", dialogsHandler->proxy());
-    rootContext()->setContextProperty("rosterModel", rosterModel);
+    rootContext()->setContextProperty("dialogsHandler", dialogsHandler);
+    rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());
 
     setTitle("TitanIM");
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWindow *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete rosterModel;
+    delete rosterHandler;
     delete dialogsHandler;
     delete authorization;
     Chats::instance()->destroy();
@@ -71,8 +71,8 @@ void MainWindow::dialogCurrentIndexChanged(const int i)
 
 void MainWindow::rosterCurrentIndexChanged(const int i)
 {
+    ProfileItem profile = rosterHandler->profile(i);
     DialogItem dialog = DialogItem::create();
-    ProfileItem profile = rosterModel->at(i);
     dialog->setProfile(profile);
 //    dialogsHandler->model()->append(dialog); //todo
     Chats::instance()->openChat(dialog);
@@ -95,7 +95,7 @@ void MainWindow::showExpanded()
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
 {
     dialogsHandler->model()->load();
-    rosterModel->load();
+    rosterHandler->model()->load();
 }
 
 void MainWindow::onDisconnected()

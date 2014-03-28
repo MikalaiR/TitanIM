@@ -36,9 +36,11 @@ public:
     void load(const int count=0);
     void loadNext(const int count=20);
     void append(const ProfileList items);
-    void replace(const ProfileList items);
+    void replaceAll(const ProfileList items);
     bool remove(int row, int count);
     ProfileItem at(const int row);
+    ProfileItem at(const QModelIndex &index);
+    int indexOf(const int id) const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
