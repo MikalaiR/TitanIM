@@ -149,7 +149,7 @@ Item {
             anchors.rightMargin: 10
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: 1
-            placeholderText: "Введите сообщение..."
+            placeholderText: qsTr("Write a message...")
             style: textfieldStyle
             font.family: "Helvetica"
             font.pixelSize: 12

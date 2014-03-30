@@ -72,6 +72,19 @@ QString Utils::decode(const QString &str)
 
 QString Utils::dateToText(const QDateTime &dateTime)
 {
+    static QString m[12] = {QObject::tr("Jan"),
+                            QObject::tr("Feb"),
+                            QObject::tr("Mar"),
+                            QObject::tr("Apr"),
+                            QObject::tr("May"),
+                            QObject::tr("Jun"),
+                            QObject::tr("Jul"),
+                            QObject::tr("Aug"),
+                            QObject::tr("Sep"),
+                            QObject::tr("Oct"),
+                            QObject::tr("Nov"),
+                            QObject::tr("Dec")};
+
     int days = dateTime.daysTo(QDateTime::currentDateTime());
 
     switch (days)
@@ -92,7 +105,7 @@ QString Utils::dateToText(const QDateTime &dateTime)
     default:
         if (dateTime.date().year() == QDate::currentDate().year())
         {
-            return dateTime.date().toString("d MMM");
+            return QString("%1 %2").arg(dateTime.date().day()).arg(m[dateTime.date().month() - 1]);
         }
         else
         {
@@ -128,7 +141,7 @@ QString Utils::dateToSection(const QDateTime &dateTime)
         }
         else
         {
-            return dateTime.date().toString("d MMM yyyy");
+            return dateTime.date().toString("d MMMM yyyy");
         }
     }
 }

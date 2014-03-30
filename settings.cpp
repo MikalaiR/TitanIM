@@ -25,14 +25,16 @@ Settings::Settings()
         _configDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/TitanIM";
     }
 
-    if (QCoreApplication::applicationDirPath() == "/opt/titanim/bin")
-    {
-        _dataDir = "/opt/titanim/share";
-    }
-    else
-    {
-        _dataDir = QCoreApplication::applicationDirPath();
-    }
+    #if defined(Q_OS_MAC)
+    _dataDir = QCoreApplication::applicationDirPath() + "/../Resources/data";
+    #elif defined(Q_OS_UNIX)
+    _dataDir = "/opt/titanim/data";
+    #elif defined(Q_OS_WIN)
+    _dataDir = QCoreApplication::applicationDirPath() + "/data"
+    #else
+    _dataDir = "";
+    qWarning() << "Warning: Unknown OS. Data dir not defined";
+    #endif
 }
 
 QStringList Settings::uids()

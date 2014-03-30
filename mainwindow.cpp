@@ -16,6 +16,11 @@
 MainWindow::MainWindow(QWindow *parent) :
     QtQuick2ApplicationViewer(parent)
 {
+    translator = new QTranslator(this);
+    translator->load("titanim_" + Settings::instance()->loadMain("main/language", QLocale::system().name()).toString(),
+                     Settings::instance()->dataDir() + "/translations");
+    qApp->installTranslator(translator);
+
     authorization = new Authorization();
 
     connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
@@ -45,6 +50,7 @@ MainWindow::~MainWindow()
     delete authorization;
     Chats::instance()->destroy();
     Client::instance()->destroy();
+    Settings::instance()->destroy();
 }
 
 void MainWindow::showAuthPage()

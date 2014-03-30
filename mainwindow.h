@@ -15,6 +15,7 @@
 #define MAINWINDOW_H
 
 #include <QQmlContext>
+#include <QTranslator>
 #include <QScreen>
 #include <QDebug>
 #include "qtquick2applicationviewer.h"
@@ -35,6 +36,7 @@ public:
     void showExpanded();
 
 private:
+    QTranslator *translator;
     Authorization *authorization;
     DialogsHandler *dialogsHandler;
     RosterHandler *rosterHandler;

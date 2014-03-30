@@ -6,9 +6,16 @@ QT += network
 
 TARGET = titanim
 TEMPLATE = app
+TRANSLATIONS = translations/titanim_ru.ts \
+               translations/titanim_uk.ts \
+               translations/titanim_be.ts
 
 qml.source = data/qml-desktop/qml
-qml.target = share
+qml.target = data
+translations.source = data/translations
+translations.target = data
+
+DEPLOYMENTFOLDERS = translations
 
 CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
