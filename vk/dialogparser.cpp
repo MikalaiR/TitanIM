@@ -17,31 +17,38 @@ DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &prof
 {
     DialogItem dialog = DialogItem::create();
 
-    MessageItem message = MessageParser::parser(item);
+    QVariantMap messageItem = item.value("message").toMap();
+    int unreadCount = item.contains("unread") ? item.value("unread").toInt() : 0;
+
+    MessageItem message = MessageParser::parser(messageItem);
     ProfileItem profile = profiles->item(message->uid());
 
     GroupChatHandler *groupChatHandler = 0;
-    if (item.contains("chat_active"))
+
+    if (messageItem.contains("chat_active"))
     {
         groupChatHandler = new GroupChatHandler(message->chatId());
-        QVector<int> chatActive = Utils::toVectorInt(item.value("chat_active").toList());
+        QVector<int> chatActive = Utils::toVectorInt(messageItem.value("chat_active").toList());
 
         foreach (int uid, chatActive) {
             groupChatHandler->addUser(profiles->item(uid));
         }
 
         groupChatHandler->setTitle(message->title());
-        if (item.contains("users_count"))
+
+        if (messageItem.contains("users_count"))
         {
-            groupChatHandler->setUsersCount(item.value("users_count").toInt());
+            groupChatHandler->setUsersCount(messageItem.value("users_count").toInt());
         }
-        groupChatHandler->setCover(item.value("photo_100").toString());
-        groupChatHandler->setAdminId(item.value("admin_id").toInt());
+
+        groupChatHandler->setCover(messageItem.value("photo_100").toString());
+        groupChatHandler->setAdminId(messageItem.value("admin_id").toInt());
     }
 
     dialog->setProfile(profile);
     dialog->setMessage(message);
     dialog->setGroupChatHandler(groupChatHandler);
+    dialog->setUnreadCount(unreadCount);
 
     return dialog;
 }

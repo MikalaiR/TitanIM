@@ -16,6 +16,7 @@
 DialogItemPrivate::DialogItemPrivate()
 {
     _groupChatHandler = 0;
+    _unreadCount = 0;
 
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
@@ -130,6 +131,20 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
 
         connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
         emitPropertyChanged("groupChat");
+    }
+}
+
+int DialogItemPrivate::unreadCount() const
+{
+    return _unreadCount;
+}
+
+void DialogItemPrivate::setUnreadCount(const int unreadCount)
+{
+    if (_unreadCount != unreadCount)
+    {
+        _unreadCount = unreadCount;
+        emitPropertyChanged("unreadCount");
     }
 }
 

@@ -42,11 +42,14 @@ public:
     void setMessage(const MessageItem message);
     GroupChatHandler* groupChatHandler() const;
     void setGroupChatHandler(GroupChatHandler *groupChatHandler);
+    int unreadCount() const;
+    void setUnreadCount(const int unreadCount);
 
 private:
     ProfileItem _profile;
     MessageItem _message;
     GroupChatHandler *_groupChatHandler;
+    int _unreadCount;
 
 protected slots:
     void onProfilePropertyChanged(const int uid, const QString &propertyName);
