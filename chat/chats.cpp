@@ -32,7 +32,7 @@ Chats::Chats()
     _chatsHandler = new ChatsHandler();
 
     _currentChatId = 0;
-    _dialog = 0;
+    _currentDialog = 0;
 
     _proxy = new QSortFilterProxyModel(this);
 //    _proxy->setDynamicSortFilter(true);
@@ -66,7 +66,7 @@ Chat *Chats::currentChat() const
 
 DialogItemPrivate *Chats::currentChatDialog() const
 {
-    return _dialog;
+    return _currentDialog;
 }
 
 QSortFilterProxyModel* Chats::currentChatModel() const
@@ -78,9 +78,16 @@ void Chats::setCurrentChat(const int id)
 {
     if (_currentChatId != id)
     {
+        if (_currentDialog)
+        {
+            _currentDialog->setCurrent(false);
+        }
+
+        Chat *chat = _chatsHandler->chat(id);
+        _proxy->setSourceModel(chat->model());
+        _currentDialog = chat->dialog().data();
+        _currentDialog->setCurrent(true);
         _currentChatId = id;
-        _proxy->setSourceModel(_chatsHandler->chat(id)->model());
-        _dialog = _chatsHandler->chat(id)->dialog().data();
 
         emit currentChatChanged(id);
     }

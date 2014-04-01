@@ -2,7 +2,8 @@
 # Project created by rnazarov 2013-10-07T23:37:07
 # -------------------------------------------------
 
-QT += network
+QT += network \
+      multimedia
 
 TARGET = titanim
 TEMPLATE = app
@@ -14,8 +15,11 @@ qml.source = data/qml-desktop/qml
 qml.target = data
 translations.source = data/translations
 translations.target = data
+sounds.source = data/sounds
+sounds.target = data
 
-DEPLOYMENTFOLDERS = translations
+DEPLOYMENTFOLDERS = translations \
+                    sounds
 
 CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT

@@ -44,12 +44,15 @@ public:
     void setGroupChatHandler(GroupChatHandler *groupChatHandler);
     int unreadCount() const;
     void setUnreadCount(const int unreadCount);
+    bool isCurrent() const;
+    void setCurrent(const bool current);
 
 private:
     ProfileItem _profile;
     MessageItem _message;
     GroupChatHandler *_groupChatHandler;
     int _unreadCount;
+    bool _isCurrent;
 
 protected slots:
     void onProfilePropertyChanged(const int uid, const QString &propertyName);

@@ -20,6 +20,8 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QVector>
+#include <QSound>
+#include <QProcess>
 #include "k8json.h"
 #include "global.h"
 
@@ -38,6 +40,7 @@ public:
     static QString lastSeenToString(const uint lastSeen, const Sex sex=Unknown);
     static QString peopleConversation(const int count);
     static QVector<int> toVectorInt(const QVariantList &list);
+    static void playSound(const QString &fileName, const QString &cmd="aplay -q");
 };
 
 #endif // UTILS_H

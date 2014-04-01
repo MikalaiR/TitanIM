@@ -18,6 +18,7 @@
 #include <QSortFilterProxyModel>
 #include "dialogsmodel.h"
 #include "vk/client.h"
+#include "settings.h"
 
 class DialogsHandler : public QObject
 {

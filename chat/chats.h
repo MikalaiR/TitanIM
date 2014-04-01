@@ -46,7 +46,7 @@ private:
     ChatsHandler *_chatsHandler;
     int _currentChatId;
     QSortFilterProxyModel *_proxy;
-    DialogItemPrivate *_dialog;
+    DialogItemPrivate *_currentDialog;
 
 protected:
     void setCurrentChat(const int id);

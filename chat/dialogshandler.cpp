@@ -93,6 +93,13 @@ void DialogsHandler::onLongPollMessageAdded(const DialogItem dialog)
     {
         _model->append(dialog);
     }
+
+    if (!dialog->message()->isOut())
+    {
+        static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
+        static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
+        Utils::playSound(fileName, cmd);
+    }
 }
 
 void DialogsHandler::onUserStatusChanged(const int uid, const bool online)

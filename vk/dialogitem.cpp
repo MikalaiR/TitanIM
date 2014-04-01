@@ -17,6 +17,7 @@ DialogItemPrivate::DialogItemPrivate()
 {
     _groupChatHandler = 0;
     _unreadCount = 0;
+    _isCurrent = false;
 
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
@@ -145,6 +146,20 @@ void DialogItemPrivate::setUnreadCount(const int unreadCount)
     {
         _unreadCount = unreadCount;
         emitPropertyChanged("unreadCount");
+    }
+}
+
+bool DialogItemPrivate::isCurrent() const
+{
+    return _isCurrent;
+}
+
+void DialogItemPrivate::setCurrent(const bool current)
+{
+    if (_isCurrent != current)
+    {
+        _isCurrent = current;
+        emitPropertyChanged("isCurrent");
     }
 }
 

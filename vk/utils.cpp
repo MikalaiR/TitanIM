@@ -257,3 +257,12 @@ QVector<int> Utils::toVectorInt(const QVariantList &list)
 
     return v;
 }
+
+void Utils::playSound(const QString &fileName, const QString &cmd)
+{
+    #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    QSound::play(fileName);
+    #else
+    QProcess::startDetached(QString("%1 %2").arg(cmd).arg(fileName));
+    #endif
+}
