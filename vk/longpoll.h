@@ -40,7 +40,8 @@ public:
         GroupChatUpdated = 51,
         ChatTyping = 61,
         GroupChatTyping = 62,
-        UserCall = 70
+        UserCall = 70,
+        UnreadDialogs = 80
     };
 
     LongPoll(Connection *connection);
@@ -72,6 +73,7 @@ protected:
     void onChatTyping(const QVariantList &update);
     void onGroupChatTyping(const QVariantList &update);
     void onUserCall(const QVariantList &update);
+    void onUnreadDialogs(const QVariantList &update);
 
 private slots:
     void onRunningChanged(const bool running);
@@ -90,6 +92,7 @@ signals:
     void chatTyping(const int uid, const int flags);
     void groupChatTyping(const int uid, const int chatId);
     void userCall(const int uid, const QString &callId);
+    void unreadDialogs(const int count);
 };
 
 #endif // LONGPOLL_H

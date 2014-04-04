@@ -15,7 +15,10 @@
 
 DialogsHandler::DialogsHandler()
 {
+    _unreadDialogs = 0;
+
     _model = new DialogsModel(this);
+    connect(_model, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
 
     _proxy = new QSortFilterProxyModel(_model);
     _proxy->setDynamicSortFilter(true);
@@ -25,9 +28,10 @@ DialogsHandler::DialogsHandler()
     _proxy->sort(0, Qt::DescendingOrder);
     _proxy->setSourceModel(_model);
 
-    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
+    connect(Client::instance()->longPoll(), SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
 }
@@ -46,6 +50,11 @@ DialogsModel *DialogsHandler::model() const
 QSortFilterProxyModel *DialogsHandler::proxy() const
 {
     return _proxy;
+}
+
+int DialogsHandler::unreadDialogs() const
+{
+    return _unreadDialogs;
 }
 
 DialogItem DialogsHandler::dialog(const int index, const bool isProxyIndex) const
@@ -80,7 +89,48 @@ int DialogsHandler::indexOf(const int id, const bool proxyIndex) const
     }
 }
 
-void DialogsHandler::onLongPollMessageAdded(const DialogItem dialog)
+void DialogsHandler::incUnreadDialogs()
+{
+    setUnreadDialogs(_unreadDialogs + 1);
+}
+
+void DialogsHandler::decUnreadDialogs()
+{
+    setUnreadDialogs(_unreadDialogs - 1);
+}
+
+void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
+{
+    if (_unreadDialogs != unreadDialogs)
+    {
+        _unreadDialogs = unreadDialogs;
+        emit unreadDialogsChanged(_unreadDialogs);
+    }
+}
+
+void DialogsHandler::onLongPollMessageInAdded(const DialogItem dialog)
+{
+    int id = dialog->id();
+    int i = _model->indexOf(id);
+
+    if (i > -1)
+    {
+        _model->at(i)->setMessage(dialog->message());
+        _model->at(i)->incUnreadDialogs();
+    }
+    else
+    {
+        dialog->incUnreadDialogs();
+        dialog->getMessage(Client::instance()->connection()); //update unread
+        _model->append(dialog);
+    }
+
+    static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
+    static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
+    Utils::playSound(fileName, cmd);
+}
+
+void DialogsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
 {
     int id = dialog->id();
     int i = _model->indexOf(id);
@@ -92,13 +142,6 @@ void DialogsHandler::onLongPollMessageAdded(const DialogItem dialog)
     else
     {
         _model->append(dialog);
-    }
-
-    if (!dialog->message()->isOut())
-    {
-        static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
-        static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
-        Utils::playSound(fileName, cmd);
     }
 }
 

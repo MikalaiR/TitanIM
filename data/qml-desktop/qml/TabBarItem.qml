@@ -19,6 +19,7 @@ Loader {
 
     property string title
     property string icon
+    property int badge
 
     property bool __inserted: false
 

@@ -31,7 +31,7 @@ public:
         uidRole,
         midRole,
         idRole,
-        isUnreadRole,
+        unreadCountRole,
         isOutRole,
         onlineRole
     };
@@ -66,6 +66,9 @@ protected:
 protected slots:
     void onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs);
     void onItemChanged(const int i);
+
+signals:
+    void unreadDialogs(const int count);
 };
 
 #endif // DIALOGSMODEL_H

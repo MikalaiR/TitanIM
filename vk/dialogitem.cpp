@@ -149,6 +149,16 @@ void DialogItemPrivate::setUnreadCount(const int unreadCount)
     }
 }
 
+void DialogItemPrivate::incUnreadDialogs()
+{
+    setUnreadCount(_unreadCount + 1);
+}
+
+void DialogItemPrivate::decUnreadDialogs()
+{
+    setUnreadCount(_unreadCount - 1);
+}
+
 bool DialogItemPrivate::isCurrent() const
 {
     return _isCurrent;
@@ -161,6 +171,14 @@ void DialogItemPrivate::setCurrent(const bool current)
         _isCurrent = current;
         emitPropertyChanged("isCurrent");
     }
+}
+
+void DialogItemPrivate::getMessage(Connection *connection)
+{
+    HistoryPacket *historyPacket = new HistoryPacket(connection);
+    connect(historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onGetMessageFinished(const HistoryPacket*,int,MessageList)));
+
+    historyPacket->load(_id, 0, 1);
 }
 
 void DialogItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
@@ -179,4 +197,16 @@ void DialogItemPrivate::onGroupChatPropertyChanged(const int chatId, const QStri
 {
     QString property = QString("groupChat.%1").arg(propertyName);
     emitPropertyChanged(property);
+}
+
+void DialogItemPrivate::onGetMessageFinished(const HistoryPacket *sender, const int id, const MessageList &messages)
+{
+    setUnreadCount(sender->unreadCount());
+
+    if (messages->count() && messages->at(0)->id() != message()->id())
+    {
+        setMessage(messages->at(0));
+    }
+
+    delete sender;
 }

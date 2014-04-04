@@ -26,22 +26,34 @@ class DialogsHandler : public QObject
 
     Q_PROPERTY(DialogsModel* model READ model CONSTANT)
     Q_PROPERTY(QSortFilterProxyModel* proxy READ proxy CONSTANT)
+    Q_PROPERTY(int unreadDialogs READ unreadDialogs NOTIFY unreadDialogsChanged)
 
 public:
     DialogsHandler();
     ~DialogsHandler();
     DialogsModel* model() const;
     QSortFilterProxyModel* proxy() const;
+    int unreadDialogs() const;
     DialogItem dialog(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
 
 private:
     DialogsModel *_model;
     QSortFilterProxyModel *_proxy;
+    int _unreadDialogs;
+
+protected:
+    void incUnreadDialogs();
+    void decUnreadDialogs();
 
 protected slots:
-    void onLongPollMessageAdded(const DialogItem dialog);
+    void setUnreadDialogs(const int unreadDialogs);
+    void onLongPollMessageInAdded(const DialogItem dialog);
+    void onLongPollMessageOutAdded(const DialogItem dialog);
     void onUserStatusChanged(const int uid, const bool online);
+
+signals:
+    void unreadDialogsChanged(const int unreadDialogs);
 };
 
 #endif // DIALOGSHANDLER_H

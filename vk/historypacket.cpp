@@ -20,6 +20,7 @@ HistoryPacket::HistoryPacket(Connection *connection)
     _offset = 0;
     _count = 0;
     _serverCount = 0;
+    _unreadCount = 0;
 }
 
 void HistoryPacket::load(const int id, const int offset, const int count)
@@ -51,12 +52,18 @@ int HistoryPacket::serverCount() const
     return _serverCount;
 }
 
+int HistoryPacket::unreadCount() const
+{
+    return _unreadCount;
+}
+
 void HistoryPacket::loadFinished(const Packet *sender, const QVariantMap &result)
 {
     QVariantMap response = result.value("response").toMap();
     MessageList messageList = MessageParser::parser(response.value("items").toList());
 
     _serverCount = response.value("count").toInt();
+    _unreadCount = response.contains("unread") ? response.value("unread").toInt() : 0;
 
     emit history(this, sender->id(), messageList);
     delete sender;

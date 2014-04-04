@@ -94,16 +94,32 @@ Item {
                 }
             }
 
-            Text {
-                id: textBody
+            Item {
                 width: parent.width
-                maximumLineCount: 2
-                lineHeight: 0.8
-                elide: Text.ElideRight
-                color: "#707070"
-                font.pointSize: 13 - 1
-                wrapMode: Text.Wrap
-                text: model.body
+                height: textBody.height
+
+                Text {
+                    id: textBody
+                    anchors.left: parent.left
+                    anchors.right: unreadCount.visible ? unreadCount.left : parent.right
+                    anchors.rightMargin: 7
+                    maximumLineCount: 2
+                    lineHeight: 0.8
+                    elide: Text.ElideRight
+                    color: "#707070"
+                    font.pointSize: 13 - 1
+                    wrapMode: Text.Wrap
+                    text: model.body
+                }
+
+                BadgeItem {
+                    id: unreadCount
+                    anchors.right: parent.right
+                    anchors.rightMargin: 7
+                    anchors.top: textBody.top
+                    anchors.topMargin: 5
+                    count: model.unreadCount
+                }
             }
         }
     }

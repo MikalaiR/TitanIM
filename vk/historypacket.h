@@ -28,12 +28,14 @@ public:
     int offset() const;
     int count() const;
     int serverCount() const;
+    int unreadCount() const;
 
 private:
     Connection *_connection;
     int _offset;
     int _count;
     int _serverCount;
+    int _unreadCount;
 
 private slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);

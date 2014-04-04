@@ -28,27 +28,32 @@ Rectangle {
             Layout.maximumWidth: 500
 
             TabBarItem {
-                title: "1"
+                id: dialogsTab
+                title: "dialogs"
                 icon: "images/messages_tab.png"
+                badge: dialogsHandler.unreadDialogs;
                 Dialogs { }
             }
 
             TabBarItem {
-                title: "2"
+                id: contactsTab
+                title: "contacts"
                 icon: "images/contacts_tab.png"
                 Roster { }
             }
 
             TabBarItem {
-                title: "3"
+                id: favoritesTab
+                title: "favorites"
                 icon: "images/favorites_tab.png"
-                Text{text: "3"}
+                Text {text: "favorites"}
             }
 
             TabBarItem {
-                title: "4"
+                id: settingsTab
+                title: "settings"
                 icon: "images/settings_tab.png"
-                Text{text: "4"}
+                Text {text: "settings"}
             }
         }
 

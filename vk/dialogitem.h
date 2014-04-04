@@ -20,6 +20,7 @@
 #include "profileitem.h"
 #include "messageitem.h"
 #include "groupchathandler.h"
+#include "historypacket.h"
 
 class DialogItemPrivate : public NotifyPropertyBase
 {
@@ -44,6 +45,8 @@ public:
     void setGroupChatHandler(GroupChatHandler *groupChatHandler);
     int unreadCount() const;
     void setUnreadCount(const int unreadCount);
+    void incUnreadDialogs();
+    void decUnreadDialogs();
     bool isCurrent() const;
     void setCurrent(const bool current);
 
@@ -54,10 +57,14 @@ private:
     int _unreadCount;
     bool _isCurrent;
 
+public slots:
+    void getMessage(Connection *connection);
+
 protected slots:
     void onProfilePropertyChanged(const int uid, const QString &propertyName);
     void onMessagePropertyChanged(const int mid, const QString &propertyName);
     void onGroupChatPropertyChanged(const int chatId, const QString &propertyName);
+    void onGetMessageFinished(const HistoryPacket *sender, const int id, const MessageList &messages);
 
 signals:
     void displayNameChanged();

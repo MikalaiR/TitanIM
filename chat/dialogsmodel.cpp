@@ -111,7 +111,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[uidRole] = "uid";
     roles[midRole] = "mid";
     roles[idRole] = "id";
-    roles[isUnreadRole] = "isUnread";
+    roles[unreadCountRole] = "unreadCount";
     roles[isOutRole] = "isOut";
     roles[onlineRole] = "online";
 
@@ -156,8 +156,8 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     case idRole:
         return dialog->id();
 
-    case isUnreadRole:
-        return message->isUnread();
+    case unreadCountRole:
+        return dialog->unreadCount();
 
     case isOutRole:
         return message->isOut();
@@ -217,6 +217,8 @@ void DialogsModel::fetchMore(const QModelIndex &parent)
 void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs)
 {
     _serverCount = sender->serverCount();
+
+    emit unreadDialogs(sender->unreadDialogs());
 
     if (!sender->offset())
     {

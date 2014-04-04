@@ -11,32 +11,26 @@
  ***************************************************************************
 */
 
-#ifndef AUTHORIZATION_H
-#define AUTHORIZATION_H
+import QtQuick 2.0
 
-#include <QObject>
-#include "vk/client.h"
-#include "settings.h"
+BorderImage {
+    id: badgeItem
 
-class Authorization : public QObject
-{
-    Q_OBJECT
+    property int count: 0
 
-public:
-    Authorization();
+    source: "images/badge.png"
+    visible: badgeItem.count > 0
+    smooth: true
+    width: Math.max(badgeItem.sourceSize.width, badgeLabel.implicitWidth + 12)
+    height: Math.max(badgeItem.sourceSize.height, badgeLabel.implicitHeight)
+    border { left: 7; top: 8; right: 8; bottom: 9 }
 
-public slots:
-    void connectToVk();
-    void connectToVk(const QString &username, const QString &password);
-
-private slots:
-    void onConnected(const int uid, const QString &token, const QString &secret);
-    void onDisconnected();
-    void onError(const Error &error, const QString &text, const bool global, const bool fatal);
-
-signals:
-    void showAuthPage();
-    void showMainPage();
-};
-
-#endif // AUTHORIZATION_H
+    Text {
+        id: badgeLabel
+        font.pixelSize: 10
+        anchors.centerIn: parent
+        color: "white"
+        font.bold: true
+        text: badgeItem.count
+    }
+}

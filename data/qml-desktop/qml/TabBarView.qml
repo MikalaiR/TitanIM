@@ -75,6 +75,15 @@ FocusScope {
                     }
                 }
 
+                BadgeItem {
+                    id: badge
+                    anchors.right: parent.right
+                    anchors.rightMargin: 1
+                    anchors.top: parent.top
+                    anchors.topMargin: 2
+                    count: modelData.badge
+                }
+
                 Rectangle {
                     width: parent.width
                     height: 1

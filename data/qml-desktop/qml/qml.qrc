@@ -41,5 +41,7 @@
         <file>TextShadow.qml</file>
         <file>SectionText.qml</file>
         <file>images/actions.png</file>
+        <file>images/badge.png</file>
+        <file>BadgeItem.qml</file>
     </qresource>
 </RCC>

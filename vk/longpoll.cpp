@@ -197,6 +197,12 @@ void LongPoll::handler(const QVariantList &updates)
             break;
         }
 
+        case UnreadDialogs:
+        {
+            onUnreadDialogs(update);
+            break;
+        }
+
         default:
             break;
         }
@@ -307,4 +313,11 @@ void LongPoll::onUserCall(const QVariantList &update)
     QString callId = update.value(2).toString();
 
     emit userCall(uid, callId);
+}
+
+void LongPoll::onUnreadDialogs(const QVariantList &update)
+{
+    int count = update.value(1).toInt();
+
+    emit unreadDialogs(count);
 }
