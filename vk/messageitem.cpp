@@ -54,6 +54,11 @@ void MessageItemPrivate::setDate(const QDateTime &date)
     }
 }
 
+uint MessageItemPrivate::unixtime() const
+{
+    return _date.toTime_t();
+}
+
 bool MessageItemPrivate::isUnread() const
 {
     return _isUnread;

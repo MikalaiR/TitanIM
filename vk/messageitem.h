@@ -31,6 +31,7 @@ public:
     void setUid(const int uid);
     QDateTime date() const;
     void setDate(const QDateTime &date);
+    uint unixtime() const;
     bool isUnread() const;
     void setIsUnread(const bool isUnread);
     bool isOut() const;

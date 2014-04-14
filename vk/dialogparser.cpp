@@ -17,7 +17,7 @@ DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &prof
 {
     DialogItem dialog = DialogItem::create();
 
-    QVariantMap messageItem = item.value("message").toMap();
+    QVariantMap messageItem = item.contains("message") ? item.value("message").toMap() : item;
     int unreadCount = item.contains("unread") ? item.value("unread").toInt() : 0;
 
     MessageItem message = MessageParser::parser(messageItem);

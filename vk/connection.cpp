@@ -279,20 +279,18 @@ void Connection::apiResponse(QNetworkReply *networkReply)
 
         if (errorResponse->global())
         {
-            //отправляем в обработчик глобальных ошибок
-            //цикл выполнения пакетов остановлен
+            //error global. ExecQuery stop
             onError(errorResponse);
             return;
         }
         else
         {
-            //ошибка локальная - заполняем пакет ошибкой и забываем про него
+            //error local
             _queryList.dequeue()->setError(errorResponse);
         }
     }
     else
     {
-        //заполняем пакет ответом от сервера ВК
         _queryList.dequeue()->setResult(response);
     }
 
@@ -304,12 +302,11 @@ void Connection::apiResponse(QNetworkReply *networkReply)
     }
 }
 
-
 void Connection::setCaptcha(const QString &sid, const QString &text)
 {
     if (!_queryList.isEmpty())
     {
-        //запрос капчи был при выполнении пакета
+        //captcha in packet
         _queryList.head()->addParam("captcha_sid", sid);
         _queryList.head()->addParam("captcha_key", text);
         _isProcessing = false;
@@ -317,7 +314,7 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
     }
     else if (isOffline() && !text.isEmpty())
     {
-        //запрос капчи был при авторизации
+        //captcha in authorization
         _loginVars.captcha_sid = sid;
         _loginVars.captcha_key = text;
         getToken();

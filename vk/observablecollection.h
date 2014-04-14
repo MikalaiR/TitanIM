@@ -47,6 +47,8 @@ public:
     void replace(const int i, const T item);
     int indexOf(const int id) const;
     inline T at(const int i) const { return _items.at(i); }
+    inline T first() const { return _items.first(); }
+    inline T last() const { return _items.last(); }
     T item(const int id) const;
     void removeAt(const int i);
     inline int count() const { return _items.count(); }

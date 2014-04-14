@@ -27,15 +27,30 @@ DialogsPacket::DialogsPacket(Connection *connection)
 void DialogsPacket::load(const int offset, const int count)
 {
     Packet *packet = new Packet("execute");
-    QString script;
     _offset = offset;
     _count = count;
 
-    script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset) + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
-            + "var i=0;var s=\"\";"
-            + "while(i<d.items.length){s=s+\",\"+d.items[i].message.chat_active;i=i+1;};"
-            + "var p=API.users.get({\"user_ids\":d.items@.message@.user_id+s,\"fields\":\"" + _fields + "\"});"
-            + "return {\"dialogs\":d,\"profiles\":p};";
+    QString script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset)
+                   + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
+                   + "var i=0;var s=\"\";"
+                   + "while(i<d.items.length){s=s+\",\"+d.items[i].message.chat_active;i=i+1;};"
+                   + "var p=API.users.get({\"user_ids\":d.items@.message@.user_id+s,\"fields\":\"" + _fields + "\"});"
+                   + "return {\"dialogs\":d,\"profiles\":p};";
+
+    packet->addParam("code", script);
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    _connection->appendQuery(packet);
+}
+
+void DialogsPacket::load(const int mid)
+{
+    Packet *packet = new Packet("execute");
+    _offset = -1;
+    _count = 1;
+
+    QString script = "var d=API.messages.getById({\"message_ids\":" + QString::number(mid) + ",\"preview_length\":50});"
+                   + "var p=API.users.get({\"user_ids\":d.items[0].user_id+\",\"+d.items[0].chat_active,\"fields\":\"" + _fields + "\"});"
+                   + "return {\"dialogs\":d,\"profiles\":p};";
 
     packet->addParam("code", script);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));

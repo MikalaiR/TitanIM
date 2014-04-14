@@ -26,6 +26,7 @@ class DialogsPacket : public QObject
 public:
     DialogsPacket(Connection *connection);
     void load(const int offset, const int count);
+    void load(const int mid);
     int offset() const;
     int count() const;
     int serverCount() const;

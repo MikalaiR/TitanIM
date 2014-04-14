@@ -35,6 +35,8 @@ public:
         MessageFlagsSet = 2,
         MessageFlagsReseted = 3,
         MessageAdded = 101,
+        InMessagesRead = 6,
+        OutMessagesRead = 7,
         UserOnline = 8,
         UserOffline = 9,
         GroupChatUpdated = 51,
@@ -42,6 +44,20 @@ public:
         GroupChatTyping = 62,
         UserCall = 70,
         UnreadDialogs = 80
+    };
+
+    enum MessageFlags
+    {
+        Unread = 1,
+        Outbox = 2,
+        Replied = 4,
+        Important = 8,
+        Chat = 16,
+        Friends = 32,
+        Spam = 64,
+        Deleted = 128,
+        Fixed = 256,
+        Media = 512
     };
 
     LongPoll(Connection *connection);
@@ -67,6 +83,8 @@ protected:
     void onMessageFlagsSet(const QVariantList &update);
     void onMessageFlagsReseted(const QVariantList &update);
     void onMessageAdded(const QVariantList &update);
+    void onInMessagesRead(const QVariantList &update);
+    void onOutMessagesRead(const QVariantList &update);
     void onUserOnline(const QVariantList &update);
     void onUserOffline(const QVariantList &update);
     void onGroupChatUpdated(const QVariantList &update);
@@ -83,10 +101,12 @@ private slots:
 signals:
     void messageDeleted(const int mid);
     void messageFlagsReplaced(const int mid, const int flags);
-    void messageFlagsSet(const int mid, const int mask, const int uid);
-    void messageFlagsReseted(const int mid, const int mask, const int uid);
+    void messageFlagsSet(const int mid, const int mask, const int id);
+    void messageFlagsReseted(const int mid, const int mask, const int id, const uint date);
     void messageInAdded(const DialogItem dialog);
     void messageOutAdded(const DialogItem dialog);
+    void inMessagesRead(const int id, const int mid);
+    void outMessagesRead(const int id, const int mid);
     void userStatusChanged(const int uid, const bool online);
     void groupChatUpdated(const int chatId, const bool self);
     void chatTyping(const int uid, const int flags);

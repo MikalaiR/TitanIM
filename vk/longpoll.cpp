@@ -160,7 +160,19 @@ void LongPoll::handler(const QVariantList &updates)
             onMessageAdded(update);
             break;
         }
-            
+
+        case InMessagesRead:
+        {
+            onInMessagesRead(update);
+            break;
+        }
+
+        case OutMessagesRead:
+        {
+            onOutMessagesRead(update);
+            break;
+        }
+
         case UserOnline:
         {
             onUserOnline(update);
@@ -236,18 +248,19 @@ void LongPoll::onMessageFlagsSet(const QVariantList &update)
 {
     int mid = update.value(1).toInt();
     int mask = update.value(2).toInt();
-    int uid = update.value(3, 0).toInt();
+    int id = update.value(3, 0).toInt();
 
-    emit messageFlagsSet(mid, mask, uid);
+    emit messageFlagsSet(mid, mask, id);
 }
 
 void LongPoll::onMessageFlagsReseted(const QVariantList &update)
 {
     int mid = update.value(1).toInt();
     int mask = update.value(2).toInt();
-    int uid = update.value(3, 0).toInt();
+    int id = update.value(3, 0).toInt();
+    uint date = update.value(4, 0).toUInt();
 
-    emit messageFlagsReseted(mid, mask, uid);
+    emit messageFlagsReseted(mid, mask, id, date);
 }
 
 void LongPoll::onMessageAdded(const QVariantList &update)
@@ -265,6 +278,22 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     {
         emit messageInAdded(dialog);
     }
+}
+
+void LongPoll::onInMessagesRead(const QVariantList &update)
+{
+    int id = update.value(1).toInt();
+    int mid = update.value(2).toInt();
+
+    emit inMessagesRead(id, mid);
+}
+
+void LongPoll::onOutMessagesRead(const QVariantList &update)
+{
+    int id = update.value(1).toInt();
+    int mid = update.value(2).toInt();
+
+    emit outMessagesRead(id, mid);
 }
 
 void LongPoll::onUserOnline(const QVariantList &update)

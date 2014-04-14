@@ -51,6 +51,10 @@ protected slots:
     void onLongPollMessageInAdded(const DialogItem dialog);
     void onLongPollMessageOutAdded(const DialogItem dialog);
     void onUserStatusChanged(const int uid, const bool online);
+    void onInMessagesRead(const int id, const int mid);
+    void onMessageFlagsSet(const int mid, const int mask, const int id);
+    void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void onRecoveryDialog(const DialogsPacket *sender, const DialogList &dialogs);
 
 signals:
     void unreadDialogsChanged(const int unreadDialogs);

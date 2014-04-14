@@ -32,6 +32,9 @@ DialogsHandler::DialogsHandler()
     connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
     connect(Client::instance()->longPoll(), SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
+    connect(Client::instance()->longPoll(), SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
 }
@@ -153,4 +156,62 @@ void DialogsHandler::onUserStatusChanged(const int uid, const bool online)
     {
         _model->at(i)->profile()->setOnline(online);
     }
+}
+
+void DialogsHandler::onInMessagesRead(const int id, const int mid)
+{
+    int i = _model->indexOf(id);
+
+    if (i > -1)
+    {
+        DialogItem dialog = _model->at(i);
+
+        if (dialog->message()->id() == mid)
+        {
+            dialog->setUnreadCount(0);
+        }
+        else
+        {
+            dialog->getMessage(Client::instance()->connection());
+        }
+    }
+}
+
+void DialogsHandler::onMessageFlagsSet(const int mid, const int mask, const int id)
+{
+    if ((mask & LongPoll::Deleted) || (mask & LongPoll::Spam))
+    {
+        int i = _model->indexOf(id);
+
+        if (i > -1)
+        {
+            _model->at(i)->getMessage(Client::instance()->connection());
+        }
+    }
+}
+
+void DialogsHandler::onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date)
+{
+    if ((mask & LongPoll::Deleted) || (mask & LongPoll::Spam))
+    {
+        int i = _model->indexOf(id);
+
+        if (i > -1)
+        {
+            _model->at(i)->getMessage(Client::instance()->connection());
+        }
+        else if (_model->endDate() < date)
+        {
+            //recovery dialog
+            DialogsPacket *dialogsPacket = new DialogsPacket(Client::instance()->connection());
+            connect(dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,DialogList)), SLOT(onRecoveryDialog(const DialogsPacket*,DialogList)));
+            dialogsPacket->load(mid);
+        }
+    }
+}
+
+void DialogsHandler::onRecoveryDialog(const DialogsPacket *sender, const DialogList &dialogs)
+{
+    _model->append(dialogs->at(0));
+    delete sender;
 }

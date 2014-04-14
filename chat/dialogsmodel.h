@@ -47,6 +47,7 @@ public:
     DialogItem at(const int row);
     DialogItem at(const QModelIndex &index);
     int indexOf(const int id) const;
+    uint endDate() const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -58,6 +59,7 @@ private:
     DialogsPacket *_dialogsPacket;
     int _serverCount;
     mutable bool _isLoading;
+    uint _endDate;
 
 protected:
     bool canFetchMore(const QModelIndex &parent) const;

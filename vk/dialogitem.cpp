@@ -203,7 +203,12 @@ void DialogItemPrivate::onGetMessageFinished(const HistoryPacket *sender, const 
 {
     setUnreadCount(sender->unreadCount());
 
-    if (messages->count() && messages->at(0)->id() != message()->id())
+    if (!messages->count())
+    {
+        MessageItem msg = MessageItem::create();
+        setMessage(msg);
+    }
+    else if (messages->at(0)->id() != message()->id())
     {
         setMessage(messages->at(0));
     }

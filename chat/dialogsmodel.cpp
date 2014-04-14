@@ -24,6 +24,7 @@ DialogsModel::DialogsModel(QObject *parent) :
 
     _serverCount = 0;
     _isLoading = false;
+    _endDate = 0;
 }
 
 DialogsModel::~DialogsModel()
@@ -99,6 +100,11 @@ DialogItem DialogsModel::at(const QModelIndex &index)
 int DialogsModel::indexOf(const int id) const
 {
     return _dialogs->indexOf(id);
+}
+
+uint DialogsModel::endDate() const
+{
+    return _endDate;
 }
 
 QHash<int, QByteArray> DialogsModel::roleNames() const
@@ -229,11 +235,22 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList
         append(dialogs);
     }
 
+    _endDate = dialogs->last()->message()->unixtime();
+
     _isLoading = false;
 }
 
 void DialogsModel::onItemChanged(const int i)
 {
-    QModelIndex idx = index(i, 0);
-    emit dataChanged(idx, idx);
+    if (_dialogs->at(i)->message()->id() == 0 || _dialogs->at(i)->message()->unixtime() < _endDate)
+    {
+        beginRemoveRows(QModelIndex(), i, i);
+        _dialogs->removeAt(i);
+        endRemoveRows();
+    }
+    else
+    {
+        QModelIndex idx = index(i, 0);
+        emit dataChanged(idx, idx);
+    }
 }
