@@ -89,6 +89,8 @@ void Chats::setCurrentChat(const int id)
         _currentDialog->setCurrent(true);
         _currentChatId = id;
 
+        chat->markAsRead();
+
         emit currentChatChanged(id);
     }
 }

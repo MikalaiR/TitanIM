@@ -19,6 +19,7 @@
 #include "dialogsmodel.h"
 #include "vk/client.h"
 #include "settings.h"
+#include "chats.h"
 
 class DialogsHandler : public QObject
 {
@@ -41,6 +42,7 @@ private:
     DialogsModel *_model;
     QSortFilterProxyModel *_proxy;
     int _unreadDialogs;
+    bool _flagMarkAsRead;
 
 protected:
     void incUnreadDialogs();

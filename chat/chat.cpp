@@ -124,6 +124,14 @@ void Chat::addAttachments(const QList<QUrl> &list)
     }
 }
 
+void Chat::markAsRead()
+{
+    Packet *packet = new Packet("messages.markAsRead");
+    packet->addParam("user_id", _dialog->id());
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onMarkAsReadFinished(const Packet*,QVariantMap)));
+    Client::instance()->connection()->appendQuery(packet);
+}
+
 void Chat::onMessageSending(const int internalMid)
 {
     _countUnsent++;
@@ -142,4 +150,10 @@ void Chat::onSuccessfullyMessageSent(const int internalMid, const int serverMid)
 
         _tempMessageQueue.clear();
     }
+}
+
+void Chat::onMarkAsReadFinished(const Packet *sender, const QVariantMap &result)
+{
+    //todo
+    delete sender;
 }

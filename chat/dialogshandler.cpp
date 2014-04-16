@@ -16,6 +16,7 @@
 DialogsHandler::DialogsHandler()
 {
     _unreadDialogs = 0;
+    _flagMarkAsRead = false;
 
     _model = new DialogsModel(this);
     connect(_model, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
@@ -104,9 +105,18 @@ void DialogsHandler::decUnreadDialogs()
 
 void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
 {
-    if (_unreadDialogs != unreadDialogs)
+    //todo fixme
+    int serverUnreadDialogs = unreadDialogs;
+
+    if (_flagMarkAsRead)
     {
-        _unreadDialogs = unreadDialogs;
+        _flagMarkAsRead = false;
+        serverUnreadDialogs--;
+    }
+
+    if (_unreadDialogs != serverUnreadDialogs)
+    {
+        _unreadDialogs = serverUnreadDialogs;
         emit unreadDialogsChanged(_unreadDialogs);
     }
 }
@@ -116,14 +126,29 @@ void DialogsHandler::onLongPollMessageInAdded(const DialogItem dialog)
     int id = dialog->id();
     int i = _model->indexOf(id);
 
+    //todo fixme
+    if (id == Chats::instance()->currentChatId())
+    {
+        _flagMarkAsRead = true;
+        Chats::instance()->currentChat()->markAsRead();
+    }
+
     if (i > -1)
     {
         _model->at(i)->setMessage(dialog->message());
-        _model->at(i)->incUnreadDialogs();
+
+        if (!_flagMarkAsRead)
+        {
+            _model->at(i)->incUnreadDialogs();
+        }
     }
     else
     {
-        dialog->incUnreadDialogs();
+        if (!_flagMarkAsRead)
+        {
+            dialog->incUnreadDialogs();
+        }
+
         dialog->getMessage(Client::instance()->connection()); //update unread
         _model->append(dialog);
     }
