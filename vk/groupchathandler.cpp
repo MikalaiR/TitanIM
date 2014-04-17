@@ -12,6 +12,7 @@
 */
 
 #include "groupchathandler.h"
+#include "client.h"
 
 GroupChatHandler::GroupChatHandler(const int chatId)
 {
@@ -48,6 +49,21 @@ ProfileItem GroupChatHandler::user(const int uid)
 QStringList GroupChatHandler::avatars() const
 {
     return isCover() ? QStringList(_cover) : _avatars;
+}
+
+void GroupChatHandler::refreshAvatars()
+{
+    _avatars.clear();
+
+    for (int i = 0; i < _users->count(); i++)
+    {
+        ProfileItem profile = _users->at(i);
+
+        if (profile->id() != Client::instance()->uid())
+        {
+            _avatars.append(profile->photoMediumRect());
+        }
+    }
 }
 
 int GroupChatHandler::usersCount() const
@@ -125,8 +141,10 @@ void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &res
     _cover = response.value("photo_100").toString();
     ProfileList profiles = ProfileParser::parser(response.value("users").toList());
 
+    //_users->clear(); //todo
     _users->add(profiles->toList());
+    refreshAvatars();
 
-    emit propertyChanged(_chatId, "users");
+    emit propertyChanged(_chatId, "all");
     delete sender;
 }

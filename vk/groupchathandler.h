@@ -31,6 +31,7 @@ public:
     void addUser(ProfileItem profile);
     ProfileItem user(const int uid);
     QStringList avatars() const;
+    void refreshAvatars();
     int usersCount() const;
     void setUsersCount(const int usersCount);
     void setCover(const QString &cover);

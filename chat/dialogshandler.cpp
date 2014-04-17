@@ -150,6 +150,12 @@ void DialogsHandler::onLongPollMessageInAdded(const DialogItem dialog)
         }
 
         dialog->getMessage(Client::instance()->connection()); //update unread
+
+        if (dialog->isGroupChat())
+        {
+            dialog->groupChatHandler()->getAllFields(Client::instance()->connection());
+        }
+
         _model->append(dialog);
     }
 
@@ -169,6 +175,11 @@ void DialogsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
     }
     else
     {
+        if (dialog->isGroupChat())
+        {
+            dialog->groupChatHandler()->getAllFields(Client::instance()->connection());
+        }
+
         _model->append(dialog);
     }
 }
