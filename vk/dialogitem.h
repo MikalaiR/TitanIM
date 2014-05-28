@@ -21,6 +21,7 @@
 #include "messageitem.h"
 #include "groupchathandler.h"
 #include "historypacket.h"
+#include "typinghandler.h"
 
 class DialogItemPrivate : public NotifyPropertyBase
 {
@@ -43,6 +44,8 @@ public:
     void setMessage(const MessageItem message);
     GroupChatHandler* groupChatHandler() const;
     void setGroupChatHandler(GroupChatHandler *groupChatHandler);
+    TypingHandler* typingHandler() const;
+    bool isTyping() const;
     int unreadCount() const;
     void setUnreadCount(const int unreadCount);
     void incUnreadDialogs();
@@ -54,22 +57,26 @@ private:
     ProfileItem _profile;
     MessageItem _message;
     GroupChatHandler *_groupChatHandler;
+    TypingHandler *_typingHandler;
     int _unreadCount;
     bool _isCurrent;
 
 public slots:
     void getMessage(Connection *connection);
+    void typing(const int uid);
 
 protected slots:
     void onProfilePropertyChanged(const int uid, const QString &propertyName);
     void onMessagePropertyChanged(const int mid, const QString &propertyName);
     void onGroupChatPropertyChanged(const int chatId, const QString &propertyName);
+    void onTypingActiveChanged(const bool isActive);
     void onGetMessageFinished(const HistoryPacket *sender, const int id, const MessageList &messages);
 
 signals:
     void displayNameChanged();
     void decorationChanged();
     void descriptionChanged();
+    void newTyping(const TypingItem typing);
 };
 
 typedef QSharedPointer<DialogItemPrivate> DialogItem;

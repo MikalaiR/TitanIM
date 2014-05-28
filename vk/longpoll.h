@@ -109,8 +109,7 @@ signals:
     void outMessagesRead(const int id, const int mid);
     void userStatusChanged(const int uid, const bool online);
     void groupChatUpdated(const int chatId, const bool self);
-    void chatTyping(const int uid, const int flags);
-    void groupChatTyping(const int uid, const int chatId);
+    void chatTyping(const int id, const int uid, const int chatId);
     void userCall(const int uid, const QString &callId);
     void unreadDialogs(const int count);
 };

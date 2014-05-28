@@ -35,11 +35,13 @@ Chats::Chats()
     _currentDialog = 0;
 
     _proxy = new QSortFilterProxyModel(this);
-//    _proxy->setDynamicSortFilter(true);
-//    _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-//    _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-//    _proxy->setSortRole(Qt::UserRole);
-//    _proxy->sort(0, Qt::DescendingOrder);
+    _proxy->setDynamicSortFilter(true);
+    _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
+    _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    _proxy->setFilterRole(ChatModel::deletedRole);
+    _proxy->setSortRole(ChatModel::dateRole);
+    _proxy->setFilterFixedString("false");
+    _proxy->sort(0, Qt::DescendingOrder);
 
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
@@ -47,6 +49,8 @@ Chats::Chats()
     qmlRegisterType<AttachmentList>("TitanIM", 2, 0, "AttachmentList");
     qmlRegisterType<Attachment>("TitanIM", 2, 0, "Attachment");
     qRegisterMetaType<Attachment::AttachmentType>("Attachment::AttachmentType");
+    qmlRegisterType<MessageBase>("TitanIM", 2, 0, "MessageBase");
+    qRegisterMetaType<MessageBase::MessageType>("MessageBase::MessageType");
 }
 
 Chats::~Chats()

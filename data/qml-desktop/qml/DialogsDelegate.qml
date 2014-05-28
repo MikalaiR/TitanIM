@@ -109,7 +109,7 @@ Item {
                     color: "#707070"
                     font.pointSize: 13 - 1
                     wrapMode: Text.Wrap
-                    text: model.body
+                    text: model.typing ? dialogsHandler.typingText : model.body
                 }
 
                 BadgeItem {

@@ -15,8 +15,11 @@
 
 MessageItemPrivate::MessageItemPrivate()
 {
+    setMessageType(Text);
+
     _uid = 0;
     _isError = false;
+    _deliveryReport = false;
     _chatId = 0;
     _attachments = 0;
 }
@@ -37,20 +40,6 @@ void MessageItemPrivate::setUid(const int uid)
     {
         _uid = uid;
         emitPropertyChanged("uid");
-    }
-}
-
-QDateTime MessageItemPrivate::date() const
-{
-    return _date;
-}
-
-void MessageItemPrivate::setDate(const QDateTime &date)
-{
-    if (_date != date)
-    {
-        _date = date;
-        emitPropertyChanged("date");
     }
 }
 

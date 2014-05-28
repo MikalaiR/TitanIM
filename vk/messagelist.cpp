@@ -16,3 +16,23 @@
 MessageListPrivate::MessageListPrivate()
 {
 }
+
+int MessageListPrivate::deliveredMsgCount() const
+{
+    int k = 0;
+
+    for (int i = 0; i < count(); i++)
+    {
+        if (at(i)->messageType() == MessageBase::Text)
+        {
+            MessageItem msg = qobject_cast<MessageItem>(at(i));
+
+            if (msg->deliveryReport() && !msg->deleted())
+            {
+                k++;
+            }
+        }
+    }
+
+    return k;
+}

@@ -323,9 +323,8 @@ void LongPoll::onGroupChatUpdated(const QVariantList &update)
 void LongPoll::onChatTyping(const QVariantList &update)
 {
     int uid = update.value(1).toInt();
-    int flags = update.value(2).toInt();
 
-    emit chatTyping(uid, flags);
+    emit chatTyping(uid, uid, 0);
 }
 
 void LongPoll::onGroupChatTyping(const QVariantList &update)
@@ -333,7 +332,9 @@ void LongPoll::onGroupChatTyping(const QVariantList &update)
     int uid = update.value(1).toInt();
     int chatId = update.value(2).toInt();
 
-    emit groupChatTyping(uid, chatId);
+    int id = chatId + GROUP_CHAT_OFFSET;
+
+    emit chatTyping(id, uid, chatId);
 }
 
 void LongPoll::onUserCall(const QVariantList &update)

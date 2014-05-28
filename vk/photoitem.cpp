@@ -16,6 +16,7 @@
 PhotoItemPrivate::PhotoItemPrivate()
 {
     setAttachmentType(photo);
+
     _albumId = 0;
     _width = 0;
     _height = 0;

@@ -11,28 +11,40 @@
  ***************************************************************************
 */
 
-#include "attachmentlist.h"
+#ifndef TYPINGITEM_H
+#define TYPINGITEM_H
 
-AttachmentList::AttachmentList()
+#include <QObject>
+#include <QSharedPointer>
+#include <QTimer>
+#include "messagebase.h"
+
+class TypingItemPrivate : public MessageBase
 {
-}
+    Q_OBJECT
 
-int AttachmentList::count() const
-{
-    return ObservableCollection::count();
-}
+public:
+    TypingItemPrivate();
+    int uid() const;
+    void setUid(const int uid);
+    inline bool isActive() const { return !_deleted; }
 
-QVariantList AttachmentList::filterByType(const Attachment::AttachmentType type) const
-{
-    QVariantList list;
+private:
+    int _uid;
+    QTimer *_timer;
 
-    for (int i = 0; i < ObservableCollection::count(); i++)
-    {
-        if (at(i)->attachmentType() == type)
-        {
-            list.append(QVariant::fromValue(at(i).data()));
-        }
-    }
+public slots:
+    void restart();
+    void stop();
 
-    return list;
-}
+protected slots:
+    void setIsActive(const bool isActive);
+    void onTimerTimeout();
+
+signals:
+    void activeChanged(const int id, const int uid, const bool isActive);
+};
+
+typedef QSharedPointer<TypingItemPrivate> TypingItem;
+
+#endif // TYPINGITEM_H

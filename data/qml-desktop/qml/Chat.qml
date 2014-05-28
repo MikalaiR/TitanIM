@@ -72,11 +72,11 @@ Item {
     }
 
     ListView {
-        id: chatView;
+        id: chatView
         width: parent.width
         anchors.top: header.bottom
         anchors.bottom: footer.top
-        model: chats.currentChatModel;
+        model: chats.currentChatModel
         delegate: ChatDelegate { }
         verticalLayoutDirection: ListView.BottomToTop
         clip: true

@@ -28,6 +28,7 @@ class DialogsHandler : public QObject
     Q_PROPERTY(DialogsModel* model READ model CONSTANT)
     Q_PROPERTY(QSortFilterProxyModel* proxy READ proxy CONSTANT)
     Q_PROPERTY(int unreadDialogs READ unreadDialogs NOTIFY unreadDialogsChanged)
+    Q_PROPERTY(QString typingText READ typingText NOTIFY typingTextChanged)
 
 public:
     DialogsHandler();
@@ -35,6 +36,7 @@ public:
     DialogsModel* model() const;
     QSortFilterProxyModel* proxy() const;
     int unreadDialogs() const;
+    QString typingText() const;
     DialogItem dialog(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
 
@@ -42,6 +44,7 @@ private:
     DialogsModel *_model;
     QSortFilterProxyModel *_proxy;
     int _unreadDialogs;
+    QString _typingText;
     bool _flagMarkAsRead;
 
 protected:
@@ -52,14 +55,17 @@ protected slots:
     void setUnreadDialogs(const int unreadDialogs);
     void onLongPollMessageInAdded(const DialogItem dialog);
     void onLongPollMessageOutAdded(const DialogItem dialog);
+    void onLongPollChatTyping(const int id, const int uid, const int chatId);
     void onUserStatusChanged(const int uid, const bool online);
     void onInMessagesRead(const int id, const int mid);
     void onMessageFlagsSet(const int mid, const int mask, const int id);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
     void onRecoveryDialog(const DialogsPacket *sender, const DialogList &dialogs);
+    void timerEvent(QTimerEvent *event);
 
 signals:
     void unreadDialogsChanged(const int unreadDialogs);
+    void typingTextChanged(const QString &typingText);
 };
 
 #endif // DIALOGSHANDLER_H

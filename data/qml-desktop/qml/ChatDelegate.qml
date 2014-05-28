@@ -12,17 +12,22 @@
 */
 
 import QtQuick 2.0
+import TitanIM 2.0
 
 Item {
     id: chatDelegate
     width: chatDelegate.ListView.view.width
     height: Math.max(avatar.height + 4, bubble.height + 9) + sectionText.height
 
-    SectionText {
+    Loader {
         id: sectionText
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: chatDelegate.ListView.nextSection !== chatDelegate.ListView.section
-        text: model.section
+        active: model.messageType !== MessageBase.Typing
+
+        sourceComponent: SectionText {
+            visible: chatDelegate.ListView.nextSection !== chatDelegate.ListView.section
+            text: model.section
+        }
     }
 
     Item {
@@ -44,18 +49,36 @@ Item {
             visible: model.decoration
         }
 
-        BubbleItem {
+        Loader {
+            id: typing
+            anchors.left: avatar.right
+            anchors.leftMargin: 4
+            anchors.bottom: avatar.bottom
+            active: model.messageType === MessageBase.Typing
+
+            sourceComponent: Image {
+                height: 24;
+                fillMode: Image.PreserveAspectFit
+                source: "images/typing.png"
+            }
+        }
+
+        Loader {
             id: bubble
-            LayoutMirroring.enabled: model.isOut
-            maximumWidth: chatDelegate.width * 0.6
             anchors.left: avatar.right
             anchors.leftMargin: 3
             anchors.bottom: avatar.bottom
             anchors.bottomMargin: -2
-            isOut: model.isOut
-            text: model.body
-            time: model.timeStr
-            attachments: model.attachments
+            LayoutMirroring.enabled: model.isOut
+            active: model.messageType === MessageBase.Text
+
+            sourceComponent: BubbleItem {
+                maximumWidth: chatDelegate.width * 0.6
+                isOut: model.isOut
+                text: model.body
+                time: model.timeStr
+                attachments: model.attachments
+            }
         }
     }
 }

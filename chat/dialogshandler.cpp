@@ -31,6 +31,7 @@ DialogsHandler::DialogsHandler()
 
     connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
     connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
     connect(Client::instance()->longPoll(), SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
     connect(Client::instance()->longPoll(), SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
@@ -38,6 +39,8 @@ DialogsHandler::DialogsHandler()
     connect(Client::instance()->longPoll(), SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
+
+    startTimer(500); //typing animation
 }
 
 DialogsHandler::~DialogsHandler()
@@ -59,6 +62,11 @@ QSortFilterProxyModel *DialogsHandler::proxy() const
 int DialogsHandler::unreadDialogs() const
 {
     return _unreadDialogs;
+}
+
+QString DialogsHandler::typingText() const
+{
+    return _typingText;
 }
 
 DialogItem DialogsHandler::dialog(const int index, const bool isProxyIndex) const
@@ -184,6 +192,16 @@ void DialogsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
     }
 }
 
+void DialogsHandler::onLongPollChatTyping(const int id, const int uid, const int chatId)
+{
+    int i = _model->indexOf(id);
+
+    if (i > -1)
+    {
+        _model->at(i)->typing(uid);
+    }
+}
+
 void DialogsHandler::onUserStatusChanged(const int uid, const bool online)
 {
     int i = _model->indexOf(uid);
@@ -250,4 +268,18 @@ void DialogsHandler::onRecoveryDialog(const DialogsPacket *sender, const DialogL
 {
     _model->append(dialogs->at(0));
     delete sender;
+}
+
+void DialogsHandler::timerEvent(QTimerEvent *event)
+{
+    static int k = 1;
+    static const QString typing = tr("typing");
+    static const int len = typing.length();
+
+    k++;
+    if (k == 4) k = 1;
+
+    _typingText = typing.leftJustified(len + k, '.');
+
+    emit typingTextChanged(_typingText);
 }

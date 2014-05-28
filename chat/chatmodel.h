@@ -18,6 +18,7 @@
 #include <QStringList>
 #include "vk/messagelist.h"
 #include "vk/dialogitem.h"
+#include "vk/typingitem.h"
 #include "vk/client.h"
 #include "vk/historypacket.h"
 #include "vk/utils.h"
@@ -29,7 +30,8 @@ class ChatModel : public QAbstractListModel
 public:
     enum chatRole
     {
-        bodyRole = Qt::UserRole,
+        messageTypeRole = Qt::UserRole,
+        bodyRole,
         dateRole,
         timeStrRole,
         attachmentsRole,
@@ -37,6 +39,7 @@ public:
         midRole,
         isUnreadRole,
         isOutRole,
+        deletedRole,
         onlineRole,
         sectionRole
     };
@@ -46,11 +49,11 @@ public:
     void load(const int count=20);
     void loadNext(const int count=20);
     void append(const MessageList items);
-    void append(const MessageItem item, const bool replace=false);
-    void prepend(const MessageItem item, const bool replace=false);
+    void append(const MessageBaseItem item, const bool replace=false);
+    void prepend(const MessageBaseItem item, const bool replace=false);
     void replaceAll(const MessageList items);
     bool remove(int row, int count);
-    MessageItem at(const int row) const;
+    MessageBaseItem at(const int row) const;
     int indexOf(const int mid) const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -73,7 +76,9 @@ protected:
 protected slots:
     void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
     void onItemChanged(const int i);
-    void onRowsChanged(const QModelIndex &parent, int first, int last);
+
+signals:
+    void rowsAllReplaced();
 };
 
 #endif // CHATMODEL_H

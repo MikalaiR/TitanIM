@@ -45,6 +45,7 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     message->setUid(uid);
     message->setDate(date);
     message->setIsUnread(isUnread);
+    message->setDeliveryReport(true);
     message->setIsOut(isOut);
     message->setBody(body);
     message->setTitle(title);

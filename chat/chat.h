@@ -34,7 +34,6 @@ public:
     DialogItem dialog() const;
     ChatModel* model() const;
     int countUnsent() const;
-    void addTempMessageQueue(MessageItem message);
 
 private:
     DialogItem _dialog;
@@ -42,10 +41,15 @@ private:
     SendMessageHandler *_sendMessageHandler;
     static int _internalMessageId;
     int _countUnsent;
-    QVector<MessageItem> _tempMessageQueue;
+    QVector<MessageItem> _tempOutMessageQueue;
     AttachmentList *_outAttachments;
 
 public slots:
+    void addInMessage(const MessageItem message);
+    void addOutMessage(const MessageItem message);
+    void addTempOutMessageQueue(MessageItem message);//todo const?
+    void addTyping(const TypingItem typing);
+    void addTyping(const QList<TypingItem> &typingList);
     void sendMessage(const QString &text);
     void addAttachments(const QList<QUrl> &list);
     void markAsRead();
@@ -54,6 +58,7 @@ protected slots:
     void onMessageSending(const int internalMid);
     void onSuccessfullyMessageSent(const int internalMid, const int serverMid);
     void onMarkAsReadFinished(const Packet *sender, const QVariantMap &result);
+    void onModelRowsAllReplaced();
 };
 
 #endif // CHAT_H

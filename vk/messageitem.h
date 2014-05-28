@@ -16,11 +16,10 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <QDateTime>
-#include "notifypropertybase.h"
+#include "messagebase.h"
 #include "attachmentlist.h"
 
-class MessageItemPrivate : public NotifyPropertyBase
+class MessageItemPrivate : public MessageBase
 {
     Q_OBJECT
 
@@ -29,8 +28,6 @@ public:
     ~MessageItemPrivate();
     int uid() const;
     void setUid(const int uid);
-    QDateTime date() const;
-    void setDate(const QDateTime &date);
     uint unixtime() const;
     bool isUnread() const;
     void setIsUnread(const bool isUnread);
@@ -53,7 +50,6 @@ public:
 
 private:
     int _uid;
-    QDateTime _date;
     bool _isUnread;
     bool _isOut;
     bool _isError;

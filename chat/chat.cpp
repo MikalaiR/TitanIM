@@ -28,7 +28,11 @@ Chat::Chat()
 Chat::Chat(const DialogItem dialog)
 {
     _dialog = dialog;
+    connect(_dialog.data(), SIGNAL(newTyping(TypingItem)), this, SLOT(addTyping(TypingItem)));
+
     _model = new ChatModel(_dialog, this);
+    connect(_model, SIGNAL(rowsAllReplaced()), this, SLOT(onModelRowsAllReplaced()));
+
     _countUnsent = 0;
     _outAttachments = 0;
 
@@ -70,9 +74,33 @@ int Chat::countUnsent() const
     return _countUnsent;
 }
 
-void Chat::addTempMessageQueue(MessageItem message)
+void Chat::addInMessage(const MessageItem message)
 {
-    _tempMessageQueue.append(message);
+    _model->prepend(message);
+}
+
+void Chat::addOutMessage(const MessageItem message)
+{
+    _model->prepend(message, true);
+}
+
+void Chat::addTempOutMessageQueue(MessageItem message)
+{
+    _tempOutMessageQueue.append(message);
+}
+
+void Chat::addTyping(const TypingItem typing)
+{
+    typing->setId(--_internalMessageId);
+    _model->prepend(typing);
+}
+
+void Chat::addTyping(const QList<TypingItem> &typingList)
+{
+    for (int i = 0; i < typingList.count(); i++)
+    {
+        addTyping(typingList.at(i));
+    }
 }
 
 void Chat::sendMessage(const QString &text)
@@ -98,12 +126,14 @@ void Chat::sendMessage(const QString &text)
     message->setDate(QDateTime::currentDateTime());
     message->setIsUnread(true);
     message->setIsOut(true);
-    message->setIsError(false);
     message->setBody(text);
 
     message->setAttachments(_outAttachments);
     _outAttachments = 0;
+
     _model->prepend(message);
+//    _dialog->setMessage(message); //todo
+
     _sendMessageHandler->send(message);
 }
 
@@ -141,14 +171,14 @@ void Chat::onSuccessfullyMessageSent(const int internalMid, const int serverMid)
 {
     _countUnsent--;
 
-    if (countUnsent() == 0 && _tempMessageQueue.count())
+    if (countUnsent() == 0 && _tempOutMessageQueue.count())
     {
-        for (int i = 0; i < _tempMessageQueue.count(); i++)
+        for (int i = 0; i < _tempOutMessageQueue.count(); i++)
         {
-            _model->prepend(_tempMessageQueue.at(i), true);
+            _model->prepend(_tempOutMessageQueue.at(i), true);
         }
 
-        _tempMessageQueue.clear();
+        _tempOutMessageQueue.clear();
     }
 }
 
@@ -156,4 +186,12 @@ void Chat::onMarkAsReadFinished(const Packet *sender, const QVariantMap &result)
 {
     //todo
     delete sender;
+}
+
+void Chat::onModelRowsAllReplaced()
+{
+    if (_dialog->typingHandler())
+    {
+        addTyping(_dialog->typingHandler()->toList());
+    }
 }

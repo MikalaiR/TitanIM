@@ -120,6 +120,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[unreadCountRole] = "unreadCount";
     roles[isOutRole] = "isOut";
     roles[onlineRole] = "online";
+    roles[typingRole] = "typing";
 
     return roles;
 }
@@ -134,7 +135,6 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     DialogItem dialog = _dialogs->at(index.row());
     MessageItem message = dialog->message();
     ProfileItem profile = dialog->profile();
-    GroupChatHandler *groupChatHandler = dialog->groupChatHandler();
 
     switch (role)
     {
@@ -170,6 +170,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case onlineRole:
         return !dialog->isGroupChat() && profile->online();
+
+    case typingRole:
+        return dialog->isTyping();
     }
 
     return QVariant();

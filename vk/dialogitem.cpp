@@ -16,6 +16,7 @@
 DialogItemPrivate::DialogItemPrivate()
 {
     _groupChatHandler = 0;
+    _typingHandler = 0;
     _unreadCount = 0;
     _isCurrent = false;
 
@@ -106,6 +107,11 @@ void DialogItemPrivate::setMessage(const MessageItem message)
             _id = _message->uid();
         }
 
+        if (!message->isOut() && _typingHandler && _typingHandler->isActive(message->uid()))
+        {
+            _typingHandler->stop(message->uid());
+        }
+
         connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onMessagePropertyChanged(int,QString)));
         emitPropertyChanged("message");
     }
@@ -133,6 +139,16 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
         connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
         emitPropertyChanged("groupChat");
     }
+}
+
+TypingHandler *DialogItemPrivate::typingHandler() const
+{
+    return _typingHandler;
+}
+
+bool DialogItemPrivate::isTyping() const
+{
+    return _typingHandler && _typingHandler->isActive();
 }
 
 int DialogItemPrivate::unreadCount() const
@@ -181,6 +197,18 @@ void DialogItemPrivate::getMessage(Connection *connection)
     historyPacket->load(_id, 0, 1);
 }
 
+void DialogItemPrivate::typing(const int uid)
+{
+    if (!_typingHandler)
+    {
+        _typingHandler = new TypingHandler(this);
+        connect(_typingHandler, SIGNAL(activeChanged(bool)), this, SLOT(onTypingActiveChanged(bool)));
+        connect(_typingHandler, SIGNAL(newTyping(TypingItem)), this, SIGNAL(newTyping(TypingItem)));
+    }
+
+    _typingHandler->setTyping(uid);
+}
+
 void DialogItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
 {
     QString property = QString("profile.%1").arg(propertyName);
@@ -199,6 +227,11 @@ void DialogItemPrivate::onGroupChatPropertyChanged(const int chatId, const QStri
     emitPropertyChanged(property);
 }
 
+void DialogItemPrivate::onTypingActiveChanged(const bool isActive)
+{
+    emitPropertyChanged("typing.isActive");
+}
+
 void DialogItemPrivate::onGetMessageFinished(const HistoryPacket *sender, const int id, const MessageList &messages)
 {
     setUnreadCount(sender->unreadCount());
@@ -210,7 +243,7 @@ void DialogItemPrivate::onGetMessageFinished(const HistoryPacket *sender, const 
     }
     else if (messages->at(0)->id() != message()->id())
     {
-        setMessage(messages->at(0));
+        setMessage(qobject_cast<MessageItem>(messages->at(0)));
     }
 
     delete sender;

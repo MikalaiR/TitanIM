@@ -28,8 +28,10 @@ void ChatsHandler::create(const DialogItem dialog)
 {
     int id = dialog->id();
 
-    _chats[id] = new Chat(dialog);
-    _chats[id]->model()->load();
+    Chat *chat = new Chat(dialog);
+    _chats[id] = chat;
+
+    chat->model()->load();
 }
 
 bool ChatsHandler::contains(const int id) const
@@ -55,7 +57,7 @@ void ChatsHandler::onLongPollMessageInAdded(const DialogItem dialog)
     if (contains(id))
     {
         MessageItem message = dialog->message();
-        chat(id)->model()->prepend(message);
+        chat(id)->addInMessage(message);
     }
 }
 
@@ -72,11 +74,11 @@ void ChatsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
 
         if (chat->countUnsent() > 0)
         {
-            chat->addTempMessageQueue(message);
+            chat->addTempOutMessageQueue(message);
         }
         else
         {
-            chat->model()->prepend(message, true);
+            chat->addOutMessage(message);
         }
     }
 }

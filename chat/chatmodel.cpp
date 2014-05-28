@@ -25,9 +25,6 @@ ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     _historyPacket = new HistoryPacket(Client::instance()->connection());
     connect(_historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onHistoryLoaded(const HistoryPacket*,int,MessageList)));
 
-    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(onRowsChanged(QModelIndex,int,int)));
-    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(onRowsChanged(QModelIndex,int,int)));
-
     _serverCount = 0;
     _isLoading = false;
 }
@@ -44,7 +41,7 @@ void ChatModel::load(const int count)
 
 void ChatModel::loadNext(const int count)
 {
-    _historyPacket->load(_dialog->id(), _messages->count(), count);
+    _historyPacket->load(_dialog->id(), _messages->deliveredMsgCount(), count);
 }
 
 void ChatModel::append(const MessageList items)
@@ -57,7 +54,7 @@ void ChatModel::append(const MessageList items)
     endInsertRows();
 }
 
-void ChatModel::append(const MessageItem item, const bool replace)
+void ChatModel::append(const MessageBaseItem item, const bool replace)
 {
     if (replace && _messages->replace(item))
     {
@@ -69,7 +66,7 @@ void ChatModel::append(const MessageItem item, const bool replace)
     endInsertRows();
 }
 
-void ChatModel::prepend(const MessageItem item, const bool replace)
+void ChatModel::prepend(const MessageBaseItem item, const bool replace)
 {
     if (replace && _messages->replace(item))
     {
@@ -85,6 +82,8 @@ void ChatModel::replaceAll(const MessageList items)
 {
     remove(0, rowCount());
     append(items);
+
+    emit rowsAllReplaced();
 }
 
 bool ChatModel::remove(int row, int count)
@@ -104,7 +103,7 @@ bool ChatModel::remove(int row, int count)
     return true;
 }
 
-MessageItem ChatModel::at(const int row) const
+MessageBaseItem ChatModel::at(const int row) const
 {
     return _messages->at(row);
 }
@@ -118,6 +117,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
+    roles[messageTypeRole] = "messageType";
     roles[bodyRole] = "body";
     roles[dateRole] = "date";
     roles[timeStrRole] = "timeStr";
@@ -126,6 +126,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[midRole] = "mid";
     roles[isUnreadRole] = "isUnread";
     roles[isOutRole] = "isOut";
+    roles[deletedRole] = "deleted";
     roles[onlineRole] = "online";
     roles[sectionRole] = "section";
 
@@ -139,46 +140,88 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    MessageItem message = _messages->at(index.row());
-    ProfileItem profile = _dialog->isGroupChat() ? _dialog->groupChatHandler()->user(message->uid()) : _dialog->profile();
+    MessageBaseItem messageBase = _messages->at(index.row());
 
+    //global role
     switch (role)
     {
-    case Qt::DisplayRole:
-        return message->body();
-
-    case Qt::DecorationRole:
-        return message->isOut() ? _ownProfile->photoMediumRect() : profile->photoMediumRect();
-
-    case bodyRole:
-        return message->body();
+    case messageTypeRole:
+        return messageBase->messageType();
 
     case dateRole:
-        return message->date();
+        return messageBase->date();
 
-    case timeStrRole:
-        return message->date().toString("hh:mm");
-
-    case attachmentsRole:
-        return QVariant::fromValue(message->attachments());
-
-    case uidRole:
-        return message->uid();
-
-    case midRole:
-        return message->id();
-
-    case isUnreadRole:
-        return message->isUnread();
-
-    case isOutRole:
-        return message->isOut();
-
-    case onlineRole:
-        return message->isOut() ? _ownProfile->online() : profile->online();
+    case deletedRole:
+        return messageBase->deleted();
 
     case sectionRole:
-        return Utils::dateToSection(message->date());
+        return Utils::dateToSection(messageBase->date());
+    }
+
+    //type role
+    switch (messageBase->messageType()) {
+    case MessageBase::Text:
+    {
+        MessageItem message = qobject_cast<MessageItem>(messageBase);
+        ProfileItem profile = _dialog->isGroupChat() ? _dialog->groupChatHandler()->user(message->uid()) : _dialog->profile();
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return message->isOut() ? _ownProfile->fullName() : profile->fullName();
+
+        case Qt::DecorationRole:
+            return message->isOut() ? _ownProfile->photoMediumRect() : profile->photoMediumRect();
+
+        case bodyRole:
+            return message->body();
+
+        case timeStrRole:
+            return messageBase->date().toString("hh:mm");
+
+        case attachmentsRole:
+            return QVariant::fromValue(message->attachments());
+
+        case uidRole:
+            return message->uid();
+
+        case midRole:
+            return message->id();
+
+        case isUnreadRole:
+            return message->isUnread();
+
+        case isOutRole:
+            return message->isOut();
+
+        case onlineRole:
+            return message->isOut() ? _ownProfile->online() : profile->online();
+        }
+
+        break;
+    }
+
+    case MessageBase::Typing:
+    {
+        TypingItem typing = qobject_cast<TypingItem>(messageBase);
+        ProfileItem profile = _dialog->isGroupChat() ? _dialog->groupChatHandler()->user(typing->uid()) : _dialog->profile();
+
+        switch (role)
+        {
+        case Qt::DecorationRole:
+            return profile->photoMediumRect();
+
+        case uidRole:
+            return typing->uid();
+        }
+
+        break;
+    }
+
+    case MessageBase::Service:
+    {
+        break;
+    }
     }
 
     return QVariant();
@@ -215,7 +258,7 @@ Qt::ItemFlags ChatModel::flags(const QModelIndex &index) const
 
 bool ChatModel::canFetchMore(const QModelIndex &parent) const
 {
-    if (_isLoading || _messages->count() >= _serverCount)
+    if (_isLoading || _messages->deliveredMsgCount() >= _serverCount)
     {
         return false;
     }
@@ -249,25 +292,4 @@ void ChatModel::onItemChanged(const int i)
 {
     QModelIndex idx = index(i, 0);
     emit dataChanged(idx, idx);
-
-    if (i == 0)
-    {
-        _dialog->setMessage(_messages->at(0));
-    }
-}
-
-void ChatModel::onRowsChanged(const QModelIndex &parent, int first, int last)
-{
-    if (first == 0 || last == 0)
-    {
-        if (_messages->count())
-        {
-            _dialog->setMessage(_messages->at(0));
-        }
-        else
-        {
-            MessageItem emptyMessage = MessageItem::create();
-            _dialog->setMessage(emptyMessage);
-        }
-    }
 }

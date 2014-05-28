@@ -33,7 +33,8 @@ public:
         idRole,
         unreadCountRole,
         isOutRole,
-        onlineRole
+        onlineRole,
+        typingRole
     };
 
     explicit DialogsModel(QObject *parent = 0);

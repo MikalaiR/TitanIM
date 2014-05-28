@@ -66,7 +66,10 @@ SOURCES += main.cpp \
     authorization.cpp \
     vk/uploadattachments.cpp \
     vk/uploadfile.cpp \
-    roster/rosterhandler.cpp
+    roster/rosterhandler.cpp \
+    vk/messagebase.cpp \
+    vk/typingitem.cpp \
+    vk/typinghandler.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -111,7 +114,10 @@ HEADERS += \
     authorization.h \
     vk/uploadattachments.h \
     vk/uploadfile.h \
-    roster/rosterhandler.h
+    roster/rosterhandler.h \
+    vk/messagebase.h \
+    vk/typingitem.h \
+    vk/typinghandler.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \
