@@ -18,13 +18,13 @@ Item {
 
     property string text: ""
 
-    height: visible ? textShadow.height + 10 : 0
+    height: visible ? textShadow.height + 16 : 0
     width: textShadow.width
 
     TextShadow {
         id: textShadow
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: 8
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 3
         font.pointSize: 13 - 2
         font.bold: true
         font.family: "Helvetica"

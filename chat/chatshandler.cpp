@@ -17,6 +17,7 @@ ChatsHandler::ChatsHandler()
 {
     connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
     connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 }
 
 ChatsHandler::~ChatsHandler()
@@ -79,6 +80,17 @@ void ChatsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
         else
         {
             chat->addOutMessage(message);
+        }
+    }
+}
+
+void ChatsHandler::onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date)
+{
+    if (mask & LongPoll::Unread)
+    {
+        if (contains(id))
+        {
+            chat(id)->model()->markAsRead(mid);
         }
     }
 }

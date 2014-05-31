@@ -39,6 +39,7 @@ public:
         midRole,
         isUnreadRole,
         isOutRole,
+        isSendingRole,
         deletedRole,
         onlineRole,
         sectionRole
@@ -55,6 +56,7 @@ public:
     bool remove(int row, int count);
     MessageBaseItem at(const int row) const;
     int indexOf(const int mid) const;
+    void markAsRead(const int mid);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);

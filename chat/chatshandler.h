@@ -37,6 +37,7 @@ private:
 protected slots:
     void onLongPollMessageInAdded(const DialogItem dialog);
     void onLongPollMessageOutAdded(const DialogItem dialog);
+    void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
 };
 
 #endif // CHATSHANDLER_H

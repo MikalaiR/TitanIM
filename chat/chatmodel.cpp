@@ -113,6 +113,17 @@ int ChatModel::indexOf(const int mid) const
     return _messages->indexOf(mid);
 }
 
+void ChatModel::markAsRead(const int mid)
+{
+    int i = _messages->indexOf(mid);
+
+    if (i > -1)
+    {
+        qobject_cast<MessageItem>(_messages->at(i))->setIsUnread(false);
+        onItemChanged(i);
+    }
+}
+
 QHash<int, QByteArray> ChatModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
@@ -126,6 +137,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[midRole] = "mid";
     roles[isUnreadRole] = "isUnread";
     roles[isOutRole] = "isOut";
+    roles[isSendingRole] = "isSending";
     roles[deletedRole] = "deleted";
     roles[onlineRole] = "online";
     roles[sectionRole] = "section";
@@ -193,6 +205,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
         case isOutRole:
             return message->isOut();
+
+        case isSendingRole:
+            return message->isSending();
 
         case onlineRole:
             return message->isOut() ? _ownProfile->online() : profile->online();

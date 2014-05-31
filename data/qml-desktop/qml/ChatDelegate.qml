@@ -19,6 +19,17 @@ Item {
     width: chatDelegate.ListView.view.width
     height: Math.max(avatar.height + 4, bubble.height + 9) + sectionText.height
 
+    Rectangle {
+        id: unreadHighlight
+        anchors.top: body.top
+        anchors.bottom: body.bottom
+        anchors.left: chatDelegate.left
+        anchors.right: chatDelegate.right
+        opacity: 0.1;
+        color: "#83a6d3"
+        visible: model.messageType === MessageBase.Text && model.isUnread
+    }
+
     Loader {
         id: sectionText
         anchors.horizontalCenter: parent.horizontalCenter
@@ -31,7 +42,9 @@ Item {
     }
 
     Item {
-        height: parent.height
+        id: body
+        anchors.top: sectionText.bottom
+        anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.leftMargin: 10
         anchors.right: parent.right
@@ -44,7 +57,7 @@ Item {
             LayoutMirroring.enabled: model.isOut
             anchors.left: parent.left
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 1
+            anchors.bottomMargin: 2
             source: model.decoration
             visible: model.decoration
         }
@@ -76,7 +89,7 @@ Item {
                 maximumWidth: chatDelegate.width * 0.6
                 isOut: model.isOut
                 text: model.body
-                time: model.timeStr
+                time: model.isSending ? qsTr("sending...") : model.timeStr
                 attachments: model.attachments
             }
         }
