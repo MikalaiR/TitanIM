@@ -108,14 +108,14 @@ MessageBaseItem ChatModel::at(const int row) const
     return _messages->at(row);
 }
 
-int ChatModel::indexOf(const int mid) const
+int ChatModel::indexOf(const int id) const
 {
-    return _messages->indexOf(mid);
+    return _messages->indexOf(id);
 }
 
-void ChatModel::markAsRead(const int mid)
+void ChatModel::markAsRead(const int id)
 {
-    int i = _messages->indexOf(mid);
+    int i = _messages->indexOf(id);
 
     if (i > -1)
     {
@@ -128,19 +128,19 @@ QHash<int, QByteArray> ChatModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
-    roles[messageTypeRole] = "messageType";
-    roles[bodyRole] = "body";
-    roles[dateRole] = "date";
-    roles[timeStrRole] = "timeStr";
-    roles[attachmentsRole] = "attachments";
-    roles[uidRole] = "uid";
-    roles[midRole] = "mid";
-    roles[isUnreadRole] = "isUnread";
-    roles[isOutRole] = "isOut";
-    roles[isSendingRole] = "isSending";
-    roles[deletedRole] = "deleted";
-    roles[onlineRole] = "online";
-    roles[sectionRole] = "section";
+    roles[IdRole] = "id";
+    roles[MessageTypeRole] = "messageType";
+    roles[BodyRole] = "body";
+    roles[DateRole] = "date";
+    roles[TimeStrRole] = "timeStr";
+    roles[AttachmentsRole] = "attachments";
+    roles[UidRole] = "uid";
+    roles[IsUnreadRole] = "isUnread";
+    roles[IsOutRole] = "isOut";
+    roles[IsSendingRole] = "isSending";
+    roles[DeletedRole] = "deleted";
+    roles[OnlineRole] = "online";
+    roles[SectionRole] = "section";
 
     return roles;
 }
@@ -157,16 +157,19 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     //global role
     switch (role)
     {
-    case messageTypeRole:
+    case IdRole:
+        return messageBase->id();
+
+    case MessageTypeRole:
         return messageBase->messageType();
 
-    case dateRole:
+    case DateRole:
         return messageBase->date();
 
-    case deletedRole:
+    case DeletedRole:
         return messageBase->deleted();
 
-    case sectionRole:
+    case SectionRole:
         return Utils::dateToSection(messageBase->date());
     }
 
@@ -185,31 +188,28 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             return message->isOut() ? _ownProfile->photoMediumRect() : profile->photoMediumRect();
 
-        case bodyRole:
+        case BodyRole:
             return message->body();
 
-        case timeStrRole:
+        case TimeStrRole:
             return messageBase->date().toString("hh:mm");
 
-        case attachmentsRole:
+        case AttachmentsRole:
             return QVariant::fromValue(message->attachments());
 
-        case uidRole:
+        case UidRole:
             return message->uid();
 
-        case midRole:
-            return message->id();
-
-        case isUnreadRole:
+        case IsUnreadRole:
             return message->isUnread();
 
-        case isOutRole:
+        case IsOutRole:
             return message->isOut();
 
-        case isSendingRole:
+        case IsSendingRole:
             return message->isSending();
 
-        case onlineRole:
+        case OnlineRole:
             return message->isOut() ? _ownProfile->online() : profile->online();
         }
 
@@ -226,7 +226,7 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             return profile->photoMediumRect();
 
-        case uidRole:
+        case UidRole:
             return typing->uid();
         }
 

@@ -25,10 +25,10 @@ class RosterModel : public QAbstractListModel
 public:
     enum rosterRole
     {
-        uidRole = Qt::UserRole,
-        onlineRole,
-        activityRole,
-        alphabetRole
+        UidRole = Qt::UserRole,
+        OnlineRole,
+        ActivityRole,
+        AlphabetRole
     };
 
     explicit RosterModel(QObject *parent = 0);

@@ -34,6 +34,7 @@ public:
     Signup* authSignup() const;
     int uid() const;
     ProfileItem profile() const;
+    void getServerTime();
     void getProfile();
 
 private:
@@ -54,6 +55,7 @@ private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
     void onError(const Error &error, const QString &text, const bool global, const bool fatal);
+    void onServerTime(const Packet *sender, const QVariantMap &result);
     void onSelfProfile(const Packet *sender, const QVariantMap &result);
 };
 

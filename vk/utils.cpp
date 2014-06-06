@@ -13,6 +13,8 @@
 
 #include "utils.h"
 
+qint64 Utils::_lambdaServerTime = 0;
+
 QVariant Utils::parseJSON(const QByteArray &data)
 {
     QVariant res;
@@ -85,7 +87,7 @@ QString Utils::dateToText(const QDateTime &dateTime)
                             QObject::tr("Nov"),
                             QObject::tr("Dec")};
 
-    int days = dateTime.daysTo(QDateTime::currentDateTime());
+    int days = dateTime.daysTo(currentDateTime());
 
     switch (days)
     {
@@ -116,7 +118,7 @@ QString Utils::dateToText(const QDateTime &dateTime)
 
 QString Utils::dateToSection(const QDateTime &dateTime)
 {
-    int days = dateTime.daysTo(QDateTime::currentDateTime());
+    int days = dateTime.daysTo(currentDateTime());
     QString dateStr = dateTime.date().toString("d MMMM");
 
     switch (days)
@@ -187,12 +189,12 @@ QString Utils::lastSeenToString(const uint lastSeen, const Sex sex)
     QDateTime dateTime = QDateTime::fromTime_t(lastSeen);
 
     QString prefix = (sex == Woman) ? QObject::tr("last seen", "woman") : QObject::tr("last seen", "man");
-    int days = dateTime.daysTo(QDateTime::currentDateTime());
+    int days = dateTime.daysTo(currentDateTime());
 
     switch (days) {
     case 0:
     {
-        int minutes = dateTime.secsTo(QDateTime::currentDateTime()) / 60;
+        int minutes = dateTime.secsTo(currentDateTime()) / 60;
 
         if (minutes == 0)
         {
@@ -260,9 +262,19 @@ QVector<int> Utils::toVectorInt(const QVariantList &list)
 
 void Utils::playSound(const QString &fileName, const QString &cmd)
 {
-    #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     QSound::play(fileName);
-    #else
+#else
     QProcess::startDetached(QString("%1 %2").arg(cmd).arg(fileName));
-    #endif
+#endif
+}
+
+QDateTime Utils::currentDateTime()
+{
+    return QDateTime::currentDateTime().addSecs(_lambdaServerTime);
+}
+
+void Utils::setServerDateTime(const QDateTime &dateTime)
+{
+    _lambdaServerTime = QDateTime::currentDateTime().secsTo(dateTime);
 }

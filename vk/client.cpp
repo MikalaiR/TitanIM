@@ -74,6 +74,13 @@ int Client::uid() const
     return _uid;
 }
 
+void Client::getServerTime()
+{
+    Packet *serverTime = new Packet("utils.getServerTime");
+    connect(serverTime, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onServerTime(const Packet*,QVariantMap)));
+    _connection->appendQuery(serverTime);
+}
+
 ProfileItem Client::profile() const
 {
     return _profile;
@@ -92,6 +99,7 @@ void Client::getProfile()
 void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
     _uid = uid;
+    getServerTime(); //todo before connected
     getProfile();
     _longPoll->setRunning(true);
 }
@@ -106,6 +114,15 @@ void Client::onDisconnected()
 
 void Client::onError(const Error &error, const QString &text, const bool global, const bool fatal)
 {
+}
+
+void Client::onServerTime(const Packet *sender, const QVariantMap &result)
+{
+    uint unixtime = result.value("response").toUInt();
+    QDateTime dateTime = QDateTime::fromTime_t(unixtime).toLocalTime();
+    Utils::setServerDateTime(dateTime);
+
+    delete sender;
 }
 
 void Client::onSelfProfile(const Packet *sender, const QVariantMap &result)

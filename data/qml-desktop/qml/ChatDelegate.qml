@@ -54,7 +54,7 @@ Item {
             id: avatar
             width: 32
             height: 32
-            LayoutMirroring.enabled: model.isOut
+            LayoutMirroring.enabled: model.messageType === MessageBase.Text && model.isOut
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2

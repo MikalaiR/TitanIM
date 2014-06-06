@@ -15,8 +15,8 @@
 #define CHATS_H
 
 #include <QObject>
-#include <QSortFilterProxyModel>
 #include <QQmlComponent>
+#include "chatsortfilterproxymodel.h"
 #include "chatshandler.h"
 #include "vk/dialogitem.h"
 
@@ -27,7 +27,7 @@ class Chats : public QObject
     Q_PROPERTY(int currentChatId READ currentChatId NOTIFY currentChatChanged)
     Q_PROPERTY(Chat* currentChat READ currentChat NOTIFY currentChatChanged)
     Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY currentChatChanged)
-    Q_PROPERTY(QSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
+    Q_PROPERTY(ChatSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
 
 public:
     static Chats *instance();
@@ -35,7 +35,7 @@ public:
     int currentChatId() const;
     Chat* currentChat() const;
     DialogItemPrivate* currentChatDialog() const;
-    QSortFilterProxyModel* currentChatModel() const;
+    ChatSortFilterProxyModel* currentChatModel() const;
 
 private:
     explicit Chats();
@@ -45,7 +45,7 @@ private:
     static Chats *aInstance;
     ChatsHandler *_chatsHandler;
     int _currentChatId;
-    QSortFilterProxyModel *_proxy;
+    ChatSortFilterProxyModel *_proxy;
     DialogItemPrivate *_currentDialog;
 
 protected:

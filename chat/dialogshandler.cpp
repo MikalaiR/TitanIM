@@ -25,7 +25,7 @@ DialogsHandler::DialogsHandler()
     _proxy->setDynamicSortFilter(true);
     _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    _proxy->setSortRole(DialogsModel::dateRole);
+    _proxy->setSortRole(DialogsModel::DateRole);
     _proxy->sort(0, Qt::DescendingOrder);
     _proxy->setSourceModel(_model);
 

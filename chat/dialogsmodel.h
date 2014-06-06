@@ -25,16 +25,16 @@ class DialogsModel : public QAbstractListModel
 public:
     enum dialogsRole
     {
-        bodyRole = Qt::UserRole,
-        dateRole,
-        dateStrRole,
-        uidRole,
-        midRole,
-        idRole,
-        unreadCountRole,
-        isOutRole,
-        onlineRole,
-        typingRole
+        BodyRole = Qt::UserRole,
+        DateRole,
+        DateStrRole,
+        UidRole,
+        MidRole,
+        IdRole,
+        UnreadCountRole,
+        IsOutRole,
+        OnlineRole,
+        TypingRole
     };
 
     explicit DialogsModel(QObject *parent = 0);

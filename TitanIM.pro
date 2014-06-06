@@ -69,7 +69,8 @@ SOURCES += main.cpp \
     roster/rosterhandler.cpp \
     vk/messagebase.cpp \
     vk/typingitem.cpp \
-    vk/typinghandler.cpp
+    vk/typinghandler.cpp \
+    chat/chatsortfilterproxymodel.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -117,7 +118,8 @@ HEADERS += \
     roster/rosterhandler.h \
     vk/messagebase.h \
     vk/typingitem.h \
-    vk/typinghandler.h
+    vk/typinghandler.h \
+    chat/chatsortfilterproxymodel.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

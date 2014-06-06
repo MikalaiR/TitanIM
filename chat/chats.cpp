@@ -30,21 +30,14 @@ void Chats::destroy()
 Chats::Chats()
 {
     _chatsHandler = new ChatsHandler();
+    _proxy = new ChatSortFilterProxyModel(this);
 
     _currentChatId = 0;
     _currentDialog = 0;
 
-    _proxy = new QSortFilterProxyModel(this);
-    _proxy->setDynamicSortFilter(true);
-    _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-    _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    _proxy->setFilterRole(ChatModel::deletedRole);
-    _proxy->setSortRole(ChatModel::dateRole);
-    _proxy->setFilterFixedString("false");
-    _proxy->sort(0, Qt::DescendingOrder);
-
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
+    qRegisterMetaType<ChatSortFilterProxyModel*>("ChatSortFilterProxyModel*");
     qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
     qmlRegisterType<AttachmentList>("TitanIM", 2, 0, "AttachmentList");
     qmlRegisterType<Attachment>("TitanIM", 2, 0, "Attachment");
@@ -73,7 +66,7 @@ DialogItemPrivate *Chats::currentChatDialog() const
     return _currentDialog;
 }
 
-QSortFilterProxyModel* Chats::currentChatModel() const
+ChatSortFilterProxyModel* Chats::currentChatModel() const
 {
     return _proxy;
 }

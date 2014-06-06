@@ -108,6 +108,7 @@ Item {
                     elide: Text.ElideRight
                     color: "#707070"
                     font.pointSize: 13 - 1
+                    font.italic: model.typing
                     wrapMode: Text.Wrap
                     text: model.typing ? dialogsHandler.typingText : model.body
                 }

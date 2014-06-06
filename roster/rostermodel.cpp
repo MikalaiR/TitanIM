@@ -91,10 +91,10 @@ QHash<int, QByteArray> RosterModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
-    roles[uidRole] = "uid";
-    roles[onlineRole] = "online";
-    roles[activityRole] = "activity";
-    roles[alphabetRole] = "alphabet";
+    roles[UidRole] = "uid";
+    roles[OnlineRole] = "online";
+    roles[ActivityRole] = "activity";
+    roles[AlphabetRole] = "alphabet";
 
     return roles;
 }
@@ -116,16 +116,16 @@ QVariant RosterModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return profile->photoMediumRect();
 
-    case uidRole:
+    case UidRole:
         return profile->id();
 
-    case onlineRole:
+    case OnlineRole:
         return profile->online();
 
-    case activityRole:
+    case ActivityRole:
         return profile->activity();
 
-    case alphabetRole:
+    case AlphabetRole:
         return profile->alphabet();
     }
 

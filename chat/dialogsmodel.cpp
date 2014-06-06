@@ -111,16 +111,16 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
-    roles[bodyRole] = "body";
-    roles[dateRole] = "date";
-    roles[dateStrRole] = "dateStr";
-    roles[uidRole] = "uid";
-    roles[midRole] = "mid";
-    roles[idRole] = "id";
-    roles[unreadCountRole] = "unreadCount";
-    roles[isOutRole] = "isOut";
-    roles[onlineRole] = "online";
-    roles[typingRole] = "typing";
+    roles[BodyRole] = "body";
+    roles[DateRole] = "date";
+    roles[DateStrRole] = "dateStr";
+    roles[UidRole] = "uid";
+    roles[MidRole] = "mid";
+    roles[IdRole] = "id";
+    roles[UnreadCountRole] = "unreadCount";
+    roles[IsOutRole] = "isOut";
+    roles[OnlineRole] = "online";
+    roles[TypingRole] = "typing";
 
     return roles;
 }
@@ -144,34 +144,34 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return dialog->decoration();
 
-    case bodyRole:
+    case BodyRole:
         return message->body();
 
-    case dateRole:
+    case DateRole:
         return message->date();
 
-    case dateStrRole:
+    case DateStrRole:
         return Utils::dateToText(message->date());
 
-    case uidRole:
+    case UidRole:
         return message->uid();
 
-    case midRole:
+    case MidRole:
         return message->id();
 
-    case idRole:
+    case IdRole:
         return dialog->id();
 
-    case unreadCountRole:
+    case UnreadCountRole:
         return dialog->unreadCount();
 
-    case isOutRole:
+    case IsOutRole:
         return message->isOut();
 
-    case onlineRole:
+    case OnlineRole:
         return !dialog->isGroupChat() && profile->online();
 
-    case typingRole:
+    case TypingRole:
         return dialog->isTyping();
     }
 

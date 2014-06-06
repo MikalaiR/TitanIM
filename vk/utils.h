@@ -41,6 +41,11 @@ public:
     static QString peopleConversation(const int count);
     static QVector<int> toVectorInt(const QVariantList &list);
     static void playSound(const QString &fileName, const QString &cmd="aplay -q");
+    static QDateTime currentDateTime();
+    static void setServerDateTime(const QDateTime &dateTime);
+
+private:
+    static qint64 _lambdaServerTime;
 };
 
 #endif // UTILS_H

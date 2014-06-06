@@ -18,7 +18,7 @@ TypingItemPrivate::TypingItemPrivate()
     setMessageType(Typing);
 
     _uid = 0;
-    _date = QDateTime::currentDateTime();
+    _date = Utils::currentDateTime();
 
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
@@ -47,7 +47,7 @@ void TypingItemPrivate::restart()
 {
     if (!isActive())
     {
-        setDate(QDateTime::currentDateTime());
+        setDate(Utils::currentDateTime());
         setIsActive(true);
     }
 

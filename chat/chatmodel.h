@@ -30,19 +30,19 @@ class ChatModel : public QAbstractListModel
 public:
     enum chatRole
     {
-        messageTypeRole = Qt::UserRole,
-        bodyRole,
-        dateRole,
-        timeStrRole,
-        attachmentsRole,
-        uidRole,
-        midRole,
-        isUnreadRole,
-        isOutRole,
-        isSendingRole,
-        deletedRole,
-        onlineRole,
-        sectionRole
+        IdRole = Qt::UserRole,
+        MessageTypeRole,
+        BodyRole,
+        DateRole,
+        TimeStrRole,
+        AttachmentsRole,
+        UidRole,
+        IsUnreadRole,
+        IsOutRole,
+        IsSendingRole,
+        DeletedRole,
+        OnlineRole,
+        SectionRole
     };
 
     explicit ChatModel(const DialogItem dialog, QObject *parent = 0);
@@ -55,8 +55,8 @@ public:
     void replaceAll(const MessageList items);
     bool remove(int row, int count);
     MessageBaseItem at(const int row) const;
-    int indexOf(const int mid) const;
-    void markAsRead(const int mid);
+    int indexOf(const int id) const;
+    void markAsRead(const int id);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);

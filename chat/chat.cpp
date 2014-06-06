@@ -123,7 +123,7 @@ void Chat::sendMessage(const QString &text)
         message->setUid(_dialog->profile()->id());
     }
 
-    message->setDate(QDateTime::currentDateTime());
+    message->setDate(Utils::currentDateTime());
     message->setIsUnread(true);
     message->setIsOut(true);
     message->setBody(text);

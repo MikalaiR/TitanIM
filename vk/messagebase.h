@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 #include <QDateTime>
 #include "notifypropertybase.h"
+#include "utils.h"
 
 class MessageBase : public NotifyPropertyBase
 {
