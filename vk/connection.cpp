@@ -117,7 +117,7 @@ void Connection::getToken()
     httpAuth = new QNetworkAccessManager(this);
     connect(httpAuth, SIGNAL(finished(QNetworkReply*)), this, SLOT(getTokenFinished(QNetworkReply*)));
 
-    QString authUrl = QString("%1?grant_type=%2&client_id=%3&client_secret=%4&scope=%5&username=%6&password=%7&v=5.2")
+    QString authUrl = QString("%1?grant_type=%2&client_id=%3&client_secret=%4&scope=%5&username=%6&password=%7&v=5.21")
             .arg(_urlServers.auth_server)
             .arg(_loginVars.grant_type)
             .arg(_loginVars.client_id)
@@ -158,7 +158,7 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
         {
             networkReply->deleteLater();
             httpAuth->deleteLater();
-            onError(ServerIsNotAvailable, "Server is not available");
+            onError(ErrorResponse::ServerIsNotAvailable, "Server is not available");
         }
 
         return;
@@ -170,7 +170,7 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
     if (response.contains("https_required"))
     {
         httpAuth->deleteLater();
-        onError(HttpAuthorizationFailed, "HTTP authorization failed");
+        onError(ErrorResponse::HttpAuthorizationFailed, "HTTP authorization failed");
         return;
     }
 
@@ -199,7 +199,7 @@ void Connection::loginSuccess(const QVariantMap &response)
     }
     else
     {
-        onError(LoadTokenFailed, "Load token failed");
+        onError(ErrorResponse::LoadTokenFailed, "Load token failed");
     }
 }
 
@@ -258,7 +258,7 @@ void Connection::apiResponse(QNetworkReply *networkReply)
         if (networkReply->error() == QNetworkReply::UnknownNetworkError)
         {
             networkReply->deleteLater();
-            onError(ServerIsNotAvailable, "Server is not available");
+            onError(ErrorResponse::ServerIsNotAvailable, "Server is not available");
         }
         else
         {
@@ -321,7 +321,7 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
     }
     else
     {
-        onError(UserAuthorizationFailed, "User authorization failed");
+        onError(ErrorResponse::UserAuthorizationFailed, "User authorization failed");
     }
 }
 
@@ -391,13 +391,13 @@ void Connection::onError(const ErrorResponse *errorResponse)
 
     switch (errorResponse->code())
     {
-    case CaptchaNeeded:
+    case ErrorResponse::CaptchaNeeded:
     {
         emit captcha(errorResponse->captchaSid(), errorResponse->captchaImg());
         break;
     }
 
-    case HttpAuthorizationFailed:
+    case ErrorResponse::HttpAuthorizationFailed:
     {
         setHttpsMode(true);
 
@@ -414,13 +414,13 @@ void Connection::onError(const ErrorResponse *errorResponse)
         break;
     }
 
-    case ValidationRequired:
+    case ErrorResponse::ValidationRequired:
     {
         emit validation(errorResponse->validationUri());
         break;
     }
 
-    case TooManyRequestsPerSecond:
+    case ErrorResponse::TooManyRequestsPerSecond:
     {
         tooManyRequestsTimer->start();
         break;
@@ -436,7 +436,7 @@ void Connection::onError(const ErrorResponse *errorResponse)
     delete errorResponse;
 }
 
-void Connection::onError(const Error &code, const QString &msg)
+void Connection::onError(const ErrorResponse::Error &code, const QString &msg)
 {
     ErrorResponse *errorResponse = new ErrorResponse(code, msg);
     onError(errorResponse);

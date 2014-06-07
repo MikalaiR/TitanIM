@@ -63,28 +63,6 @@ enum Sex
     Man
 };
 
-enum Error
-{
-    LoadTokenFailed = -3,
-    TimeoutLongPollServer = -2,
-    ServerIsNotAvailable = -1,
-    UnknownErrorOccured = 1,
-    ApplicationIsDisabled = 2,
-    UnknownMethodPassed = 3,
-    IncorrectSignature = 4,
-    UserAuthorizationFailed = 5,
-    TooManyRequestsPerSecond = 6,
-    DeniedByUser = 7,
-    InternalServerError = 10,
-    CaptchaNeeded = 14,
-    AccessDenied = 15,
-    HttpAuthorizationFailed = 16,
-    ValidationRequired = 17,
-    OutOfLimits = 103,
-    PhoneUsedAnotherUser = 1004,
-    TryLater = 1112
-};
-
 const int GROUP_CHAT_OFFSET = 2000000000;
 
 #endif // GLOBAL_H

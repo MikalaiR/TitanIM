@@ -35,7 +35,7 @@ Client::Client()
     _connection = new Connection(clientId, clientSecret);
     connect(_connection, SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
-    connect(_connection, SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
+    connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
 
     _longPoll = new LongPoll(_connection);
 
@@ -112,7 +112,7 @@ void Client::onDisconnected()
     _longPoll->setRunning(false);
 }
 
-void Client::onError(const Error &error, const QString &text, const bool global, const bool fatal)
+void Client::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
 }
 

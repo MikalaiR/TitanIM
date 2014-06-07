@@ -50,7 +50,9 @@ public slots:
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
-//    void onError(const Error &error, const QString &text, const bool global, const bool fatal);
+    void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
+    void onCaptcha(const QString &captchaSid, const QString &captchaImg);
+    void onValidation(const QString &validationUri);
 };
 
 #endif // MAINWINDOW_H

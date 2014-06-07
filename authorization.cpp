@@ -17,7 +17,7 @@ Authorization::Authorization()
 {
     connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
-    connect(Client::instance()->connection(), SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
+    connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
 }
 
 void Authorization::connectToVk()
@@ -62,11 +62,9 @@ void Authorization::onDisconnected()
     qDebug() << "disconnecting";
 }
 
-void Authorization::onError(const Error &error, const QString &text, const bool global, const bool fatal)
+void Authorization::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
-    qDebug() << error << text;
-
-    if (error == UserAuthorizationFailed || error == LoadTokenFailed)
+    if (error == ErrorResponse::UserAuthorizationFailed || error == ErrorResponse::LoadTokenFailed)
     {
         //todo remove token and secret
         emit showAuthPage();

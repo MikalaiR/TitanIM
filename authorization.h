@@ -32,7 +32,7 @@ public slots:
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
-    void onError(const Error &error, const QString &text, const bool global, const bool fatal);
+    void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
 
 signals:
     void showAuthPage();

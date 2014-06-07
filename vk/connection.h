@@ -68,7 +68,7 @@ protected:
     void onConnected();
     void onDisconnected();
     void onError(const ErrorResponse *errorResponse);
-    void onError(const Error &code, const QString &msg);
+    void onError(const ErrorResponse::Error &code, const QString &msg);
 
 private slots:
     void getTokenFinished(QNetworkReply *networkReply);
@@ -78,7 +78,7 @@ private slots:
 signals:
     void connected(const int uid, const QString &token, const QString &secret);
     void disconnected();
-    void error(const Error &error, const QString &text, const bool global, const bool fatal);
+    void error(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
     void captcha(const QString &captchaSid, const QString &captchaImg);
     void validation(const QString &validationUri);
 };

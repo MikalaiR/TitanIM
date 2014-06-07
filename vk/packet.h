@@ -17,7 +17,6 @@
 #include <QObject>
 #include <QDebug>
 #include <QMap>
-#include "global.h"
 #include "errorresponse.h"
 #include "utils.h"
 
@@ -26,7 +25,7 @@ class Packet : public QObject
     Q_OBJECT
 
 public:
-    Packet(const QString &method, const QString &version="5.20");
+    Packet(const QString &method, const QString &version="5.21");
     ~Packet();
     int id() const;
     void setId(const int id);
@@ -57,7 +56,7 @@ private:
 
 signals:
     void finished(const Packet *sender, const QVariantMap &result);
-    void error(const Error &error, const QString &text, const bool global, const bool fatal);
+    void error(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
 };
 
 QDebug operator<<(QDebug dbg, const Packet &packet);

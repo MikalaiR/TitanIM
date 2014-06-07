@@ -16,13 +16,34 @@
 
 #include <QObject>
 #include <QVariant>
-#include "global.h"
 
 class ErrorResponse : public QObject
 {
     Q_OBJECT
 
 public:
+    enum Error
+    {
+        LoadTokenFailed = -3,
+        TimeoutLongPollServer = -2,
+        ServerIsNotAvailable = -1,
+        UnknownErrorOccured = 1,
+        ApplicationIsDisabled = 2,
+        UnknownMethodPassed = 3,
+        IncorrectSignature = 4,
+        UserAuthorizationFailed = 5,
+        TooManyRequestsPerSecond = 6,
+        DeniedByUser = 7,
+        InternalServerError = 10,
+        CaptchaNeeded = 14,
+        AccessDenied = 15,
+        HttpAuthorizationFailed = 16,
+        ValidationRequired = 17,
+        OutOfLimits = 103,
+        PhoneUsedAnotherUser = 1004,
+        TryLater = 1112
+    };
+
     ErrorResponse(const QVariantMap &response);
     ErrorResponse(const Error &code, const QString &msg);
     Error code() const;

@@ -87,7 +87,7 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
     _fatal = isFatal(_code);
 }
 
-ErrorResponse::ErrorResponse(const Error &code, const QString &msg)
+ErrorResponse::ErrorResponse(const ErrorResponse::Error &code, const QString &msg)
 {
     _code = code;
     _msg = msg;
@@ -95,7 +95,7 @@ ErrorResponse::ErrorResponse(const Error &code, const QString &msg)
     _fatal = isFatal(_code);
 }
 
-Error ErrorResponse::code() const
+ErrorResponse::Error ErrorResponse::code() const
 {
     return _code;
 }
@@ -130,7 +130,7 @@ QString ErrorResponse::validationUri() const
     return _validationUri;
 }
 
-bool ErrorResponse::isGlobal(const Error &code)
+bool ErrorResponse::isGlobal(const ErrorResponse::Error &code)
 {
     if (code == LoadTokenFailed ||
         code == TimeoutLongPollServer ||
@@ -153,7 +153,7 @@ bool ErrorResponse::isGlobal(const Error &code)
     }
 }
 
-bool ErrorResponse::isFatal(const Error &code)
+bool ErrorResponse::isFatal(const ErrorResponse::Error &code)
 {
     if (code == LoadTokenFailed ||
         code == ApplicationIsDisabled ||
