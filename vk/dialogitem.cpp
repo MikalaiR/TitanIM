@@ -12,6 +12,7 @@
 */
 
 #include "dialogitem.h"
+#include "dialogparser.h"
 
 DialogItemPrivate::DialogItemPrivate()
 {
@@ -76,7 +77,7 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
 
         _profile = profile;
 
-        if (!_groupChatHandler)
+        if (_id == 0)
         {
             _id = _profile->id();
         }
@@ -102,9 +103,9 @@ void DialogItemPrivate::setMessage(const MessageItem message)
 
         _message = message;
 
-        if (!_profile && !_groupChatHandler)
+        if (!_groupChatHandler)
         {
-            _id = _message->uid();
+            _id = _message->fromId();
         }
 
         if (!message->isOut() && _typingHandler && _typingHandler->isActive(message->uid()))
@@ -189,8 +190,82 @@ void DialogItemPrivate::setCurrent(const bool current)
     }
 }
 
-void DialogItemPrivate::getMessage(Connection *connection)
+bool DialogItemPrivate::isLoading() const
 {
+    return _isLoading;
+}
+
+void DialogItemPrivate::createStructure()
+{
+    if (!_profile && _message)
+    {
+        ProfileItem profile = ProfileItem::create();
+        profile->setId(_message->uid());
+        setProfile(profile);
+    }
+    else if (!_message && _profile)
+    {
+        MessageItem message = MessageItem::create();
+        message->setId(-1);
+        message->setUid(_profile->id());
+        message->setDate(Utils::currentDateTime());
+        setMessage(message);
+    }
+    else if (!_profile && !_message && (_id != 0))
+    {
+        ProfileItem profile = ProfileItem::create();
+        profile->setId(_id < GROUP_CHAT_OFFSET ? _id : 0);
+
+        MessageItem message = MessageItem::create();
+        message->setId(-1);
+        message->setUid(profile->id());
+        message->setDate(Utils::currentDateTime());
+
+        beginChangeGroupProperties();
+
+        setProfile(profile);
+        setMessage(message);
+
+        endChangeGroupProperties();
+    }
+}
+
+void DialogItemPrivate::setIsLoading(const bool isLoading)
+{
+    if (_isLoading != isLoading)
+    {
+        _isLoading = isLoading;
+        emitPropertyChanged("isLoading");
+    }
+}
+
+void DialogItemPrivate::getAllFields(Connection *connection)
+{
+    if (_isLoading || _id == 0)
+        return;
+
+    setIsLoading(true);
+
+    Packet *packet = new Packet("execute");
+    QString fields = "photo_100,online";
+    QString script = "var h=API.messages.getHistory({\"user_id\":" + QString::number(_id) + ",\"count\":1});"
+            + "var m=API.messages.getById({\"message_ids\":h.items[0].id,\"preview_length\":50});"
+            + "var d={\"unread\":h.unread,\"message\":m.items[0]};"
+            + "var p=API.users.get({\"user_ids\":m.items[0].user_id+\",\"+m.items[0].chat_active,\"fields\":\"" + fields + "\"});"
+            + "return {\"dialog\":d,\"profiles\":p};";
+    packet->addParam("code", script);
+
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connection->appendQuery(packet);
+}
+
+void DialogItemPrivate::getLastMessage(Connection *connection)
+{
+    if (_isLoading)
+        return;
+
+    setIsLoading(true);
+
     HistoryPacket *historyPacket = new HistoryPacket(connection);
     connect(historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onGetMessageFinished(const HistoryPacket*,int,MessageList)));
 
@@ -207,6 +282,18 @@ void DialogItemPrivate::typing(const int uid)
     }
 
     _typingHandler->setTyping(uid);
+}
+
+void DialogItemPrivate::loadFinished(const Packet *sender, const QVariantMap &result)
+{
+    setIsLoading(false);
+
+    QVariantMap response = result.value("response").toMap();
+    QVariantMap dialogItem = response.value("dialog").toMap();
+    ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
+    DialogParser::parser(dialogItem, this, profiles);
+
+    delete sender;
 }
 
 void DialogItemPrivate::onProfilePropertyChanged(const int uid, const QString &propertyName)
@@ -234,11 +321,14 @@ void DialogItemPrivate::onTypingActiveChanged(const bool isActive)
 
 void DialogItemPrivate::onGetMessageFinished(const HistoryPacket *sender, const int id, const MessageList &messages)
 {
+    setIsLoading(false);
+
     setUnreadCount(sender->unreadCount());
 
     if (!messages->count())
     {
         MessageItem msg = MessageItem::create();
+        msg->setFromId(_id);
         setMessage(msg);
     }
     else if (messages->at(0)->id() != message()->id())

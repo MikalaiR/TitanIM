@@ -20,8 +20,7 @@
 #include <QNetworkReply>
 #include "connection.h"
 #include "global.h"
-#include "profileparser.h"
-#include "dialogparser.h"
+#include "messageitem.h"
 
 class LongPoll : public QObject
 {
@@ -34,7 +33,7 @@ public:
         MessageFlagsReplaced = 1,
         MessageFlagsSet = 2,
         MessageFlagsReseted = 3,
-        MessageAdded = 101,
+        MessageAdded = 4,
         InMessagesRead = 6,
         OutMessagesRead = 7,
         UserOnline = 8,
@@ -103,8 +102,8 @@ signals:
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int id);
     void messageFlagsReseted(const int mid, const int mask, const int id, const uint date);
-    void messageInAdded(const DialogItem dialog);
-    void messageOutAdded(const DialogItem dialog);
+    void messageInAdded(const int id, const MessageItem message);
+    void messageOutAdded(const int id, const MessageItem message);
     void inMessagesRead(const int id, const int mid);
     void outMessagesRead(const int id, const int mid);
     void userStatusChanged(const int uid, const bool online);

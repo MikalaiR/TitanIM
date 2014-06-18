@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 #include "notifypropertybase.h"
 #include "global.h"
+#include "connection.h"
 
 class ProfileItemPrivate : public NotifyPropertyBase
 {
@@ -42,6 +43,7 @@ public:
     void setActivity(const QString &activity);
     QString alphabet() const;
     void setAlphabet(const QString &alphabet);
+    bool isLoading() const;
 
 private:
     QString _firstName;
@@ -52,6 +54,14 @@ private:
     int _lastSeen;
     QString _activity;
     QString _alphabet;
+    bool _isLoading;
+
+public slots:
+    void getAllFields(Connection *connection);
+
+protected slots:
+    void setIsLoading(const bool isLoading);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
 };
 
 typedef QSharedPointer<ProfileItemPrivate> ProfileItem;

@@ -42,21 +42,6 @@ void DialogsPacket::load(const int offset, const int count)
     _connection->appendQuery(packet);
 }
 
-void DialogsPacket::load(const int mid)
-{
-    Packet *packet = new Packet("execute");
-    _offset = -1;
-    _count = 1;
-
-    QString script = "var d=API.messages.getById({\"message_ids\":" + QString::number(mid) + ",\"preview_length\":50});"
-                   + "var p=API.users.get({\"user_ids\":d.items[0].user_id+\",\"+d.items[0].chat_active,\"fields\":\"" + _fields + "\"});"
-                   + "return {\"dialogs\":d,\"profiles\":p};";
-
-    packet->addParam("code", script);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
-    _connection->appendQuery(packet);
-}
-
 int DialogsPacket::offset() const
 {
     return _offset;

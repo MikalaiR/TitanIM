@@ -19,9 +19,16 @@
 #include "profilelist.h"
 #include "utils.h"
 
+class ProfileItemPrivate;
+
 class ProfileParser : public QObject
 {
+private:
+    friend class ProfileItemPrivate;
+    static void parser(const QVariantMap &item, ProfileItemPrivate *profile);
+
 public:
+    static void parser(const QVariantMap &item, ProfileItem profile);
     static ProfileItem parser(const QVariantMap &item);
     static ProfileList parser(const QVariantList &items);
 };

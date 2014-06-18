@@ -52,7 +52,7 @@ private:
     QString _title;
     int _adminId;
 
-private slots:
+protected slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:

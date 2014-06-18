@@ -84,7 +84,7 @@ void LongPoll::longPoll()
         return;
     }
 
-    QString requestUrl = QString("%1?act=a_check&key=%2&ts=%3&wait=%4&mode=9")
+    QString requestUrl = QString("%1?act=a_check&key=%2&ts=%3&wait=%4&mode=2")
             .arg(_longPollVars.server)
             .arg(_longPollVars.key)
             .arg(_longPollVars.ts)
@@ -265,18 +265,44 @@ void LongPoll::onMessageFlagsReseted(const QVariantList &update)
 
 void LongPoll::onMessageAdded(const QVariantList &update)
 {
-    QVariantMap response = update.value(1).toMap();
+    MessageItem message = MessageItem::create();
 
-    ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
-    DialogItem dialog = DialogParser::parser(response, profiles);
+    int mid = update.value(1).toInt();
+    int flags = update.value(2).toInt();
+    int fromId = update.value(3).toInt();
+    QDateTime date = QDateTime::fromTime_t(update.value(4).toUInt()).toLocalTime();
+    QString title = update.value(5).toString();
+    QString body = Utils::decode(update.value(6).toString());
+    QVariantMap additional = update.value(7).toMap();
 
-    if (dialog->message()->isOut())
+    message->beginChangeGroupProperties();
+
+    message->setId(mid);
+    message->setFromId(fromId);
+    message->setDate(date);
+    message->setIsUnread(flags & Unread);
+    message->setDeliveryReport(true);
+    message->setIsOut(flags & Outbox);
+    message->setBody(body);
+    message->setTitle(title);
+
+    if (additional.contains("from"))
+        message->setUid(additional.value("from").toInt());
+
+    message->endChangeGroupProperties();
+
+    if (additional.count() && !(additional.contains("from") && additional.count() == 1))
     {
-        emit messageOutAdded(dialog);
+        message->getAllFields(_connection);
+    }
+
+    if (message->isOut())
+    {
+        emit messageOutAdded(fromId, message);
     }
     else
     {
-        emit messageInAdded(dialog);
+        emit messageInAdded(fromId, message);
     }
 }
 

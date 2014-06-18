@@ -18,6 +18,7 @@
 #include <QSharedPointer>
 #include "messagebase.h"
 #include "attachmentlist.h"
+#include "connection.h"
 
 class MessageItemPrivate : public MessageBase
 {
@@ -28,6 +29,8 @@ public:
     ~MessageItemPrivate();
     int uid() const;
     void setUid(const int uid);
+    int fromId() const;
+    void setFromId(const int fromId);
     uint unixtime() const;
     bool isUnread() const;
     void setIsUnread(const bool isUnread);
@@ -35,6 +38,7 @@ public:
     void setIsOut(const bool isOut);
     bool isError() const;
     void setIsError(const bool isError);
+    bool isLoading() const;
     bool isSending() const;
     bool deliveryReport() const;
     void setDeliveryReport(const bool deliveryReport);
@@ -53,11 +57,19 @@ private:
     bool _isUnread;
     bool _isOut;
     bool _isError;
+    bool _isLoading;
     bool _deliveryReport;
     QString _title;
     QString _body;
     int _chatId;
     AttachmentList *_attachments;
+
+public slots:
+    void getAllFields(Connection *connection);
+
+protected slots:
+    void setIsLoading(const bool isLoading);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
 };
 
 typedef QSharedPointer<MessageItemPrivate> MessageItem;

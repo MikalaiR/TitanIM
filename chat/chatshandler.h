@@ -35,8 +35,8 @@ private:
     QMap<int, Chat*> _chats;
 
 protected slots:
-    void onLongPollMessageInAdded(const DialogItem dialog);
-    void onLongPollMessageOutAdded(const DialogItem dialog);
+    void onLongPollMessageInAdded(const int id, const MessageItem message);
+    void onLongPollMessageOutAdded(const int id, const MessageItem message);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
 };
 

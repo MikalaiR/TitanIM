@@ -20,7 +20,7 @@
 #include "longpoll.h"
 #include "signup.h"
 #include "global.h"
-#include "profileitem.h"
+#include "profileparser.h"
 
 class Client : public QObject
 {

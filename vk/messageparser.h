@@ -20,9 +20,16 @@
 #include "attachmentsparser.h"
 #include "utils.h"
 
+class MessageItemPrivate;
+
 class MessageParser : public QObject
 {
+private:
+    friend class MessageItemPrivate;
+    static void parser(const QVariantMap &item, MessageItemPrivate *message);
+
 public:
+    static void parser(const QVariantMap &item, MessageItem message);
     static MessageItem parser(const QVariantMap &item);
     static MessageList parser(const QVariantList &items);
 };

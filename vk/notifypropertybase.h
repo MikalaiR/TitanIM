@@ -24,6 +24,11 @@ public:
     NotifyPropertyBase();
     inline int id() const { return _id; }
     void setId(const int id);
+    void beginChangeGroupProperties();
+    void endChangeGroupProperties();
+
+private:
+    bool _blockSignalPropertyChanged;
 
 protected:
     int _id;
@@ -31,7 +36,8 @@ protected:
 public slots:
     inline void emitPropertyChanged(const QString &propertyName)
     {
-        emit propertyChanged(_id, propertyName);
+        if (!_blockSignalPropertyChanged)
+            emit propertyChanged(_id, propertyName);
     }
 
 signals:

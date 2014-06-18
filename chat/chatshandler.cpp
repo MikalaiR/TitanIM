@@ -15,8 +15,8 @@
 
 ChatsHandler::ChatsHandler()
 {
-    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(int,MessageItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(int,MessageItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem)));
     connect(Client::instance()->longPoll(), SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 }
 
@@ -51,25 +51,19 @@ void ChatsHandler::clear()
     //todo память
 }
 
-void ChatsHandler::onLongPollMessageInAdded(const DialogItem dialog)
+void ChatsHandler::onLongPollMessageInAdded(const int id, const MessageItem message)
 {
-    int id = dialog->id();
-
     if (contains(id))
     {
-        MessageItem message = dialog->message();
         chat(id)->addInMessage(message);
     }
 }
 
-void ChatsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
+void ChatsHandler::onLongPollMessageOutAdded(const int id, const MessageItem message)
 {
-    int id = dialog->id();
-
     if (contains(id))
     {
         Chat *chat = this->chat(id);
-        MessageItem message = dialog->message();
 
         message->setDeliveryReport(true);
 

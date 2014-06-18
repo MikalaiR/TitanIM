@@ -13,10 +13,8 @@
 
 #include "messageparser.h"
 
-MessageItem MessageParser::parser(const QVariantMap &item)
+void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
 {
-    MessageItem message = MessageItem::create();
-
     int mid = 0;
     if (item.contains("id"))
     {
@@ -41,6 +39,8 @@ MessageItem MessageParser::parser(const QVariantMap &item)
         message->setAttachments(attachments);
     }
 
+    message->beginChangeGroupProperties();
+
     message->setId(mid);
     message->setUid(uid);
     message->setDate(date);
@@ -51,6 +51,19 @@ MessageItem MessageParser::parser(const QVariantMap &item)
     message->setTitle(title);
     message->setChatId(chatId);
 
+    message->endChangeGroupProperties();
+}
+
+void MessageParser::parser(const QVariantMap &item, MessageItem message)
+{
+    parser(item, message.data());
+}
+
+MessageItem MessageParser::parser(const QVariantMap &item)
+{
+    MessageItem message = MessageItem::create();
+    parser(item, message.data());
+
     return message;
 }
 
@@ -60,7 +73,8 @@ MessageList MessageParser::parser(const QVariantList &items)
 
     foreach (QVariant item, items)
     {
-        MessageItem message = parser(item.toMap());
+        MessageItem message = MessageItem::create();
+        parser(item.toMap(), message.data());
         messages->add(message);
     }
 

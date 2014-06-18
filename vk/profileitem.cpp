@@ -12,12 +12,14 @@
 */
 
 #include "profileitem.h"
+#include "profileparser.h"
 
 ProfileItemPrivate::ProfileItemPrivate()
 {
     _sex = Unknown;
     _online = false;
     _lastSeen = 0;
+    _isLoading = false;
 }
 
 QString ProfileItemPrivate::firstName() const
@@ -131,4 +133,40 @@ QString ProfileItemPrivate::alphabet() const
 void ProfileItemPrivate::setAlphabet(const QString &alphabet)
 {
     _alphabet = alphabet;
+}
+
+bool ProfileItemPrivate::isLoading() const
+{
+    return _isLoading;
+}
+
+void ProfileItemPrivate::setIsLoading(const bool isLoading)
+{
+    if (_isLoading != isLoading)
+    {
+        _isLoading = isLoading;
+        emitPropertyChanged("isLoading");
+    }
+}
+
+void ProfileItemPrivate::getAllFields(Connection *connection)
+{
+    setIsLoading(true);
+
+    Packet *packet = new Packet("users.get");
+    packet->addParam("user_ids", _id);
+    packet->addParam("fields", "photo_100,online");
+
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connection->appendQuery(packet);
+}
+
+void ProfileItemPrivate::loadFinished(const Packet *sender, const QVariantMap &result)
+{
+    setIsLoading(false);
+
+    QVariantList response = result.value("response").toList();
+    ProfileParser::parser(response.at(0).toMap(), this);
+
+    delete sender;
 }

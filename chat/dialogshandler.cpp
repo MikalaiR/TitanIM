@@ -29,8 +29,8 @@ DialogsHandler::DialogsHandler()
     _proxy->sort(0, Qt::DescendingOrder);
     _proxy->setSourceModel(_model);
 
-    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(DialogItem)), this, SLOT(onLongPollMessageInAdded(DialogItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(DialogItem)), this, SLOT(onLongPollMessageOutAdded(DialogItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(int,MessageItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem)));
+    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(int,MessageItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem)));
     connect(Client::instance()->longPoll(), SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
     connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
     connect(Client::instance()->longPoll(), SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
@@ -111,6 +111,13 @@ void DialogsHandler::decUnreadDialogs()
     setUnreadDialogs(_unreadDialogs - 1);
 }
 
+void DialogsHandler::playSoundMessageIn()
+{
+    static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
+    static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
+    Utils::playSound(fileName, cmd);
+}
+
 void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
 {
     //todo fixme
@@ -129,9 +136,8 @@ void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
     }
 }
 
-void DialogsHandler::onLongPollMessageInAdded(const DialogItem dialog)
+void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem message)
 {
-    int id = dialog->id();
     int i = _model->indexOf(id);
 
     //todo fixme
@@ -141,52 +147,45 @@ void DialogsHandler::onLongPollMessageInAdded(const DialogItem dialog)
         Chats::instance()->currentChat()->markAsRead();
     }
 
+    DialogItem dialog;
+
     if (i > -1)
     {
-        _model->at(i)->setMessage(dialog->message());
-
-        if (!_flagMarkAsRead)
-        {
-            _model->at(i)->incUnreadDialogs();
-        }
+        dialog = _model->at(i);
+        dialog->setMessage(message);
     }
     else
     {
-        if (!_flagMarkAsRead)
-        {
-            dialog->incUnreadDialogs();
-        }
-
-        dialog->getMessage(Client::instance()->connection()); //update unread
-
-        if (dialog->isGroupChat())
-        {
-            dialog->groupChatHandler()->getAllFields(Client::instance()->connection());
-        }
+        dialog = DialogItem::create();
+        dialog->setMessage(message);
+        dialog->createStructure();
+        dialog->getAllFields(Client::instance()->connection());
 
         _model->append(dialog);
     }
 
-    static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
-    static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
-    Utils::playSound(fileName, cmd);
+    if (!_flagMarkAsRead)
+    {
+        dialog->incUnreadDialogs();
+    }
+
+    playSoundMessageIn();
 }
 
-void DialogsHandler::onLongPollMessageOutAdded(const DialogItem dialog)
+void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem message)
 {
-    int id = dialog->id();
     int i = _model->indexOf(id);
 
     if (i > -1)
     {
-        _model->at(i)->setMessage(dialog->message());
+        _model->at(i)->setMessage(message);
     }
     else
     {
-        if (dialog->isGroupChat())
-        {
-            dialog->groupChatHandler()->getAllFields(Client::instance()->connection());
-        }
+        DialogItem dialog = DialogItem::create();
+        dialog->setMessage(message);
+        dialog->createStructure();
+        dialog->getAllFields(Client::instance()->connection());
 
         _model->append(dialog);
     }
@@ -226,7 +225,7 @@ void DialogsHandler::onInMessagesRead(const int id, const int mid)
         }
         else
         {
-            dialog->getMessage(Client::instance()->connection());
+            dialog->getLastMessage(Client::instance()->connection());
         }
     }
 }
@@ -239,7 +238,7 @@ void DialogsHandler::onMessageFlagsSet(const int mid, const int mask, const int 
 
         if (i > -1)
         {
-            _model->at(i)->getMessage(Client::instance()->connection());
+            _model->at(i)->getLastMessage(Client::instance()->connection());
         }
     }
 }
@@ -252,22 +251,23 @@ void DialogsHandler::onMessageFlagsReseted(const int mid, const int mask, const 
 
         if (i > -1)
         {
-            _model->at(i)->getMessage(Client::instance()->connection());
+            _model->at(i)->getLastMessage(Client::instance()->connection());
         }
         else if (_model->endDate() < date)
         {
             //recovery dialog
-            DialogsPacket *dialogsPacket = new DialogsPacket(Client::instance()->connection());
-            connect(dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,DialogList)), SLOT(onRecoveryDialog(const DialogsPacket*,DialogList)));
-            dialogsPacket->load(mid);
+            MessageItem message = MessageItem::create();
+            message->setId(mid);
+            message->setFromId(id);
+            message->setDate(QDateTime::fromTime_t(date).toLocalTime());
+
+            DialogItem dialog = DialogItem::create();
+            dialog->setMessage(message);
+            dialog->createStructure();
+            dialog->getAllFields(Client::instance()->connection());
+            _model->append(dialog);
         }
     }
-}
-
-void DialogsHandler::onRecoveryDialog(const DialogsPacket *sender, const DialogList &dialogs)
-{
-    _model->append(dialogs->at(0));
-    delete sender;
 }
 
 void DialogsHandler::timerEvent(QTimerEvent *event)

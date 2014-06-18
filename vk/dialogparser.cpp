@@ -13,10 +13,8 @@
 
 #include "dialogparser.h"
 
-DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &profiles)
+void DialogParser::parser(const QVariantMap &item, DialogItemPrivate *dialog, const ProfileList &profiles)
 {
-    DialogItem dialog = DialogItem::create();
-
     QVariantMap messageItem = item.contains("message") ? item.value("message").toMap() : item;
     int unreadCount = item.contains("unread") ? item.value("unread").toInt() : 0;
 
@@ -45,10 +43,25 @@ DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &prof
         groupChatHandler->setAdminId(messageItem.value("admin_id").toInt());
     }
 
+    dialog->beginChangeGroupProperties();
+
     dialog->setProfile(profile);
     dialog->setMessage(message);
     dialog->setGroupChatHandler(groupChatHandler);
     dialog->setUnreadCount(unreadCount);
+
+    dialog->endChangeGroupProperties();
+}
+
+void DialogParser::parser(const QVariantMap &item, DialogItem dialog, const ProfileList &profiles)
+{
+    parser(item, dialog.data(), profiles);
+}
+
+DialogItem DialogParser::parser(const QVariantMap &item, const ProfileList &profiles)
+{
+    DialogItem dialog = DialogItem::create();
+    parser(item, dialog.data(), profiles);
 
     return dialog;
 }
@@ -59,7 +72,8 @@ DialogList DialogParser::parser(const QVariantList &items, const ProfileList &pr
 
     foreach (QVariant item, items)
     {
-        DialogItem dialog = parser(item.toMap(), profiles);
+        DialogItem dialog = DialogItem::create();
+        parser(item.toMap(), dialog.data(), profiles);
         dialogs->add(dialog);
     }
 

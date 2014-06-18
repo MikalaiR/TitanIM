@@ -12,6 +12,7 @@
 */
 
 #include "messageitem.h"
+#include "messageparser.h"
 
 MessageItemPrivate::MessageItemPrivate()
 {
@@ -22,6 +23,7 @@ MessageItemPrivate::MessageItemPrivate()
     _deliveryReport = false;
     _chatId = 0;
     _attachments = 0;
+    _isLoading = false;
 }
 
 MessageItemPrivate::~MessageItemPrivate()
@@ -40,6 +42,23 @@ void MessageItemPrivate::setUid(const int uid)
     {
         _uid = uid;
         emitPropertyChanged("uid");
+    }
+}
+
+int MessageItemPrivate::fromId() const
+{
+    return isGroupChat() ? _chatId + GROUP_CHAT_OFFSET : _uid;
+}
+
+void MessageItemPrivate::setFromId(const int fromId)
+{
+    if (fromId > GROUP_CHAT_OFFSET)
+    {
+        setChatId(fromId - GROUP_CHAT_OFFSET);
+    }
+    else
+    {
+        setUid(fromId);
     }
 }
 
@@ -87,6 +106,20 @@ void MessageItemPrivate::setIsError(const bool isError)
     {
         _isError = isError;
         emitPropertyChanged("isError");
+    }
+}
+
+bool MessageItemPrivate::isLoading() const
+{
+    return _isLoading;
+}
+
+void MessageItemPrivate::setIsLoading(const bool isLoading)
+{
+    if (_isLoading != isLoading)
+    {
+        _isLoading = isLoading;
+        emitPropertyChanged("isLoading");
     }
 }
 
@@ -170,4 +203,25 @@ void MessageItemPrivate::setAttachments(AttachmentList *attachments)
         _attachments = attachments;
         emitPropertyChanged("attachments");
     }
+}
+
+void MessageItemPrivate::getAllFields(Connection *connection)
+{
+    setIsLoading(true);
+
+    Packet *packet = new Packet("messages.getById");
+    packet->addParam("message_ids", _id);
+
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connection->appendQuery(packet);
+}
+
+void MessageItemPrivate::loadFinished(const Packet *sender, const QVariantMap &result)
+{
+    setIsLoading(false);
+
+    QVariantMap response = result.value("response").toMap();
+    MessageParser::parser(response.value("items").toList().at(0).toMap(), this);
+
+    delete sender;
 }

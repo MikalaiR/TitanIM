@@ -52,6 +52,8 @@ public:
     void decUnreadDialogs();
     bool isCurrent() const;
     void setCurrent(const bool current);
+    bool isLoading() const;
+    void createStructure();
 
 private:
     ProfileItem _profile;
@@ -60,12 +62,16 @@ private:
     TypingHandler *_typingHandler;
     int _unreadCount;
     bool _isCurrent;
+    bool _isLoading;
 
 public slots:
-    void getMessage(Connection *connection);
+    void getAllFields(Connection *connection);
+    void getLastMessage(Connection *connection);
     void typing(const int uid);
 
 protected slots:
+    void setIsLoading(const bool isLoading);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
     void onProfilePropertyChanged(const int uid, const QString &propertyName);
     void onMessagePropertyChanged(const int mid, const QString &propertyName);
     void onGroupChatPropertyChanged(const int chatId, const QString &propertyName);
