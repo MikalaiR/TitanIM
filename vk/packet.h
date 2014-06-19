@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QMap>
+#include <QMetaMethod>
 #include "errorresponse.h"
 #include "utils.h"
 

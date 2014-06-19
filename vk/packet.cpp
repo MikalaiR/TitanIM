@@ -121,7 +121,15 @@ void Packet::setResult(const QVariantMap &result)
 {
     _result = result;
 
-    emit finished(this, _result);
+    static const QMetaMethod finishedSignal = QMetaMethod::fromSignal(&Packet::finished);
+
+    if (isSignalConnected(finishedSignal)) {
+        emit finished(this, _result);
+    }
+    else
+    {
+        deleteLater();
+    }
 }
 
 void Packet::setError(ErrorResponse *errorResponse)
