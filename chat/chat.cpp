@@ -137,6 +137,14 @@ void Chat::sendMessage(const QString &text)
     _sendMessageHandler->send(message);
 }
 
+void Chat::sendTyping()
+{
+    Packet *packet = new Packet("messages.setActivity");
+    packet->addParam("user_id", _dialog->id());
+    packet->addParam("type", "typing");
+    Client::instance()->connection()->appendQuery(packet);
+}
+
 void Chat::addAttachments(const QList<QUrl> &list)
 {
     if (!_outAttachments)
@@ -158,7 +166,6 @@ void Chat::markAsRead()
 {
     Packet *packet = new Packet("messages.markAsRead");
     packet->addParam("user_id", _dialog->id());
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onMarkAsReadFinished(const Packet*,QVariantMap)));
     Client::instance()->connection()->appendQuery(packet);
 }
 
@@ -180,12 +187,6 @@ void Chat::onSuccessfullyMessageSent(const int internalMid, const int serverMid)
 
         _tempOutMessageQueue.clear();
     }
-}
-
-void Chat::onMarkAsReadFinished(const Packet *sender, const QVariantMap &result)
-{
-    //todo
-    delete sender;
 }
 
 void Chat::onModelRowsAllReplaced()

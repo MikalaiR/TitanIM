@@ -158,6 +158,18 @@ Item {
                 chats.currentChat.sendMessage(text)
                 text = ""
             }
+
+            onTextChanged: {
+                if (!timerSendTyping.running) {
+                    chats.currentChat.sendTyping()
+                    timerSendTyping.start()
+                }
+            }
+
+            Timer {
+                id: timerSendTyping
+                interval: 5000
+            }
         }
     }
 }

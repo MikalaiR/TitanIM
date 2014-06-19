@@ -51,13 +51,13 @@ public slots:
     void addTyping(const TypingItem typing);
     void addTyping(const QList<TypingItem> &typingList);
     void sendMessage(const QString &text);
+    void sendTyping();
     void addAttachments(const QList<QUrl> &list);
     void markAsRead();
 
 protected slots:
     void onMessageSending(const int internalMid);
     void onSuccessfullyMessageSent(const int internalMid, const int serverMid);
-    void onMarkAsReadFinished(const Packet *sender, const QVariantMap &result);
     void onModelRowsAllReplaced();
 };
 
