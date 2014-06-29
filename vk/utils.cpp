@@ -17,10 +17,8 @@ qint64 Utils::_lambdaServerTime = 0;
 
 QVariant Utils::parseJSON(const QByteArray &data)
 {
-    QVariant res;
-    int len = data.size();
-    K8JSON::parseRecord(res, reinterpret_cast<const uchar *>(data.constData()), &len);
-    return res;
+    QJsonDocument json = QJsonDocument::fromJson(data);
+    return json.toVariant();
 }
 
 QString Utils::getMd5String(const QString &source)

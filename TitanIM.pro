@@ -34,7 +34,6 @@ SOURCES += main.cpp \
     vk/longpoll.cpp \
     vk/signup.cpp \
     vk/packet.cpp \
-    vk/k8json.cpp \
     vk/errorresponse.cpp \
     vk/utils.cpp \
     vk/profileitem.cpp \
@@ -84,7 +83,6 @@ HEADERS += \
     vk/signup.h \
     vk/packet.h \
     vk/global.h \
-    vk/k8json.h \
     vk/errorresponse.h \
     vk/utils.h \
     vk/profileitem.h \

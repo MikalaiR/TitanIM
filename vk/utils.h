@@ -14,15 +14,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QJsonDocument>
 #include <QCryptographicHash>
 #include <QStringBuilder>
+#include <QVariant>
 #include <QMap>
 #include <QUrl>
 #include <QDateTime>
 #include <QVector>
 #include <QSound>
 #include <QProcess>
-#include "k8json.h"
 #include "global.h"
 
 class Utils
