@@ -17,9 +17,12 @@ translations.source = data/translations
 translations.target = data
 sounds.source = data/sounds
 sounds.target = data
+smilies.source = data/smilies
+smilies.target = data
 
 DEPLOYMENTFOLDERS = translations \
-                    sounds
+                    sounds \
+                    smilies
 
 CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
@@ -70,7 +73,8 @@ SOURCES += main.cpp \
     vk/messagebase.cpp \
     vk/typingitem.cpp \
     vk/typinghandler.cpp \
-    chat/chatsortfilterproxymodel.cpp
+    chat/chatsortfilterproxymodel.cpp \
+    vk/emoticons.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -119,7 +123,8 @@ HEADERS += \
     vk/messagebase.h \
     vk/typingitem.h \
     vk/typinghandler.h \
-    chat/chatsortfilterproxymodel.h
+    chat/chatsortfilterproxymodel.h \
+    vk/emoticons.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

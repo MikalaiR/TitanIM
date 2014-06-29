@@ -23,7 +23,7 @@ Item {
         color: "#f9f9f9"
     }
 
-    ListView{
+    ListView {
         id: dialogsView;
         anchors.fill: parent
         model: dialogsHandler.proxy;

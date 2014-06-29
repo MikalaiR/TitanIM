@@ -22,6 +22,7 @@ MessageItemPrivate::MessageItemPrivate()
     _isError = false;
     _deliveryReport = false;
     _chatId = 0;
+    _emoji = false;
     _attachments = 0;
     _isLoading = false;
 }
@@ -161,11 +162,21 @@ QString MessageItemPrivate::body() const
     return _body;
 }
 
-void MessageItemPrivate::setBody(const QString &body)
+void MessageItemPrivate::setBody(const QString &body, const bool emoji)
 {
-    if (_body != body)
+    if ((_body != body) || emoji)
     {
-        _body = body;
+        if (emoji)
+        {
+            _body = Emoticons::instance()->fromEmoji(body);
+        }
+        else
+        {
+            _body = body;
+        }
+
+        _emoji = emoji;
+
         emitPropertyChanged("body");
     }
 }
@@ -187,6 +198,11 @@ void MessageItemPrivate::setChatId(const int chatId)
 bool MessageItemPrivate::isGroupChat() const
 {
     return _chatId == 0 ? false : true;
+}
+
+bool MessageItemPrivate::emoji() const
+{
+    return _emoji;
 }
 
 AttachmentList* MessageItemPrivate::attachments() const

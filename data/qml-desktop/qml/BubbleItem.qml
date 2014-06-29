@@ -18,7 +18,7 @@ Item {
 
     property int maximumWidth
     property bool isOut: false
-    property alias text: body.text
+    property alias text: body.richText
     property alias time: time.text
     property var attachments
 
@@ -28,7 +28,7 @@ Item {
     BorderImage {
         id: bubble
         width: Math.max(body.contentWidth, attachmentsView.width) + 29
-        height: (body.contentHeight + attachmentsView.height) + (body.height ? 12 : 8) +
+        height: (body.contentHeight + attachmentsView.height) + (body.height ? 10 : 8) +
                 (attachmentsView.height && body.height ? 11 + content.spacing : 0)
         source: bubbleItem.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
         smooth: true
@@ -41,7 +41,7 @@ Item {
             anchors.verticalCenterOffset: -2
             spacing: 4
 
-            Text {
+            TextEditItem {
                 id: body
                 width: bubbleItem.maximumWidth
                 height: text.length ? implicitHeight + 2: 0
@@ -49,6 +49,8 @@ Item {
                 font.pointSize: 13 - 1
                 lineHeight: 0.9
                 wrapMode: Text.Wrap
+                readOnly: true
+                selectByMouse: true
             }
 
             Loader {

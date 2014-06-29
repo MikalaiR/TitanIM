@@ -32,6 +32,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     QString body = Utils::decode(item.value("body").toString());
     QString title = item.contains("title") ? item.value("title").toString() : "";
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
+    bool emoji = (item.contains("emoji") && item.value("emoji").toInt()) ? true : false;
 
     if (item.contains("attachments"))
     {
@@ -47,7 +48,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     message->setIsUnread(isUnread);
     message->setDeliveryReport(true);
     message->setIsOut(isOut);
-    message->setBody(body);
+    message->setBody(body, emoji);
     message->setTitle(title);
     message->setChatId(chatId);
 

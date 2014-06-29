@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWindow *parent) :
                      Settings::instance()->dataDir() + "/translations");
     qApp->installTranslator(translator);
 
+    QString emoticonsTheme = Settings::instance()->dataDir() + "/smilies/default/"; //todo
+    Emoticons::instance()->setCurrentTheme(emoticonsTheme);
+
     authorization = new Authorization();
 
     connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
@@ -52,6 +55,7 @@ MainWindow::~MainWindow()
     delete authorization;
     Chats::instance()->destroy();
     Client::instance()->destroy();
+    Emoticons::instance()->destroy();
     Settings::instance()->destroy();
 }
 

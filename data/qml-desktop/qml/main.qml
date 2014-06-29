@@ -17,6 +17,7 @@ import QtQuick.Layouts 1.0
 
 Rectangle {
     SplitView {
+        id: splitView
         anchors.fill: parent
         orientation: Qt.Horizontal
 
@@ -54,6 +55,13 @@ Rectangle {
                 title: "settings"
                 icon: "images/settings_tab.png"
                 Text {text: "settings"}
+            }
+
+            onWidthChanged: { //qml bug
+                if (width < 200) {
+                    splitView.enabled = false
+                    splitView.enabled = true
+                }
             }
         }
 

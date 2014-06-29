@@ -19,6 +19,7 @@
 #include "messagebase.h"
 #include "attachmentlist.h"
 #include "connection.h"
+#include "emoticons.h"
 
 class MessageItemPrivate : public MessageBase
 {
@@ -45,10 +46,11 @@ public:
     QString title() const;
     void setTitle(const QString &title);
     QString body() const;
-    void setBody(const QString &body);
+    void setBody(const QString &body, const bool emoji=false);
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;
+    bool emoji() const;
     AttachmentList* attachments() const;
     void setAttachments(AttachmentList *attachments);
 
@@ -62,6 +64,7 @@ private:
     QString _title;
     QString _body;
     int _chatId;
+    bool _emoji;
     AttachmentList *_attachments;
 
 public slots:

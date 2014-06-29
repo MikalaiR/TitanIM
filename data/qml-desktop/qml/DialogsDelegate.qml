@@ -18,13 +18,6 @@ Item {
     width: dialogsDelegate.ListView.view.width
     height: avatar.height + 13
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            main.dialogCurrentIndexChanged(index);
-        }
-    }
-
     HighlightListView {
         anchors.fill: parent
         visible: currentChatId === model.id
@@ -44,26 +37,13 @@ Item {
             anchors.verticalCenterOffset: -1
             source: model.decoration
             online: model.online
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-//                    if (model.uid > 0){
-//                        profilePage.clear();
-//                        titanim.slotShowProfile(model.uid);
-//                        titanim.slotWallGet(model.uid);
-//                        profilePage.uid = model.uid;
-//                        mainView.pageStack.push(profilePage);
-//                    }
-                }
-            }
         }
 
         Column {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
             anchors.topMargin: 1
-            spacing: -2
+            spacing: model.emoji && !model.typing ? 3 : -3
 
             Item {
                 width: parent.width
@@ -98,19 +78,19 @@ Item {
                 width: parent.width
                 height: textBody.height
 
-                Text {
+                TextEditItem {
                     id: textBody
                     anchors.left: parent.left
                     anchors.right: unreadCount.visible ? unreadCount.left : parent.right
                     anchors.rightMargin: 7
-                    maximumLineCount: 2
+                    maximumLineCount: model.emoji ? 1 : 2
                     lineHeight: 0.8
-                    elide: Text.ElideRight
                     color: "#707070"
                     font.pointSize: 13 - 1
                     font.italic: model.typing
                     wrapMode: Text.Wrap
-                    text: model.typing ? dialogsHandler.typingText : model.body
+                    richText: model.typing ? dialogsHandler.typingText : model.body
+                    activeFocusOnPress: false
                 }
 
                 BadgeItem {
@@ -118,7 +98,7 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 7
                     anchors.top: textBody.top
-                    anchors.topMargin: 5
+                    anchors.topMargin: model.emoji && !model.typing ? -1 : 5
                     count: model.unreadCount
                 }
             }
@@ -128,5 +108,12 @@ Item {
     SeparatorItem {
         id: separator
         anchors.top: dialogsDelegate.bottom
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            main.dialogCurrentIndexChanged(index);
+        }
     }
 }

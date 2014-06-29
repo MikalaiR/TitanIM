@@ -59,7 +59,7 @@ QString Utils::joinAndEscape(const QMap<QString, QString> &list, const QChar &se
 QString Utils::decode(const QString &str)
 {
     QString temp = str;
-    temp = temp.replace("<br>", "\n");
+    temp = temp.replace("<br>", "\n"); //todo vk api5
     temp = temp.replace("&amp;", "&");
     temp = temp.replace("&lt;", "<");
     temp = temp.replace("&gt;", ">");

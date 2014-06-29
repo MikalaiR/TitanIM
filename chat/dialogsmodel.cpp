@@ -121,6 +121,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[IsOutRole] = "isOut";
     roles[OnlineRole] = "online";
     roles[TypingRole] = "typing";
+    roles[EmojiRole] = "emoji";
 
     return roles;
 }
@@ -173,6 +174,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case TypingRole:
         return dialog->isTyping();
+
+    case EmojiRole:
+        return message->emoji();
     }
 
     return QVariant();

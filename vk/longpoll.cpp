@@ -274,6 +274,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     QString title = update.value(5).toString();
     QString body = Utils::decode(update.value(6).toString());
     QVariantMap additional = update.value(7).toMap();
+    bool emoji = (additional.contains("emoji") && additional.value("emoji").toInt()) ? true : false;
 
     message->beginChangeGroupProperties();
 
@@ -283,7 +284,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     message->setIsUnread(flags & Unread);
     message->setDeliveryReport(true);
     message->setIsOut(flags & Outbox);
-    message->setBody(body);
+    message->setBody(body, emoji);
     message->setTitle(title);
 
     if (additional.contains("from"))
@@ -291,7 +292,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 
     message->endChangeGroupProperties();
 
-    if (additional.count() && !(additional.contains("from") && additional.count() == 1))
+    if (additional.contains("attach1"))
     {
         message->getAllFields(_connection);
     }
