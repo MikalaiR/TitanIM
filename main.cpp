@@ -13,6 +13,7 @@
 
 #include <QtGui/QGuiApplication>
 #include <QTextCodec>
+#include <QFont>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
@@ -26,6 +27,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion("2.0.1");
     QCoreApplication::setOrganizationName("Ruslan Nazarov");
     QCoreApplication::setOrganizationDomain("http://titanim.ru");
+
+    QFont defaultFont;
+    defaultFont.setFamily("Geneva");//todo win lin
+    app.setFont(defaultFont);
 
     MainWindow w;
     return app.exec();

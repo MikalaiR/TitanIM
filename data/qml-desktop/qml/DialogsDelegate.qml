@@ -43,7 +43,7 @@ Item {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
             anchors.topMargin: 1
-            spacing: model.emoji && !model.typing ? 3 : -3
+            spacing: model.emoji && !model.typing ? 4 : -2
 
             Item {
                 width: parent.width
@@ -84,7 +84,7 @@ Item {
                     anchors.right: unreadCount.visible ? unreadCount.left : parent.right
                     anchors.rightMargin: 7
                     maximumLineCount: model.emoji ? 1 : 2
-                    lineHeight: 0.8
+                    lineHeight: 0.9
                     color: "#707070"
                     font.pointSize: 13 - 1
                     font.italic: model.typing
@@ -98,7 +98,7 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 7
                     anchors.top: textBody.top
-                    anchors.topMargin: model.emoji && !model.typing ? -1 : 5
+                    anchors.topMargin: model.emoji && !model.typing ? -2 : 4
                     count: model.unreadCount
                 }
             }

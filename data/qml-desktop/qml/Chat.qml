@@ -49,7 +49,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: avatar.right
             anchors.leftMargin: 10
-            spacing: -3
+            spacing: -1
 
             Text {
                 id: name

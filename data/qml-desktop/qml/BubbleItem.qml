@@ -47,7 +47,6 @@ Item {
                 height: text.length ? implicitHeight + 2: 0
                 verticalAlignment: Text.AlignTop
                 font.pointSize: 13 - 1
-                lineHeight: 0.9
                 wrapMode: Text.Wrap
                 readOnly: true
                 selectByMouse: true
