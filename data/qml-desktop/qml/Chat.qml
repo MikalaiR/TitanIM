@@ -17,10 +17,14 @@ import QtQuick.Controls.Styles 1.0
 import QtQuick.Dialogs 1.0
 
 Item {
+    id:chatFrame
+
+    property color backgroundColor: "#DFE3EA"
+    property color unreadHighlightColor: "#D6DDE8"
 
     Rectangle {
         anchors.fill: parent
-        color: "#DFE3EA"
+        color: backgroundColor
     }
 
     Item {

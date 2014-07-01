@@ -18,6 +18,7 @@ Item {
 
     property int maximumWidth
     property bool isOut: false
+    property bool isUnread: false
     property alias text: body.richText
     property alias time: time.text
     property var attachments
@@ -84,7 +85,7 @@ Item {
         sourceComponent: ImageMask {
             image: attachmentsView
             mask: bubble
-            blendColor: "#DFE3EA"
+            blendColor: isUnread ? chatFrame.unreadHighlightColor : chatFrame.backgroundColor
         }
     }
 }

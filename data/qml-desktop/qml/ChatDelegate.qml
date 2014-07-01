@@ -25,8 +25,7 @@ Item {
         anchors.bottom: body.bottom
         anchors.left: chatDelegate.left
         anchors.right: chatDelegate.right
-        opacity: 0.1;
-        color: "#83a6d3"
+        color: chatFrame.unreadHighlightColor
         visible: model.messageType === MessageBase.Text && model.isUnread
     }
 
@@ -88,6 +87,7 @@ Item {
             sourceComponent: BubbleItem {
                 maximumWidth: chatDelegate.width * 0.6
                 isOut: model.isOut
+                isUnread: model.isUnread
                 text: model.body
                 time: model.isSending ? qsTr("sending...") : model.timeStr
                 attachments: model.attachments
