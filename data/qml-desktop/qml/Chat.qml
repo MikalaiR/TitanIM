@@ -12,8 +12,6 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
 import QtQuick.Dialogs 1.0
 
 Item {
@@ -106,7 +104,7 @@ Item {
         id: footer
         z: 1
         width: parent.width
-        height: 45
+        height: textArea.height + 19
         anchors.bottom: parent.bottom
 
         HeaderSeparator {
@@ -129,24 +127,9 @@ Item {
             }
         }
 
-        TextField {
-            property Component textfieldStyle: TextFieldStyle {
-                background: Item {
-                    implicitWidth: 100
-                    implicitHeight: 26
-                    BorderImage {
-                        border.bottom: 14
-                        border.top: 13
-                        border.right: 15
-                        border.left: 15
-                        anchors.fill: parent
-                        source: "images/input_field.png"
-                    }
-                }
-
-                padding { top: 6 ; left: 12 ; right: 12; bottom:4 }
-            }
-
+        TextAreaItem {
+            id: textArea
+            height: 26
             anchors.left: uploadBtn.right
             anchors.leftMargin: 5
             anchors.right: parent.right
@@ -154,7 +137,6 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: 1
             placeholderText: qsTr("Write a message...")
-            style: textfieldStyle
             font.family: "Helvetica"
             font.pixelSize: 12
 

@@ -45,5 +45,6 @@
         <file>BadgeItem.qml</file>
         <file>images/typing.png</file>
         <file>TextEditItem.qml</file>
+        <file>TextAreaItem.qml</file>
     </qresource>
 </RCC>
