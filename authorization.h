@@ -28,13 +28,16 @@ public:
 public slots:
     void connectToVk();
     void connectToVk(const QString &username, const QString &password);
+    void setCaptcha(const QString &sid, const QString &text);
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
+    void onValidation(const QString &validationUri);
 
 signals:
+    void captcha(const QString &captchaSid, const QString &captchaImg);
     void showAuthPage();
     void showMainPage();
 };

@@ -16,6 +16,8 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 Rectangle {
+    id: mainWindow
+
     SplitView {
         id: splitView
         anchors.fill: parent
@@ -67,6 +69,14 @@ Rectangle {
 
         Chat {
             Layout.fillWidth: true
+        }
+    }
+
+    Connections {
+        target: authorization
+
+        onCaptcha: {
+            Qt.createComponent("Captcha.qml").createObject(mainWindow, {sid: captchaSid, img: captchaImg});
         }
     }
 }

@@ -32,8 +32,6 @@ MainWindow::MainWindow(QWindow *parent) :
     connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
-    connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SLOT(onCaptcha(QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SLOT(onValidation(QString)));
 
     dialogsHandler = new DialogsHandler();
     rosterHandler = new RosterHandler();
@@ -117,14 +115,4 @@ void MainWindow::onDisconnected()
 void MainWindow::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
     qDebug() << "ERROR:" << error << text; //todo
-}
-
-void MainWindow::onCaptcha(const QString &captchaSid, const QString &captchaImg)
-{
-    qDebug() << "CAPTCHA:" << captchaSid << captchaImg; //todo
-}
-
-void MainWindow::onValidation(const QString &validationUri)
-{
-    qDebug() << "VALIDATION:" << validationUri; //todo
 }

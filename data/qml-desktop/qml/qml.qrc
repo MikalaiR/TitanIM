@@ -46,5 +46,7 @@
         <file>images/typing.png</file>
         <file>TextEditItem.qml</file>
         <file>TextAreaItem.qml</file>
+        <file>Captcha.qml</file>
+        <file>NotificationBox.qml</file>
     </qresource>
 </RCC>

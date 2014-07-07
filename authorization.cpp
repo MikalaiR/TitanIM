@@ -18,6 +18,8 @@ Authorization::Authorization()
     connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
+    connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
+    connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SLOT(onValidation(QString)));
 }
 
 void Authorization::connectToVk()
@@ -42,6 +44,11 @@ void Authorization::connectToVk()
 void Authorization::connectToVk(const QString &username, const QString &password)
 {
     Client::instance()->connection()->connectToVk(username, password);
+}
+
+void Authorization::setCaptcha(const QString &sid, const QString &text)
+{
+    Client::instance()->connection()->setCaptcha(sid, text);
 }
 
 void Authorization::onConnected(const int uid, const QString &token, const QString &secret)
@@ -69,4 +76,9 @@ void Authorization::onError(const ErrorResponse::Error &error, const QString &te
         //todo remove token and secret
         emit showAuthPage();
     }
+}
+
+void Authorization::onValidation(const QString &validationUri)
+{
+    qDebug() << "VALIDATION:" << validationUri; //todo
 }
