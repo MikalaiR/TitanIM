@@ -136,7 +136,15 @@ void Packet::setError(ErrorResponse *errorResponse)
 {
     _errorResponse = errorResponse;
 
-    emit error(_errorResponse->code(), _errorResponse->msg(), _errorResponse->global(), _errorResponse->fatal());
+    static const QMetaMethod errorSignal = QMetaMethod::fromSignal(&Packet::error);
+
+    if (isSignalConnected(errorSignal)) {
+        emit error(_errorResponse->code(), _errorResponse->msg(), _errorResponse->global(), _errorResponse->fatal());
+    }
+    else
+    {
+        deleteLater();
+    }
 }
 
 bool Packet::contains(const QString &key)
