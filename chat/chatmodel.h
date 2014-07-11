@@ -39,6 +39,7 @@ public:
         UidRole,
         IsUnreadRole,
         IsOutRole,
+        IsError,
         IsSendingRole,
         DeletedRole,
         OnlineRole,

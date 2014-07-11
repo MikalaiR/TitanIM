@@ -58,6 +58,7 @@ public slots:
 protected slots:
     void onMessageSending(const int internalMid);
     void onSuccessfullyMessageSent(const int internalMid, const int serverMid);
+    void onUnsuccessfullyMessageSent(const int internalMid);
     void onModelRowsAllReplaced();
 };
 

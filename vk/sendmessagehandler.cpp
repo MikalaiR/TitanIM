@@ -100,6 +100,7 @@ void SendMessageHandler::sendMessage()
 
     packet->setId(internalMid);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(sendMessageFinished(const Packet*,QVariantMap)));
+    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(sendMessageError(const Packet*,const ErrorResponse*)));
     emit sending(internalMid);
     _connection->appendQuery(packet);
 
@@ -119,5 +120,16 @@ void SendMessageHandler::sendMessageFinished(const Packet *sender, const QVarian
     message->setDeliveryReport(true);
 
     emit successfullyMessageSent(internalMid, serverMid);
+    delete sender;
+}
+
+void SendMessageHandler::sendMessageError(const Packet *sender, const ErrorResponse *errorResponse)
+{
+    int internalMid = sender->id();
+
+    MessageItem message = _messagesInProcessing.take(internalMid);
+    message->setIsError(true);
+
+    emit unsuccessfullyMessageSent(internalMid);
     delete sender;
 }

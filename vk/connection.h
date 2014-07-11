@@ -41,6 +41,7 @@ public:
     void disconnectVk();
     void appendQuery(Packet *packet);
     void setCaptcha(const QString &sid, const QString &text);
+    void cancelCaptcha();
 
 private:
     void setStatus(const Status &status);
@@ -49,6 +50,7 @@ private:
     void loginSuccess(const QVariantMap &response);
     void loginFailure(const QVariantMap &response);
     void execQuery();
+    void clearQuery(const ErrorResponse::Error &code, const QString &msg);
 
 private:
     LoginVars _loginVars;

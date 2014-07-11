@@ -245,6 +245,17 @@ void Connection::execQuery()
     httpApi->post(request, currentPacket->urlQuery());
 }
 
+void Connection::clearQuery(const ErrorResponse::Error &code, const QString &msg)
+{
+    while (!_queryList.isEmpty())
+    {
+        ErrorResponse *errorResponse = new ErrorResponse(code, msg);
+        _queryList.dequeue()->setError(errorResponse);
+    }
+
+    _isProcessing = false;
+}
+
 void Connection::apiResponse(QNetworkReply *networkReply)
 {
     if (isOffline())
@@ -323,6 +334,11 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
     {
         onError(ErrorResponse::UserAuthorizationFailed, "User authorization failed");
     }
+}
+
+void Connection::cancelCaptcha()
+{
+    clearQuery(ErrorResponse::CaptchaCanceled, "Captcha canceled");
 }
 
 void Connection::onTooManyRequestsTimerTick()

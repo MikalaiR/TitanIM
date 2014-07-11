@@ -19,8 +19,10 @@ Item {
     property int maximumWidth
     property bool isOut: false
     property bool isUnread: false
+    property bool isSending: false
+    property bool isError: false
     property alias text: body.richText
-    property alias time: time.text
+    property string time: ""
     property var attachments
 
     implicitWidth: bubble.width
@@ -67,14 +69,14 @@ Item {
     }
 
     TextShadow {
-        id: time
         LayoutMirroring.enabled: !bubbleItem.isOut
         anchors.right: parent.left
         anchors.rightMargin: 4
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
         font.pointSize: 13 - 4
-        color: "#8B92A4"
+        color: isError ? "#860004" : "#8B92A4"
+        text: isError ? qsTr("error") : isSending ? qsTr("sending...") : time
     }
 
     Loader {

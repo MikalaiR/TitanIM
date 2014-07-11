@@ -67,4 +67,8 @@ NotificationBox {
     onAccepted: {
         authorization.setCaptcha(sid, code)
     }
+
+    onRejected: {
+        authorization.cancelCaptcha()
+    }
 }

@@ -137,6 +137,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[UidRole] = "uid";
     roles[IsUnreadRole] = "isUnread";
     roles[IsOutRole] = "isOut";
+    roles[IsError] = "isError";
     roles[IsSendingRole] = "isSending";
     roles[DeletedRole] = "deleted";
     roles[OnlineRole] = "online";
@@ -205,6 +206,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
         case IsOutRole:
             return message->isOut();
+
+        case IsError:
+            return message->isError();
 
         case IsSendingRole:
             return message->isSending();

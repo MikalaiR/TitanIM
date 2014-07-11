@@ -23,6 +23,7 @@ Chat::Chat()
     _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
     connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
     connect(_sendMessageHandler, SIGNAL(successfullyMessageSent(int,int)), this, SLOT(onSuccessfullyMessageSent(int,int)));
+    connect(_sendMessageHandler, SIGNAL(unsuccessfullyMessageSent(int)), this, SLOT(onUnsuccessfullyMessageSent(int)));
 }
 
 Chat::Chat(const DialogItem dialog)
@@ -39,6 +40,7 @@ Chat::Chat(const DialogItem dialog)
     _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
     connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
     connect(_sendMessageHandler, SIGNAL(successfullyMessageSent(int,int)), this, SLOT(onSuccessfullyMessageSent(int,int)));
+    connect(_sendMessageHandler, SIGNAL(unsuccessfullyMessageSent(int)), this, SLOT(onUnsuccessfullyMessageSent(int)));
 }
 
 Chat::~Chat()
@@ -175,6 +177,21 @@ void Chat::onMessageSending(const int internalMid)
 }
 
 void Chat::onSuccessfullyMessageSent(const int internalMid, const int serverMid)
+{
+    _countUnsent--;
+
+    if (countUnsent() == 0 && _tempOutMessageQueue.count())
+    {
+        for (int i = 0; i < _tempOutMessageQueue.count(); i++)
+        {
+            _model->prepend(_tempOutMessageQueue.at(i), true);
+        }
+
+        _tempOutMessageQueue.clear();
+    }
+}
+
+void Chat::onUnsuccessfullyMessageSent(const int internalMid)
 {
     _countUnsent--;
 

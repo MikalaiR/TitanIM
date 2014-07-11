@@ -57,7 +57,7 @@ private:
 
 signals:
     void finished(const Packet *sender, const QVariantMap &result);
-    void error(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
+    void error(const Packet *sender, const ErrorResponse *errorResponse);
 };
 
 QDebug operator<<(QDebug dbg, const Packet &packet);

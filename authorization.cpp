@@ -51,6 +51,11 @@ void Authorization::setCaptcha(const QString &sid, const QString &text)
     Client::instance()->connection()->setCaptcha(sid, text);
 }
 
+void Authorization::cancelCaptcha()
+{
+    Client::instance()->connection()->cancelCaptcha();
+}
+
 void Authorization::onConnected(const int uid, const QString &token, const QString &secret)
 {
     qDebug() << "connecting" << " " << token << " " << secret;

@@ -24,6 +24,7 @@ class ErrorResponse : public QObject
 public:
     enum Error
     {
+        CaptchaCanceled = -4,
         LoadTokenFailed = -3,
         TimeoutLongPollServer = -2,
         ServerIsNotAvailable = -1,

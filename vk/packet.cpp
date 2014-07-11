@@ -139,7 +139,7 @@ void Packet::setError(ErrorResponse *errorResponse)
     static const QMetaMethod errorSignal = QMetaMethod::fromSignal(&Packet::error);
 
     if (isSignalConnected(errorSignal)) {
-        emit error(_errorResponse->code(), _errorResponse->msg(), _errorResponse->global(), _errorResponse->fatal());
+        emit error(this, _errorResponse);
     }
     else
     {

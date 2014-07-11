@@ -40,10 +40,12 @@ private slots:
     void execSendMessageQuery();
     void sendMessage();
     void sendMessageFinished(const Packet *sender, const QVariantMap &result);
+    void sendMessageError(const Packet *sender, const ErrorResponse *errorResponse);
 
 signals:
     void sending(const int internalMid);
     void successfullyMessageSent(const int internalMid, const int serverMid);
+    void unsuccessfullyMessageSent(const int internalMid);
 };
 
 #endif // SENDMESSAGEHANDLER_H

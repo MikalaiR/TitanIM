@@ -29,6 +29,7 @@ public slots:
     void connectToVk();
     void connectToVk(const QString &username, const QString &password);
     void setCaptcha(const QString &sid, const QString &text);
+    void cancelCaptcha();
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);

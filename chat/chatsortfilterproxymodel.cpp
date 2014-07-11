@@ -21,30 +21,35 @@ ChatSortFilterProxyModel::ChatSortFilterProxyModel(QObject *parent) :
 
 bool ChatSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    int l = sourceModel()->data(left, ChatModel::MessageTypeRole).toInt();
-    int r = sourceModel()->data(right, ChatModel::MessageTypeRole).toInt();
+    int leftTypy = sourceModel()->data(left, ChatModel::MessageTypeRole).toInt();
+    int rightType = sourceModel()->data(right, ChatModel::MessageTypeRole).toInt();
 
-    if (l == MessageBase::Text && r == MessageBase::Text)
+    if (leftTypy == MessageBase::Text && rightType == MessageBase::Text)
     {
-        int l = sourceModel()->data(left, ChatModel::IdRole).toInt();
-        int r = sourceModel()->data(right, ChatModel::IdRole).toInt();
+        bool leftIsError = sourceModel()->data(left, ChatModel::IsError).toBool();
+        bool rightIsError = sourceModel()->data(right, ChatModel::IsError).toBool();
 
-        if ((l > 0 && r > 0) || (l < 0 && r < 0))
+        if (!leftIsError && !rightIsError) //sort by id
         {
-            return abs(l) < abs(r);
-        }
-        else
-        {
-            return r < 0; //not bug
+            int leftId = sourceModel()->data(left, ChatModel::IdRole).toInt();
+            int rightId = sourceModel()->data(right, ChatModel::IdRole).toInt();
+
+            if ((leftId > 0 && rightId > 0) || (leftId < 0 && rightId < 0))
+            {
+                return abs(leftId) < abs(rightId);
+            }
+            else
+            {
+                return rightId < 0; //not bug
+            }
         }
     }
-    else
-    {
-        QDateTime l = sourceModel()->data(left, ChatModel::DateRole).toDateTime();
-        QDateTime r = sourceModel()->data(right, ChatModel::DateRole).toDateTime();
 
-        return l < r;
-    }
+    //sort by date
+    QDateTime leftDate = sourceModel()->data(left, ChatModel::DateRole).toDateTime();
+    QDateTime rightDate = sourceModel()->data(right, ChatModel::DateRole).toDateTime();
+
+    return leftDate < rightDate;
 }
 
 bool ChatSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

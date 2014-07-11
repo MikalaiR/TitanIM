@@ -88,8 +88,10 @@ Item {
                 maximumWidth: chatDelegate.width * 0.6
                 isOut: model.isOut
                 isUnread: model.isUnread
+                isSending: model.isSending
+                isError: model.isError
                 text: model.body
-                time: model.isSending ? qsTr("sending...") : model.timeStr
+                time: model.timeStr
                 attachments: model.attachments
             }
         }
