@@ -15,6 +15,8 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 
 Rectangle {
+    id: authWindow
+
     Rectangle {
         anchors.fill: parent;
         color: "#4e729a"
@@ -26,9 +28,9 @@ Rectangle {
 
     Column {
         id: column;
-        width: parent.width - 40;
+        width: parent.width - 100;
         anchors.centerIn: parent;
-        spacing: 20;
+        spacing: 25;
 
         Image {
             id: logo;
@@ -40,7 +42,7 @@ Rectangle {
 
         Column {
             width: parent.width
-            spacing: 3;
+            spacing: 5;
 
             TextField {
                 id: login;
@@ -88,6 +90,14 @@ Rectangle {
                     }
                 }
             }
+        }
+    }
+
+    Connections { //todo remove copy-paste (main.qml)
+        target: authorization
+
+        onCaptcha: {
+            Qt.createComponent("Captcha.qml").createObject(authWindow, {sid: captchaSid, img: captchaImg});
         }
     }
 }

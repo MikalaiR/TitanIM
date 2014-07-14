@@ -323,7 +323,7 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
         _isProcessing = false;
         execQuery();
     }
-    else if (isOffline() && !text.isEmpty())
+    else if (isOffline())
     {
         //captcha in authorization
         _loginVars.captcha_sid = sid;

@@ -59,8 +59,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::showAuthPage()
 {
-    setWidth(350);
-    setHeight(160);
+    setWidth(400);
+    setHeight(220);
     setSource(QUrl("qrc:/qml/Authorization.qml"));
     showExpanded();
 }
