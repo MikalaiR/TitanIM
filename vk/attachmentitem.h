@@ -28,14 +28,14 @@ class Attachment : public NotifyPropertyBase
 public:
     enum AttachmentType
     {
-        photo,
-        video,
-        audio,
-        doc,
-        map,
-        fwd_messages,
-        unknown = -1
-    }; //VK types in lower case. QMetaObject
+        Photo,
+        Video,
+        Audio,
+        Doc,
+        Map,
+        Fwd_messages,
+        Unknown = -1
+    };
 
     Attachment();
     AttachmentType attachmentType() const;

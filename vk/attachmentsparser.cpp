@@ -27,17 +27,17 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
         QString strType = item.toMap()["type"].toString();
         QVariantMap attachment = item.toMap()[strType].toMap();
 
-        type = (Attachment::AttachmentType)metaEnum.keyToValue(strType.toUtf8());
+        type = (Attachment::AttachmentType)metaEnum.keyToValue(Utils::firstUpper(strType).toUtf8());
 
         switch (type) {
-        case Attachment::photo:
+        case Attachment::Photo:
         {
             PhotoItem photo = PhotoParser::parser(attachment);
             attachments->add(photo);
             break;
         }
 
-        case Attachment::unknown:
+        case Attachment::Unknown:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;
             break;

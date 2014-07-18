@@ -15,7 +15,7 @@
 
 Attachment::Attachment()
 {
-    _attachmentType = unknown;
+    _attachmentType = Unknown;
     _ownerId = 0;
     _uploadProgress = 0;
 }

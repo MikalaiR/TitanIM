@@ -27,6 +27,6 @@ Item {
     PhotoAttachments {
         id: photoAttachments
         maximumWidth: attachmentsView.maximumWidth
-        photoList: attachments.filterByType(Attachment.photo)
+        photoList: attachments.filterByType(Attachment.Photo)
     }
 }

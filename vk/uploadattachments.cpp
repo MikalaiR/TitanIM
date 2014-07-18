@@ -38,7 +38,7 @@ void UploadAttachments::upload()
     }
 
     switch (_attachments->at(_index)->attachmentType()) {
-    case Attachment::photo:
+    case Attachment::Photo:
     {
         PhotoItem photo = qobject_cast<PhotoItem>(_attachments->at(_index));
 

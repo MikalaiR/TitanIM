@@ -18,6 +18,7 @@
 #include <QVariant>
 #include <QMetaEnum>
 #include <QDebug>
+#include "utils.h"
 #include "attachmentlist.h"
 #include "photoparser.h"
 
