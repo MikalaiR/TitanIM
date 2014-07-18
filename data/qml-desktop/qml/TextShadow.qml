@@ -18,10 +18,15 @@ Text {
 
     Text {
         z: textShadow.z - 1
+        width: textShadow.width
+        height: textShadow.height
         anchors.centerIn: parent
         anchors.verticalCenterOffset: 1
+        horizontalAlignment: textShadow.horizontalAlignment
         text: textShadow.text
         color: "white"
         font: textShadow.font
+        lineHeight: textShadow.lineHeight
+        wrapMode: textShadow.wrapMode
     }
 }
