@@ -19,14 +19,29 @@ Item {
 
     property int maximumWidth
     property var attachments
-    readonly property alias photoCount: photoAttachments.count
+    readonly property int photoCount: __attachments[0].items.length //todo remove
 
-    implicitWidth: photoAttachments.implicitWidth
-    implicitHeight: photoAttachments.implicitHeight
+    property var __attachments: [
+        {"items": attachments.filterByType(Attachment.Photo), "source": "PhotoAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"}
+    ]
 
-    PhotoAttachments {
-        id: photoAttachments
-        maximumWidth: attachmentsView.maximumWidth
-        photoList: attachments.filterByType(Attachment.Photo)
+    implicitWidth: attachmentsFrame.width
+    implicitHeight: attachmentsFrame.height
+
+    Column {
+        id: attachmentsFrame
+        spacing: 5
+
+        Repeater {
+            model: __attachments
+
+            Loader {
+                property int maximumWidth: attachmentsView.maximumWidth
+                property var items: modelData.items
+                active: modelData.items.length
+                source: modelData.source
+            }
+        }
     }
 }

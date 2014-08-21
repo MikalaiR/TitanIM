@@ -11,22 +11,21 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
-
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
 #include "stickerparser.h"
 
-class AttachmentsParser : public QObject
+StickerItem StickerParser::parser(const QVariantMap &item)
 {
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    StickerItem sticker = StickerItem::create();
 
-#endif // ATTACHMENTSPARSER_H
+    int id = item.value("id").toInt();
+    QUrl src = item.value("photo_128").toUrl();
+    int width = item.value("width").toInt();
+    int height = item.value("height").toInt();
+
+    sticker->setId(id);
+    sticker->setSrc(src);
+    sticker->setWidth(width);
+    sticker->setHeight(height);
+
+    return sticker;
+}

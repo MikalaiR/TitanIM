@@ -11,22 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef STICKERPARSER_H
+#define STICKERPARSER_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
+#include <QVariantMap>
+#include "stickeritem.h"
 
-class AttachmentsParser : public QObject
+class StickerParser : public QObject
 {
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    static StickerItem parser(const QVariantMap &item);
 };
 
-#endif // ATTACHMENTSPARSER_H
+#endif // STICKERPARSER_H

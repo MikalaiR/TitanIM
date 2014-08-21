@@ -32,6 +32,7 @@ public:
         Video,
         Audio,
         Doc,
+        Sticker,
         Map,
         Fwd_messages,
         Unknown = -1

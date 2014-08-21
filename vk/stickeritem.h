@@ -11,22 +11,35 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef STICKERITEM_H
+#define STICKERITEM_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
+#include <QUrl>
+#include "attachmentitem.h"
 
-class AttachmentsParser : public QObject
+class StickerItemPrivate : public Attachment
 {
+    Q_OBJECT
+    Q_PROPERTY(QUrl src READ src CONSTANT) //todo signal
+    Q_PROPERTY(int width READ width CONSTANT)
+    Q_PROPERTY(int height READ height CONSTANT)
+
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    StickerItemPrivate();
+    QUrl src() const;
+    void setSrc(const QUrl &src);
+    int width() const;
+    void setWidth(const int width);
+    int height() const;
+    void setHeight(const int height);
+
+private:
+    QUrl _src;
+    int _width;
+    int _height;
 };
 
-#endif // ATTACHMENTSPARSER_H
+typedef QSharedPointer<StickerItemPrivate> StickerItem;
+
+#endif // STICKERITEM_H

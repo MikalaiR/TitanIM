@@ -48,5 +48,6 @@
         <file>TextAreaItem.qml</file>
         <file>Captcha.qml</file>
         <file>NotificationBox.qml</file>
+        <file>StickerAttachments.qml</file>
     </qresource>
 </RCC>

@@ -73,7 +73,9 @@ SOURCES += main.cpp \
     vk/typingitem.cpp \
     vk/typinghandler.cpp \
     chat/chatsortfilterproxymodel.cpp \
-    vk/emoticons.cpp
+    vk/emoticons.cpp \
+    vk/stickeritem.cpp \
+    vk/stickerparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -122,7 +124,9 @@ HEADERS += \
     vk/typingitem.h \
     vk/typinghandler.h \
     chat/chatsortfilterproxymodel.h \
-    vk/emoticons.h
+    vk/emoticons.h \
+    vk/stickeritem.h \
+    vk/stickerparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

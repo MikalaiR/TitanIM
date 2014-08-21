@@ -41,7 +41,7 @@ Item {
             anchors.left: bubble.left
             anchors.leftMargin: bubbleItem.isOut ? 12 : 17
             anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -2
+            anchors.verticalCenterOffset: -1
             spacing: 4
 
             TextEditItem {

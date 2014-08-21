@@ -37,6 +37,13 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
+        case Attachment::Sticker:
+        {
+            StickerItem sticker = StickerParser::parser(attachment);
+            attachments->add(sticker);
+            break;
+        }
+
         case Attachment::Unknown:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;

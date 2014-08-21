@@ -16,9 +16,7 @@ import QtQuick 2.0
 Item {
     id: photoAttachments
 
-    property int maximumWidth
-    property var photoList
-    readonly property int count: photoList.length
+    readonly property int count: items.length
 
     function __calcHeight(count, size, spacing, width) {
         var col = Math.floor((width + spacing) / (size + spacing))
@@ -43,19 +41,18 @@ Item {
     }
 
     implicitWidth: flowPhotos.implicitWidth
-    implicitHeight: __calcHeight(photoList.length, flowPhotos.itemSize, flowPhotos.spacing, maximumWidth)
+    implicitHeight: __calcHeight(items.length, flowPhotos.itemSize, flowPhotos.spacing, maximumWidth)
 
     Flow {
         id: flowPhotos
 
-        property int itemSize: photoAttachments.maximumWidth < __calcItemSize(count) ? photoAttachments.maximumWidth
-                                                                                     : __calcItemSize(count)
+        property int itemSize: maximumWidth < __calcItemSize(count) ? maximumWidth : __calcItemSize(count)
 
-        width: photoAttachments.maximumWidth
+        width: maximumWidth
         spacing: 4
 
         Repeater {
-            model: photoList
+            model: items
 
             Image {
                 id: img
@@ -69,6 +66,6 @@ Item {
     }
 
     onWidthChanged: {
-        implicitHeight = __calcHeight(photoList.length, flowPhotos.itemSize, flowPhotos.spacing, maximumWidth)
+        implicitHeight = __calcHeight(items.length, flowPhotos.itemSize, flowPhotos.spacing, maximumWidth)
     }
 }
