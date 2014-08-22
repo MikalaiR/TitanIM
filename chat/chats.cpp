@@ -81,7 +81,11 @@ void Chats::setCurrentChat(const int id)
         }
 
         Chat *chat = _chatsHandler->chat(id);
+
+        chat->model()->setLazyLoad(false);
         _proxy->setSourceModel(chat->model());
+        chat->model()->setLazyLoad(true);
+
         _currentDialog = chat->dialog().data();
         _currentDialog->setCurrent(true);
         _currentChatId = id;

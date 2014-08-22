@@ -93,6 +93,13 @@ Item {
             onContentYChanged: {
                 footerSeparator.opacity = (-chatView.contentY - chatView.height) / 20
             }
+
+            Connections {
+                target: chats
+                onCurrentChatIdChanged: {
+                    chatView.positionViewAtIndex(0, ListView.Beginning);
+                }
+            }
         }
 
         FileDialog {

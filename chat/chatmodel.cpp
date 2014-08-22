@@ -26,6 +26,7 @@ ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     connect(_historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onHistoryLoaded(const HistoryPacket*,int,MessageList)));
 
     _serverCount = 0;
+    _lazyLoad = true;
     _isLoading = false;
 }
 
@@ -275,9 +276,14 @@ Qt::ItemFlags ChatModel::flags(const QModelIndex &index) const
     }
 }
 
+void ChatModel::setLazyLoad(const bool on)
+{
+    _lazyLoad = on;
+}
+
 bool ChatModel::canFetchMore(const QModelIndex &parent) const
 {
-    if (_isLoading || _messages->deliveredMsgCount() >= _serverCount)
+    if (!_lazyLoad || _isLoading || _messages->deliveredMsgCount() >= _serverCount)
     {
         return false;
     }

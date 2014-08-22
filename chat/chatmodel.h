@@ -63,6 +63,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    void setLazyLoad(const bool on);
 
 private:
     MessageList _messages;
@@ -70,6 +71,7 @@ private:
     ProfileItem _ownProfile;
     HistoryPacket *_historyPacket;
     int _serverCount;
+    bool _lazyLoad;
     mutable bool _isLoading;
 
 protected:
