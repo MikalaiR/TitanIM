@@ -94,7 +94,8 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onPressed: {
-                        root.currentIndex = index;
+                        modelData.clicked()
+                        root.currentIndex = index
                     }
                 }
             }

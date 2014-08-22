@@ -97,7 +97,7 @@ Item {
             Connections {
                 target: chats
                 onCurrentChatIdChanged: {
-                    chatView.positionViewAtIndex(0, ListView.Beginning);
+                    chatView.positionViewAtBeginning()
                 }
             }
         }

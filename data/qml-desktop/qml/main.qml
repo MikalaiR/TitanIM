@@ -35,14 +35,24 @@ Rectangle {
                 title: "dialogs"
                 icon: "images/messages_tab.png"
                 badge: dialogsHandler.unreadDialogs;
-                Dialogs { }
+                Dialogs {id: dialogs}
+
+                onClicked: {
+                    if (dialogsTab.visible)
+                        dialogs.scrollToTop()
+                }
             }
 
             TabBarItem {
                 id: contactsTab
                 title: "contacts"
                 icon: "images/contacts_tab.png"
-                Roster { }
+                Roster {id: roster}
+
+                onClicked: {
+                    if (contactsTab.visible)
+                        roster.scrollToTop()
+                }
             }
 
             TabBarItem {

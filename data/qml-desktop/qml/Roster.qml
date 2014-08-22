@@ -18,6 +18,10 @@ Item {
 
     property int currentChatId: chats.currentChatId
 
+    function scrollToTop() {
+        rosterView.positionViewAtBeginning()
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "#f9f9f9"
