@@ -35,6 +35,10 @@ Chats::Chats()
     _currentChatId = 0;
     _currentDialog = 0;
 
+    _timerUpdater = new QTimer(this);
+    connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
+    _timerUpdater->start(60000);
+
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
     qRegisterMetaType<ChatSortFilterProxyModel*>("ChatSortFilterProxyModel*");
@@ -106,4 +110,26 @@ void Chats::openChat(const DialogItem dialog)
     }
 
     setCurrentChat(id);
+}
+
+void Chats::onTimerUpdaterTimeout()
+{
+    if (_currentDialog)
+    {
+        if (_currentDialog->isGroupChat())
+        {
+            _currentDialog->groupChatHandler()->updatePeopleConversationText();
+        }
+        else
+        {
+//            if (_currentDialog->profile()->isFriend()) //todo
+//            {
+                _currentDialog->profile()->updateLastSeenText();
+//            }
+//            else
+//            {
+//                _currentDialog->profile()->getAllFields();
+//            }
+        }
+    }
 }

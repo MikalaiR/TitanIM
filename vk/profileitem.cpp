@@ -111,6 +111,11 @@ void ProfileItemPrivate::setLastSeen(const int lastSeen)
     }
 }
 
+QString ProfileItemPrivate::lastSeenText() const
+{
+    return _online ? tr("online") : Utils::lastSeenToString(_lastSeen, _sex);
+}
+
 QString ProfileItemPrivate::activity() const
 {
     return _activity;
@@ -159,6 +164,14 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);
+}
+
+void ProfileItemPrivate::updateLastSeenText()
+{
+    if (!_online)
+    {
+        emitPropertyChanged("lastSeen");
+    }
 }
 
 void ProfileItemPrivate::loadFinished(const Packet *sender, const QVariantMap &result)

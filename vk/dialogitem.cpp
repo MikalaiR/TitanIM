@@ -48,11 +48,11 @@ QString DialogItemPrivate::description() const
 {
     if (isGroupChat())
     {
-        return Utils::peopleConversation(_groupChatHandler->usersCount());
+        return _groupChatHandler->peopleConversationText();
     }
     else
     {
-        return _profile->online() ? tr("online") : Utils::lastSeenToString(_profile->lastSeen(), _profile->sex());
+        return _profile->lastSeenText();
     }
 }
 

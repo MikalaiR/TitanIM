@@ -34,13 +34,13 @@ public:
     void refreshAvatars();
     int usersCount() const;
     void setUsersCount(const int usersCount);
+    QString peopleConversationText() const;
     void setCover(const QString &cover);
     QString title() const;
     void setTitle(const QString &title);
     int adminId() const;
     void setAdminId(const int adminId);
     bool isCover() const;
-    void getAllFields(Connection *connection);
 
 private:
     int _id;
@@ -51,6 +51,10 @@ private:
     QString _cover;
     QString _title;
     int _adminId;
+
+public slots:
+    void getAllFields(Connection *connection);
+    void updatePeopleConversationText();
 
 protected slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);

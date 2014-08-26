@@ -80,6 +80,11 @@ void GroupChatHandler::setUsersCount(const int usersCount)
     }
 }
 
+QString GroupChatHandler::peopleConversationText() const
+{
+    return Utils::peopleConversation(_usersCount);
+}
+
 void GroupChatHandler::setCover(const QString &cover)
 {
     if (_cover != cover)
@@ -130,6 +135,11 @@ void GroupChatHandler::getAllFields(Connection *connection)
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);
+}
+
+void GroupChatHandler::updatePeopleConversationText()
+{
+    //todo
 }
 
 void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &result)

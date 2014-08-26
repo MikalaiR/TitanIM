@@ -39,6 +39,7 @@ public:
     void setOnline(const bool online);
     int lastSeen() const;
     void setLastSeen(const int lastSeen);
+    QString lastSeenText() const;
     QString activity() const;
     void setActivity(const QString &activity);
     QString alphabet() const;
@@ -58,6 +59,7 @@ private:
 
 public slots:
     void getAllFields(Connection *connection);
+    void updateLastSeenText();
 
 protected slots:
     void setIsLoading(const bool isLoading);

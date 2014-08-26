@@ -47,12 +47,16 @@ private:
     int _currentChatId;
     ChatSortFilterProxyModel *_proxy;
     DialogItemPrivate *_currentDialog;
+    QTimer *_timerUpdater;
 
 protected:
     void setCurrentChat(const int id);
 
 public slots:
     void openChat(const DialogItem dialog);
+
+protected slots:
+    void onTimerUpdaterTimeout();
 
 signals:
     void currentChatChanged(const int id);
