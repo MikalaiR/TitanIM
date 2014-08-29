@@ -17,7 +17,9 @@ Attachment::Attachment()
 {
     _attachmentType = Unknown;
     _ownerId = 0;
-    _uploadProgress = 0;
+    _uploadProgress = -1;
+
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(uploadProgressChanged())); //todo
 }
 
 Attachment::AttachmentType Attachment::attachmentType() const

@@ -24,6 +24,7 @@ class Attachment : public NotifyPropertyBase
     Q_OBJECT
     Q_ENUMS(AttachmentType)
     Q_PROPERTY(AttachmentType type READ attachmentType) //todo
+    Q_PROPERTY(int uploadProgress READ uploadProgress NOTIFY uploadProgressChanged)
 
 public:
     enum AttachmentType
@@ -54,6 +55,9 @@ private:
     AttachmentType _attachmentType;
     int _ownerId;
     int _uploadProgress;
+
+signals:
+    void uploadProgressChanged();
 };
 
 typedef QSharedPointer<Attachment> AttachmentItem;

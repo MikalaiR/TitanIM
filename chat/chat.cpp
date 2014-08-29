@@ -157,6 +157,7 @@ void Chat::addAttachments(const QList<QUrl> &list)
     for (int i = 0; i < list.count(); i++)
     {
         PhotoItem photo = PhotoItem::create();
+        photo->setUploadProgress(0);
         photo->setSrc(list.at(i));
         photo->setSrcBig(list.at(i));
 

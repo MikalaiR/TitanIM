@@ -12,6 +12,8 @@
 */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 
 Item {
     id: photoAttachments
@@ -61,6 +63,34 @@ Item {
                 smooth: true
                 fillMode: Image.PreserveAspectCrop
                 source: flowPhotos.itemSize > 110 ? modelData.srcBig : modelData.src
+
+                ProgressBar {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 7
+                    anchors.right: parent.right
+                    anchors.rightMargin: 7
+                    anchors.verticalCenter: parent.verticalCenter
+                    maximumValue: 100
+                    value: modelData.uploadProgress
+                    visible: modelData.uploadProgress !== -1
+
+                    style: ProgressBarStyle {
+                        background: Rectangle {
+                            implicitWidth: 150
+                            implicitHeight: 7
+                            radius: 2
+                            color: "lightgray"
+                            border.color: "gray"
+                            border.width: 1
+                        }
+
+                        progress: Rectangle {
+                            implicitHeight: 7
+                            color: "lightsteelblue"
+                            border.color: "steelblue"
+                        }
+                    }
+                }
             }
         }
     }
