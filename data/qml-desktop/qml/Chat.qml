@@ -117,7 +117,7 @@ Item {
             id: footer
             z: 1
             width: parent.width
-            height: textArea.height + 19
+            height: inputArea.height + attachList.height
             anchors.bottom: parent.bottom
 
             HeaderSeparator {
@@ -125,49 +125,74 @@ Item {
                 anchors.top: parent.top
             }
 
-            Image {
-                id: uploadBtn
+            Row {
+                id: inputArea
+                height: textArea.height + 19
+                anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                source: "images/attach.png"
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                spacing: 5
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        fileDialog.open()
+                Image {
+                    id: uploadBtn
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "images/attach.png"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            fileDialog.open()
+                        }
+                    }
+                }
+
+                TextAreaItem {
+                    id: textArea
+                    height: 26
+                    width: parent.width - uploadBtn.width - 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: 1
+                    placeholderText: qsTr("Write a message...")
+                    font.family: "Helvetica"
+                    font.pixelSize: 12
+
+                    onAccepted: {
+                        chats.currentChat.sendMessage(text)
+                        text = ""
+                    }
+
+                    onTextChanged: {
+                        if (!timerSendTyping.running) {
+                            chats.currentChat.sendTyping()
+                            timerSendTyping.start()
+                        }
+                    }
+
+                    Timer {
+                        id: timerSendTyping
+                        interval: 5000
                     }
                 }
             }
 
-            TextAreaItem {
-                id: textArea
-                height: 26
-                anchors.left: uploadBtn.right
-                anchors.leftMargin: 5
+            Loader {
+                id: attachList
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.leftMargin: 10
                 anchors.right: parent.right
                 anchors.rightMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: 1
-                placeholderText: qsTr("Write a message...")
-                font.family: "Helvetica"
-                font.pixelSize: 12
+                height: active ? 80 : 0
+                active: chats.currentChat.outAttachmentsCount
 
-                onAccepted: {
-                    chats.currentChat.sendMessage(text)
-                    text = ""
-                }
-
-                onTextChanged: {
-                    if (!timerSendTyping.running) {
-                        chats.currentChat.sendTyping()
-                        timerSendTyping.start()
-                    }
-                }
-
-                Timer {
-                    id: timerSendTyping
-                    interval: 5000
+                sourceComponent: ListView {
+                    spacing: 5
+                    clip: true
+                    orientation: ListView.Horizontal
+                    model: chats.currentChatAttachments
+                    delegate: AttachmentsDelegate { }
                 }
             }
         }

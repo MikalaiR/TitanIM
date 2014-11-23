@@ -76,6 +76,23 @@ int Chat::countUnsent() const
     return _countUnsent;
 }
 
+AttachmentList *Chat::outAttachments() const
+{
+    return _outAttachments;
+}
+
+int Chat::outAttachmentsCount() const
+{
+    if (!_outAttachments || !_outAttachments->count())
+    {
+        return 0;
+    }
+    else
+    {
+        _outAttachments->count();
+    }
+}
+
 void Chat::addInMessage(const MessageItem message)
 {
     _model->prepend(message);
@@ -131,7 +148,9 @@ void Chat::sendMessage(const QString &text)
     message->setBody(text);
 
     message->setAttachments(_outAttachments);
+
     _outAttachments = 0;
+    emit outAttachmentsChanged(_outAttachments);
 
     _model->prepend(message);
 //    _dialog->setMessage(message); //todo
@@ -163,6 +182,19 @@ void Chat::addAttachments(const QList<QUrl> &list)
 
         _outAttachments->add(photo);
     }
+
+    emit outAttachmentsChanged(_outAttachments);
+}
+
+void Chat::removeAttachment(const int index)
+{
+    if (!_outAttachments || !_outAttachments->count())
+    {
+        return;
+    }
+
+    _outAttachments->removeAt(index);
+    emit outAttachmentsChanged(_outAttachments);
 }
 
 void Chat::markAsRead()

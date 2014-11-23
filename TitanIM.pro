@@ -75,7 +75,8 @@ SOURCES += main.cpp \
     chat/chatsortfilterproxymodel.cpp \
     vk/emoticons.cpp \
     vk/stickeritem.cpp \
-    vk/stickerparser.cpp
+    vk/stickerparser.cpp \
+    chat/attachmentsmodel.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -126,7 +127,8 @@ HEADERS += \
     chat/chatsortfilterproxymodel.h \
     vk/emoticons.h \
     vk/stickeritem.h \
-    vk/stickerparser.h
+    vk/stickerparser.h \
+    chat/attachmentsmodel.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

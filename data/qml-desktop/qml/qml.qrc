@@ -49,5 +49,6 @@
         <file>Captcha.qml</file>
         <file>NotificationBox.qml</file>
         <file>StickerAttachments.qml</file>
+        <file>AttachmentsDelegate.qml</file>
     </qresource>
 </RCC>

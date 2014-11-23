@@ -18,6 +18,7 @@
 #include <QQmlComponent>
 #include "chatsortfilterproxymodel.h"
 #include "chatshandler.h"
+#include "attachmentsmodel.h"
 #include "vk/dialogitem.h"
 
 class Chats : public QObject
@@ -28,6 +29,7 @@ class Chats : public QObject
     Q_PROPERTY(Chat* currentChat READ currentChat NOTIFY currentChatChanged)
     Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY currentChatChanged)
     Q_PROPERTY(ChatSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
+    Q_PROPERTY(AttachmentsModel* currentChatAttachments READ currentChatAttachments NOTIFY currentChatChanged)
 
 public:
     static Chats *instance();
@@ -36,6 +38,7 @@ public:
     Chat* currentChat() const;
     DialogItemPrivate* currentChatDialog() const;
     ChatSortFilterProxyModel* currentChatModel() const;
+    AttachmentsModel* currentChatAttachments() const;
 
 private:
     explicit Chats();
@@ -47,6 +50,7 @@ private:
     int _currentChatId;
     ChatSortFilterProxyModel *_proxy;
     DialogItemPrivate *_currentDialog;
+    AttachmentsModel *_currentChatAttachments;
     QTimer *_timerUpdater;
 
 protected:

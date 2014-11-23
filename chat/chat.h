@@ -25,6 +25,8 @@ class Chat : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int outAttachmentsCount READ outAttachmentsCount NOTIFY outAttachmentsChanged)
+
 public:
     Chat();
     Chat(const DialogItem dialog);
@@ -34,6 +36,8 @@ public:
     DialogItem dialog() const;
     ChatModel* model() const;
     int countUnsent() const;
+    AttachmentList* outAttachments() const;
+    int outAttachmentsCount() const;
 
 private:
     DialogItem _dialog;
@@ -53,6 +57,7 @@ public slots:
     void sendMessage(const QString &text);
     void sendTyping();
     void addAttachments(const QList<QUrl> &list);
+    void removeAttachment(const int index);
     void markAsRead();
 
 protected slots:
@@ -60,6 +65,9 @@ protected slots:
     void onSuccessfullyMessageSent(const int internalMid, const int serverMid);
     void onUnsuccessfullyMessageSent(const int internalMid);
     void onModelRowsAllReplaced();
+
+signals:
+    void outAttachmentsChanged(AttachmentList *_outAttachments);
 };
 
 #endif // CHAT_H

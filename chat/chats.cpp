@@ -31,6 +31,7 @@ Chats::Chats()
 {
     _chatsHandler = new ChatsHandler();
     _proxy = new ChatSortFilterProxyModel(this);
+    _currentChatAttachments = new AttachmentsModel(this);
 
     _currentChatId = 0;
     _currentDialog = 0;
@@ -43,6 +44,7 @@ Chats::Chats()
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
     qRegisterMetaType<ChatSortFilterProxyModel*>("ChatSortFilterProxyModel*");
     qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
+    qRegisterMetaType<AttachmentsModel*>("AttachmentsModel*");
     qmlRegisterType<AttachmentList>("TitanIM", 2, 0, "AttachmentList");
     qmlRegisterType<Attachment>("TitanIM", 2, 0, "Attachment");
     qRegisterMetaType<Attachment::AttachmentType>("Attachment::AttachmentType");
@@ -75,6 +77,11 @@ ChatSortFilterProxyModel* Chats::currentChatModel() const
     return _proxy;
 }
 
+AttachmentsModel *Chats::currentChatAttachments() const
+{
+    return _currentChatAttachments;
+}
+
 void Chats::setCurrentChat(const int id)
 {
     if (_currentChatId != id)
@@ -92,7 +99,13 @@ void Chats::setCurrentChat(const int id)
 
         _currentDialog = chat->dialog().data();
         _currentDialog->setCurrent(true);
+
+        int exCurrentChatId = _currentChatId;
         _currentChatId = id;
+
+        disconnect(_chatsHandler->chat(exCurrentChatId), SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
+        _currentChatAttachments->setAttachments(chat->outAttachments());
+        connect(chat, SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
 
         chat->markAsRead();
 
