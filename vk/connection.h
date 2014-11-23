@@ -18,6 +18,7 @@
 #include <QDebug>
 #include <QQueue>
 #include <QTimer>
+#include <QUrlQuery>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -46,7 +47,7 @@ public:
 private:
     void setStatus(const Status &status);
     void setHttpsMode(const bool isHttps);
-    void getToken();
+    void getToken(const QString &version="5.21");
     void loginSuccess(const QVariantMap &response);
     void loginFailure(const QVariantMap &response);
     void execQuery();

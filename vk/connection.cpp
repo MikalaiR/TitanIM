@@ -112,29 +112,31 @@ void Connection::setHttpsMode(const bool isHttps)
     }
 }
 
-void Connection::getToken()
+void Connection::getToken(const QString &version)
 {
     httpAuth = new QNetworkAccessManager(this);
     connect(httpAuth, SIGNAL(finished(QNetworkReply*)), this, SLOT(getTokenFinished(QNetworkReply*)));
 
-    QString authUrl = QString("%1?grant_type=%2&client_id=%3&client_secret=%4&scope=%5&username=%6&password=%7&v=5.21")
-            .arg(_urlServers.auth_server)
-            .arg(_loginVars.grant_type)
-            .arg(_loginVars.client_id)
-            .arg(_loginVars.client_secret)
-            .arg(_loginVars.scope)
-            .arg(_loginVars.username)
-            .arg(_loginVars.password);
+    QUrlQuery urlQuery;
+    urlQuery.addQueryItem("grant_type", _loginVars.grant_type);
+    urlQuery.addQueryItem("client_id", _loginVars.client_id);
+    urlQuery.addQueryItem("client_secret", _loginVars.client_secret);
+    urlQuery.addQueryItem("scope", _loginVars.scope);
+    urlQuery.addQueryItem("username", _loginVars.username);
+    urlQuery.addQueryItem("password", _loginVars.password);
+    urlQuery.addQueryItem("v", version);
 
     if (!_loginVars.captcha_sid.isEmpty())
     {
-        authUrl += QString("&captcha_sid=%1&captcha_key=%2")
-                .arg(_loginVars.captcha_sid)
-                .arg(_loginVars.captcha_key);
+        urlQuery.addQueryItem("captcha_sid", _loginVars.captcha_sid);
+        urlQuery.addQueryItem("captcha_key", _loginVars.captcha_key);
 
         _loginVars.captcha_sid.clear();
         _loginVars.captcha_key.clear();
     }
+
+    QUrl authUrl(_urlServers.auth_server);
+    authUrl.setQuery(urlQuery);
 
     QNetworkRequest request;
     request.setUrl(authUrl);
