@@ -117,7 +117,7 @@ Item {
             id: footer
             z: 1
             width: parent.width
-            height: inputArea.height + attachList.height
+            height: inputArea.height + attachList.height + 19
             anchors.bottom: parent.bottom
 
             HeaderSeparator {
@@ -127,8 +127,9 @@ Item {
 
             Row {
                 id: inputArea
-                height: textArea.height + 19
+                height: textArea.height
                 anchors.top: parent.top
+                anchors.topMargin: 11
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.right: parent.right
@@ -152,8 +153,6 @@ Item {
                     id: textArea
                     height: 26
                     width: parent.width - uploadBtn.width - 5
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.verticalCenterOffset: 1
                     placeholderText: qsTr("Write a message...")
                     font.family: "Helvetica"
                     font.pixelSize: 12
@@ -179,20 +178,29 @@ Item {
 
             Loader {
                 id: attachList
-                anchors.bottom: parent.bottom
+                anchors.top: inputArea.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.right: parent.right
-                anchors.rightMargin: 10
                 height: active ? 80 : 0
-                active: chats.currentChat.outAttachmentsCount
+                active: chats.currentChatAttachments.count
 
                 sourceComponent: ListView {
-                    spacing: 5
+                    spacing: 3
                     clip: true
                     orientation: ListView.Horizontal
                     model: chats.currentChatAttachments
                     delegate: AttachmentsDelegate { }
+                    footer: Item { width: attachList.anchors.leftMargin }
+                    remove: Transition {
+                        ParallelAnimation {
+                            NumberAnimation { property: "opacity"; to: 0; duration: 200 }
+                            NumberAnimation { properties: "y"; to: 100; duration: 200 }
+                        }
+                    }
+                    removeDisplaced: Transition {
+                        NumberAnimation { properties: "x,y"; duration: 200 }
+                    }
                 }
             }
         }

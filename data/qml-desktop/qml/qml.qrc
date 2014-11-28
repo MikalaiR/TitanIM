@@ -50,5 +50,6 @@
         <file>NotificationBox.qml</file>
         <file>StickerAttachments.qml</file>
         <file>AttachmentsDelegate.qml</file>
+        <file>images/delete_attach.png</file>
     </qresource>
 </RCC>

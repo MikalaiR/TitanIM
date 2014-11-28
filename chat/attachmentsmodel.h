@@ -22,6 +22,8 @@ class AttachmentsModel : public QAbstractListModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(int count READ rowCount NOTIFY attachmentsCountChanged)
+
 public:
     enum chatRole
     {
@@ -29,6 +31,7 @@ public:
     };
 
     AttachmentsModel(QObject *parent = 0);
+    Q_INVOKABLE bool remove(int row, int count=1);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -40,10 +43,12 @@ private:
 
 public slots:
     void setAttachments(AttachmentList *attachments);
-    void clear();
 
 protected slots:
     void onItemChanged(const int i);
+
+signals:
+    void attachmentsCountChanged();
 };
 
 #endif // ATTACHMENTSMODEL_H

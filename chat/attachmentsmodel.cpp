@@ -17,34 +17,47 @@ AttachmentsModel::AttachmentsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _attachments = 0;
+
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SIGNAL(attachmentsCountChanged()));
+    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SIGNAL(attachmentsCountChanged()));
+    connect(this, SIGNAL(modelReset()), this, SIGNAL(attachmentsCountChanged()));
 }
 
 void AttachmentsModel::setAttachments(AttachmentList *attachments)
 {
-    clear();
+    if (_attachments == 0 && attachments == 0)
+        return;
 
     if (_attachments)
     {
         disconnect(_attachments, SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
     }
 
-    if (attachments && attachments->count())
+    beginResetModel();
+    _attachments = attachments;
+    endResetModel();
+
+    if (attachments)
     {
-        beginInsertRows(QModelIndex(), 0, attachments->count() - 1);
-        _attachments = attachments;
-        connect(_attachments, SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
-        endInsertRows();
-    }
-    else
-    {
-        _attachments = 0;
+        connect(attachments, SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
     }
 }
 
-void AttachmentsModel::clear()
+bool AttachmentsModel::remove(int row, int count)
 {
-    beginRemoveRows(QModelIndex(), 0, rowCount());
+    if (count <= 0 || row < 0 || row >= rowCount())
+        return false;
+
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
+
+    for (int i = 0; i < count; ++i)
+    {
+        _attachments->removeAt(row);
+    }
+
     endRemoveRows();
+
+    return true;
 }
 
 QHash<int, QByteArray> AttachmentsModel::roleNames() const

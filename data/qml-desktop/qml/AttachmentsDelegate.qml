@@ -15,19 +15,31 @@ import QtQuick 2.0
 
 Item {
     id: attachmentDelegate
-    width: attachmentDelegate.ListView.view.height - 10
-    height: width
+    width: attachmentDelegate.ListView.view.height
+    height: width - 2
 
     Image {
-        anchors.fill: parent
+        width: parent.width - 9
+        height: parent.height - 9
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
         source: model.decoration
         smooth: true
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            chats.currentChat.removeAttachment(index)
+    Image {
+        width: 22
+        height: 22
+        anchors.top: parent.top
+        anchors.topMargin: 1
+        anchors.right: parent.right
+        source: "images/delete_attach.png"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                chats.currentChatAttachments.remove(index)
+            }
         }
     }
 }
