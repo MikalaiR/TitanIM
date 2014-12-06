@@ -24,7 +24,7 @@ int AttachmentList::count() const
 
 QString AttachmentList::description() const
 {
-    if (ObservableCollection::count() > 1)
+    if (ObservableCollection::count())
     {
         switch (at(0)->attachmentType()) {
         case Attachment::Photo:
