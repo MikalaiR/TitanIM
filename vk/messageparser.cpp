@@ -29,7 +29,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     QDateTime date = QDateTime::fromTime_t(item.value("date").toUInt()).toLocalTime();
     bool isUnread = (item.contains("read_state") && !item.value("read_state").toInt()) ? true : false;
     bool isOut = (item.contains("out") && item.value("out").toInt()) ? true : false;
-    QString body = Utils::decode(item.value("body").toString());
+    QString body = item.value("body").toString();
     QString title = item.contains("title") ? item.value("title").toString() : "";
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
     bool emoji = (item.contains("emoji") && item.value("emoji").toInt()) ? true : false;

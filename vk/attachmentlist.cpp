@@ -22,6 +22,66 @@ int AttachmentList::count() const
     return ObservableCollection::count();
 }
 
+QString AttachmentList::description() const
+{
+    if (ObservableCollection::count() > 1)
+    {
+        switch (at(0)->attachmentType()) {
+        case Attachment::Photo:
+        {
+            return tr("Photo");
+            break;
+        }
+
+        case Attachment::Video:
+        {
+            return tr("Video");
+            break;
+        }
+
+        case Attachment::Audio:
+        {
+            return tr("Audio");
+            break;
+        }
+
+        case Attachment::Doc:
+        {
+            return tr("Doc");
+            break;
+        }
+
+        case Attachment::Sticker:
+        {
+            return tr("Sticker");
+            break;
+        }
+
+        case Attachment::Map:
+        {
+            return tr("Map");
+            break;
+        }
+
+        case Attachment::Fwd_messages:
+        {
+            return tr("Forward messages");
+            break;
+        }
+
+        default:
+        {
+            return tr("Attachment");
+            break;
+        }
+        }
+    }
+    else
+    {
+        return "";
+    }
+}
+
 QVariantList AttachmentList::filterByType(const Attachment::AttachmentType type) const
 {
     QVariantList list;

@@ -46,7 +46,9 @@ public:
     QString title() const;
     void setTitle(const QString &title);
     QString body() const;
-    void setBody(const QString &body, const bool emoji=false);
+    QString plainBody() const;
+    QString shortBody() const;
+    void setBody(const QString &body, const bool emoji=false, const bool escaped=true);
     int chatId() const;
     void setChatId(const int chatId);
     bool isGroupChat() const;

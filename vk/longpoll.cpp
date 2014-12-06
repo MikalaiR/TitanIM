@@ -272,7 +272,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     int fromId = update.value(3).toInt();
     QDateTime date = QDateTime::fromTime_t(update.value(4).toUInt()).toLocalTime();
     QString title = update.value(5).toString();
-    QString body = Utils::decode(update.value(6).toString());
+    QString body = update.value(6).toString();
     QVariantMap additional = update.value(7).toMap();
     bool emoji = (additional.contains("emoji") && additional.value("emoji").toInt()) ? true : false;
 
@@ -284,7 +284,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     message->setIsUnread(flags & Unread);
     message->setDeliveryReport(true);
     message->setIsOut(flags & Outbox);
-    message->setBody(body, emoji);
+    message->setBody(body, emoji, false);
     message->setTitle(title);
 
     if (additional.contains("from"))

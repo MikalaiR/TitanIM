@@ -54,20 +54,39 @@ QString Utils::joinAndEscape(const QMap<QString, QString> &list, const QChar &se
     return s;
 }
 
-QString Utils::decode(const QString &str)
+QString Utils::toHtmlEscaped(const QString &str)
 {
-    QString temp = str;
-    temp = temp.replace("<br>", "\n"); //todo vk api5
-    temp = temp.replace("&amp;", "&");
-    temp = temp.replace("&lt;", "<");
-    temp = temp.replace("&gt;", ">");
-    temp = temp.replace("&quot;", "\"");
-    temp = temp.replace("&#33;", "!");
-    temp = temp.replace("&#036;", "$");
-    temp = temp.replace("&#092;", "\\");
-    temp = temp.replace("&#39;", "'");
+    QString text;
+    const int len = str.length();
+    text.reserve(int(len * 1.1));
 
-    return temp;
+    for (int i = 0; i < len; ++i) {
+        if (str.at(i) == QLatin1Char('<'))
+            text += QLatin1String("&lt;");
+        else if (str.at(i) == QLatin1Char('>'))
+            text += QLatin1String("&gt;");
+        else if (str.at(i) == QLatin1Char('&'))
+            text += QLatin1String("&amp;");
+        else if (str.at(i) == QLatin1Char('"'))
+            text += QLatin1String("&quot;");
+        else
+            text += str.at(i);
+    }
+
+    text.squeeze();
+    return text;
+}
+
+QString Utils::fromHtmlEscaped(const QString &str)
+{
+    QString text = str;
+
+    text.replace("&lt;", "<");
+    text.replace("&gt;", ">");
+    text.replace("&quot;", "\"");
+    text.replace("&amp;", "&");
+
+    return text;
 }
 
 QString Utils::dateToText(const QDateTime &dateTime)

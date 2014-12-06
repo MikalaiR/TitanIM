@@ -162,23 +162,57 @@ QString MessageItemPrivate::body() const
     return _body;
 }
 
-void MessageItemPrivate::setBody(const QString &body, const bool emoji)
+QString MessageItemPrivate::plainBody() const
 {
-    if ((_body != body) || emoji)
+    return Utils::fromHtmlEscaped(_body);
+    //todo add replace <br> and emoji
+}
+
+QString MessageItemPrivate::shortBody() const
+{
+    if (!_body.isEmpty())
     {
-        if (emoji)
+        if (!_emoji)
         {
-            _body = Emoticons::instance()->fromEmoji(body);
+            return _body.left(60).replace("<br>", " ");
         }
         else
         {
-            _body = body;
+            QString text = _body;
+            return text.replace("<br>", " ");
         }
-
-        _emoji = emoji;
-
-        emitPropertyChanged("body");
     }
+    else if (_attachments && _attachments->count())
+    {
+        return _attachments->description();
+    }
+    else
+    {
+        return "...";
+    }
+}
+
+void MessageItemPrivate::setBody(const QString &body, const bool emoji, const bool escaped)
+{
+    if (escaped)
+    {
+        _body = Utils::toHtmlEscaped(body);
+    }
+    else
+    {
+        _body = body;
+    }
+
+    _body.replace("\n", "<br>");
+
+    if (emoji)
+    {
+        _body = Emoticons::instance()->fromEmoji(_body);
+    }
+
+    _emoji = emoji;
+
+    emitPropertyChanged("body");
 }
 
 int MessageItemPrivate::chatId() const
