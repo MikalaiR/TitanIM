@@ -26,6 +26,7 @@ class AttachmentList : public ObservableCollection<AttachmentItem>
 public:
     AttachmentList();
     Q_INVOKABLE int count() const;
+    QString description() const;
 
 public slots:
     QVariantList filterByType(const Attachment::AttachmentType type) const;

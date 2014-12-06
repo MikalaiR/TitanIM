@@ -146,7 +146,7 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
         return dialog->decoration();
 
     case BodyRole:
-        return message->body();
+        return message->shortBody();
 
     case DateRole:
         return message->date();

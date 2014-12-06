@@ -66,7 +66,7 @@ void SendMessageHandler::sendMessage()
     _messagesInProcessing[internalMid] = message;
 
     Packet *packet = new Packet("messages.send");
-    packet->addParam("message", message->body());
+    packet->addParam("message", message->plainBody());
 
     if (message->isGroupChat())
     {
