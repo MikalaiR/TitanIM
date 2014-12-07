@@ -93,13 +93,6 @@ Item {
             onContentYChanged: {
                 footerSeparator.opacity = (-chatView.contentY - chatView.height) / 20
             }
-
-            Connections {
-                target: chats
-                onCurrentChatIdChanged: {
-                    chatView.positionViewAtBeginning()
-                }
-            }
         }
 
         FileDialog {
@@ -156,13 +149,16 @@ Item {
                     placeholderText: qsTr("Write a message...")
                     font.family: "Helvetica"
                     font.pixelSize: 12
+                    text: chats.currentChat.textMessage
 
                     onAccepted: {
                         chats.currentChat.sendMessage(text)
-                        text = ""
+                        chats.currentChat.textMessage = ""
                     }
 
                     onTextChanged: {
+                        chats.currentChat.textMessage = text
+
                         if (!timerSendTyping.running) {
                             chats.currentChat.sendTyping()
                             timerSendTyping.start()
@@ -221,6 +217,14 @@ Item {
             color: "#8B92A4"
             text: qsTr("Select the dialog to start a conversation")
             wrapMode: Text.Wrap
+        }
+    }
+
+    Connections {
+        target: chats
+        onCurrentChatIdChanged: {
+            chatView.positionViewAtBeginning()
+            textArea.cursorPositionToEnd()
         }
     }
 }

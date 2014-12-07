@@ -76,6 +76,22 @@ int Chat::countUnsent() const
     return _countUnsent;
 }
 
+QString Chat::textMessage() const
+{
+    return _textMessage;
+}
+
+void Chat::setTextMessage(const QString &text)
+{
+    if (_textMessage == text)
+    {
+        return;
+    }
+
+    _textMessage = text;
+    emit textMessageChanged(text);
+}
+
 AttachmentList *Chat::outAttachments() const
 {
     return _outAttachments;

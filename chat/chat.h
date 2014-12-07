@@ -26,6 +26,7 @@ class Chat : public QObject
     Q_OBJECT
 
     Q_PROPERTY(int outAttachmentsCount READ outAttachmentsCount NOTIFY outAttachmentsChanged)
+    Q_PROPERTY(QString textMessage READ textMessage WRITE setTextMessage NOTIFY textMessageChanged)
 
 public:
     Chat();
@@ -36,6 +37,8 @@ public:
     DialogItem dialog() const;
     ChatModel* model() const;
     int countUnsent() const;
+    QString textMessage() const;
+    void setTextMessage(const QString &text);
     AttachmentList* outAttachments() const;
     int outAttachmentsCount() const;
 
@@ -46,6 +49,7 @@ private:
     static int _internalMessageId;
     int _countUnsent;
     QVector<MessageItem> _tempOutMessageQueue;
+    QString _textMessage;
     AttachmentList *_outAttachments;
 
 public slots:
@@ -68,6 +72,7 @@ protected slots:
 
 signals:
     void outAttachmentsChanged(AttachmentList *_outAttachments);
+    void textMessageChanged(QString text);
 };
 
 #endif // CHAT_H

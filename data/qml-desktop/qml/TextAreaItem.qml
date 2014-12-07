@@ -20,9 +20,15 @@ Item {
 
     property alias text: textArea.text
     property alias font: textArea.font
+    property alias cursorPosition: textArea.cursorPosition
     property string placeholderText: ""
     property int maxLineCount: 7
     signal accepted
+
+    function cursorPositionToEnd()
+    {
+        textArea.cursorPosition = textArea.length
+    }
 
     TextArea {
         id: textArea
