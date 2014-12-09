@@ -11,23 +11,25 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
-
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
 #include "audioparser.h"
 
-class AttachmentsParser : public QObject
+AudioItem AudioParser::parser(const QVariantMap &item)
 {
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    AudioItem audio = AudioItem::create();
 
-#endif // ATTACHMENTSPARSER_H
+    int id = item.value("id").toInt();
+    int ownerId = item.value("owner_id").toInt();
+    QString artist = item.value("artist").toString();
+    QString title = item.value("title").toString();
+    int duration = item.value("duration").toInt();
+    QUrl url = item.value("url").toUrl();
+
+    audio->setId(id);
+    audio->setOwnerId(ownerId);
+    audio->setArtist(artist);
+    audio->setTitle(title);
+    audio->setDuration(duration);
+    audio->setUrl(url);
+
+    return audio;
+}

@@ -76,7 +76,9 @@ SOURCES += main.cpp \
     vk/emoticons.cpp \
     vk/stickeritem.cpp \
     vk/stickerparser.cpp \
-    chat/attachmentsmodel.cpp
+    chat/attachmentsmodel.cpp \
+    vk/audioitem.cpp \
+    vk/audioparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -128,7 +130,9 @@ HEADERS += \
     vk/emoticons.h \
     vk/stickeritem.h \
     vk/stickerparser.h \
-    chat/attachmentsmodel.h
+    chat/attachmentsmodel.h \
+    vk/audioitem.h \
+    vk/audioparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

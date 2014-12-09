@@ -23,7 +23,8 @@ Item {
 
     property var __attachments: [
         {"items": attachments.filterByType(Attachment.Photo), "source": "PhotoAttachments.qml"},
-        {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"}
+        {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"}
     ]
 
     implicitWidth: attachmentsFrame.width

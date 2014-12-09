@@ -44,6 +44,13 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
+        case Attachment::Audio:
+        {
+            AudioItem audio = AudioParser::parser(attachment);
+            attachments->add(audio);
+            break;
+        }
+
         case Attachment::Unknown:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;

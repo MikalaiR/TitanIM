@@ -51,5 +51,9 @@
         <file>StickerAttachments.qml</file>
         <file>AttachmentsDelegate.qml</file>
         <file>images/delete_attach.png</file>
+        <file>AudioAttachments.qml</file>
+        <file>images/pause.png</file>
+        <file>images/play.png</file>
+        <file>AudioPlayerObject.qml</file>
     </qresource>
 </RCC>

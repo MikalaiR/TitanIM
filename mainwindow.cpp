@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());
 
+    qmlRegisterSingletonType(QUrl("qrc:/qml/AudioPlayerObject.qml"), "TitanIM.Multimedia", 1, 0, "AudioPlayer");
+
     setTitle("TitanIM");
     authorization->connectToVk();
 }
