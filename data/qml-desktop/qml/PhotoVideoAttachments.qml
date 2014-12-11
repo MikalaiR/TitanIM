@@ -14,9 +14,10 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
+import TitanIM 2.0
 
 Item {
-    id: photoAttachments
+    id: photoVideoAttachments
 
     readonly property int count: items.length
 
@@ -29,9 +30,8 @@ Item {
     function __calcItemSize(count) {
         switch (count) {
         case 1:
-            return 250
         case 2:
-            return 200
+            return 250
         case 3:
         case 4:
         case 5:
@@ -88,6 +88,25 @@ Item {
                             implicitHeight: 7
                             color: "lightsteelblue"
                             border.color: "steelblue"
+                        }
+                    }
+                }
+
+                Loader {
+                    property var video: modelData
+
+                    anchors.fill: parent
+                    active: modelData.type === Attachment.Video && img.status === Image.Ready
+                    source: "VideoLayer.qml"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if (modelData.type === Attachment.Photo) {
+                            console.log(modelData.srcBig) //todo
+                        } else {
+                            console.log(modelData.ownerId + "_" + modelData.id + "_" + modelData.accessKey) //todo
                         }
                     }
                 }

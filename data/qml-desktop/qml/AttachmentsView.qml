@@ -19,10 +19,10 @@ Item {
 
     property int maximumWidth
     property var attachments
-    readonly property int photoCount: __attachments[0].items.length //todo remove
+    readonly property int photoCount: attachments.filterByType(Attachment.Photo).length //todo remove
 
     property var __attachments: [
-        {"items": attachments.filterByType(Attachment.Photo), "source": "PhotoAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Photo | Attachment.Video), "source": "PhotoVideoAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"}
     ]

@@ -23,20 +23,21 @@ class Attachment : public NotifyPropertyBase
 {
     Q_OBJECT
     Q_ENUMS(AttachmentType)
-    Q_PROPERTY(AttachmentType type READ attachmentType) //todo
+    Q_PROPERTY(AttachmentType type READ attachmentType CONSTANT)
+    Q_PROPERTY(int ownerId READ ownerId) //todo
     Q_PROPERTY(int uploadProgress READ uploadProgress NOTIFY uploadProgressChanged)
 
 public:
     enum AttachmentType
     {
-        Photo,
-        Video,
-        Audio,
-        Doc,
-        Sticker,
-        Map,
-        Fwd_messages,
-        Unknown = -1
+        Unknown = 0,
+        Photo = 1,
+        Video = 2,
+        Audio = 4,
+        Doc = 8,
+        Sticker = 16,
+        Map = 32,
+        Fwd_messages = 64
     };
 
     Attachment();

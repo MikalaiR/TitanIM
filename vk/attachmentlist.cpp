@@ -82,13 +82,13 @@ QString AttachmentList::description() const
     }
 }
 
-QVariantList AttachmentList::filterByType(const Attachment::AttachmentType type) const
+QVariantList AttachmentList::filterByType(const int attachmentType) const
 {
     QVariantList list;
 
     for (int i = 0; i < ObservableCollection::count(); i++)
     {
-        if (at(i)->attachmentType() == type)
+        if (at(i)->attachmentType() & attachmentType)
         {
             list.append(QVariant::fromValue(at(i).data()));
         }

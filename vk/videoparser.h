@@ -11,24 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef VIDEOPARSER_H
+#define VIDEOPARSER_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
+#include <QVariantMap>
+#include "videoitem.h"
 
-class AttachmentsParser : public QObject
+class VideoParser : public QObject
 {
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    static VideoItem parser(const QVariantMap &item);
 };
 
-#endif // ATTACHMENTSPARSER_H
+#endif // VIDEOPARSER_H

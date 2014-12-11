@@ -78,7 +78,9 @@ SOURCES += main.cpp \
     vk/stickerparser.cpp \
     chat/attachmentsmodel.cpp \
     vk/audioitem.cpp \
-    vk/audioparser.cpp
+    vk/audioparser.cpp \
+    vk/videoitem.cpp \
+    vk/videoparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -132,7 +134,9 @@ HEADERS += \
     vk/stickerparser.h \
     chat/attachmentsmodel.h \
     vk/audioitem.h \
-    vk/audioparser.h
+    vk/audioparser.h \
+    vk/videoitem.h \
+    vk/videoparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \
@@ -152,3 +156,7 @@ QML_IMPORT_PATH =
 # Please do not modify the following two lines. Required for deployment.
 include(qtquick2applicationviewer/qtquick2applicationviewer.pri)
 qtcAddDeployment()
+
+OTHER_FILES += \
+    data/qml-desktop/qml/VideoLayer.qml \
+    data/qml-desktop/qml/PhotoVideoAttachments.qml

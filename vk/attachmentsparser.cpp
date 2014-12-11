@@ -20,14 +20,14 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
     const QMetaObject &metaObject = Attachment::staticMetaObject;
     QMetaEnum metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("AttachmentType"));
 
-    Attachment::AttachmentType type;
+    int type;
 
     foreach (QVariant item, items)
     {
         QString strType = item.toMap()["type"].toString();
         QVariantMap attachment = item.toMap()[strType].toMap();
 
-        type = (Attachment::AttachmentType)metaEnum.keyToValue(Utils::firstUpper(strType).toUtf8());
+        type = metaEnum.keyToValue(Utils::firstUpper(strType).toUtf8());
 
         switch (type) {
         case Attachment::Photo:
@@ -51,15 +51,16 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
-        case Attachment::Unknown:
+        case Attachment::Video:
         {
-            qWarning() << "AttachmentsParser: unknown attachment" << strType;
+            VideoItem video = VideoParser::parser(attachment);
+            attachments->add(video);
             break;
         }
 
         default:
         {
-            qWarning() << "AttachmentsParser: not implemented parser" << strType;
+            qWarning() << "AttachmentsParser: unknown attachment" << strType;
             break;
         }
         }

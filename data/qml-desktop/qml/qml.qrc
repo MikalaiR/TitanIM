@@ -33,7 +33,6 @@
         <file>AttachmentsView.qml</file>
         <file>ImageMask.qml</file>
         <file>BubbleItem.qml</file>
-        <file>PhotoAttachments.qml</file>
         <file>Authorization.qml</file>
         <file>images/logo_full.png</file>
         <file>images/attach.png</file>
@@ -55,5 +54,8 @@
         <file>images/pause.png</file>
         <file>images/play.png</file>
         <file>AudioPlayerObject.qml</file>
+        <file>images/video_play.png</file>
+        <file>VideoLayer.qml</file>
+        <file>PhotoVideoAttachments.qml</file>
     </qresource>
 </RCC>
