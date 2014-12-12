@@ -11,28 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#ifndef MAPPARSER_H
+#define MAPPARSER_H
 
+#include <QObject>
 #include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "mapparser.h"
-#include "utils.h"
+#include "mapitem.h"
 
-class MessageItemPrivate;
-
-class MessageParser : public QObject
+class MapParser : public QObject
 {
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
-
 public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
+    static MapItem parser(const QVariantMap &item);
 };
 
-#endif // MESSAGEPARSER_H
+#endif // MAPPARSER_H

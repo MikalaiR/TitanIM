@@ -34,10 +34,21 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
     bool emoji = (item.contains("emoji") && item.value("emoji").toInt()) ? true : false;
 
+    AttachmentList *attachments = 0;
+
     if (item.contains("attachments"))
     {
-        AttachmentList *attachments = AttachmentsParser::parser(item.value("attachments").toList());
-        message->setAttachments(attachments);
+        attachments = AttachmentsParser::parser(item.value("attachments").toList());
+    }
+
+    if (item.contains("geo"))
+    {
+        if (!attachments)
+        {
+            attachments = new AttachmentList();
+        }
+
+        attachments->add(MapParser::parser(item.value("geo").toMap()));
     }
 
     message->beginChangeGroupProperties();
@@ -51,6 +62,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     message->setBody(body, emoji);
     message->setTitle(title);
     message->setChatId(chatId);
+    message->setAttachments(attachments);
 
     message->endChangeGroupProperties();
 }

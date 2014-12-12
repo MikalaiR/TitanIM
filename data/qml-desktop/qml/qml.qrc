@@ -57,5 +57,7 @@
         <file>images/video_play.png</file>
         <file>VideoLayer.qml</file>
         <file>PhotoVideoAttachments.qml</file>
+        <file>MapAttachments.qml</file>
+        <file>images/map_pin.png</file>
     </qresource>
 </RCC>

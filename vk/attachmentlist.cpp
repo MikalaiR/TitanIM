@@ -59,7 +59,7 @@ QString AttachmentList::description() const
 
         case Attachment::Map:
         {
-            return tr("Map");
+            return tr("Location");
             break;
         }
 

@@ -11,28 +11,34 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+import QtQuick 2.0
 
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "mapparser.h"
-#include "utils.h"
+Item {
+    id: mapAttachments
 
-class MessageItemPrivate;
+    implicitWidth: img.width
+    implicitHeight: img.height
 
-class MessageParser : public QObject
-{
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
+    Image {
+        id: img
+        width: maximumWidth < items[0].width ? maximumWidth : items[0].width
+        height: width * items[0].height / items[0].width
+        smooth: true
+        fillMode: Image.Tile
+        source: items[0].src
 
-public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
+        Image {
+            id:mapPin
+            anchors.centerIn: parent
+            source: "images/map_pin.png"
+            visible: img.status === Image.Ready
+        }
+    }
 
-#endif // MESSAGEPARSER_H
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            Qt.openUrlExternally(items[0].url);
+        }
+    }
+}

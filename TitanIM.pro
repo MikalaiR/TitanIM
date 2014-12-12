@@ -80,7 +80,9 @@ SOURCES += main.cpp \
     vk/audioitem.cpp \
     vk/audioparser.cpp \
     vk/videoitem.cpp \
-    vk/videoparser.cpp
+    vk/videoparser.cpp \
+    vk/mapitem.cpp \
+    vk/mapparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -136,7 +138,9 @@ HEADERS += \
     vk/audioitem.h \
     vk/audioparser.h \
     vk/videoitem.h \
-    vk/videoparser.h
+    vk/videoparser.h \
+    vk/mapitem.h \
+    vk/mapparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

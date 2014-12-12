@@ -292,7 +292,7 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 
     message->endChangeGroupProperties();
 
-    if (additional.contains("attach1"))
+    if (additional.contains("attach1") || additional.contains("geo"))
     {
         message->getAllFields(_connection);
     }

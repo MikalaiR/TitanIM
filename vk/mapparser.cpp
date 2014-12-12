@@ -11,28 +11,22 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
-
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
 #include "mapparser.h"
-#include "utils.h"
 
-class MessageItemPrivate;
-
-class MessageParser : public QObject
+MapItem MapParser::parser(const QVariantMap &item)
 {
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
+    MapItem map = MapItem::create();
 
-public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
+    QStringList coordinates = item.value("coordinates").toString().split(" ");
 
-#endif // MESSAGEPARSER_H
+    if (coordinates.count())
+    {
+        QString latitude = coordinates.at(0);
+        QString longitude = coordinates.at(1);
+
+        map->setLatitude(latitude);
+        map->setLongitude(longitude);
+    }
+
+    return map;
+}
