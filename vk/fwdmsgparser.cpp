@@ -11,29 +11,13 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
-
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "mapparser.h"
 #include "fwdmsgparser.h"
-#include "utils.h"
 
-class MessageItemPrivate;
-
-class MessageParser : public QObject
+FwdMsgItem FwdMsgParser::parser(const QVariantList &items)
 {
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
+    FwdMsgItem fwdMsg = FwdMsgItem::create();
 
-public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
-};
+    fwdMsg->setMessages(MessageParser::parser(items));
 
-#endif // MESSAGEPARSER_H
+    return fwdMsg;
+}

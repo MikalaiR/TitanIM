@@ -23,6 +23,8 @@
 class ProfileItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
+    Q_PROPERTY(QString fullName READ fullName NOTIFY fullNameChanged) //todo
+    Q_PROPERTY(QString photoMediumRect READ photoMediumRect NOTIFY photoMediumRectChanged) //todo
 
 public:
     ProfileItemPrivate();
@@ -64,6 +66,10 @@ public slots:
 protected slots:
     void setIsLoading(const bool isLoading);
     void loadFinished(const Packet *sender, const QVariantMap &result);
+
+signals:
+    void fullNameChanged();
+    void photoMediumRectChanged();
 };
 
 typedef QSharedPointer<ProfileItemPrivate> ProfileItem;

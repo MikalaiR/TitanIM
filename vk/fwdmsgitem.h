@@ -11,29 +11,32 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#ifndef FWDMSGITEM_H
+#define FWDMSGITEM_H
 
-#include <QVariantMap>
-#include "messageitem.h"
+#include <QObject>
+#include <QQmlEngine>
+#include "attachmentitem.h"
 #include "messagelist.h"
-#include "attachmentsparser.h"
-#include "mapparser.h"
-#include "fwdmsgparser.h"
-#include "utils.h"
+#include "profilelist.h"
+#include "client.h"
 
-class MessageItemPrivate;
-
-class MessageParser : public QObject
+class fwdMsgItemPrivate : public Attachment
 {
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
+    Q_OBJECT
+    Q_PROPERTY(QVariantList messages READ messages CONSTANT) //todo
 
 public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
+    fwdMsgItemPrivate();
+    QVariantList messages() const;
+    void setMessages(const MessageList messages);
+    Q_INVOKABLE QVariant getProfile(const int id) const;
+
+private:
+    MessageList _messages;
+    static ProfileList _users;
 };
 
-#endif // MESSAGEPARSER_H
+typedef QSharedPointer<fwdMsgItemPrivate> FwdMsgItem;
+
+#endif // FWDMSGITEM_H

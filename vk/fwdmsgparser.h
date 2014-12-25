@@ -11,29 +11,18 @@
  ***************************************************************************
 */
 
-#ifndef MESSAGEPARSER_H
-#define MESSAGEPARSER_H
+#ifndef FWDMSGPARSER_H
+#define FWDMSGPARSER_H
 
-#include <QVariantMap>
-#include "messageitem.h"
-#include "messagelist.h"
-#include "attachmentsparser.h"
-#include "mapparser.h"
-#include "fwdmsgparser.h"
-#include "utils.h"
+#include <QObject>
+#include <QVariant>
+#include "fwdmsgitem.h"
+#include "messageparser.h"
 
-class MessageItemPrivate;
-
-class MessageParser : public QObject
+class FwdMsgParser : public QObject
 {
-private:
-    friend class MessageItemPrivate;
-    static void parser(const QVariantMap &item, MessageItemPrivate *message);
-
 public:
-    static void parser(const QVariantMap &item, MessageItem message);
-    static MessageItem parser(const QVariantMap &item);
-    static MessageList parser(const QVariantList &items);
+    static FwdMsgItem parser(const QVariantList &items);
 };
 
-#endif // MESSAGEPARSER_H
+#endif // FWDMSGPARSER_H

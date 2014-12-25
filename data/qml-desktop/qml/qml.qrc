@@ -59,5 +59,6 @@
         <file>PhotoVideoAttachments.qml</file>
         <file>MapAttachments.qml</file>
         <file>images/map_pin.png</file>
+        <file>FwdMsgAttachments.qml</file>
     </qresource>
 </RCC>

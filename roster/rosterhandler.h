@@ -33,6 +33,7 @@ public:
     QSortFilterProxyModel* proxy() const;
     ProfileItem profile(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
+    ProfileItem item(const int id) const;
 
 private:
     RosterModel *_model;

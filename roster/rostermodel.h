@@ -36,10 +36,12 @@ public:
     void load(const int count=0);
     void loadNext(const int count=20);
     void append(const ProfileList items);
+    void append(const ProfileItem item, const bool replace=false);
     void replaceAll(const ProfileList items);
     bool remove(int row, int count);
     ProfileItem at(const int row);
     ProfileItem at(const QModelIndex &index);
+    ProfileItem item(const int id) const;
     int indexOf(const int id) const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;

@@ -49,6 +49,18 @@ void RosterModel::append(const ProfileList items)
     endInsertRows();
 }
 
+void RosterModel::append(const ProfileItem item, const bool replace)
+{
+    if (replace && _roster->replace(item))
+    {
+        return;
+    }
+
+    beginInsertRows(QModelIndex(), _roster->count(), _roster->count());
+    _roster->add(item);
+    endInsertRows();
+}
+
 void RosterModel::replaceAll(const ProfileList items)
 {
     remove(0, rowCount());
@@ -80,6 +92,11 @@ ProfileItem RosterModel::at(const int row)
 ProfileItem RosterModel::at(const QModelIndex &index)
 {
     return _roster->at(index.row());
+}
+
+ProfileItem RosterModel::item(const int id) const
+{
+    return _roster->item(id);
 }
 
 int RosterModel::indexOf(const int id) const

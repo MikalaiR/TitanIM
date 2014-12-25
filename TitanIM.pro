@@ -82,7 +82,9 @@ SOURCES += main.cpp \
     vk/videoitem.cpp \
     vk/videoparser.cpp \
     vk/mapitem.cpp \
-    vk/mapparser.cpp
+    vk/mapparser.cpp \
+    vk/fwdmsgitem.cpp \
+    vk/fwdmsgparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -140,7 +142,9 @@ HEADERS += \
     vk/videoitem.h \
     vk/videoparser.h \
     vk/mapitem.h \
-    vk/mapparser.h
+    vk/mapparser.h \
+    vk/fwdmsgitem.h \
+    vk/fwdmsgparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

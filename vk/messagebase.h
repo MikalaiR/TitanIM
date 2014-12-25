@@ -25,6 +25,7 @@ class MessageBase : public NotifyPropertyBase
     Q_OBJECT
     Q_ENUMS(MessageType)
     Q_PROPERTY(MessageType type READ messageType) //todo
+    Q_PROPERTY(QDateTime date READ date CONSTANT)
 
 public:
     enum MessageType

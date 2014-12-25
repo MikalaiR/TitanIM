@@ -75,6 +75,11 @@ int RosterHandler::indexOf(const int id, const bool proxyIndex) const
     }
 }
 
+ProfileItem RosterHandler::item(const int id) const
+{
+    return _model->item(id);
+}
+
 void RosterHandler::onUserStatusChanged(const int uid, const bool online)
 {
     int i = _model->indexOf(uid);

@@ -20,6 +20,9 @@ ProfileItemPrivate::ProfileItemPrivate()
     _online = false;
     _lastSeen = 0;
     _isLoading = false;
+
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(fullNameChanged())); //todo
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(photoMediumRectChanged())); //todo
 }
 
 QString ProfileItemPrivate::firstName() const

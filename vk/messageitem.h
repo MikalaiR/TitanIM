@@ -24,6 +24,9 @@
 class MessageItemPrivate : public MessageBase
 {
     Q_OBJECT
+    Q_PROPERTY(int uid READ uid CONSTANT) //todo
+    Q_PROPERTY(QString body READ body CONSTANT)
+    Q_PROPERTY(AttachmentList* attachments READ attachments CONSTANT)
 
 public:
     MessageItemPrivate();

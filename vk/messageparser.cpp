@@ -51,6 +51,16 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
         attachments->add(MapParser::parser(item.value("geo").toMap()));
     }
 
+    if (item.contains("fwd_messages"))
+    {
+        if (!attachments)
+        {
+            attachments = new AttachmentList();
+        }
+
+        attachments->add(FwdMsgParser::parser(item.value("fwd_messages").toList()));
+    }
+
     message->beginChangeGroupProperties();
 
     message->setId(mid);
