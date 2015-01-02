@@ -182,7 +182,16 @@ void ProfileItemPrivate::loadFinished(const Packet *sender, const QVariantMap &r
     setIsLoading(false);
 
     QVariantList response = result.value("response").toList();
-    ProfileParser::parser(response.at(0).toMap(), this);
+
+    if (response.count())
+    {
+        ProfileParser::parser(response.at(0).toMap(), this);
+    }
+    else
+    {
+        setFirstName("DELETED");
+        setPhotoMediumRect("http://vk.com/images/camera_b.gif");
+    }
 
     delete sender;
 }
