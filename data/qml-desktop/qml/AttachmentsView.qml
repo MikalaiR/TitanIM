@@ -25,6 +25,7 @@ Item {
         {"items": attachments.filterByType(Attachment.Photo | Attachment.Video), "source": "PhotoVideoAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Map), "source": "MapAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Doc), "source": "DocAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Fwd_messages), "source": "FwdMsgAttachments.qml"}
     ]

@@ -84,7 +84,9 @@ SOURCES += main.cpp \
     vk/mapitem.cpp \
     vk/mapparser.cpp \
     vk/fwdmsgitem.cpp \
-    vk/fwdmsgparser.cpp
+    vk/fwdmsgparser.cpp \
+    vk/docparser.cpp \
+    vk/docitem.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -144,7 +146,9 @@ HEADERS += \
     vk/mapitem.h \
     vk/mapparser.h \
     vk/fwdmsgitem.h \
-    vk/fwdmsgparser.h
+    vk/fwdmsgparser.h \
+    vk/docparser.h \
+    vk/docitem.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

@@ -24,6 +24,7 @@
 #include "stickerparser.h"
 #include "audioparser.h"
 #include "videoparser.h"
+#include "docparser.h"
 
 class AttachmentsParser : public QObject
 {

@@ -11,34 +11,17 @@
  ***************************************************************************
 */
 
-import QtQuick 2.0
+#ifndef DOCPARSER_H
+#define DOCPARSER_H
 
-Item {
-    id: mapAttachments
+#include <QObject>
+#include <QVariantMap>
+#include "docitem.h"
 
-    implicitWidth: img.width
-    implicitHeight: img.height
+class DocParser : public QObject
+{
+public:
+    static DocItem parser(const QVariantMap &item);
+};
 
-    Image {
-        id: img
-        width: maximumWidth < items[0].width ? maximumWidth : items[0].width
-        height: width * items[0].height / items[0].width
-        smooth: true
-        fillMode: Image.Tile
-        source: items[0].src
-
-        Image {
-            id:mapPin
-            anchors.centerIn: parent
-            source: "images/map_pin.png"
-            visible: img.status === Image.Ready
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.openUrlExternally(items[0].url)
-        }
-    }
-}
+#endif // DOCPARSER_H

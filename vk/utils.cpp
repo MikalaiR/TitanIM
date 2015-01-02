@@ -295,3 +295,18 @@ void Utils::setServerDateTime(const QDateTime &dateTime)
 {
     _lambdaServerTime = QDateTime::currentDateTime().secsTo(dateTime);
 }
+
+QString Utils::fileSizeToText(int size)
+{
+    static QString si[9] = {QObject::tr("Bytes"),
+                           QObject::tr("KB"),
+                           QObject::tr("MB"),
+                           QObject::tr("GB"),
+                           QObject::tr("TB")};
+
+    int i;
+    for (i = 0; size >= 1024 && i < 4; i++)
+        size = size / 1024;
+
+    return QString("%1 %2").arg(size).arg(si[i]);
+}

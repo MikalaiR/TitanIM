@@ -11,34 +11,27 @@
  ***************************************************************************
 */
 
-import QtQuick 2.0
+#include "docparser.h"
 
-Item {
-    id: mapAttachments
+DocItem DocParser::parser(const QVariantMap &item)
+{
+    DocItem doc = DocItem::create();
 
-    implicitWidth: img.width
-    implicitHeight: img.height
+    int id = item.value("id").toInt();
+    int ownerId = item.value("owner_id").toInt();
+    QString title = item.value("title").toString();
+    int size = item.value("size").toInt();
+    QString ext = item.value("ext").toString();
+    QUrl url = item.value("url").toUrl();
+    QUrl thumb = item.value("photo_130").toUrl();
 
-    Image {
-        id: img
-        width: maximumWidth < items[0].width ? maximumWidth : items[0].width
-        height: width * items[0].height / items[0].width
-        smooth: true
-        fillMode: Image.Tile
-        source: items[0].src
+    doc->setId(id);
+    doc->setOwnerId(ownerId);
+    doc->setTitle(title);
+    doc->setSize(size);
+    doc->setExt(ext);
+    doc->setUrl(url);
+    doc->setThumb(thumb);
 
-        Image {
-            id:mapPin
-            anchors.centerIn: parent
-            source: "images/map_pin.png"
-            visible: img.status === Image.Ready
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.openUrlExternally(items[0].url)
-        }
-    }
+    return doc;
 }

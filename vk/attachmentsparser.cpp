@@ -58,6 +58,13 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
+        case Attachment::Doc:
+        {
+            DocItem doc = DocParser::parser(attachment);
+            attachments->add(doc);
+            break;
+        }
+
         default:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;

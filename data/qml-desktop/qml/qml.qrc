@@ -60,5 +60,7 @@
         <file>MapAttachments.qml</file>
         <file>images/map_pin.png</file>
         <file>FwdMsgAttachments.qml</file>
+        <file>DocAttachments.qml</file>
+        <file>images/attach_doc.png</file>
     </qresource>
 </RCC>
