@@ -62,5 +62,6 @@
         <file>FwdMsgAttachments.qml</file>
         <file>DocAttachments.qml</file>
         <file>images/attach_doc.png</file>
+        <file>GiftAttachments.qml</file>
     </qresource>
 </RCC>

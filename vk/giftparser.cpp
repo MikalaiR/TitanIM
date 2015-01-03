@@ -11,26 +11,19 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
-
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
 #include "giftparser.h"
 
-class AttachmentsParser : public QObject
+GiftItem GiftParser::parser(const QVariantMap &item)
 {
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    GiftItem gift = GiftItem::create();
 
-#endif // ATTACHMENTSPARSER_H
+    int id = item.value("id").toInt();
+    QUrl src = item.value("thumb_96").toUrl();
+    QUrl srcBig = item.value("thumb_256").toUrl();
+
+    gift->setId(id);
+    gift->setSrc(src);
+    gift->setSrcBig(srcBig);
+
+    return gift;
+}

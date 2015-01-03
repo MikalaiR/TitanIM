@@ -37,7 +37,8 @@ public:
         Doc = 8,
         Sticker = 16,
         Map = 32,
-        Fwd_messages = 64
+        Fwd_messages = 64,
+        Gift = 128,
     };
 
     Attachment();

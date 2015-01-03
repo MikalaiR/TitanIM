@@ -27,7 +27,8 @@ Item {
         {"items": attachments.filterByType(Attachment.Map), "source": "MapAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Doc), "source": "DocAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"},
-        {"items": attachments.filterByType(Attachment.Fwd_messages), "source": "FwdMsgAttachments.qml"}
+        {"items": attachments.filterByType(Attachment.Fwd_messages), "source": "FwdMsgAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Gift), "source": "GiftAttachments.qml"}
     ]
 
     implicitWidth: attachmentsFrame.width

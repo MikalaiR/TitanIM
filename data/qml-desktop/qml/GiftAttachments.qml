@@ -11,26 +11,20 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+import QtQuick 2.0
 
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
+Item {
+    id: giftAttachments
 
-class AttachmentsParser : public QObject
-{
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    implicitWidth: img.width
+    implicitHeight: img.height
 
-#endif // ATTACHMENTSPARSER_H
+    Image {
+        id: img
+        width: Math.min(maximumWidth, 256)
+        height: Math.min(maximumWidth, 256)
+        smooth: true
+        fillMode: Image.PreserveAspectFit
+        source: items[0].srcBig
+    }
+}

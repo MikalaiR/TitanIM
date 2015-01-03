@@ -11,26 +11,31 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef GIFTITEM_H
+#define GIFTITEM_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
+#include <QUrl>
+#include "attachmentitem.h"
 
-class AttachmentsParser : public QObject
+class GiftItemPrivate : public Attachment
 {
+    Q_OBJECT
+    Q_PROPERTY(QUrl src READ src CONSTANT) //todo signal
+    Q_PROPERTY(QUrl srcBig READ srcBig CONSTANT)
+
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    GiftItemPrivate();
+    QUrl src() const;
+    void setSrc(const QUrl &src);
+    QUrl srcBig() const;
+    void setSrcBig(const QUrl &srcBig);
+
+private:
+    QUrl _src;
+    QUrl _srcBig;
 };
 
-#endif // ATTACHMENTSPARSER_H
+typedef QSharedPointer<GiftItemPrivate> GiftItem;
+
+#endif // GIFTITEM_H
