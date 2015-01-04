@@ -11,27 +11,37 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#include "wallitem.h"
 
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
-#include "wallparser.h"
-
-class AttachmentsParser : public QObject
+WallItemPrivate::WallItemPrivate()
 {
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    setAttachmentType(Wall);
+}
 
-#endif // ATTACHMENTSPARSER_H
+QString WallItemPrivate::text() const
+{
+    return _text;
+}
+
+void WallItemPrivate::setText(const QString &text)
+{
+    if (_text != text)
+    {
+        _text = text;
+        emitPropertyChanged("text");
+    }
+}
+
+QString WallItemPrivate::title() const
+{
+    return _text.left(50).replace("\n", " ") + "...";
+}
+
+QUrl WallItemPrivate::url() const
+{
+    QString url = QString("https://vk.com/wall%1_%2")
+            .arg(ownerId())
+            .arg(id());
+
+    return QUrl(url);
+}

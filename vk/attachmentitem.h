@@ -39,6 +39,7 @@ public:
         Map = 32,
         Fwd_messages = 64,
         Gift = 128,
+        Wall = 256
     };
 
     Attachment();

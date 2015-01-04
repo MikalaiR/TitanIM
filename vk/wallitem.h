@@ -11,27 +11,31 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef WALLITEM_H
+#define WALLITEM_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
-#include "wallparser.h"
+#include <QUrl>
+#include "attachmentitem.h"
 
-class AttachmentsParser : public QObject
+class WallItemPrivate : public Attachment
 {
+    Q_OBJECT
+    Q_PROPERTY(QString text READ text CONSTANT) //todo
+    Q_PROPERTY(QString title READ title CONSTANT)
+    Q_PROPERTY(QUrl url READ url CONSTANT)
+
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    WallItemPrivate();
+    QString text() const;
+    void setText(const QString &text);
+    QString title() const;
+    QUrl url() const;
+
+private:
+    QString _text;
 };
 
-#endif // ATTACHMENTSPARSER_H
+typedef QSharedPointer<WallItemPrivate> WallItem;
+
+#endif // WALLITEM_H

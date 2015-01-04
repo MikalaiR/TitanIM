@@ -88,7 +88,9 @@ SOURCES += main.cpp \
     vk/docparser.cpp \
     vk/docitem.cpp \
     vk/giftitem.cpp \
-    vk/giftparser.cpp
+    vk/giftparser.cpp \
+    vk/wallitem.cpp \
+    vk/wallparser.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -152,7 +154,9 @@ HEADERS += \
     vk/docparser.h \
     vk/docitem.h \
     vk/giftitem.h \
-    vk/giftparser.h
+    vk/giftparser.h \
+    vk/wallitem.h \
+    vk/wallparser.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

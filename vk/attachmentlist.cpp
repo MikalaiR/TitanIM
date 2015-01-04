@@ -75,6 +75,12 @@ QString AttachmentList::description() const
             break;
         }
 
+        case Attachment::Wall:
+        {
+            return tr("Wall post");
+            break;
+        }
+
         default:
         {
             return tr("Attachment");

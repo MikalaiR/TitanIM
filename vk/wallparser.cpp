@@ -11,27 +11,19 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
-
-#include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
 #include "wallparser.h"
 
-class AttachmentsParser : public QObject
+WallItem WallParser::parser(const QVariantMap &item)
 {
-public:
-    static AttachmentList* parser(const QVariantList &items);
-};
+    WallItem wall = WallItem::create();
 
-#endif // ATTACHMENTSPARSER_H
+    int id = item.value("id").toInt();
+    int ownerId = item.contains("owner_id") ? item.value("owner_id").toInt() : item.value("to_id").toInt();
+    QString text = item.value("text").toString();
+
+    wall->setId(id);
+    wall->setOwnerId(ownerId);
+    wall->setText(text);
+
+    return wall;
+}

@@ -11,27 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef WALLPARSER_H
+#define WALLPARSER_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
-#include "wallparser.h"
+#include <QVariantMap>
+#include "wallitem.h"
 
-class AttachmentsParser : public QObject
+class WallParser : public QObject
 {
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    static WallItem parser(const QVariantMap &item);
 };
 
-#endif // ATTACHMENTSPARSER_H
+#endif // WALLPARSER_H

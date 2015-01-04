@@ -63,5 +63,7 @@
         <file>DocAttachments.qml</file>
         <file>images/attach_doc.png</file>
         <file>GiftAttachments.qml</file>
+        <file>WallAttachments.qml</file>
+        <file>images/attach_wall.png</file>
     </qresource>
 </RCC>

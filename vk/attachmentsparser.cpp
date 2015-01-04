@@ -72,6 +72,13 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
+        case Attachment::Wall:
+        {
+            WallItem wall = WallParser::parser(attachment);
+            attachments->add(wall);
+            break;
+        }
+
         default:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;
