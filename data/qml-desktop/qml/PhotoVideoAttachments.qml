@@ -15,6 +15,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
 import TitanIM 2.0
+import TitanIM.Viewer 1.0
 
 Item {
     id: photoVideoAttachments
@@ -104,9 +105,9 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         if (modelData.type === Attachment.Photo) {
-                            console.log(modelData.srcBig) //todo
+                            PhotoViewer.setItems(items, index)
                         } else {
-                            console.log(modelData.ownerId + "_" + modelData.id + "_" + modelData.accessKey) //todo
+                            Qt.openUrlExternally(modelData.url) //todo add videoViewer
                         }
                     }
                 }

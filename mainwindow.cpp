@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("chats", Chats::instance());
 
     qmlRegisterSingletonType(QUrl("qrc:/qml/AudioPlayerObject.qml"), "TitanIM.Multimedia", 1, 0, "AudioPlayer");
+    qmlRegisterSingletonType(QUrl("qrc:/qml/PhotoViewer.qml"), "TitanIM.Viewer", 1, 0, "PhotoViewer");
+    qmlRegisterSingletonType(QUrl("qrc:/qml/VideoViewer.qml"), "TitanIM.Viewer", 1, 0, "VideoViewer");
 
     setTitle("TitanIM");
     authorization->connectToVk();
@@ -90,18 +92,24 @@ void MainWindow::rosterCurrentIndexChanged(const int i)
     Chats::instance()->openChat(dialog);
 }
 
-void MainWindow::moveToCenter()
-{
-    QScreen *screen = this->screen();
-    int x = (screen->virtualGeometry().width() / 2) - (this->width() / 2);
-    int y = (screen->virtualGeometry().height() / 2) - (this->height() / 2);
-    this->setPosition(x, y);
-}
-
 void MainWindow::showExpanded()
 {
     QtQuick2ApplicationViewer::showExpanded();
-    moveToCenter();
+    setPosition(positionGlobalCenter(width(), height()));
+}
+
+QPoint MainWindow::positionGlobalCenter(const int width, const int height) const
+{
+    QScreen *screen = this->screen();
+    int x = (screen->virtualGeometry().width() / 2) - (width / 2);
+    int y = (screen->virtualGeometry().height() / 2) - (height / 2);
+
+    return QPoint(x, y);
+}
+
+QPoint MainWindow::positionGlobalCursor() const
+{
+    return QCursor::pos();
 }
 
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)

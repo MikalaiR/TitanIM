@@ -110,3 +110,12 @@ void VideoItemPrivate::setAccessKey(const QString &accessKey)
         emitPropertyChanged("accessKey");
     }
 }
+
+QUrl VideoItemPrivate::url() const
+{
+    QString url = QString("https://vk.com/video%1_%2")
+            .arg(ownerId())
+            .arg(id());
+
+    return QUrl(url);
+}

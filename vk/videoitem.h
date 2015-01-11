@@ -28,6 +28,7 @@ class VideoItemPrivate : public Attachment
     Q_PROPERTY(QUrl src READ src CONSTANT)
     Q_PROPERTY(QUrl srcBig READ srcBig CONSTANT)
     Q_PROPERTY(QString accessKey READ accessKey CONSTANT)
+    Q_PROPERTY(QUrl url READ url CONSTANT)
 
 public:
     VideoItemPrivate();
@@ -44,6 +45,7 @@ public:
     void setSrcBig(const QUrl &srcBig);
     QString accessKey() const;
     void setAccessKey(const QString &accessKey);
+    QUrl url() const;
 
 private:
     QString _title;

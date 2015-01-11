@@ -32,8 +32,9 @@ class MainWindow : public QtQuick2ApplicationViewer
 public:
     explicit MainWindow(QWindow *parent = 0);
     ~MainWindow();
-    void moveToCenter();
     void showExpanded();
+    Q_INVOKABLE QPoint positionGlobalCenter(const int width, const int height) const;
+    Q_INVOKABLE QPoint positionGlobalCursor() const;
 
 private:
     QTranslator *translator;

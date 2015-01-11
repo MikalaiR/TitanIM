@@ -12,6 +12,7 @@
 */
 
 import QtQuick 2.0
+import TitanIM.Viewer 1.0
 
 Item {
     id: docAttachments
@@ -73,6 +74,9 @@ Item {
 
         Rectangle {
             id: content
+
+            readonly property bool isGif: model.ext === "gif"
+
             width: Math.min(maximumWidth, 130)
             height: 100
             color: "black"
@@ -96,13 +100,29 @@ Item {
 
             Text {
                 id: title
-                width: background.width - 10
-                anchors.centerIn: background
-                horizontalAlignment: Text.AlignHCenter
+                width: background.width - (isGif ? sizeLabel.contentWidth + 10 : 0)
+                anchors.left: background.left
+                anchors.leftMargin: isGif ? 5 : 0
+                anchors.verticalCenter: background.verticalCenter
+                horizontalAlignment: isGif ? Text.AlignLeft : Text.AlignHCenter
                 color: "white"
                 font.pointSize: 13 - 2
                 elide: Text.ElideMiddle
                 text: model.title
+            }
+
+            Text {
+                id: sizeLabel
+                width: background.width - 10
+                anchors.right: background.right
+                anchors.rightMargin: 5
+                anchors.verticalCenter: background.verticalCenter
+                horizontalAlignment: Text.AlignRight
+                visible: isGif
+                color: "white"
+                font.pointSize: 13 - 2
+                elide: Text.ElideRight
+                text: model.sizeStr
             }
         }
     }
@@ -123,8 +143,8 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        if (modelData.isImage) {
-                            console.log(modelData.url) //todo
+                        if (modelData.ext === "gif") {
+                            VideoViewer.setItem(items[index])
                         } else {
                             Qt.openUrlExternally(model.url)
                         }

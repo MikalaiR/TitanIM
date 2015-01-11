@@ -65,5 +65,10 @@
         <file>GiftAttachments.qml</file>
         <file>WallAttachments.qml</file>
         <file>images/attach_wall.png</file>
+        <file>PhotoViewer.qml</file>
+        <file>VideoViewer.qml</file>
+        <file>ToolWindow.qml</file>
+        <file>images/spinner.png</file>
+        <file>SpinnerItem.qml</file>
     </qresource>
 </RCC>

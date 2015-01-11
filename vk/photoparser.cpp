@@ -34,7 +34,7 @@ PhotoItem PhotoParser::parser(const QVariantMap &item)
     else
     {
         src = item.value("photo_130").toUrl();
-        srcBig = item.value("photo_604").toUrl();
+        srcBig = item.contains("photo_807") ? item.value("photo_807").toUrl() : item.value("photo_604").toUrl();
         photoItem = item;
     }
 
