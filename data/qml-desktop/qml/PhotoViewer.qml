@@ -18,6 +18,8 @@ import TitanIM 2.0
 
 Item {
     id: photoViewer
+    parent: main.contentItem
+
     property int currentIndex: 0
     property int count: 0
     property var __items

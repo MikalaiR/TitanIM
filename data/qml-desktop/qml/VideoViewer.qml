@@ -17,6 +17,8 @@ import QtQuick 2.0
 
 Item {
     id: videoViewer
+    parent: main.contentItem
+
     property var __item
 
     function setItem(item) {
