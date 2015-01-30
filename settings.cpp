@@ -80,8 +80,8 @@ void Settings::createDirs()
 {
     QDir dir;
 
-    if (!dir.exists(_configDir + "/profiles/" + _currentUid))
-        dir.mkpath(_configDir + "/profiles/" + _currentUid);
+    if (!dir.exists(profileDir()))
+        dir.mkpath(profileDir());
     if (!dir.exists(_configDir + "/dictionaries"))
         dir.mkpath(_configDir + "/dictionaries");
 }
@@ -96,26 +96,31 @@ QString Settings::dataDir() const
     return _dataDir;
 }
 
+QString Settings::profileDir() const
+{
+    return _configDir + "/profiles/" + _currentUid;
+}
+
 void Settings::saveProfile(const QString &key, const QVariant &value)
 {
-    QSettings settings(_configDir + "/profiles/" + _currentUid + "/profilesettings.ini", QSettings::IniFormat);
+    QSettings settings(profileDir() + "/profilesettings.ini", QSettings::IniFormat);
     settings.setValue(key, value);
 }
 
 void Settings::saveMain(const QString &key, const QVariant &value)
 {
-    QSettings settingsMain(_configDir + "/settings.ini", QSettings::IniFormat);
+    QSettings settingsMain(configDir() + "/settings.ini", QSettings::IniFormat);
     settingsMain.setValue(key, value);
 }
 
 QVariant Settings::loadProfile(const QString &key, const QVariant &defaultValue)
 {
-    QSettings settings(_configDir +"/profiles/" + _currentUid + "/profilesettings.ini", QSettings::IniFormat);
+    QSettings settings(profileDir() + "/profilesettings.ini", QSettings::IniFormat);
     return settings.value(key, defaultValue);
 }
 
 QVariant Settings::loadMain(const QString &key, const QVariant &defaultValue)
 {
-    QSettings settingsMain(_configDir + "/settings.ini", QSettings::IniFormat);
+    QSettings settingsMain(configDir() + "/settings.ini", QSettings::IniFormat);
     return settingsMain.value(key, defaultValue);
 }

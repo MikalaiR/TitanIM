@@ -22,7 +22,9 @@ MainWindow::MainWindow(QWindow *parent) :
     qApp->installTranslator(translator);
 
     QString emoticonsTheme = Settings::instance()->dataDir() + "/smilies/default/"; //todo
+    QString emoticonsRecent = Settings::instance()->configDir() + "/recentEmojis";
     Emoticons::instance()->setCurrentTheme(emoticonsTheme);
+    Emoticons::instance()->setRecentFile(emoticonsRecent);
 
     authorization = new Authorization();
 
@@ -41,10 +43,12 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("dialogsHandler", dialogsHandler);
     rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());
+    rootContext()->setContextProperty("emoticons", Emoticons::instance());
 
     qmlRegisterSingletonType(QUrl("qrc:/qml/AudioPlayerObject.qml"), "TitanIM.Multimedia", 1, 0, "AudioPlayer");
     qmlRegisterSingletonType(QUrl("qrc:/qml/PhotoViewer.qml"), "TitanIM.Viewer", 1, 0, "PhotoViewer");
     qmlRegisterSingletonType(QUrl("qrc:/qml/VideoViewer.qml"), "TitanIM.Viewer", 1, 0, "VideoViewer");
+    qmlRegisterSingletonType(QUrl("qrc:/qml/EmoticonsBox.qml"), "TitanIM.Tool", 1, 0, "EmoticonsBox");
 
     setTitle("TitanIM");
     authorization->connectToVk();
@@ -110,6 +114,11 @@ QPoint MainWindow::positionGlobalCenter(const int width, const int height) const
 QPoint MainWindow::positionGlobalCursor() const
 {
     return QCursor::pos();
+}
+
+QPoint MainWindow::mapToGlobal(const int x, const int y) const
+{
+    return QWindow::mapToGlobal(QPoint(x, y));
 }
 
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)

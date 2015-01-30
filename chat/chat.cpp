@@ -161,7 +161,7 @@ void Chat::sendMessage(const QString &text)
     message->setDate(Utils::currentDateTime());
     message->setIsUnread(true);
     message->setIsOut(true);
-    message->setBody(text);
+    message->setBody(text, false, false, true);
 
     message->setAttachments(_outAttachments);
 

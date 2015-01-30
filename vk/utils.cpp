@@ -40,6 +40,19 @@ QString Utils::join(const QMap<QString, QString> &list, const QChar &separator)
     return s;
 }
 
+QString Utils::join(const QList<QString> &list, const QChar &separator)
+{
+    QString s;
+    QListIterator<QString> i(list);
+    while (i.hasNext())
+    {
+        s.append(i.next() % separator);
+    }
+
+    s.resize(s.length() - 1);
+    return s;
+}
+
 QString Utils::joinAndEscape(const QMap<QString, QString> &list, const QChar &separator)
 {
     QString s;
@@ -85,6 +98,16 @@ QString Utils::fromHtmlEscaped(const QString &str)
     text.replace("&gt;", ">");
     text.replace("&quot;", "\"");
     text.replace("&amp;", "&");
+
+    return text;
+}
+
+QString Utils::simplified(const QString &str)
+{
+    QString text = str.simplified();
+
+    text.replace("<!--StartFragment--> ", "<!--StartFragment-->");
+    text.replace(" <!--EndFragment-->", "<!--EndFragment-->");
 
     return text;
 }

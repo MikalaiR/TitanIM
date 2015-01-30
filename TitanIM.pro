@@ -180,4 +180,5 @@ qtcAddDeployment()
 OTHER_FILES += \
     data/qml-desktop/qml/VideoLayer.qml \
     data/qml-desktop/qml/PhotoVideoAttachments.qml \
-    data/qml-desktop/qml/VideoViewer.qml
+    data/qml-desktop/qml/VideoViewer.qml \
+    data/qml-desktop/qml/EmoticonsBox.qml

@@ -152,7 +152,7 @@ Item {
                     text: chats.currentChat.textMessage
 
                     onAccepted: {
-                        chats.currentChat.sendMessage(text)
+                        chats.currentChat.sendMessage(textArea.getText())
                         chats.currentChat.textMessage = ""
                     }
 

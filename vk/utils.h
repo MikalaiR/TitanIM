@@ -32,9 +32,11 @@ public:
     static QVariant parseJSON(const QByteArray &data);
     static QString getMd5String(const QString &source);
     static QString join(const QMap<QString, QString> &list, const QChar &separator);
+    static QString join(const QList<QString> &list, const QChar &separator);
     static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
     static QString toHtmlEscaped(const QString &str);
     static QString fromHtmlEscaped(const QString &str);
+    static QString simplified(const QString &str);
     static QString dateToText(const QDateTime &dateTime);
     static QString dateToSection(const QDateTime &dateTime);
     static QString firstUpper(const QString &str);

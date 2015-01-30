@@ -14,6 +14,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.2
+import TitanIM.Tool 1.0
 
 Item {
     id: textAreaItem
@@ -22,12 +23,17 @@ Item {
     property alias font: textArea.font
     property alias cursorPosition: textArea.cursorPosition
     property string placeholderText: ""
-    property int maxLineCount: 7
+    property int minimumHeight: 26
+    property int maximumHeight: 91
+    property bool smile: true
     signal accepted
 
-    function cursorPositionToEnd()
-    {
+    function cursorPositionToEnd() {
         textArea.cursorPosition = textArea.length
+    }
+
+    function getText() {
+        return textArea.getFormattedText(0, textArea.length)
     }
 
     TextArea {
@@ -41,10 +47,8 @@ Item {
 
             frame: Item {
                 anchors.fill: parent
-                anchors.topMargin: -2
-                anchors.bottomMargin: -2
                 anchors.leftMargin: -6
-                anchors.rightMargin: -7
+                anchors.rightMargin: smile ? -emoticonsButton.width : 0
 
                 BorderImage {
                     border.bottom: 14
@@ -54,23 +58,42 @@ Item {
                     anchors.fill: parent
                     source: "images/input_field.png"
                 }
-
             }
         }
 
-        height: parent.height - 4
-        width: parent.width - 12
-        anchors.centerIn: parent
+        height: parent.height
+        width: parent.width -(emoticonsButton.width + 6)
+        anchors.left: parent.left
+        anchors.leftMargin: 6
+        anchors.verticalCenter: parent.verticalCenter
         style: textAreaMacStyle
+        verticalAlignment: TextEdit.AlignVCenter
         backgroundVisible: false
+        textFormat: TextEdit.RichText
         wrapMode: TextInput.Wrap
 
-        onLineCountChanged: {
-            textAreaItem.height = font.pixelSize * Math.min(lineCount + 1, maxLineCount + 1) + 2
+        onTextChanged: {
+            if (lineCount > 1) {
+                textAreaItem.height = Math.min(flickableItem.contentHeight + 4, maximumHeight)
+            } else {
+                textAreaItem.height = minimumHeight
+            }
         }
 
-        Keys.onReturnPressed: {
-            textAreaItem.accepted()
+        Keys.onPressed: {
+            if (event.modifiers !== Qt.NoModifier) {
+                return
+            }
+
+            if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                    textAreaItem.accepted()
+                    event.accepted = true
+            }
+
+            if (event.key === Qt.Key_Tab) {
+                EmoticonsBox.show(emoticonsButton, textArea)
+                event.accepted = true
+            }
         }
     }
 
@@ -83,5 +106,23 @@ Item {
         color: "grey"
         font: textArea.font
         visible: !textArea.focus && !textArea.length
+    }
+
+    Image {
+        id: emoticonsButton
+        width: visible ? implicitWidth : 0
+        anchors.right: parent.right
+        anchors.rightMargin: 4
+        anchors.top: parent.top
+        anchors.topMargin: 4
+        source: "images/emoticons_button.png"
+        visible: smile
+
+        MouseArea {
+            anchors.fill: parent
+            onPressed: {
+                EmoticonsBox.show(emoticonsButton, textArea)
+            }
+        }
     }
 }

@@ -164,8 +164,9 @@ QString MessageItemPrivate::body() const
 
 QString MessageItemPrivate::plainBody() const
 {
-    return Utils::fromHtmlEscaped(_body);
-    //todo add replace <br> and emoji
+    QString res = Emoticons::instance()->toEmoji(_body);
+    res.replace("<br>", "\n");
+    return Utils::fromHtmlEscaped(res);
 }
 
 QString MessageItemPrivate::shortBody() const
@@ -192,7 +193,7 @@ QString MessageItemPrivate::shortBody() const
     }
 }
 
-void MessageItemPrivate::setBody(const QString &body, const bool emoji, const bool escaped)
+void MessageItemPrivate::setBody(const QString &body, const bool emoji, const bool escaped, const bool simplified)
 {
     if (escaped)
     {
@@ -208,6 +209,11 @@ void MessageItemPrivate::setBody(const QString &body, const bool emoji, const bo
     if (emoji)
     {
         _body = Emoticons::instance()->fromEmoji(_body);
+    }
+
+    if (simplified)
+    {
+        _body = Utils::simplified(_body);
     }
 
     _emoji = emoji;

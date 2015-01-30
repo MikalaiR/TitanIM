@@ -35,6 +35,7 @@ public:
     void showExpanded();
     Q_INVOKABLE QPoint positionGlobalCenter(const int width, const int height) const;
     Q_INVOKABLE QPoint positionGlobalCursor() const;
+    Q_INVOKABLE QPoint mapToGlobal(const int x, const int y) const;
 
 private:
     QTranslator *translator;

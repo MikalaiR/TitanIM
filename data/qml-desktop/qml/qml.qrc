@@ -70,5 +70,20 @@
         <file>ToolWindow.qml</file>
         <file>images/spinner.png</file>
         <file>SpinnerItem.qml</file>
+        <file>images/emoticons_button.png</file>
+        <file>EmoticonsBox.qml</file>
+        <file>images/emoticons_popover.png</file>
+        <file>images/emoji_block1.png</file>
+        <file>images/emoji_block2.png</file>
+        <file>images/emoji_block3.png</file>
+        <file>images/emoji_block4.png</file>
+        <file>images/emoji_block5.png</file>
+        <file>images/emoji_block6.png</file>
+        <file>images/emoji_block1_selected.png</file>
+        <file>images/emoji_block2_selected.png</file>
+        <file>images/emoji_block3_selected.png</file>
+        <file>images/emoji_block4_selected.png</file>
+        <file>images/emoji_block5_selected.png</file>
+        <file>images/emoji_block6_selected.png</file>
     </qresource>
 </RCC>
