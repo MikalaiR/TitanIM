@@ -124,10 +124,10 @@ Item {
                 anchors.top: parent.top
                 anchors.topMargin: 11
                 anchors.left: parent.left
-                anchors.leftMargin: 10
+                anchors.leftMargin: 15
                 anchors.right: parent.right
-                anchors.rightMargin: 10
-                spacing: 5
+                anchors.rightMargin: 15
+                spacing: 10
 
                 Image {
                     id: uploadBtn
@@ -144,7 +144,7 @@ Item {
 
                 TextAreaItem {
                     id: textArea
-                    height: 26
+                    minimumHeight: 26
                     width: parent.width - uploadBtn.width - 5
                     placeholderText: qsTr("Write a message...")
                     font.family: "Helvetica"

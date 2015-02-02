@@ -29,7 +29,6 @@
         <file>images/blue_bubble.sci</file>
         <file>images/header_separator.png</file>
         <file>HeaderSeparator.qml</file>
-        <file>images/input_field.png</file>
         <file>AttachmentsView.qml</file>
         <file>ImageMask.qml</file>
         <file>BubbleItem.qml</file>
@@ -85,5 +84,6 @@
         <file>images/emoji_block4_selected.png</file>
         <file>images/emoji_block5_selected.png</file>
         <file>images/emoji_block6_selected.png</file>
+        <file>images/search.png</file>
     </qresource>
 </RCC>

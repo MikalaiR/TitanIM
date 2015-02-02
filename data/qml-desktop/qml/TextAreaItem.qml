@@ -25,6 +25,7 @@ Item {
     property string placeholderText: ""
     property int minimumHeight: 26
     property int maximumHeight: 91
+    property alias icon: iconImg.source
     property bool smile: true
     signal accepted
 
@@ -45,26 +46,22 @@ Item {
             handle: Item {}
             scrollBarBackground: Item {}
 
-            frame: Item {
+            frame: Rectangle {
                 anchors.fill: parent
-                anchors.leftMargin: -6
+                anchors.topMargin: -1
+                anchors.leftMargin: -(iconImg.width + 6)
                 anchors.rightMargin: smile ? -emoticonsButton.width : 0
-
-                BorderImage {
-                    border.bottom: 14
-                    border.top: 13
-                    border.right: 15
-                    border.left: 15
-                    anchors.fill: parent
-                    source: "images/input_field.png"
-                }
+                color: "white"
+                border.width: 1
+                border.color: "#DADADA"
+                radius: 7
             }
         }
 
-        height: parent.height
-        width: parent.width -(emoticonsButton.width + 6)
+        height: parent.height - 1
+        width: parent.width -(emoticonsButton.width + iconImg.width + 6)
         anchors.left: parent.left
-        anchors.leftMargin: 6
+        anchors.leftMargin: iconImg.width + 6
         anchors.verticalCenter: parent.verticalCenter
         style: textAreaMacStyle
         verticalAlignment: TextEdit.AlignVCenter
@@ -109,12 +106,22 @@ Item {
     }
 
     Image {
+        id: iconImg
+        width: visible ? implicitWidth : 0
+        visible: status !== Image.Null
+        anchors.verticalCenter: textArea.verticalCenter
+        anchors.verticalCenterOffset: -1
+        anchors.left: parent.left
+        anchors.leftMargin: 7
+    }
+
+    Image {
         id: emoticonsButton
         width: visible ? implicitWidth : 0
         anchors.right: parent.right
         anchors.rightMargin: 4
         anchors.top: parent.top
-        anchors.topMargin: 4
+        anchors.topMargin: 3
         source: "images/emoticons_button.png"
         visible: smile
 
