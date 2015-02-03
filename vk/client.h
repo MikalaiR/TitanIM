@@ -36,6 +36,7 @@ public:
     ProfileItem profile() const;
     void getServerTime();
     void getProfile();
+    void trackVisitor();
 
 private:
     Client();

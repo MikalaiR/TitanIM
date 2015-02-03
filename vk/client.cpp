@@ -96,11 +96,18 @@ void Client::getProfile()
     _connection->appendQuery(selfProfile);
 }
 
+void Client::trackVisitor()
+{
+    Packet *visitor = new Packet("stats.trackVisitor");
+    _connection->appendQuery(visitor);
+}
+
 void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
     _uid = uid;
     getServerTime(); //todo before connected
     getProfile();
+    trackVisitor();
     _longPoll->setRunning(true);
 }
 
