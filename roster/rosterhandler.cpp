@@ -80,6 +80,14 @@ ProfileItem RosterHandler::item(const int id) const
     return _model->item(id);
 }
 
+void RosterHandler::setFilterWildcard(const QString &pattern)
+{
+    _proxy->setFilterRegExp(QString("%1|%2|%3")
+                            .arg(pattern)
+                            .arg(Utils::toTranslit(pattern))
+                            .arg(Utils::fromTranslit(pattern)));
+}
+
 void RosterHandler::onUserStatusChanged(const int uid, const bool online)
 {
     int i = _model->indexOf(uid);

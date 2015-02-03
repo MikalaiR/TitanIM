@@ -52,6 +52,9 @@ Rectangle {
                 onClicked: {
                     if (contactsTab.visible)
                         roster.scrollToTop()
+
+                    roster.clearFilter()
+                    roster.forceActiveFocusFilter()
                 }
             }
 

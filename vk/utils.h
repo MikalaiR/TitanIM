@@ -48,9 +48,13 @@ public:
     static QDateTime currentDateTime();
     static void setServerDateTime(const QDateTime &dateTime);
     static QString fileSizeToText(int size);
+    static QString toTranslit(const QString &str);
+    static QString fromTranslit(const QString &str);
 
 private:
     static qint64 _lambdaServerTime;
+    static QStringList _translitCyr;
+    static QStringList _translitLat;
 };
 
 #endif // UTILS_H

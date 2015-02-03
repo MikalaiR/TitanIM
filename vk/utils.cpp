@@ -15,6 +15,16 @@
 
 qint64 Utils::_lambdaServerTime = 0;
 
+QStringList Utils::_translitCyr = (QStringList()
+                           << "а" << "б" << "в" << "г" << "д" << "е" << "ё" << "ж" << "з" << "и" << "й"
+                           << "к" << "л" << "м" << "н" << "о" << "п" << "р" << "с" << "т" << "у" << "ф"
+                           << "х" << "ц" << "ч" << "ш" << "щ" << "ъ" << "ы" << "ь" << "э" << "ю" << "я");
+
+QStringList Utils::_translitLat = (QStringList()
+                           << "a" << "b" << "v" << "g" << "d" << "e" << "yo" << "zh" << "z" << "i" << "j"
+                           << "k" << "l" << "m" << "n" << "o" << "p" << "r" << "s" << "t" << "u" << "f"
+                           << "h" << "c" << "ch" << "sh" << "sch" << "'" << "y" << "'" << "e" << "yu" << "ya");
+
 QVariant Utils::parseJSON(const QByteArray &data)
 {
     QJsonDocument json = QJsonDocument::fromJson(data);
@@ -332,4 +342,28 @@ QString Utils::fileSizeToText(int size)
         size = size / 1024;
 
     return QString("%1 %2").arg(size).arg(si[i]);
+}
+
+QString Utils::toTranslit(const QString &str)
+{
+    QString result = str;
+
+    for (int i = 0; i < _translitCyr.count(); i++)
+    {
+        result.replace(_translitCyr.at(i), _translitLat.at(i));
+    }
+
+    return result;
+}
+
+QString Utils::fromTranslit(const QString &str)
+{
+    QString result = str;
+
+    for (int i = 0; i < _translitCyr.count(); i++)
+    {
+        result.replace(_translitLat.at(i), _translitCyr.at(i));
+    }
+
+    return result;
 }

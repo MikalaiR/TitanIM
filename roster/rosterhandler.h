@@ -40,6 +40,7 @@ private:
     QSortFilterProxyModel *_proxy;
 
 protected slots:
+    void setFilterWildcard(const QString &pattern);
     void onUserStatusChanged(const int uid, const bool online);
 };
 

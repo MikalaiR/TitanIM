@@ -22,6 +22,7 @@ Item {
     property alias text: textArea.text
     property alias font: textArea.font
     property alias cursorPosition: textArea.cursorPosition
+    property alias length: textArea.length
     property string placeholderText: ""
     property int minimumHeight: 26
     property int maximumHeight: 91
@@ -34,6 +35,10 @@ Item {
     }
 
     function getText() {
+        return textArea.getText(0, textArea.length)
+    }
+
+    function getFormattedText() {
         return textArea.getFormattedText(0, textArea.length)
     }
 
@@ -102,7 +107,7 @@ Item {
         text: placeholderText
         color: "grey"
         font: textArea.font
-        visible: !textArea.focus && !textArea.length
+        visible: !textArea.length
     }
 
     Image {
@@ -130,6 +135,12 @@ Item {
             onPressed: {
                 EmoticonsBox.show(emoticonsButton, textArea)
             }
+        }
+    }
+
+    onActiveFocusChanged: {
+        if (activeFocus) {
+            textArea.forceActiveFocus()
         }
     }
 }

@@ -20,13 +20,12 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#a4a3a3"
+        color: "transparent"
 
         Text {
-            x: 15
+            x: 10
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: 1
-            color: "white"
             font.pixelSize: 13
             font.bold: true
             font.family: "Helvetica"

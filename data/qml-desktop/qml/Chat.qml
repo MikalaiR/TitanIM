@@ -152,7 +152,7 @@ Item {
                     text: chats.currentChat.textMessage
 
                     onAccepted: {
-                        chats.currentChat.sendMessage(textArea.getText())
+                        chats.currentChat.sendMessage(textArea.getFormattedText())
                         chats.currentChat.textMessage = ""
                     }
 
@@ -225,6 +225,7 @@ Item {
         onCurrentChatIdChanged: {
             chatView.positionViewAtBeginning()
             textArea.cursorPositionToEnd()
+            textArea.forceActiveFocus()
         }
     }
 }
