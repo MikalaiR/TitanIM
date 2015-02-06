@@ -38,7 +38,7 @@ Rectangle {
                 Dialogs {id: dialogs}
 
                 onClicked: {
-                    if (dialogsTab.visible)
+                    if (dialogsTab.visible || badge > 0)
                         dialogs.scrollToTop()
                 }
             }

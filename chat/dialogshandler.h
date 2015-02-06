@@ -66,6 +66,7 @@ protected slots:
 signals:
     void unreadDialogsChanged(const int unreadDialogs);
     void typingTextChanged(const QString &typingText);
+    void newMessage(const bool isOut, const int id);
 };
 
 #endif // DIALOGSHANDLER_H

@@ -43,4 +43,14 @@ Item {
         if (index === -1) index = 0
         dialogsView.positionViewAtIndex(index, ListView.Center)
     }
+
+    Connections {
+        target: dialogsHandler
+
+        onNewMessage: {
+            if (id === currentChatId) {
+                scrollToTop()
+            }
+        }
+    }
 }

@@ -170,6 +170,8 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
     }
 
     playSoundMessageIn();
+
+    emit newMessage(false, id);
 }
 
 void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem message)
@@ -189,6 +191,8 @@ void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem m
 
         _model->append(dialog);
     }
+
+    emit newMessage(true, id);
 }
 
 void DialogsHandler::onLongPollChatTyping(const int id, const int uid, const int chatId)
