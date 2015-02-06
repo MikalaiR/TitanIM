@@ -158,7 +158,9 @@ Item {
 
                     onTextChanged: {
                         chats.currentChat.textMessage = text
+                    }
 
+                    onPressed: {
                         if (!timerSendTyping.running) {
                             chats.currentChat.sendTyping()
                             timerSendTyping.start()

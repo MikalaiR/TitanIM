@@ -29,6 +29,7 @@ Item {
     property alias icon: iconImg.source
     property bool smile: true
     signal accepted
+    signal pressed(var event)
 
     function cursorPositionToEnd() {
         textArea.cursorPosition = textArea.length
@@ -83,6 +84,8 @@ Item {
         }
 
         Keys.onPressed: {
+            textAreaItem.pressed(event)
+
             if (event.modifiers !== Qt.NoModifier) {
                 return
             }
