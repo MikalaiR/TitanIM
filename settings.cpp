@@ -82,6 +82,10 @@ void Settings::createDirs()
 
     if (!dir.exists(profileDir()))
         dir.mkpath(profileDir());
+
+    if (!dir.exists(cacheDir()))
+        dir.mkpath(cacheDir());
+
     if (!dir.exists(_configDir + "/dictionaries"))
         dir.mkpath(_configDir + "/dictionaries");
 }
@@ -99,6 +103,11 @@ QString Settings::dataDir() const
 QString Settings::profileDir() const
 {
     return _configDir + "/profiles/" + _currentUid;
+}
+
+QString Settings::cacheDir() const
+{
+    return _configDir + "/cache";
 }
 
 void Settings::saveProfile(const QString &key, const QVariant &value)

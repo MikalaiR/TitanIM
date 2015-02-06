@@ -19,6 +19,7 @@
 #include <QScreen>
 #include <QDebug>
 #include "qtquick2applicationviewer.h"
+#include "cache/networkaccessmanagerfactory.h"
 #include "vk/client.h"
 #include "authorization.h"
 #include "chat/dialogshandler.h"

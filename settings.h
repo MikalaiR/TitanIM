@@ -33,6 +33,7 @@ public:
     QString configDir() const;
     QString dataDir() const;
     QString profileDir() const;
+    QString cacheDir() const;
     void saveProfile(const QString &key, const QVariant &value);
     void saveMain(const QString &key, const QVariant &value);
     QVariant loadProfile(const QString &key, const QVariant &defaultValue);

@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWindow *parent) :
                      Settings::instance()->dataDir() + "/translations");
     qApp->installTranslator(translator);
 
+    engine()->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
+
     QString emoticonsTheme = Settings::instance()->dataDir() + "/smilies/default/"; //todo
     QString emoticonsRecent = Settings::instance()->configDir() + "/recentEmojis";
     Emoticons::instance()->setCurrentTheme(emoticonsTheme);

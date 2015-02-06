@@ -90,7 +90,8 @@ SOURCES += main.cpp \
     vk/giftitem.cpp \
     vk/giftparser.cpp \
     vk/wallitem.cpp \
-    vk/wallparser.cpp
+    vk/wallparser.cpp \
+    cache/networkaccessmanagerfactory.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -156,7 +157,8 @@ HEADERS += \
     vk/giftitem.h \
     vk/giftparser.h \
     vk/wallitem.h \
-    vk/wallparser.h
+    vk/wallparser.h \
+    cache/networkaccessmanagerfactory.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \
