@@ -20,7 +20,6 @@
 #include <QStringBuilder>
 #include <QFile>
 #include <QFileInfo>
-#include <QTextDocument>
 #include <QTextStream>
 #include "utils.h"
 

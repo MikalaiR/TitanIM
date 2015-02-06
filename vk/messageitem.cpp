@@ -23,6 +23,7 @@ MessageItemPrivate::MessageItemPrivate()
     _deliveryReport = false;
     _chatId = 0;
     _emoji = false;
+    _link = false;
     _attachments = 0;
     _isLoading = false;
 }
@@ -165,7 +166,7 @@ QString MessageItemPrivate::body() const
 QString MessageItemPrivate::plainBody() const
 {
     QString res = Emoticons::instance()->toEmoji(_body);
-    res.replace("<br>", "\n");
+    res = Utils::toPlainText(res);
     return Utils::fromHtmlEscaped(res);
 }
 
@@ -173,15 +174,21 @@ QString MessageItemPrivate::shortBody() const
 {
     if (!_body.isEmpty())
     {
+        QString text = _body;
+
+        if (_link)
+        {
+            text = Utils::fromSmartLinks(text);
+        }
+
         if (!_emoji)
         {
-            return _body.left(60).replace("<br>", " ");
+            text = text.left(60);
         }
-        else
-        {
-            QString text = _body;
-            return text.replace("<br>", " ");
-        }
+
+        text.replace("<br>", " ");
+
+        return text;
     }
     else if (_attachments && _attachments->count())
     {
@@ -205,6 +212,7 @@ void MessageItemPrivate::setBody(const QString &body, const bool emoji, const bo
     }
 
     _body.replace("\n", "<br>");
+    _body = Utils::toSmartLinks(_body, &_link);
 
     if (emoji)
     {

@@ -117,10 +117,7 @@ QString Emoticons::toEmoji(const QString &richText) const
         pos += emoji.length();
     }
 
-    QTextDocument textDocument;
-    textDocument.setHtml(res);
-
-    return textDocument.toPlainText();
+    return res;
 }
 
 QString Emoticons::pathOf(const QString &code) const

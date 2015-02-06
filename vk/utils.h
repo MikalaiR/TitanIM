@@ -17,6 +17,7 @@
 #include <QJsonDocument>
 #include <QCryptographicHash>
 #include <QStringBuilder>
+#include <QTextDocument>
 #include <QVariant>
 #include <QMap>
 #include <QUrl>
@@ -36,7 +37,10 @@ public:
     static QString joinAndEscape(const QMap<QString, QString> &list, const QChar &separator);
     static QString toHtmlEscaped(const QString &str);
     static QString fromHtmlEscaped(const QString &str);
+    static QString toSmartLinks(const QString &str, bool *changed=0);
+    static QString fromSmartLinks(const QString &str);
     static QString simplified(const QString &str);
+    static QString toPlainText(const QString &richText);
     static QString dateToText(const QDateTime &dateTime);
     static QString dateToSection(const QDateTime &dateTime);
     static QString firstUpper(const QString &str);

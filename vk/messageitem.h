@@ -71,6 +71,7 @@ private:
     QString _body;
     int _chatId;
     bool _emoji;
+    bool _link;
     AttachmentList *_attachments;
 
 public slots:

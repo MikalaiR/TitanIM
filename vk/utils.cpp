@@ -112,6 +112,43 @@ QString Utils::fromHtmlEscaped(const QString &str)
     return text;
 }
 
+QString Utils::toSmartLinks(const QString &str, bool *changed)
+{
+    QString text = str;
+    bool myChanged = false;
+
+    QRegExp rx("(https?://[_a-zA-Z0-9./~:?#!$&'+,;=%-]+)");
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
+
+    int pos = 0;
+
+    while ((pos = rx.indexIn(text, pos)) != -1)
+    {
+        QString link = QString("<a href=\"%1\">%1</a>").arg(rx.cap(1));
+        text.replace(pos, rx.matchedLength(), link);
+        pos += link.length();
+        myChanged = true;
+    }
+
+    if (changed != 0)
+    {
+        *changed = myChanged;
+    }
+
+    return text;
+}
+
+QString Utils::fromSmartLinks(const QString &str)
+{
+    QString text = str;
+
+    QRegExp rx("\\<a[^\\>]*href\\s*=\\s*\"([^\"]*)\"[^\"]*\\>");
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
+    text.replace(rx, "\\1");
+
+    return text;
+}
+
 QString Utils::simplified(const QString &str)
 {
     QString text = str.simplified();
@@ -120,6 +157,13 @@ QString Utils::simplified(const QString &str)
     text.replace(" <!--EndFragment-->", "<!--EndFragment-->");
 
     return text;
+}
+
+QString Utils::toPlainText(const QString &richText)
+{
+    QTextDocument textDocument;
+    textDocument.setHtml(richText);
+    return textDocument.toPlainText();
 }
 
 QString Utils::dateToText(const QDateTime &dateTime)
