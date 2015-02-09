@@ -98,6 +98,7 @@ void SendMessageHandler::sendMessage()
         packet->addParam("attachment", attachments.join(','));
     }
 
+    packet->addParam("guid", QString::number(message->date().toMSecsSinceEpoch()));
     packet->setId(internalMid);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(sendMessageFinished(const Packet*,QVariantMap)));
     connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(sendMessageError(const Packet*,const ErrorResponse*)));
