@@ -195,6 +195,16 @@ bool DialogItemPrivate::isLoading() const
     return _isLoading;
 }
 
+bool DialogItemPrivate::isEmpty() const
+{
+    //todo _message.isEmpty(), _profile.isEmpty()
+    bool result = !(_message && _message->id() != -1) ||
+                  !(_profile && !_profile->firstName().isEmpty()) ||
+                  (_message->isGroupChat() && !_groupChatHandler);
+
+    return result;
+}
+
 void DialogItemPrivate::createStructure()
 {
     if (!_profile && _message)
@@ -239,9 +249,9 @@ void DialogItemPrivate::setIsLoading(const bool isLoading)
     }
 }
 
-void DialogItemPrivate::getAllFields(Connection *connection)
+void DialogItemPrivate::getAllFields(Connection *connection, const bool want)
 {
-    if (_isLoading || _id == 0)
+    if (_isLoading || _id == 0 || (want && !isEmpty()))
         return;
 
     setIsLoading(true);

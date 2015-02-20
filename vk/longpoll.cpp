@@ -12,12 +12,14 @@
 */
 
 #include "longpoll.h"
+#include "messageparser.h"
 
 LongPoll::LongPoll(Connection *connection)
 {
     _connection = connection;
 
     _longPollVars.wait = 25;
+    _longPollVars.max_msg_id = 0;
     _running = false;
 
     httpLongPoll = new QNetworkAccessManager(this);
@@ -34,9 +36,37 @@ void LongPoll::setWait(const int sec)
     _longPollVars.wait = sec;
 }
 
+int LongPoll::maxMsgId() const
+{
+    return _longPollVars.max_msg_id;
+}
+
+void LongPoll::setMaxMsgId(const int mid)
+{
+    if (mid > _longPollVars.max_msg_id)
+    {
+        _longPollVars.max_msg_id = mid;
+    }
+}
+
 bool LongPoll::isRunning() const
 {
     return _running;
+}
+
+void LongPoll::start()
+{
+    setRunning(true);
+}
+
+void LongPoll::stop()
+{
+    setRunning(false);
+}
+
+void LongPoll::resume()
+{
+    getLongPollHistory();
 }
 
 void LongPoll::setRunning(const bool running)
@@ -59,6 +89,7 @@ void LongPoll::getLongPollServer()
 
     Packet *packet = new Packet("messages.getLongPollServer");
     packet->addParam("use_ssl", QString::number(isHttps));
+    packet->addParam("need_pts", 1);
     packet->setDataUser(isHttps ? "https://" : "http://");
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollServerFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
@@ -71,6 +102,7 @@ void LongPoll::getLongPollServerFinished(const Packet *sender, const QVariantMap
     _longPollVars.server = sender->dataUser() + response.value("server").toString();
     _longPollVars.key = response.value("key").toString();
     _longPollVars.ts = response.value("ts").toString();
+    _longPollVars.pts = response.value("pts").toString();
 
     delete sender;
 
@@ -124,6 +156,86 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
     longPoll();
 }
 
+void LongPoll::getLongPollHistory()
+{
+    Packet *packet = new Packet("execute");
+    QString fields = "photo_100,online,last_seen,sex";
+    int mid = _longPollVars.max_msg_id;
+
+    QString script = "var l=API.messages.getLongPollHistory({\"ts\":" + _longPollVars.ts + ",\"pts\":" + _longPollVars.pts
+                   + (mid ? QString(",\"max_msg_id\":%1").arg(mid) : "") + ",\"events_limit\":35000,\"msgs_limit\":7000});"
+                   + "var p=API.users.get({\"user_ids\":l.profiles@.id,\"fields\":\"" + fields + "\"});"
+                   + "l.profiles = p;"
+                   + "return l;";
+
+    packet->addParam("code", script);
+
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollHistoryFinished(const Packet*,QVariantMap)));
+    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(getLongPollHistoryError(const Packet*,const ErrorResponse*)));
+    _connection->appendQuery(packet);
+}
+
+void LongPoll::getLongPollHistoryFinished(const Packet *sender, const QVariantMap &result)
+{
+    QVariantMap response = result.value("response").toMap();
+
+    if (response.contains("more"))
+    {
+        emit rebase();
+        delete sender;
+        return;
+    }
+
+    QVariantMap messagesItem = response.value("messages").toMap();
+    MessageList messageList = MessageParser::parser(messagesItem.value("items").toList());
+
+    ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
+    int maxMid = 0;
+
+    for (int i = 0; i < messageList->count(); i++)
+    {
+        MessageItem message = qobject_cast<MessageItem>(messageList->at(i));
+        int mid = message->id();
+        int fromId = message->fromId();
+        int uid = message->uid();
+
+        if (message->deleted() || message->uid() == 0)
+        {
+            continue;
+        }
+
+        if (mid > maxMid)
+        {
+            maxMid = mid;
+        }
+
+        if (message->isOut())
+        {
+            emit messageOutAdded(fromId, message, profiles->item(uid));
+        }
+        else
+        {
+            emit messageInAdded(fromId, message, profiles->item(uid));
+        }
+    }
+
+    setMaxMsgId(maxMid);
+
+    QVariantList updates = response.value("history").toList();
+    handler(updates);
+
+    emit resumed();
+    setRunning(true);
+
+    delete sender;
+}
+
+void LongPoll::getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse)
+{
+    emit rebase();
+    delete sender;
+}
+
 void LongPoll::handler(const QVariantList &updates)
 {
     for (int i = 0; i < updates.size(); i++) {
@@ -157,7 +269,11 @@ void LongPoll::handler(const QVariantList &updates)
             
         case MessageAdded:
         {
-            onMessageAdded(update);
+            if (update.count() > 4)
+            {
+                onMessageAdded(update);
+            }
+
             break;
         }
 
@@ -296,6 +412,8 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     {
         message->getAllFields(_connection);
     }
+
+    setMaxMsgId(mid);
 
     if (message->isOut())
     {

@@ -53,6 +53,7 @@ public:
     bool isCurrent() const;
     void setCurrent(const bool current);
     bool isLoading() const;
+    bool isEmpty() const;
     void createStructure();
 
 private:
@@ -65,7 +66,7 @@ private:
     bool _isLoading;
 
 public slots:
-    void getAllFields(Connection *connection);
+    void getAllFields(Connection *connection, const bool want=false);
     void getLastMessage(Connection *connection);
     void typing(const int uid);
 

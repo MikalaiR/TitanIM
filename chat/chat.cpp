@@ -111,7 +111,7 @@ int Chat::outAttachmentsCount() const
 
 void Chat::addInMessage(const MessageItem message)
 {
-    _model->prepend(message);
+    _model->prepend(message, true);
 }
 
 void Chat::addOutMessage(const MessageItem message)

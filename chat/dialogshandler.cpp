@@ -29,14 +29,17 @@ DialogsHandler::DialogsHandler()
     _proxy->sort(0, Qt::DescendingOrder);
     _proxy->setSourceModel(_model);
 
-    connect(Client::instance()->longPoll(), SIGNAL(messageInAdded(int,MessageItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageOutAdded(int,MessageItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem)));
-    connect(Client::instance()->longPoll(), SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
-    connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
-    connect(Client::instance()->longPoll(), SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
-    connect(Client::instance()->longPoll(), SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
-    connect(Client::instance()->longPoll(), SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
+    LongPoll *longPoll = Client::instance()->longPoll();
+
+    connect(longPoll, SIGNAL(resumed()), this, SLOT(getCounterUnreadDialogs()));
+    connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
+    connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
+    connect(longPoll, SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
+    connect(longPoll, SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
+    connect(longPoll, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
+    connect(longPoll, SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
+    connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
+    connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
 
@@ -101,6 +104,14 @@ int DialogsHandler::indexOf(const int id, const bool proxyIndex) const
     }
 }
 
+void DialogsHandler::getCounterUnreadDialogs()
+{
+    Packet *packet = new Packet("account.getCounters");
+    packet->addParam("filter", "messages");
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onCounterUnreadDialogs(const Packet*,QVariantMap)));
+    Client::instance()->connection()->appendQuery(packet);
+}
+
 void DialogsHandler::incUnreadDialogs()
 {
     setUnreadDialogs(_unreadDialogs + 1);
@@ -136,12 +147,12 @@ void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
     }
 }
 
-void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem message)
+void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile)
 {
     int i = _model->indexOf(id);
 
     //todo fixme
-    if (id == Chats::instance()->currentChatId())
+    if (id == Chats::instance()->currentChatId() && message->isUnread())
     {
         _flagMarkAsRead = true;
         Chats::instance()->currentChat()->markAsRead();
@@ -157,24 +168,28 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
     else
     {
         dialog = DialogItem::create();
+        dialog->setProfile(profile);
         dialog->setMessage(message);
         dialog->createStructure();
-        dialog->getAllFields(Client::instance()->connection());
+        dialog->getAllFields(Client::instance()->connection(), true);
 
         _model->append(dialog);
     }
 
-    if (!_flagMarkAsRead)
+    if (message->isUnread())
     {
-        dialog->incUnreadDialogs();
-    }
+        if (!_flagMarkAsRead)
+        {
+            dialog->incUnreadDialogs();
+        }
 
-    playSoundMessageIn();
+        playSoundMessageIn();
+    }
 
     emit newMessage(false, id);
 }
 
-void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem message)
+void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile)
 {
     int i = _model->indexOf(id);
 
@@ -185,9 +200,10 @@ void DialogsHandler::onLongPollMessageOutAdded(const int id, const MessageItem m
     else
     {
         DialogItem dialog = DialogItem::create();
+        dialog->setProfile(profile);
         dialog->setMessage(message);
         dialog->createStructure();
-        dialog->getAllFields(Client::instance()->connection());
+        dialog->getAllFields(Client::instance()->connection(), true);
 
         _model->append(dialog);
     }
@@ -272,6 +288,21 @@ void DialogsHandler::onMessageFlagsReseted(const int mid, const int mask, const 
             _model->append(dialog);
         }
     }
+}
+
+void DialogsHandler::onCounterUnreadDialogs(const Packet *sender, const QVariantMap &result)
+{
+    QVariant response = result.value("response");
+    int count = 0;
+
+    if (response.type() == QVariant::Map)
+    {
+        count = response.toMap().value("messages").toInt();
+    }
+
+    setUnreadDialogs(count);
+
+    delete sender;
 }
 
 void DialogsHandler::timerEvent(QTimerEvent *event)

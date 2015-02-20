@@ -47,7 +47,9 @@ struct LongPollVars
     QString server;
     QString key;
     QString ts;
+    QString pts;
     int wait;
+    int max_msg_id;
 };
 
 enum Status

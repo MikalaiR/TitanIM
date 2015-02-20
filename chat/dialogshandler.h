@@ -51,16 +51,20 @@ protected:
     void incUnreadDialogs();
     void decUnreadDialogs();
 
+public slots:
+    void getCounterUnreadDialogs();
+
 protected slots:
     void playSoundMessageIn();
     void setUnreadDialogs(const int unreadDialogs);
-    void onLongPollMessageInAdded(const int id, const MessageItem message);
-    void onLongPollMessageOutAdded(const int id, const MessageItem message);
+    void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
     void onLongPollChatTyping(const int id, const int uid, const int chatId);
     void onUserStatusChanged(const int uid, const bool online);
     void onInMessagesRead(const int id, const int mid);
     void onMessageFlagsSet(const int mid, const int mask, const int id);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void onCounterUnreadDialogs(const Packet *sender, const QVariantMap &result);
     void timerEvent(QTimerEvent *event);
 
 signals:

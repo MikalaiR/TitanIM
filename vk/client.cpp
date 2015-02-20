@@ -108,7 +108,7 @@ void Client::onConnected(const int uid, const QString &token, const QString &sec
     getServerTime(); //todo before connected
     getProfile();
     trackVisitor();
-    _longPoll->setRunning(true);
+    _longPoll->start();
 }
 
 void Client::onDisconnected()
@@ -116,7 +116,7 @@ void Client::onDisconnected()
     _uid = 0;
     _profile.clear();
 
-    _longPoll->setRunning(false);
+    _longPoll->stop();
 }
 
 void Client::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)

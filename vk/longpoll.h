@@ -21,6 +21,7 @@
 #include "connection.h"
 #include "global.h"
 #include "messageitem.h"
+#include "profileitem.h"
 
 class LongPoll : public QObject
 {
@@ -62,12 +63,18 @@ public:
     LongPoll(Connection *connection);
     int wait() const;
     void setWait(const int sec);
+    int maxMsgId() const;
+    void setMaxMsgId(const int mid);
     bool isRunning() const;
-    void setRunning(const bool running);
+    void start();
+    void stop();
+    void resume();
 
 private:
+    void setRunning(const bool running);
     void getLongPollServer();
     void longPoll();
+    void getLongPollHistory();
     void handler(const QVariantList &updates);
 
 private:
@@ -96,14 +103,18 @@ private slots:
     void onRunningChanged(const bool running);
     void getLongPollServerFinished(const Packet *sender, const QVariantMap &result);
     void longPollResponse(QNetworkReply *networkReply);
+    void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &result);
+    void getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse);
 
 signals:
+    void resumed();
+    void rebase();
     void messageDeleted(const int mid);
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int id);
     void messageFlagsReseted(const int mid, const int mask, const int id, const uint date);
-    void messageInAdded(const int id, const MessageItem message);
-    void messageOutAdded(const int id, const MessageItem message);
+    void messageInAdded(const int id, const MessageItem message, const ProfileItem profile=ProfileItem());
+    void messageOutAdded(const int id, const MessageItem message, const ProfileItem profile=ProfileItem());
     void inMessagesRead(const int id, const int mid);
     void outMessagesRead(const int id, const int mid);
     void userStatusChanged(const int uid, const bool online);

@@ -31,6 +31,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     bool isOut = (item.contains("out") && item.value("out").toInt()) ? true : false;
     QString body = item.value("body").toString();
     QString title = item.contains("title") ? item.value("title").toString() : "";
+    bool deleted = (item.contains("deleted") && item.value("deleted").toInt()) ? true : false;
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
     bool emoji = (item.contains("emoji") && item.value("emoji").toInt()) ? true : false;
 
@@ -71,6 +72,7 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     message->setIsOut(isOut);
     message->setBody(body, emoji);
     message->setTitle(title);
+    message->setDeleted(deleted);
     message->setChatId(chatId);
     message->setAttachments(attachments);
 

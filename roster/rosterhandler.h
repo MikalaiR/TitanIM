@@ -39,9 +39,13 @@ private:
     RosterModel *_model;
     QSortFilterProxyModel *_proxy;
 
+public slots:
+    void getFriendsOnline();
+
 protected slots:
     void setFilterWildcard(const QString &pattern);
     void onUserStatusChanged(const int uid, const bool online);
+    void onFriendsOnline(const Packet *sender, const QVariantMap &result);
 };
 
 #endif // ROSTERHANDLER_H
