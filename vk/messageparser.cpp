@@ -98,9 +98,7 @@ MessageList MessageParser::parser(const QVariantList &items)
 
     foreach (QVariant item, items)
     {
-        MessageItem message = MessageItem::create();
-        parser(item.toMap(), message.data());
-        messages->add(message);
+        messages->add(parser(item.toMap()));
     }
 
     return messages;
