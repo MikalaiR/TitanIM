@@ -13,10 +13,12 @@
 
 #include "longpoll.h"
 #include "messageparser.h"
+#include "profileparser.h"
 
-LongPoll::LongPoll(Connection *connection)
+LongPoll::LongPoll(Connection *connection, Engine *engine)
 {
     _connection = connection;
+    _engine = engine;
 
     _longPollVars.wait = 25;
     _longPollVars.max_msg_id = 0;
@@ -417,11 +419,11 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 
     if (message->isOut())
     {
-        emit messageOutAdded(fromId, message);
+        emit messageOutAdded(fromId, message, _engine->getProfile(message->uid()));
     }
     else
     {
-        emit messageInAdded(fromId, message);
+        emit messageInAdded(fromId, message, _engine->getProfile(message->uid()));
     }
 }
 

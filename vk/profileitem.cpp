@@ -148,6 +148,19 @@ bool ProfileItemPrivate::isLoading() const
     return _isLoading;
 }
 
+void ProfileItemPrivate::join(const ProfileItem other)
+{
+    if (other && !other->firstName().isEmpty())
+    {
+        setFirstName(other->firstName());
+        setLastName(other->lastName());
+        setSex(other->sex());
+        setPhotoMediumRect(other->photoMediumRect());
+        setOnline(other->online());
+        setLastSeen(other->lastSeen());
+    }
+}
+
 void ProfileItemPrivate::setIsLoading(const bool isLoading)
 {
     if (_isLoading != isLoading)
@@ -163,7 +176,7 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
 
     Packet *packet = new Packet("users.get");
     packet->addParam("user_ids", _id);
-    packet->addParam("fields", "photo_100,online");
+    packet->addParam("fields", "photo_100,online,last_seen,sex");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);

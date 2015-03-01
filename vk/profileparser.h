@@ -15,9 +15,9 @@
 #define PROFILEPARSER_H
 
 #include <QVariantMap>
+#include "client.h"
 #include "profileitem.h"
 #include "profilelist.h"
-#include "utils.h"
 
 class ProfileItemPrivate;
 

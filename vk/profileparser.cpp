@@ -51,7 +51,7 @@ ProfileItem ProfileParser::parser(const QVariantMap &item)
     ProfileItem profile = ProfileItem::create();
     parser(item, profile.data());
 
-    return profile;
+    return Client::instance()->engine()->getProfile(profile->id(), profile);
 }
 
 ProfileList ProfileParser::parser(const QVariantList &items)
@@ -60,9 +60,7 @@ ProfileList ProfileParser::parser(const QVariantList &items)
 
     foreach (QVariant item, items)
     {
-        ProfileItem profile = ProfileItem::create();
-        parser(item.toMap(), profile.data());
-        profiles->add(profile);
+        profiles->add(parser(item.toMap()));
     }
 
     return profiles;

@@ -20,6 +20,9 @@
 #include "global.h"
 #include "connection.h"
 
+class ProfileItemPrivate;
+typedef QSharedPointer<ProfileItemPrivate> ProfileItem;
+
 class ProfileItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
@@ -60,6 +63,7 @@ private:
     bool _isLoading;
 
 public slots:
+    void join(const ProfileItem other);
     void getAllFields(Connection *connection);
     void updateLastSeenText();
 
@@ -71,7 +75,5 @@ signals:
     void fullNameChanged();
     void photoMediumRectChanged();
 };
-
-typedef QSharedPointer<ProfileItemPrivate> ProfileItem;
 
 #endif // PROFILEITEM_H

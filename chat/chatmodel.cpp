@@ -17,7 +17,6 @@ ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     QAbstractListModel(parent)
 {
     _dialog = dialog;
-    _ownProfile = Client::instance()->profile();
 
     _messages = MessageList::create();
     connect(_messages.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
@@ -131,7 +130,6 @@ QHash<int, QByteArray> ChatModel::roleNames() const
 
     roles[IdRole] = "id";
     roles[MessageTypeRole] = "messageType";
-    roles[BodyRole] = "body";
     roles[DateRole] = "date";
     roles[TimeStrRole] = "timeStr";
     roles[AttachmentsRole] = "attachments";
@@ -141,7 +139,6 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[IsError] = "isError";
     roles[IsSendingRole] = "isSending";
     roles[DeletedRole] = "deleted";
-    roles[OnlineRole] = "online";
     roles[SectionRole] = "section";
 
     return roles;
@@ -180,17 +177,10 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case MessageBase::Text:
     {
         MessageItem message = qobject_cast<MessageItem>(messageBase);
-        ProfileItem profile = _dialog->isGroupChat() ? _dialog->groupChatHandler()->user(message->uid()) : _dialog->profile();
 
         switch (role)
         {
         case Qt::DisplayRole:
-            return message->isOut() ? _ownProfile->fullName() : profile->fullName();
-
-        case Qt::DecorationRole:
-            return message->isOut() ? _ownProfile->photoMediumRect() : profile->photoMediumRect();
-
-        case BodyRole:
             return message->body();
 
         case TimeStrRole:
@@ -213,9 +203,6 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
         case IsSendingRole:
             return message->isSending();
-
-        case OnlineRole:
-            return message->isOut() ? _ownProfile->online() : profile->online();
         }
 
         break;
@@ -224,13 +211,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case MessageBase::Typing:
     {
         TypingItem typing = qobject_cast<TypingItem>(messageBase);
-        ProfileItem profile = _dialog->isGroupChat() ? _dialog->groupChatHandler()->user(typing->uid()) : _dialog->profile();
 
         switch (role)
         {
-        case Qt::DecorationRole:
-            return profile->photoMediumRect();
-
         case UidRole:
             return typing->uid();
         }

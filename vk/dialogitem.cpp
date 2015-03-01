@@ -199,7 +199,7 @@ bool DialogItemPrivate::isEmpty() const
 {
     //todo _message.isEmpty(), _profile.isEmpty()
     bool result = !(_message && _message->id() != -1) ||
-                  !(_profile && !_profile->firstName().isEmpty()) ||
+                  !(_profile && (!_profile->firstName().isEmpty() || _profile->isLoading())) ||
                   (_message->isGroupChat() && !_groupChatHandler);
 
     return result;
@@ -257,7 +257,7 @@ void DialogItemPrivate::getAllFields(Connection *connection, const bool want)
     setIsLoading(true);
 
     Packet *packet = new Packet("execute");
-    QString fields = "photo_100,online";
+    QString fields = "photo_100,online,last_seen,sex";
     QString script = "var h=API.messages.getHistory({\"user_id\":" + QString::number(_id) + ",\"count\":1});"
             + "var m=API.messages.getById({\"message_ids\":h.items[0].id,\"preview_length\":50});"
             + "var d={\"unread\":h.unread,\"message\":m.items[0]};"

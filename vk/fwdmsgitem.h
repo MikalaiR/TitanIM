@@ -15,11 +15,8 @@
 #define FWDMSGITEM_H
 
 #include <QObject>
-#include <QQmlEngine>
 #include "attachmentitem.h"
 #include "messagelist.h"
-#include "profilelist.h"
-#include "client.h"
 
 class fwdMsgItemPrivate : public Attachment
 {
@@ -30,11 +27,9 @@ public:
     fwdMsgItemPrivate();
     QVariantList messages() const;
     void setMessages(const MessageList messages);
-    Q_INVOKABLE QVariant getProfile(const int id) const;
 
 private:
     MessageList _messages;
-    static ProfileList _users;
 };
 
 typedef QSharedPointer<fwdMsgItemPrivate> FwdMsgItem;

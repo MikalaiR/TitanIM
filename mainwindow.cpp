@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWindow *parent) :
 
     rootContext()->setContextProperty("authorization", authorization);
     rootContext()->setContextProperty("main", this);
+    rootContext()->setContextProperty("engine", Client::instance()->engine());
     rootContext()->setContextProperty("dialogsHandler", dialogsHandler);
     rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());

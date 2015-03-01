@@ -32,7 +32,6 @@ public:
     {
         IdRole = Qt::UserRole,
         MessageTypeRole,
-        BodyRole,
         DateRole,
         TimeStrRole,
         AttachmentsRole,
@@ -42,7 +41,6 @@ public:
         IsError,
         IsSendingRole,
         DeletedRole,
-        OnlineRole,
         SectionRole
     };
 
@@ -68,7 +66,6 @@ public:
 private:
     MessageList _messages;
     DialogItem _dialog;
-    ProfileItem _ownProfile;
     HistoryPacket *_historyPacket;
     int _serverCount;
     bool _lazyLoad;

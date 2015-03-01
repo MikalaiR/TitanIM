@@ -37,21 +37,27 @@ Client::Client()
     connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
 
-    _longPoll = new LongPoll(_connection);
+    _engine = new Engine(_connection);
+    _longPoll = new LongPoll(_connection, _engine);
 
     _authSignup = 0;
-    _uid = 0;
 }
 
 Client::~Client()
 {
     delete _longPoll;
+    delete _engine;
     delete _connection;
 }
 
 Connection *Client::connection() const
 {
     return _connection;
+}
+
+Engine *Client::engine() const
+{
+    return _engine;
 }
 
 LongPoll *Client::longPoll() const
@@ -71,7 +77,12 @@ Signup *Client::authSignup() const
 
 int Client::uid() const
 {
-    return _uid;
+    return _engine->uid();
+}
+
+ProfileItem Client::profile() const
+{
+    return _engine->getProfile();
 }
 
 void Client::getServerTime()
@@ -79,21 +90,6 @@ void Client::getServerTime()
     Packet *serverTime = new Packet("utils.getServerTime");
     connect(serverTime, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onServerTime(const Packet*,QVariantMap)));
     _connection->appendQuery(serverTime);
-}
-
-ProfileItem Client::profile() const
-{
-    return _profile;
-}
-
-void Client::getProfile()
-{
-    Packet *selfProfile = new Packet("users.get");
-    selfProfile->addParam("uids", _uid);
-    selfProfile->addParam("fields", "photo_100");
-
-    connect(selfProfile, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSelfProfile(const Packet*,QVariantMap)));
-    _connection->appendQuery(selfProfile);
 }
 
 void Client::trackVisitor()
@@ -104,18 +100,13 @@ void Client::trackVisitor()
 
 void Client::onConnected(const int uid, const QString &token, const QString &secret)
 {
-    _uid = uid;
     getServerTime(); //todo before connected
-    getProfile();
     trackVisitor();
     _longPoll->start();
 }
 
 void Client::onDisconnected()
 {
-    _uid = 0;
-    _profile.clear();
-
     _longPoll->stop();
 }
 
@@ -128,14 +119,6 @@ void Client::onServerTime(const Packet *sender, const QVariantMap &result)
     uint unixtime = result.value("response").toUInt();
     QDateTime dateTime = QDateTime::fromTime_t(unixtime).toLocalTime();
     Utils::setServerDateTime(dateTime);
-
-    delete sender;
-}
-
-void Client::onSelfProfile(const Packet *sender, const QVariantMap &result)
-{
-    QVariantList response = result.value("response").toList();
-    _profile = ProfileParser::parser(response.at(0).toMap());
 
     delete sender;
 }

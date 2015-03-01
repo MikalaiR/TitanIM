@@ -11,51 +11,38 @@
  ***************************************************************************
 */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include <QObject>
+#include <QQmlEngine>
+#include <QHash>
 #include "connection.h"
-#include "longpoll.h"
-#include "signup.h"
-#include "engine.h"
+#include "profileitem.h"
 
-class Client : public QObject
+class Engine : public QObject
 {
     Q_OBJECT
 
 public:
-    static Client *instance();
-    static void destroy();
-    Connection* connection() const;
-    Engine* engine() const;
-    LongPoll* longPoll() const;
-    Signup* authSignup() const;
-    int uid() const;
-    ProfileItem profile() const;
+    Engine(Connection *connection);
+    ~Engine();
 
 private:
-    Client();
-    ~Client();
-
-private:
-    static Client *aInstance;
-    static QString clientId;
-    static QString clientSecret;
     Connection *_connection;
-    Engine *_engine;
-    LongPoll *_longPoll;
-    Signup *_authSignup;
+    ProfileItem _selfProfile;
+    QHash<int, ProfileItem> *_profiles;
 
 public slots:
-    void getServerTime();
-    void trackVisitor();
+    int uid() const;
+    ProfileItem getProfile() const;
+    QVariant getUser();
+    ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());
+    QVariant getUser(const int id);
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
-    void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
-    void onServerTime(const Packet *sender, const QVariantMap &result);
 };
 
-#endif // CLIENT_H
+#endif // ENGINE_H

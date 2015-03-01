@@ -19,6 +19,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include "connection.h"
+#include "engine.h"
 #include "global.h"
 #include "messageitem.h"
 #include "profileitem.h"
@@ -60,7 +61,7 @@ public:
         Media = 512
     };
 
-    LongPoll(Connection *connection);
+    LongPoll(Connection *connection, Engine *engine);
     int wait() const;
     void setWait(const int sec);
     int maxMsgId() const;
@@ -80,6 +81,7 @@ private:
 private:
     LongPollVars _longPollVars;
     Connection *_connection;
+    Engine *_engine;
     QNetworkAccessManager *httpLongPoll;
     bool _running;
 

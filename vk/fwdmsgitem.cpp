@@ -13,16 +13,9 @@
 
 #include "fwdmsgitem.h"
 
-ProfileList fwdMsgItemPrivate::_users;
-
 fwdMsgItemPrivate::fwdMsgItemPrivate()
 {
     setAttachmentType(Fwd_messages);
-
-    if (!_users)
-    {
-        _users = ProfileList::create(); //todo clear memory
-    }
 }
 
 QVariantList fwdMsgItemPrivate::messages() const
@@ -40,23 +33,4 @@ QVariantList fwdMsgItemPrivate::messages() const
 void fwdMsgItemPrivate::setMessages(const MessageList messages)
 {
     _messages = messages;
-}
-
-QVariant fwdMsgItemPrivate::getProfile(const int id) const
-{
-    int index = _users->indexOf(id);
-
-    if (index != -1)
-    {
-        return QVariant::fromValue(_users->at(index).data());
-    }
-    else
-    {
-        ProfileItem profile = ProfileItem::create();
-        profile->setId(id);
-        QQmlEngine::setObjectOwnership(profile.data(), QQmlEngine::CppOwnership);
-        _users->add(profile);
-        profile->getAllFields(Client::instance()->connection());
-        return QVariant::fromValue(profile.data());
-    }
 }

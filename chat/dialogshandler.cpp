@@ -35,7 +35,6 @@ DialogsHandler::DialogsHandler()
     connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
-    connect(longPoll, SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
     connect(longPoll, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
     connect(longPoll, SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
     connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
@@ -218,16 +217,6 @@ void DialogsHandler::onLongPollChatTyping(const int id, const int uid, const int
     if (i > -1)
     {
         _model->at(i)->typing(uid);
-    }
-}
-
-void DialogsHandler::onUserStatusChanged(const int uid, const bool online)
-{
-    int i = _model->indexOf(uid);
-
-    if (i > -1)
-    {
-        _model->at(i)->profile()->setOnline(online);
     }
 }
 

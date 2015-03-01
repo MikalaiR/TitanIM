@@ -21,8 +21,8 @@ Item {
 
     Rectangle {
         id: unreadHighlight
-        anchors.top: body.top
-        anchors.bottom: body.bottom
+        anchors.top: content.top
+        anchors.bottom: content.bottom
         anchors.left: chatDelegate.left
         anchors.right: chatDelegate.right
         color: chatFrame.unreadHighlightColor
@@ -41,7 +41,10 @@ Item {
     }
 
     Item {
-        id: body
+        id: content
+
+        property var profile: model.isOut ? engine.getUser() : engine.getUser(model.uid)
+
         anchors.top: sectionText.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
@@ -57,8 +60,8 @@ Item {
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2
-            source: model.decoration
-            visible: model.decoration
+            source: content.profile.photoMediumRect
+            visible: content.profile.photoMediumRect
         }
 
         Loader {
@@ -90,7 +93,7 @@ Item {
                 isUnread: model.isUnread
                 isSending: model.isSending
                 isError: model.isError
-                text: model.body
+                text: model.display
                 time: model.timeStr
                 attachments: model.attachments
             }

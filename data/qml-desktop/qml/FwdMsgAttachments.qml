@@ -32,7 +32,7 @@ Item {
             Item {
                 id: messageBlock
 
-                property var profile: items[0].getProfile(modelData.uid)
+                property var profile: engine.getUser(modelData.uid)
 
                 width: Math.max(body.contentWidth, attachmentsView.width, name.contentWidth + 37) + 7
                 height: header.height + (body.contentHeight + attachmentsView.height) + (body.height ? 10 : -10)
