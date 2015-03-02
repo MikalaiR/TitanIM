@@ -18,7 +18,6 @@ MessageItemPrivate::MessageItemPrivate()
 {
     setMessageType(Text);
 
-    _uid = 0;
     _isError = false;
     _deliveryReport = false;
     _chatId = 0;
@@ -31,20 +30,6 @@ MessageItemPrivate::MessageItemPrivate()
 MessageItemPrivate::~MessageItemPrivate()
 {
     if (_attachments) delete _attachments;
-}
-
-int MessageItemPrivate::uid() const
-{
-    return _uid;
-}
-
-void MessageItemPrivate::setUid(const int uid)
-{
-    if (_uid != uid)
-    {
-        _uid = uid;
-        emitPropertyChanged("uid");
-    }
 }
 
 int MessageItemPrivate::fromId() const
@@ -128,20 +113,6 @@ void MessageItemPrivate::setIsLoading(const bool isLoading)
 bool MessageItemPrivate::isSending() const
 {
     return _id < 0;
-}
-
-bool MessageItemPrivate::deliveryReport() const
-{
-    return _deliveryReport;
-}
-
-void MessageItemPrivate::setDeliveryReport(const bool deliveryReport)
-{
-    if (_deliveryReport != deliveryReport)
-    {
-        _deliveryReport = deliveryReport;
-        emitPropertyChanged("deliveryReport");
-    }
 }
 
 QString MessageItemPrivate::title() const

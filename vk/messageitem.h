@@ -31,8 +31,6 @@ class MessageItemPrivate : public MessageBase
 public:
     MessageItemPrivate();
     ~MessageItemPrivate();
-    int uid() const;
-    void setUid(const int uid);
     int fromId() const;
     void setFromId(const int fromId);
     uint unixtime() const;
@@ -44,8 +42,6 @@ public:
     void setIsError(const bool isError);
     bool isLoading() const;
     bool isSending() const;
-    bool deliveryReport() const;
-    void setDeliveryReport(const bool deliveryReport);
     QString title() const;
     void setTitle(const QString &title);
     QString body() const;
@@ -61,7 +57,6 @@ public:
     void setAttachments(AttachmentList *attachments);
 
 private:
-    int _uid;
     bool _isUnread;
     bool _isOut;
     bool _isError;

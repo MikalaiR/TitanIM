@@ -17,7 +17,7 @@ import TitanIM 2.0
 Item {
     id: chatDelegate
     width: chatDelegate.ListView.view.width
-    height: Math.max(avatar.height + 4, bubble.height + 9) + sectionText.height
+    height: Math.max(avatar.height + 4, bubble.height + 9, service.height + 15) + sectionText.height
 
     Rectangle {
         id: unreadHighlight
@@ -52,16 +52,19 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 10
 
-        AvatarImage {
+        Loader {
             id: avatar
-            width: 32
-            height: 32
-            LayoutMirroring.enabled: model.messageType === MessageBase.Text && model.isOut
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2
-            source: content.profile.photoMediumRect
-            visible: content.profile.photoMediumRect
+            LayoutMirroring.enabled: model.messageType === MessageBase.Text && model.isOut
+            active: !service.active
+
+            sourceComponent: AvatarImage {
+                width: 32
+                height: 32
+                source: content.profile.photoMediumRect
+            }
         }
 
         Loader {
@@ -75,6 +78,40 @@ Item {
                 height: 24;
                 fillMode: Image.PreserveAspectFit
                 source: "images/typing.png"
+            }
+        }
+
+        Loader {
+            id: service
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            active: model.messageType === MessageBase.Service
+
+            sourceComponent: Column {
+                spacing: 4
+
+                TextEditItem {
+                    id: body
+                    width: chatDelegate.width * 0.6
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pointSize: 13 - 2
+                    wrapMode: Text.Wrap
+                    readOnly: true
+                    selectByMouse: true
+                    color: "#808080"
+                    text: model.display
+                }
+
+                Loader {
+                    id: attachmentsView
+                    anchors.left: body.left
+                    active: model.attachments && model.attachments.count()
+
+                    sourceComponent: AttachmentsView {
+                        maximumWidth: chatDelegate.width * 0.6
+                        attachments: model.attachments
+                    }
+                }
             }
         }
 

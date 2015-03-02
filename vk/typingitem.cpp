@@ -16,8 +16,8 @@
 TypingItemPrivate::TypingItemPrivate()
 {
     setMessageType(Typing);
+    setIsFake(true);
 
-    _uid = 0;
     _date = Utils::currentDateTime();
 
     _timer = new QTimer(this);
@@ -27,20 +27,6 @@ TypingItemPrivate::TypingItemPrivate()
     connect(_timer, SIGNAL(timeout()), this, SLOT(onTimerTimeout()));
 
     _timer->start();
-}
-
-int TypingItemPrivate::uid() const
-{
-    return _uid;
-}
-
-void TypingItemPrivate::setUid(const int uid)
-{
-    if (_uid != uid)
-    {
-        _uid = uid;
-        emitPropertyChanged("uid");
-    }
 }
 
 void TypingItemPrivate::restart()

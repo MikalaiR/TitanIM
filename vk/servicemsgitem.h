@@ -11,37 +11,26 @@
  ***************************************************************************
 */
 
-#ifndef TYPINGITEM_H
-#define TYPINGITEM_H
+#ifndef SERVICEMSGITEMPRIVATE_H
+#define SERVICEMSGITEMPRIVATE_H
 
 #include <QObject>
 #include <QSharedPointer>
-#include <QTimer>
 #include "messagebase.h"
 
-class TypingItemPrivate : public MessageBase
+class ServiceMsgItemPrivate : public MessageBase
 {
     Q_OBJECT
 
 public:
-    TypingItemPrivate();
-    inline bool isActive() const { return !_deleted; }
+    ServiceMsgItemPrivate();
+    QString body() const;
+    void setBody(const QString &body);
 
 private:
-    QTimer *_timer;
-
-public slots:
-    void restart();
-    void stop();
-
-protected slots:
-    void setIsActive(const bool isActive);
-    void onTimerTimeout();
-
-signals:
-    void activeChanged(const int id, const int uid, const bool isActive);
+    QString _body;
 };
 
-typedef QSharedPointer<TypingItemPrivate> TypingItem;
+typedef QSharedPointer<ServiceMsgItemPrivate> ServiceMsgItem;
 
-#endif // TYPINGITEM_H
+#endif // SERVICEMSGITEMPRIVATE_H

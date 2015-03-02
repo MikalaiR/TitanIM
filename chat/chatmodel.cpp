@@ -41,7 +41,7 @@ void ChatModel::load(const int count)
 
 void ChatModel::loadNext(const int count)
 {
-    _historyPacket->load(_dialog->id(), _messages->deliveredMsgCount(), count);
+    _historyPacket->load(_dialog->id(), _messages->notFakeMsgCount(), count);
 }
 
 void ChatModel::append(const MessageList items)
@@ -162,6 +162,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case MessageTypeRole:
         return messageBase->messageType();
 
+    case UidRole:
+        return messageBase->uid();
+
     case DateRole:
         return messageBase->date();
 
@@ -189,9 +192,6 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
         case AttachmentsRole:
             return QVariant::fromValue(message->attachments());
 
-        case UidRole:
-            return message->uid();
-
         case IsUnreadRole:
             return message->isUnread();
 
@@ -210,19 +210,19 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
     case MessageBase::Typing:
     {
-        TypingItem typing = qobject_cast<TypingItem>(messageBase);
-
-        switch (role)
-        {
-        case UidRole:
-            return typing->uid();
-        }
-
         break;
     }
 
     case MessageBase::Service:
     {
+        ServiceMsgItem serviceMsg = qobject_cast<ServiceMsgItem>(messageBase);
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return serviceMsg->body();
+        }
+
         break;
     }
     }
@@ -266,7 +266,7 @@ void ChatModel::setLazyLoad(const bool on)
 
 bool ChatModel::canFetchMore(const QModelIndex &parent) const
 {
-    if (!_lazyLoad || _isLoading || _messages->deliveredMsgCount() >= _serverCount)
+    if (!_lazyLoad || _isLoading || _messages->notFakeMsgCount() >= _serverCount)
     {
         return false;
     }

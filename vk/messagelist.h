@@ -25,7 +25,7 @@ class MessageListPrivate : public ObservableCollection<MessageBaseItem>
 
 public:
     MessageListPrivate();
-    int deliveredMsgCount() const;
+    int notFakeMsgCount() const;
 };
 
 typedef QSharedPointer<MessageListPrivate> MessageList;

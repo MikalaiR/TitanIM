@@ -16,12 +16,42 @@
 MessageBase::MessageBase()
 {
     _messageType = Unknown;
+    _isFake = false;
+    _uid = 0;
     _deleted = false;
 }
 
 MessageBase::MessageType MessageBase::messageType() const
 {
     return _messageType;
+}
+
+int MessageBase::isFake() const
+{
+    return _isFake;
+}
+
+void MessageBase::setIsFake(const bool isFake)
+{
+    if (_isFake != isFake)
+    {
+        _isFake = isFake;
+        emitPropertyChanged("isFake");
+    }
+}
+
+int MessageBase::uid() const
+{
+    return _uid;
+}
+
+void MessageBase::setUid(const int uid)
+{
+    if (_uid != uid)
+    {
+        _uid = uid;
+        emitPropertyChanged("uid");
+    }
 }
 
 QDateTime MessageBase::date() const

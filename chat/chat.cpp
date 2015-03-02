@@ -138,6 +138,12 @@ void Chat::addTyping(const QList<TypingItem> &typingList)
     }
 }
 
+void Chat::addServiceMsg(const ServiceMsgItem serviceMsg)
+{
+    serviceMsg->setId(--_internalMessageId);
+    _model->prepend(serviceMsg);
+}
+
 void Chat::sendMessage(const QString &text)
 {
     if (text.isEmpty() && (!_outAttachments || !_outAttachments->count()))
@@ -147,6 +153,7 @@ void Chat::sendMessage(const QString &text)
 
     MessageItem message = MessageItem::create();
     message->setId(--_internalMessageId);
+    message->setIsFake(true);
 
     if (isGroupChat())
     {

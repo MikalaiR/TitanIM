@@ -65,8 +65,6 @@ void ChatsHandler::onLongPollMessageOutAdded(const int id, const MessageItem mes
     {
         Chat *chat = this->chat(id);
 
-        message->setDeliveryReport(true);
-
         if (chat->countUnsent() > 0)
         {
             chat->addTempOutMessageQueue(message);

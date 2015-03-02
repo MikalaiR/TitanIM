@@ -38,6 +38,10 @@ public:
 
     MessageBase();
     MessageType messageType() const;
+    int isFake() const;
+    void setIsFake(const bool isFake);
+    int uid() const;
+    void setUid(const int uid);
     QDateTime date() const;
     void setDate(const QDateTime &date);
     bool deleted() const;
@@ -48,6 +52,8 @@ protected:
 
 protected:
     MessageType _messageType;
+    bool _isFake;
+    int _uid;
     QDateTime _date;
     bool _deleted;
 };

@@ -18,6 +18,7 @@
 #include <QDateTime>
 #include "vk/client.h"
 #include "vk/dialogitem.h"
+#include "vk/servicemsgitem.h"
 #include "vk/sendmessagehandler.h"
 #include "chatmodel.h"
 
@@ -58,6 +59,7 @@ public slots:
     void addTempOutMessageQueue(MessageItem message);//todo const?
     void addTyping(const TypingItem typing);
     void addTyping(const QList<TypingItem> &typingList);
+    void addServiceMsg(const ServiceMsgItem serviceMsg);
     void sendMessage(const QString &text);
     void sendTyping();
     void addAttachments(const QList<QUrl> &list);

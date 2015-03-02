@@ -400,7 +400,6 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     message->setFromId(fromId);
     message->setDate(date);
     message->setIsUnread(flags & Unread);
-    message->setDeliveryReport(true);
     message->setIsOut(flags & Outbox);
     message->setBody(body, emoji, false);
     message->setTitle(title);

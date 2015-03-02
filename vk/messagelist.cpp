@@ -17,20 +17,15 @@ MessageListPrivate::MessageListPrivate()
 {
 }
 
-int MessageListPrivate::deliveredMsgCount() const
+int MessageListPrivate::notFakeMsgCount() const
 {
     int k = 0;
 
     for (int i = 0; i < count(); i++)
     {
-        if (at(i)->messageType() == MessageBase::Text)
+        if (!at(i)->isFake() && !at(i)->deleted())
         {
-            MessageItem msg = qobject_cast<MessageItem>(at(i));
-
-            if (msg->deliveryReport() && !msg->deleted())
-            {
-                k++;
-            }
+            k++;
         }
     }
 

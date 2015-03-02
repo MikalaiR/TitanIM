@@ -92,7 +92,8 @@ SOURCES += main.cpp \
     vk/wallitem.cpp \
     vk/wallparser.cpp \
     cache/networkaccessmanagerfactory.cpp \
-    vk/engine.cpp
+    vk/engine.cpp \
+    vk/servicemsgitem.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -160,7 +161,8 @@ HEADERS += \
     vk/wallitem.h \
     vk/wallparser.h \
     cache/networkaccessmanagerfactory.h \
-    vk/engine.h
+    vk/engine.h \
+    vk/servicemsgitem.h
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \

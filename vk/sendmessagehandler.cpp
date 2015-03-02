@@ -118,7 +118,7 @@ void SendMessageHandler::sendMessageFinished(const Packet *sender, const QVarian
 
     MessageItem message = _messagesInProcessing.take(internalMid);
     message->setId(serverMid);
-    message->setDeliveryReport(true);
+    message->setIsFake(false);
 
     emit successfullyMessageSent(internalMid, serverMid);
     delete sender;
