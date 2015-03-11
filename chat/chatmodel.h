@@ -42,7 +42,10 @@ public:
         IsError,
         IsSendingRole,
         DeletedRole,
-        SectionRole
+        SectionRole,
+        ActionRole,
+        ActionMidRole,
+        ActionTextRole
     };
 
     explicit ChatModel(const DialogItem dialog, QObject *parent = 0);

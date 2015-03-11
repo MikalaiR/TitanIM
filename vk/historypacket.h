@@ -17,6 +17,7 @@
 #include <QObject>
 #include "connection.h"
 #include "messageparser.h"
+#include "profileparser.h"
 
 class HistoryPacket : public QObject
 {

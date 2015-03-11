@@ -394,6 +394,18 @@ void LongPoll::onMessageAdded(const QVariantList &update)
     QVariantMap additional = update.value(7).toMap();
     bool emoji = (additional.contains("emoji") && additional.value("emoji").toInt()) ? true : false;
 
+    QString action;
+    int actionMid = 0;
+    QString actionText;
+
+    if (additional.contains("source_act"))
+    {
+        action = additional.value("source_act").toString();
+        actionMid = additional.contains("source_mid") ? additional.value("source_mid").toInt() : 0;
+        actionText = additional.contains("source_text") ? additional.value("source_text").toString() : "";
+        actionText = additional.contains("source_email") ? additional.value("source_email").toString() : actionText;
+    }
+
     message->beginChangeGroupProperties();
 
     message->setId(mid);
@@ -406,6 +418,10 @@ void LongPoll::onMessageAdded(const QVariantList &update)
 
     if (additional.contains("from"))
         message->setUid(additional.value("from").toInt());
+
+    message->setActionMid(actionMid);
+    message->setActionText(actionText);
+    message->setAction(action);
 
     message->endChangeGroupProperties();
 

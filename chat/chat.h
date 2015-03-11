@@ -65,6 +65,7 @@ public slots:
     void addAttachments(const QList<QUrl> &list);
     void removeAttachment(const int index);
     void markAsRead();
+    QString actionToString(const QString &author, const int act, const QString &arg, const int sex);
 
 protected slots:
     void onMessageSending(const int internalMid);

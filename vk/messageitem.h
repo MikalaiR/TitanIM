@@ -24,11 +24,25 @@
 class MessageItemPrivate : public MessageBase
 {
     Q_OBJECT
+    Q_ENUMS(Action)
     Q_PROPERTY(int uid READ uid CONSTANT) //todo
     Q_PROPERTY(QString body READ body CONSTANT)
     Q_PROPERTY(AttachmentList* attachments READ attachments CONSTANT)
 
 public:
+    enum Action
+    {
+        None = -1,
+        Chat_photo_update,
+        Chat_photo_remove,
+        Chat_create,
+        Chat_title_update,
+        Chat_invite_user,
+        Chat_kick_user,
+        Chat_invite_self,
+        Chat_kick_self
+    };
+
     MessageItemPrivate();
     ~MessageItemPrivate();
     int fromId() const;
@@ -53,6 +67,13 @@ public:
     void setChatId(const int chatId);
     bool isGroupChat() const;
     bool emoji() const;
+    Action action() const;
+    void setAction(const Action action);
+    void setAction(const QString &action);
+    int actionMid() const;
+    void setActionMid(const int actionMid);
+    QString actionText() const;
+    void setActionText(const QString &actionText);
     AttachmentList* attachments() const;
     void setAttachments(AttachmentList *attachments);
 
@@ -67,6 +88,9 @@ private:
     int _chatId;
     bool _emoji;
     bool _link;
+    Action _action;
+    int _actionMid;
+    QString _actionText;
     AttachmentList *_attachments;
 
 public slots:

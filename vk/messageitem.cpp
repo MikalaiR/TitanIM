@@ -23,6 +23,8 @@ MessageItemPrivate::MessageItemPrivate()
     _chatId = 0;
     _emoji = false;
     _link = false;
+    _action = None;
+    _actionMid = 0;
     _attachments = 0;
     _isLoading = false;
 }
@@ -224,6 +226,67 @@ bool MessageItemPrivate::emoji() const
     return _emoji;
 }
 
+MessageItemPrivate::Action MessageItemPrivate::action() const
+{
+    return _action;
+}
+
+void MessageItemPrivate::setAction(const Action action)
+{
+    if (_action != action)
+    {
+        _action = action;
+        emitPropertyChanged("action");
+    }
+
+    setBody(Utils::actionToString(_action), false, false, false);
+}
+
+void MessageItemPrivate::setAction(const QString &action)
+{
+    if (action.isEmpty())
+        return;
+
+    int index = staticMetaObject.indexOfEnumerator("Action");
+    QMetaEnum metaEnum = staticMetaObject.enumerator(index);
+    Action act = (Action)metaEnum.keyToValue(Utils::firstUpper(action).toUtf8());
+
+    if (_uid == _actionMid)
+    {
+        act = (act == Chat_invite_user) ? Chat_invite_self : Chat_kick_self;
+    }
+
+    setAction(act);
+}
+
+int MessageItemPrivate::actionMid() const
+{
+    return _actionMid;
+}
+
+void MessageItemPrivate::setActionMid(const int actionMid)
+{
+    if (_actionMid != actionMid)
+    {
+        _actionMid = actionMid;
+        emitPropertyChanged("actionMid");
+    }
+}
+
+QString MessageItemPrivate::actionText() const
+{
+    return _actionText;
+}
+
+void MessageItemPrivate::setActionText(const QString &actionText)
+{
+    if (_actionText != actionText)
+    {
+        _actionText = actionText;
+        emitPropertyChanged("actionText");
+    }
+}
+
 AttachmentList* MessageItemPrivate::attachments() const
 {
     return _attachments;
@@ -244,8 +307,8 @@ void MessageItemPrivate::getAllFields(Connection *connection)
 {
     setIsLoading(true);
 
-    Packet *packet = new Packet("messages.getById");
-    packet->addParam("message_ids", _id);
+    Packet *packet = new Packet("execute.messagesGetById");
+    packet->addParam("mid", _id);
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);
@@ -256,7 +319,7 @@ void MessageItemPrivate::loadFinished(const Packet *sender, const QVariantMap &r
     setIsLoading(false);
 
     QVariantMap response = result.value("response").toMap();
-    MessageParser::parser(response.value("items").toList().at(0).toMap(), this);
+    MessageParser::parser(response, this);
 
     delete sender;
 }

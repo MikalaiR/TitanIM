@@ -35,6 +35,19 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     int chatId = item.contains("chat_id") ? item.value("chat_id").toInt() : 0;
     bool emoji = (item.contains("emoji") && item.value("emoji").toInt()) ? true : false;
 
+    QString action;
+    int actionMid = 0;
+    QString actionText;
+
+    if (item.contains("action"))
+    {
+        action = item.value("action").toString();
+        actionMid = item.contains("action_mid") ? item.value("action_mid").toInt() : 0;
+        actionText = item.contains("action_mid_text") ? item.value("action_mid_text").toString() : "";
+        actionText = item.contains("action_text") ? item.value("action_text").toString() : actionText;
+        actionText = item.contains("action_email") ? item.value("action_email").toString() : actionText;
+    }
+
     AttachmentList *attachments = 0;
 
     if (item.contains("attachments"))
@@ -73,6 +86,9 @@ void MessageParser::parser(const QVariantMap &item, MessageItemPrivate *message)
     message->setTitle(title);
     message->setDeleted(deleted);
     message->setChatId(chatId);
+    message->setActionMid(actionMid);
+    message->setActionText(actionText);
+    message->setAction(action);
     message->setAttachments(attachments);
 
     message->endChangeGroupProperties();

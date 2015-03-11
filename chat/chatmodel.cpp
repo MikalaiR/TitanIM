@@ -140,6 +140,9 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[IsSendingRole] = "isSending";
     roles[DeletedRole] = "deleted";
     roles[SectionRole] = "section";
+    roles[ActionRole] = "action";
+    roles[ActionMidRole] = "actionMid";
+    roles[ActionTextRole] = "actionText";
 
     return roles;
 }
@@ -203,6 +206,15 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
         case IsSendingRole:
             return message->isSending();
+
+        case ActionRole:
+            return message->action();
+
+        case ActionMidRole:
+            return message->actionMid();
+
+        case ActionTextRole:
+            return message->actionText();
         }
 
         break;

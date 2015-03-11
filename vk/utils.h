@@ -47,6 +47,8 @@ public:
     static QString pluralForm(const int n, const QString &form1, const QString &form2, const QString &form5);
     static QString lastSeenToString(const uint lastSeen, const Sex sex=Unknown);
     static QString peopleConversation(const int count);
+    static QString actionToString(const QString &author, const int act, const QString &arg, const Sex sex);
+    static QString actionToString(const int act);
     static QVector<int> toVectorInt(const QVariantList &list);
     static void playSound(const QString &fileName, const QString &cmd="aplay -q");
     static QDateTime currentDateTime();

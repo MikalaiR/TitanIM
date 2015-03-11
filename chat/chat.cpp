@@ -227,6 +227,11 @@ void Chat::markAsRead()
     Client::instance()->connection()->appendQuery(packet);
 }
 
+QString Chat::actionToString(const QString &author, const int act, const QString &arg, const int sex)
+{
+    return Utils::actionToString(author, act, arg, (Sex)sex);
+}
+
 void Chat::onMessageSending(const int internalMid)
 {
     _countUnsent++;

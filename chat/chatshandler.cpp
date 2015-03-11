@@ -47,14 +47,24 @@ Chat *ChatsHandler::chat(const int id) const
 
 void ChatsHandler::clear()
 {
+    QMapIterator<int, Chat*> i(_chats);
+    while (i.hasNext()) {
+        i.next();
+        delete i.value();
+    }
+
     _chats.clear();
-    //todo память
 }
 
 void ChatsHandler::onLongPollMessageInAdded(const int id, const MessageItem message)
 {
     if (contains(id))
     {
+        if (message->actionMid() > 0)
+        {
+            message->getAllFields(Client::instance()->connection());
+        }
+
         chat(id)->addInMessage(message);
     }
 }
@@ -63,6 +73,11 @@ void ChatsHandler::onLongPollMessageOutAdded(const int id, const MessageItem mes
 {
     if (contains(id))
     {
+        if (message->actionMid() > 0)
+        {
+            message->getAllFields(Client::instance()->connection());
+        }
+
         Chat *chat = this->chat(id);
 
         if (chat->countUnsent() > 0)

@@ -29,8 +29,8 @@ private:
 
 public:
     static void parser(const QVariantMap &item, ProfileItem profile);
-    static ProfileItem parser(const QVariantMap &item);
-    static ProfileList parser(const QVariantList &items);
+    static ProfileItem parser(const QVariantMap &item, const bool isCached=true);
+    static ProfileList parser(const QVariantList &items, const bool isCached=true);
 };
 
 #endif // PROFILEPARSER_H

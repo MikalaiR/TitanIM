@@ -62,8 +62,8 @@ MainWindow::~MainWindow()
     delete rosterHandler;
     delete dialogsHandler;
     delete authorization;
-    Chats::instance()->destroy();
     Client::instance()->destroy();
+    Chats::instance()->destroy();
     Emoticons::instance()->destroy();
     Settings::instance()->destroy();
 }

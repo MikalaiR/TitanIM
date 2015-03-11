@@ -46,21 +46,28 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItem profile)
     parser(item, profile.data());
 }
 
-ProfileItem ProfileParser::parser(const QVariantMap &item)
+ProfileItem ProfileParser::parser(const QVariantMap &item, const bool isCached)
 {
     ProfileItem profile = ProfileItem::create();
     parser(item, profile.data());
 
-    return Client::instance()->engine()->getProfile(profile->id(), profile);
+    if (isCached)
+    {
+        return Client::instance()->engine()->getProfile(profile->id(), profile);
+    }
+    else
+    {
+        return profile;
+    }
 }
 
-ProfileList ProfileParser::parser(const QVariantList &items)
+ProfileList ProfileParser::parser(const QVariantList &items, const bool isCached)
 {
     ProfileList profiles = ProfileList::create();
 
     foreach (QVariant item, items)
     {
-        profiles->add(parser(item.toMap()));
+        profiles->add(parser(item.toMap(), isCached));
     }
 
     return profiles;

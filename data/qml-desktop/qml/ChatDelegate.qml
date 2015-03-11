@@ -26,7 +26,7 @@ Item {
         anchors.left: chatDelegate.left
         anchors.right: chatDelegate.right
         color: chatFrame.unreadHighlightColor
-        visible: model.messageType === MessageBase.Text && model.isUnread
+        visible: model.messageType === MessageBase.Text && model.isUnread && !service.active
     }
 
     Loader {
@@ -85,30 +85,32 @@ Item {
             id: service
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            active: model.messageType === MessageBase.Service
+            active: model.messageType === MessageBase.Service || model.action !== -1
 
             sourceComponent: Column {
                 spacing: 4
 
                 TextEditItem {
                     id: body
-                    width: chatDelegate.width * 0.6
+                    width: chatDelegate.width * 0.9
                     horizontalAlignment: Text.AlignHCenter
                     font.pointSize: 13 - 2
                     wrapMode: Text.Wrap
                     readOnly: true
                     selectByMouse: true
                     color: "#808080"
-                    text: model.display
+                    text: model.messageType === MessageBase.Service
+                          ? model.display
+                          : chats.currentChat.actionToString(content.profile.fullName, model.action, model.actionText, content.profile.sex);
                 }
 
                 Loader {
                     id: attachmentsView
-                    anchors.left: body.left
+                    anchors.horizontalCenter: parent.horizontalCenter
                     active: model.attachments && model.attachments.count()
 
                     sourceComponent: AttachmentsView {
-                        maximumWidth: chatDelegate.width * 0.6
+                        maximumWidth: chatDelegate.width * 0.9
                         attachments: model.attachments
                     }
                 }
@@ -122,7 +124,7 @@ Item {
             anchors.bottom: avatar.bottom
             anchors.bottomMargin: -2
             LayoutMirroring.enabled: model.isOut
-            active: model.messageType === MessageBase.Text
+            active: model.messageType === MessageBase.Text && !service.active
 
             sourceComponent: BubbleItem {
                 maximumWidth: chatDelegate.width * 0.6

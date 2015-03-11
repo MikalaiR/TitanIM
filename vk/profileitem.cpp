@@ -23,6 +23,7 @@ ProfileItemPrivate::ProfileItemPrivate()
 
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(fullNameChanged())); //todo
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(photoMediumRectChanged())); //todo
+    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(sexChanged())); //todo
 }
 
 QString ProfileItemPrivate::firstName() const

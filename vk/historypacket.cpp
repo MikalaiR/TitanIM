@@ -28,10 +28,11 @@ void HistoryPacket::load(const int id, const int offset, const int count)
     _offset = offset;
     _count = count;
 
-    Packet *packet = new Packet("messages.getHistory");
+    Packet *packet = new Packet("execute.messagesGetHistory");
     packet->addParam("offset", offset);
     packet->addParam("count", count);
     packet->addParam("user_id", id);
+    packet->addParam("fields", "photo_100,online,last_seen,sex");
     packet->setId(id);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
@@ -60,10 +61,26 @@ int HistoryPacket::unreadCount() const
 void HistoryPacket::loadFinished(const Packet *sender, const QVariantMap &result)
 {
     QVariantMap response = result.value("response").toMap();
-    MessageList messageList = MessageParser::parser(response.value("items").toList());
+    QVariantMap historyItem = response.value("history").toMap();
 
-    _serverCount = response.value("count").toInt();
-    _unreadCount = response.contains("unread") ? response.value("unread").toInt() : 0;
+    MessageList messageList = MessageParser::parser(historyItem.value("items").toList());
+    ProfileParser::parser(response.value("profiles").toList()); //add cache
+
+    ProfileList profiles_act = ProfileParser::parser(response.value("profiles_act").toList(), false);
+    if (profiles_act->count() > 0)
+    {
+        for (int i = 0; i < messageList->count(); i++)
+        {
+            MessageItem message = qobject_cast<MessageItem>(messageList->at(i));
+            if (message->actionMid() > 0)
+            {
+                message->setActionText(profiles_act->item(message->actionMid())->fullName());
+            }
+        }
+    }
+
+    _serverCount = historyItem.value("count").toInt();
+    _unreadCount = historyItem.contains("unread") ? historyItem.value("unread").toInt() : 0;
 
     emit history(this, sender->id(), messageList);
     delete sender;

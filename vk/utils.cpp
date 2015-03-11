@@ -12,6 +12,7 @@
 */
 
 #include "utils.h"
+#include "messageitem.h"
 
 qint64 Utils::_lambdaServerTime = 0;
 
@@ -341,6 +342,137 @@ QString Utils::peopleConversation(const int count)
     }
 
     return pluralForm(count, QObject::tr("member", "1"), QObject::tr("members", "2"), QObject::tr("members", "5"));
+}
+
+QString Utils::actionToString(const QString &author, const int act, const QString &arg, const Sex sex)
+{
+    QString text;
+    bool isWoman = (sex == Woman);
+
+    switch (act) {
+    case MessageItemPrivate::Chat_photo_update:
+    {
+        text = isWoman ? QObject::tr("changed conversation cover", "woman")
+                       : QObject::tr("changed conversation cover", "man");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_photo_remove:
+    {
+        text = isWoman ? QObject::tr("deleted conversation cover", "woman")
+                       : QObject::tr("deleted conversation cover", "man");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_create:
+    {
+        text = QString("%1 «%2»")
+                .arg(isWoman ? QObject::tr("created the chat", "woman")
+                             : QObject::tr("created the chat", "man"))
+                .arg(arg);
+        break;
+    }
+
+    case MessageItemPrivate::Chat_title_update:
+    {
+        text = QString("%1 «%2»")
+                .arg(isWoman ? QObject::tr("changed the conversation name to", "woman")
+                             : QObject::tr("changed the conversation name to", "man"))
+                .arg(arg);
+        break;
+    }
+
+    case MessageItemPrivate::Chat_invite_user:
+    {
+        text = QString("%1 %2")
+                .arg(isWoman ? QObject::tr("invited", "woman")
+                             : QObject::tr("invited", "man"))
+                .arg(arg);
+        break;
+    }
+
+    case MessageItemPrivate::Chat_kick_user:
+    {
+        text = QString("%1 %2")
+                .arg(isWoman ? QObject::tr("kicked", "woman")
+                             : QObject::tr("kicked", "man"))
+                .arg(arg);
+        break;
+    }
+
+    case MessageItemPrivate::Chat_invite_self:
+    {
+        text = isWoman ? QObject::tr("returned to the conversation", "woman")
+                       : QObject::tr("returned to the conversation", "man");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_kick_self:
+    {
+        text = isWoman ? QObject::tr("left the conversation", "woman")
+                       : QObject::tr("left the conversation", "man");
+        break;
+    }
+    }
+
+    return QString("%1 %2").arg(author).arg(text);
+}
+
+QString Utils::actionToString(const int act)
+{
+    QString text;
+
+    switch (act) {
+    case MessageItemPrivate::Chat_photo_update:
+    {
+        text = QObject::tr("chat photo updated");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_photo_remove:
+    {
+        text = QObject::tr("chat photo removed");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_create:
+    {
+        text = QObject::tr("chat created");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_title_update:
+    {
+        text = QObject::tr("chat name changed");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_invite_user:
+    {
+        text = QObject::tr("user invited");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_kick_user:
+    {
+        text = QObject::tr("user kicked out");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_invite_self:
+    {
+        text = QObject::tr("user invited", "returned to the conversation");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_kick_self:
+    {
+        text = QObject::tr("user has left", "left the conversation");
+        break;
+    }
+    }
+
+    return text;
 }
 
 QVector<int> Utils::toVectorInt(const QVariantList &list)
