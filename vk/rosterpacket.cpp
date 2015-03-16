@@ -28,24 +28,17 @@ void RosterPacket::load(const int offset, const int count)
 
     if (_offset == 0 && _needFavorites)
     {
-        packet = new Packet("execute");
-
-        QString script = "var favorites=API.friends.get({\"fields\":\"" + _fields + "\",\"count\":5,\"order\":\"hints\"});"
-                + "var friends=API.friends.get({\"fields\":\"" + _fields + "\",\"offset\":" + QString::number(_offset)
-                + ",\"count\":" + QString::number(_count) + ",\"order\":\"name\"});"
-                + "return {\"favorites\":favorites, \"friends\":friends};";
-
-        packet->addParam("code", script);
+        packet = new Packet("execute.friendsGet");
     }
     else
     {
         packet = new Packet("friends.get");
-
-        packet->addParam("fields", _fields);
-        packet->addParam("offset", _offset);
-        packet->addParam("count", _count);
-        packet->addParam("order", "name");
     }
+
+    packet->addParam("fields", _fields);
+    packet->addParam("offset", _offset);
+    packet->addParam("count", _count);
+    packet->addParam("order", "name");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
@@ -86,7 +79,7 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
     QVariantMap response = result.value("response").toMap();
     ProfileList profiles;
 
-    if (sender->method() == "execute")
+    if (sender->method() == "execute.friendsGet")
     {
         profiles = ProfileList::create();
 

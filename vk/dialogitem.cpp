@@ -256,14 +256,10 @@ void DialogItemPrivate::getAllFields(Connection *connection, const bool want)
 
     setIsLoading(true);
 
-    Packet *packet = new Packet("execute");
-    QString fields = "photo_100,online,last_seen,sex";
-    QString script = "var h=API.messages.getHistory({\"user_id\":" + QString::number(_id) + ",\"count\":1});"
-            + "var m=API.messages.getById({\"message_ids\":h.items[0].id,\"preview_length\":50});"
-            + "var d={\"unread\":h.unread,\"message\":m.items[0]};"
-            + "var p=API.users.get({\"user_ids\":m.items[0].user_id+\",\"+m.items[0].chat_active,\"fields\":\"" + fields + "\"});"
-            + "return {\"dialog\":d,\"profiles\":p};";
-    packet->addParam("code", script);
+    Packet *packet = new Packet("execute.messagesGetDialog");
+    packet->addParam("user_id", _id);
+    packet->addParam("preview_length", 50);
+    packet->addParam("fields", "photo_100,online,last_seen,sex");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);

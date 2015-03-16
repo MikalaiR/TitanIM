@@ -160,17 +160,13 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
 
 void LongPoll::getLongPollHistory()
 {
-    Packet *packet = new Packet("execute");
-    QString fields = "photo_100,online,last_seen,sex";
-    int mid = _longPollVars.max_msg_id;
-
-    QString script = "var l=API.messages.getLongPollHistory({\"ts\":" + _longPollVars.ts + ",\"pts\":" + _longPollVars.pts
-                   + (mid ? QString(",\"max_msg_id\":%1").arg(mid) : "") + ",\"events_limit\":35000,\"msgs_limit\":7000});"
-                   + "var p=API.users.get({\"user_ids\":l.profiles@.id,\"fields\":\"" + fields + "\"});"
-                   + "l.profiles = p;"
-                   + "return l;";
-
-    packet->addParam("code", script);
+    Packet *packet = new Packet("execute.messagesGetLongPollHistory");
+    packet->addParam("ts", _longPollVars.ts);
+    packet->addParam("pts", _longPollVars.pts);
+    packet->addParam("max_msg_id", _longPollVars.max_msg_id);
+    packet->addParam("events_limit", 35000);
+    packet->addParam("msgs_limit", 7000);
+    packet->addParam("fields", "photo_100,online,last_seen,sex");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollHistoryFinished(const Packet*,QVariantMap)));
     connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(getLongPollHistoryError(const Packet*,const ErrorResponse*)));
