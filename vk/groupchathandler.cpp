@@ -18,10 +18,16 @@ GroupChatHandler::GroupChatHandler(const int chatId)
 {
     _chatId = chatId;
     _id = _chatId + GROUP_CHAT_OFFSET;
+
     _users = ProfileList::create();
+    _users->add(Client::instance()->engine()->getProfile());
+    connect(_users.data(), SIGNAL(itemChanged(int)), this, SLOT(onUserChanged(int)));
+
     _cover.clear();
     _usersCount = 0;
     _adminId = 0;
+    _kicked = false;
+    _left = false;
 }
 
 int GroupChatHandler::id() const
@@ -36,9 +42,37 @@ int GroupChatHandler::chatId() const
 
 void GroupChatHandler::addUser(ProfileItem profile)
 {
-    _users->add(profile);
-    _avatars.append(profile->photoMediumRect());
-    emit propertyChanged(_chatId, "users");
+    if (profile->id() != Client::instance()->uid())
+    {
+        _users->add(profile);
+        setUsersCount(_usersCount + 1);
+        refreshAvatars();
+        emit propertyChanged(_chatId, "users");
+    }
+    else
+    {
+        getAllFields();
+    }
+}
+
+void GroupChatHandler::removeUser(const int uid)
+{
+    if (uid != Client::instance()->uid())
+    {
+        int index = _users->indexOf(uid);
+        if (index != -1)
+        {
+            _users->removeAt(index);
+        }
+
+        setUsersCount(_usersCount - 1);
+        refreshAvatars();
+        emit propertyChanged(_chatId, "users");
+    }
+    else
+    {
+        getAllFields();
+    }
 }
 
 ProfileItem GroupChatHandler::user(const int uid)
@@ -48,7 +82,14 @@ ProfileItem GroupChatHandler::user(const int uid)
 
 QStringList GroupChatHandler::avatars() const
 {
-    return isCover() ? QStringList(_cover) : _avatars;
+    if (_usersCount > 0)
+    {
+        return isCover() ? QStringList(_cover) : _avatars;
+    }
+    else
+    {
+        return QStringList("https://vk.com/images/icons/multichat_50.png");
+    }
 }
 
 void GroupChatHandler::refreshAvatars()
@@ -59,7 +100,7 @@ void GroupChatHandler::refreshAvatars()
     {
         ProfileItem profile = _users->at(i);
 
-        if (profile->id() != Client::instance()->uid())
+        if (profile->id() != Client::instance()->uid() || _users->count() < 3)
         {
             _avatars.append(profile->photoMediumRect());
         }
@@ -76,6 +117,13 @@ void GroupChatHandler::setUsersCount(const int usersCount)
     if (_usersCount != usersCount)
     {
         _usersCount = usersCount;
+
+        if (_usersCount == 0)
+        {
+            _users->clear();
+            refreshAvatars();
+        }
+
         emit propertyChanged(_chatId, "usersCount");
     }
 }
@@ -127,19 +175,73 @@ bool GroupChatHandler::isCover() const
     return !(_cover.isEmpty());
 }
 
-void GroupChatHandler::getAllFields(Connection *connection)
+bool GroupChatHandler::kicked() const
+{
+    return _kicked;
+}
+
+bool GroupChatHandler::left() const
+{
+    return _left;
+}
+
+void GroupChatHandler::setActionMsg(const MessageItem msg)
+{
+    switch (msg->action()) {
+    case MessageItemPrivate::Chat_photo_update:
+    {
+        getAllFields(); //todo
+        break;
+    }
+
+    case MessageItemPrivate::Chat_photo_remove:
+    {
+        setCover("");
+        break;
+    }
+
+    case MessageItemPrivate::Chat_title_update:
+    {
+        setTitle(msg->actionText());
+        break;
+    }
+
+    case MessageItemPrivate::Chat_invite_user:
+    case MessageItemPrivate::Chat_invite_self:
+    {
+        ProfileItem p = Client::instance()->engine()->getProfile(msg->actionMid());
+        addUser(p);
+        break;
+    }
+
+    case MessageItemPrivate::Chat_kick_user:
+    case MessageItemPrivate::Chat_kick_self:
+    {
+        removeUser(msg->actionMid());
+        break;
+    }
+    }
+}
+
+void GroupChatHandler::getAllFields()
 {
     Packet *packet = new Packet("messages.getChat");
     packet->addParam("chat_id", _chatId);
     packet->addParam("fields", "photo_100");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
-    connection->appendQuery(packet);
+    Client::instance()->connection()->appendQuery(packet);
 }
 
 void GroupChatHandler::updatePeopleConversationText()
 {
     //todo
+}
+
+void GroupChatHandler::onUserChanged(const int i)
+{
+    refreshAvatars();
+    emit propertyChanged(_chatId, "users");
 }
 
 void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &result)
@@ -149,10 +251,13 @@ void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &res
     _title = response.value("title").toString();
     _adminId = response.value("adminId").toInt();
     _cover = response.value("photo_100").toString();
+    _kicked = (response.contains("kicked") && response.value("kicked").toInt());
+    _left = (response.contains("left") && response.value("left").toInt());
     ProfileList profiles = ProfileParser::parser(response.value("users").toList());
 
-    //_users->clear(); //todo
+    _users->clear();
     _users->add(profiles->toList());
+    setUsersCount(_users->count());
     refreshAvatars();
 
     emit propertyChanged(_chatId, "all");

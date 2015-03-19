@@ -17,7 +17,7 @@
 #include <QObject>
 #include <QStringList>
 #include "global.h"
-#include "connection.h"
+#include "client.h"
 #include "profileparser.h"
 
 class GroupChatHandler : public QObject
@@ -29,6 +29,7 @@ public:
     int id() const;
     int chatId() const;
     void addUser(ProfileItem profile);
+    void removeUser(const int uid);
     ProfileItem user(const int uid);
     QStringList avatars() const;
     void refreshAvatars();
@@ -41,6 +42,8 @@ public:
     int adminId() const;
     void setAdminId(const int adminId);
     bool isCover() const;
+    bool kicked() const;
+    bool left() const;
 
 private:
     int _id;
@@ -51,12 +54,16 @@ private:
     QString _cover;
     QString _title;
     int _adminId;
+    bool _kicked;
+    bool _left;
 
 public slots:
-    void getAllFields(Connection *connection);
+    void setActionMsg(const MessageItem msg);
+    void getAllFields();
     void updatePeopleConversationText();
 
 protected slots:
+    void onUserChanged(const int i);
     void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:

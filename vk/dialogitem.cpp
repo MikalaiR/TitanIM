@@ -107,6 +107,10 @@ void DialogItemPrivate::setMessage(const MessageItem message)
         {
             _id = _message->fromId();
         }
+        else if (_message->action() != MessageItemPrivate::None)
+        {
+            _groupChatHandler->setActionMsg(_message);
+        }
 
         if (!message->isOut() && _typingHandler && _typingHandler->isActive(message->uid()))
         {

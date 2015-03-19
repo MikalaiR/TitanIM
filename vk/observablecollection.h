@@ -51,6 +51,7 @@ public:
     inline T last() const { return _items.last(); }
     T item(const int id) const;
     void removeAt(const int i);
+    void clear();
     inline int count() const { return _items.count(); }
     inline QList<T> toList() const { return _items; }
     inline QVector<T> toVector() const { return _items.toVector(); }
@@ -136,6 +137,15 @@ inline void ObservableCollection<T>::removeAt(const int i)
 {
     disconnect(_items.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
     _items.removeAt(i);
+}
+
+template <typename T>
+void ObservableCollection<T>::clear()
+{
+    while (_items.count())
+    {
+        removeAt(0);
+    }
 }
 
 #endif // OBSERVABLECOLLECTION_H
