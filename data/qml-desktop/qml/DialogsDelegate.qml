@@ -29,7 +29,7 @@ Item {
         x: 10
         spacing: 7
 
-        AvatarItem {
+        Avatar {
             id: avatar
             width: 40
             height: 40

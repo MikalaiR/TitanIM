@@ -43,7 +43,7 @@ Item {
                 anchors.topMargin: -1
             }
 
-            AvatarItem {
+            Avatar {
                 id: avatar
                 width: 28
                 height: 28

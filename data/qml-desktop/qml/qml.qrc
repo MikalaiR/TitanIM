@@ -30,7 +30,6 @@
         <file>images/header_separator.png</file>
         <file>HeaderSeparator.qml</file>
         <file>AttachmentsView.qml</file>
-        <file>ImageMask.qml</file>
         <file>BubbleItem.qml</file>
         <file>Authorization.qml</file>
         <file>images/logo_full.png</file>
@@ -85,5 +84,6 @@
         <file>images/emoji_block5_selected.png</file>
         <file>images/emoji_block6_selected.png</file>
         <file>images/search.png</file>
+        <file>Avatar.qml</file>
     </qresource>
 </RCC>

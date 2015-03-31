@@ -12,52 +12,46 @@
 */
 
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
-Rectangle {
+Item {
     id: avatarImage
 
     property string source: ""
-    property int border: 2
     property bool online: false
-
-    scale: 0.0
-    color: "#868a8f"
-
-    Behavior on scale {
-        NumberAnimation {
-            easing.type: Easing.InOutQuad
-        }
-    }
 
     Image {
         id: img
-        width: parent.width - avatarImage.border
-        height: parent.height - avatarImage.border
+        width: parent.width
+        height: parent.height
         anchors.centerIn: parent
         fillMode: Image.PreserveAspectCrop
         smooth: true
         source: avatarImage.source
+        visible: false
+    }
+
+    Rectangle {
+        id: mask
+        anchors.fill: img
+        radius: 30
+        visible: false
+    }
+
+    OpacityMask {
+        anchors.fill: img
+        source: img
+        maskSource: mask
     }
 
     OnlineIcon {
         id: onlineIcon
         width: 12
         height: 12
-        anchors.left: parent.left
-        anchors.leftMargin: -3
-        anchors.top: parent.top
-        anchors.topMargin: -3
+        anchors.right: parent.right
+        anchors.rightMargin: -3
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: -3
         visible: avatarImage.online;
     }
-
-    states: [
-        State {
-            name: "Show"
-            when: img.status == Image.Ready
-            PropertyChanges {
-                target: avatarImage
-                scale: 1
-            }
-        }
-    ]
 }

@@ -12,6 +12,7 @@
 */
 
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
 Item {
     id: bubbleItem
@@ -85,10 +86,9 @@ Item {
         active: bubbleItem.attachments && !body.text.length &&
                 bubbleItem.attachments.count() === 1 && attachmentsView.item.photoCount === 1
 
-        sourceComponent: ImageMask {
-            image: attachmentsView
-            mask: bubble
-            blendColor: isUnread ? chatFrame.unreadHighlightColor : chatFrame.backgroundColor
+        sourceComponent: OpacityMask {
+            source: attachmentsView
+            maskSource: bubble
         }
     }
 }

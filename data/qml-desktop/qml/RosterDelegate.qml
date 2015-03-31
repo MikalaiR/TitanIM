@@ -43,8 +43,8 @@ Item {
 
         AvatarImage {
             id: avatar
-            width: 30
-            height: 30
+            width: 35
+            height: 35
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -1
             source: model.decoration
