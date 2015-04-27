@@ -124,6 +124,11 @@ QPoint MainWindow::mapToGlobal(const int x, const int y) const
     return QWindow::mapToGlobal(QPoint(x, y));
 }
 
+int MainWindow::fontPointSize() const
+{
+    return 13; //todo
+}
+
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
 {
     dialogsHandler->model()->load();

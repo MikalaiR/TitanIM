@@ -43,7 +43,7 @@ Settings::Settings()
     #elif defined(Q_OS_UNIX)
     _dataDir = "/opt/titanim/data";
     #elif defined(Q_OS_WIN)
-    _dataDir = QCoreApplication::applicationDirPath() + "/data"
+    _dataDir = QCoreApplication::applicationDirPath() + "/data";
     #else
     _dataDir = "";
     qWarning() << "Warning: Unknown OS. Data dir not defined";

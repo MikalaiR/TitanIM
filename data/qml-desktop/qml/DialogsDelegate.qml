@@ -55,7 +55,7 @@ Item {
                     anchors.right: messageDate.left
                     anchors.rightMargin: 5
                     color: "black"
-                    font.pointSize: 13
+                    font.pointSize: main.fontPointSize
                     font.bold: true
                     font.family: "Helvetica"
                     elide: Text.ElideRight
@@ -69,7 +69,7 @@ Item {
                     anchors.verticalCenter: name.verticalCenter
                     color: "#1769ad"
                     font.family: "Helvetica"
-                    font.pointSize: 13 - 2
+                    font.pointSize: main.fontPointSize - 2
                     text: model.dateStr
                 }
             }
@@ -86,7 +86,7 @@ Item {
                     maximumLineCount: model.emoji ? 1 : 2
                     lineHeight: 0.9
                     color: "#707070"
-                    font.pointSize: 13 - 1
+                    font.pointSize: main.fontPointSize - 1
                     font.italic: model.typing
                     wrapMode: Text.Wrap
                     richText: model.typing ? dialogsHandler.typingText : model.body

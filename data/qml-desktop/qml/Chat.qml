@@ -65,7 +65,7 @@ Item {
                 }
 
                 TextShadow {
-                    font.pointSize: 13 - 2
+                    font.pointSize: main.fontPointSize - 2
                     color: "gray"
                     text: chats.currentChatDialog.description
                 }
@@ -213,7 +213,7 @@ Item {
             width: parent.width
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 18
+            font.pointSize: main.fontPointSize + 5
             font.bold: true
             font.family: "Helvetica"
             color: "#8B92A4"

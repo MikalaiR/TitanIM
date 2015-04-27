@@ -58,7 +58,7 @@ Item {
                             id: title
                             width: artist.width
                             color: "black"
-                            font.pointSize: 13 - 1
+                            font.pointSize: main.fontPointSize - 1
                             font.bold: true
                             elide: Text.ElideRight
                             text: modelData.title
@@ -68,7 +68,7 @@ Item {
                             id: durationText
                             anchors.bottom: title.bottom
                             color: "#505050"
-                            font.pointSize: 13 - 2
+                            font.pointSize: main.fontPointSize - 2
                             text: modelData.durationStr
                         }
                     }
@@ -77,7 +77,7 @@ Item {
                         id: artist
                         width: parent.width - durationText.width - 7
                         color: "#505050"
-                        font.pointSize: 13 - 1
+                        font.pointSize: main.fontPointSize - 1
                         elide: Text.ElideRight
                         text: modelData.artist
                     }

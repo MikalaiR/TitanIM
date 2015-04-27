@@ -61,7 +61,7 @@ Item {
                 id: name
                 width: parent.width
                 color: "black"
-                font.pointSize: 13
+                font.pointSize: main.fontPointSize
                 font.bold: true
                 font.family: "Helvetica"
                 elide: Text.ElideRight
@@ -76,7 +76,7 @@ Item {
                 lineHeight: 0.8
                 elide: Text.ElideRight
                 color: "#707070"
-                font.pointSize: 13 - 1
+                font.pointSize: main.fontPointSize - 1
                 wrapMode: Text.Wrap
                 text: model.activity
             }

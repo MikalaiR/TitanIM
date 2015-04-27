@@ -229,7 +229,7 @@ void Chat::markAsRead()
 
 QString Chat::actionToString(const QString &author, const int act, const QString &arg, const int sex)
 {
-    return Utils::actionToString(author, act, arg, (Sex)sex);
+    return Utils::actionToString(author, act, arg, sex);
 }
 
 void Chat::onMessageSending(const int internalMid)

@@ -43,7 +43,7 @@ Item {
                 anchors.left: parent.left
                 width: parent.width
                 color: "black"
-                font.pointSize: 13
+                font.pointSize: main.fontPointSize
                 font.bold: true
                 font.family: "Helvetica"
                 elide: Text.ElideRight
@@ -56,7 +56,7 @@ Item {
                 width: parent.width
                 color: "grey"
                 font.family: "Helvetica"
-                font.pointSize: 13 - 2
+                font.pointSize: main.fontPointSize - 2
                 elide: Text.ElideRight
                 text: qsTr("Wall post")
             }

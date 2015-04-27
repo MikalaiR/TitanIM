@@ -50,7 +50,7 @@ Item {
                 width: bubbleItem.maximumWidth
                 height: text.length ? implicitHeight + 2: 0
                 verticalAlignment: Text.AlignTop
-                font.pointSize: 13 - 1
+                font.pointSize: main.fontPointSize - 1
                 wrapMode: Text.Wrap
                 readOnly: true
                 selectByMouse: true
@@ -76,7 +76,7 @@ Item {
         anchors.rightMargin: 4
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
-        font.pointSize: 13 - 4
+        font.pointSize: main.fontPointSize - 4
         color: isError ? "#860004" : "#8B92A4"
         text: isError ? qsTr("error") : isSending ? qsTr("sending...") : time
     }

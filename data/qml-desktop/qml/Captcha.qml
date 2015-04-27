@@ -45,7 +45,7 @@ NotificationBox {
         TextField {
             id: textField
             width: image.width
-            font.pointSize: 13 - 1
+            font.pointSize: main.fontPointSize - 1
             placeholderText: qsTr("Enter code here")
 
             Keys.onReturnPressed: {

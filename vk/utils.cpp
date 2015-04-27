@@ -13,6 +13,7 @@
 
 #include "utils.h"
 #include "messageitem.h"
+#include "profileitem.h"
 
 qint64 Utils::_lambdaServerTime = 0;
 
@@ -274,7 +275,7 @@ QString Utils::pluralForm(const int n, const QString &form1, const QString &form
     return QString("%1 %2").arg(n).arg(form5);
 }
 
-QString Utils::lastSeenToString(const uint lastSeen, const Sex sex)
+QString Utils::lastSeenToString(const uint lastSeen, const int sex)
 {
     if (lastSeen == 0)
     {
@@ -283,7 +284,7 @@ QString Utils::lastSeenToString(const uint lastSeen, const Sex sex)
 
     QDateTime dateTime = QDateTime::fromTime_t(lastSeen);
 
-    QString prefix = (sex == Woman) ? QObject::tr("last seen", "woman") : QObject::tr("last seen", "man");
+    QString prefix = (sex == ProfileItemPrivate::Woman) ? QObject::tr("last seen", "woman") : QObject::tr("last seen", "man");
     int days = dateTime.daysTo(currentDateTime());
 
     switch (days) {
@@ -344,10 +345,10 @@ QString Utils::peopleConversation(const int count)
     return pluralForm(count, QObject::tr("member", "1"), QObject::tr("members", "2"), QObject::tr("members", "5"));
 }
 
-QString Utils::actionToString(const QString &author, const int act, const QString &arg, const Sex sex)
+QString Utils::actionToString(const QString &author, const int act, const QString &arg, const int sex)
 {
     QString text;
-    bool isWoman = (sex == Woman);
+    bool isWoman = (sex == ProfileItemPrivate::Woman);
 
     switch (act) {
     case MessageItemPrivate::Chat_photo_update:

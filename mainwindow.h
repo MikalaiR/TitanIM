@@ -29,11 +29,13 @@
 class MainWindow : public QtQuick2ApplicationViewer
 {
     Q_OBJECT
+    Q_PROPERTY(int fontPointSize READ fontPointSize CONSTANT)
 
 public:
     explicit MainWindow(QWindow *parent = 0);
     ~MainWindow();
     void showExpanded();
+    int fontPointSize() const;
     Q_INVOKABLE QPoint positionGlobalCenter(const int width, const int height) const;
     Q_INVOKABLE QPoint positionGlobalCursor() const;
     Q_INVOKABLE QPoint mapToGlobal(const int x, const int y) const;

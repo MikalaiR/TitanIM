@@ -94,7 +94,7 @@ Item {
                     id: body
                     width: chatDelegate.width * 0.9
                     horizontalAlignment: Text.AlignHCenter
-                    font.pointSize: 13 - 2
+                    font.pointSize: main.fontPointSize - 2
                     wrapMode: Text.Wrap
                     readOnly: true
                     selectByMouse: true

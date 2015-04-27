@@ -152,7 +152,7 @@ Item {
             z: -10
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 16
+            font.pointSize: main.fontPointSize + 3
             font.bold: true
             font.family: "Helvetica"
             color: "#8B92A4"

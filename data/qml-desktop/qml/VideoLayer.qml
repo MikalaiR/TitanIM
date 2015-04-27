@@ -38,7 +38,7 @@ Item {
         Text {
             id: text
             anchors.centerIn: parent
-            font.pointSize: 13 - 2
+            font.pointSize: main.fontPointSize - 2
             color: "white"
             text: video.durationStr
         }

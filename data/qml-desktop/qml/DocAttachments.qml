@@ -47,7 +47,7 @@ Item {
                     anchors.left: parent.left
                     width: parent.width
                     color: "black"
-                    font.pointSize: 13
+                    font.pointSize: main.fontPointSize
                     font.bold: true
                     font.family: "Helvetica"
                     elide: Text.ElideRight
@@ -60,7 +60,7 @@ Item {
                     width: parent.width
                     color: "grey"
                     font.family: "Helvetica"
-                    font.pointSize: 13 - 2
+                    font.pointSize: main.fontPointSize - 2
                     font.capitalization: Font.AllUppercase
                     elide: Text.ElideRight
                     text: model.ext + ", " + model.sizeStr
@@ -106,7 +106,7 @@ Item {
                 anchors.verticalCenter: background.verticalCenter
                 horizontalAlignment: isGif ? Text.AlignLeft : Text.AlignHCenter
                 color: "white"
-                font.pointSize: 13 - 2
+                font.pointSize: main.fontPointSize - 2
                 elide: Text.ElideMiddle
                 text: model.title
             }
@@ -120,7 +120,7 @@ Item {
                 horizontalAlignment: Text.AlignRight
                 visible: isGif
                 color: "white"
-                font.pointSize: 13 - 2
+                font.pointSize: main.fontPointSize - 2
                 elide: Text.ElideRight
                 text: model.sizeStr
             }

@@ -58,13 +58,6 @@ enum Status
     Online
 };
 
-enum Sex
-{
-    Unknown,
-    Woman,
-    Man
-};
-
 const int GROUP_CHAT_OFFSET = 2000000000;
 
 #endif // GLOBAL_H

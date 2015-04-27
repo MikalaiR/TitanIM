@@ -31,6 +31,13 @@ class ProfileItemPrivate : public NotifyPropertyBase
     Q_PROPERTY(int sex READ sex NOTIFY sexChanged) //todo
 
 public:
+    enum Sex
+    {
+        Unknown,
+        Woman,
+        Man
+    };
+
     ProfileItemPrivate();
     QString firstName() const;
     void setFirstName(const QString &firstName);

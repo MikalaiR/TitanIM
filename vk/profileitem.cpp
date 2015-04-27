@@ -59,7 +59,7 @@ QString ProfileItemPrivate::fullName() const
     return _firstName + " " + _lastName;
 }
 
-Sex ProfileItemPrivate::sex() const
+ProfileItemPrivate::Sex ProfileItemPrivate::sex() const
 {
     return _sex;
 }

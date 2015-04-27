@@ -25,7 +25,7 @@ Item {
         id: textShadow
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 3
-        font.pointSize: 13 - 2
+        font.pointSize: main.fontPointSize - 2
         font.bold: true
         font.family: "Helvetica"
         color: "#8B92A4"
