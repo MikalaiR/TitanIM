@@ -33,6 +33,7 @@ public:
         IdRole,
         UnreadCountRole,
         IsOutRole,
+        IsUnreadRole,
         OnlineRole,
         TypingRole,
         EmojiRole

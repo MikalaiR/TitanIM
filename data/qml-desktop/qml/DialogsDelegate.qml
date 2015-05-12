@@ -43,7 +43,7 @@ Item {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
             anchors.topMargin: 1
-            spacing: model.emoji && !model.typing ? 4 : -2
+            spacing: model.emoji && !model.typing ? 4 : -1
 
             Item {
                 width: parent.width
@@ -91,6 +91,20 @@ Item {
                     wrapMode: Text.Wrap
                     richText: model.typing ? dialogsHandler.typingText : model.body
                     activeFocusOnPress: false
+                }
+
+                Rectangle {
+                    id: unreadHighlight
+                    z: -1
+                    anchors.fill: textBody
+                    anchors.topMargin: 1
+                    anchors.leftMargin: -2
+                    anchors.bottomMargin: -3
+                    anchors.rightMargin: -2
+                    color: "#DFE3EA"
+                    opacity: 0.5
+                    radius: 3
+                    visible: model.isUnread
                 }
 
                 BadgeItem {

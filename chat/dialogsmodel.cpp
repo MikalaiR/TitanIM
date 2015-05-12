@@ -119,6 +119,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[IdRole] = "id";
     roles[UnreadCountRole] = "unreadCount";
     roles[IsOutRole] = "isOut";
+    roles[IsUnreadRole] = "isUnread";
     roles[OnlineRole] = "online";
     roles[TypingRole] = "typing";
     roles[EmojiRole] = "emoji";
@@ -168,6 +169,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case IsOutRole:
         return message->isOut();
+
+    case IsUnreadRole:
+        return message->isUnread();
 
     case OnlineRole:
         return !dialog->isGroupChat() && profile->online();
