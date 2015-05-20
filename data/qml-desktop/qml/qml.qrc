@@ -85,5 +85,6 @@
         <file>images/emoji_block6_selected.png</file>
         <file>images/search.png</file>
         <file>Avatar.qml</file>
+        <file>ButtonItem.qml</file>
     </qresource>
 </RCC>
