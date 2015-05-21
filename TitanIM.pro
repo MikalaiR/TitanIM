@@ -27,6 +27,9 @@ DEPLOYMENTFOLDERS = translations \
 CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
+macx:ICON = $${PWD}/icon.icns
+win32:RC_FILE = winRCFile.rc
+
 SOURCES += main.cpp \
     mainwindow.cpp \
     vk/client.cpp \
