@@ -28,6 +28,7 @@ CONFIG(debug, debug|release):DEPLOYMENTFOLDERS += qml
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 macx:ICON = $${PWD}/icon.icns
+macx:QMAKE_INFO_PLIST= $${PWD}/Info.plist
 win32:RC_FILE = winRCFile.rc
 
 SOURCES += main.cpp \
