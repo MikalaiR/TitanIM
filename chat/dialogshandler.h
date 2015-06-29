@@ -18,7 +18,7 @@
 #include <QSortFilterProxyModel>
 #include "dialogsmodel.h"
 #include "vk/client.h"
-#include "settings.h"
+#include "notification/notificator.h"
 #include "chats.h"
 
 class DialogsHandler : public QObject
@@ -55,7 +55,6 @@ public slots:
     void getCounterUnreadDialogs();
 
 protected slots:
-    void playSoundMessageIn();
     void setUnreadDialogs(const int unreadDialogs);
     void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
     void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);

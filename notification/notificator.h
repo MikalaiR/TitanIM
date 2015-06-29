@@ -11,33 +11,36 @@
  ***************************************************************************
 */
 
-#ifndef CHATSHANDLER_H
-#define CHATSHANDLER_H
+#ifndef NOTIFICATOR_H
+#define NOTIFICATOR_H
 
 #include <QObject>
-#include <QMap>
-#include "chat.h"
-#include "vk/client.h"
+#include <QPixmap>
+#include "vk/utils.h"
+#include "settings.h"
 
-class ChatsHandler : public QObject
+class Notificator : public QObject
 {
     Q_OBJECT
 
 public:
-    ChatsHandler();
-    ~ChatsHandler();
-    void create(const DialogItem dialog);
-    bool contains(const int id) const;
-    Chat* chat(const int id) const;
-    void clear();
+    static Notificator *instance();
+    static void destroy();
+    void showNotification(const int peer, const int mid, const QString &title, const QString &message, const bool withReply=false, const QPixmap &pixmap=QPixmap());
 
 private:
-    QMap<int, Chat*> _chats;
+    Notificator();
+    ~Notificator();
 
-protected slots:
-    void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
-    void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
-    void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+public slots:
+    void playSoundMessageIn();
+
+private:
+    static Notificator *aInstance;
+
+signals:
+    void notificationClicked(const int peer, const int mid);
+    void notificationReplied(const int peer, const int mid, const QString &response);
 };
 
-#endif // CHATSHANDLER_H
+#endif // NOTIFICATOR_H

@@ -121,13 +121,6 @@ void DialogsHandler::decUnreadDialogs()
     setUnreadDialogs(_unreadDialogs - 1);
 }
 
-void DialogsHandler::playSoundMessageIn()
-{
-    static QString fileName = Settings::instance()->dataDir() + "/sounds/message.wav";
-    static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
-    Utils::playSound(fileName, cmd);
-}
-
 void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
 {
     //todo fixme
@@ -180,9 +173,10 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
         if (!_flagMarkAsRead)
         {
             dialog->incUnreadDialogs();
+            Notificator::instance()->showNotification(id, message->id(), dialog->displayName(), message->plainBody(), true);
         }
 
-        playSoundMessageIn();
+        Notificator::instance()->playSoundMessageIn();
     }
 
     emit newMessage(false, id);

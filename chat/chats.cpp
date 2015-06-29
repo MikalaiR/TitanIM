@@ -83,6 +83,11 @@ AttachmentsModel *Chats::currentChatAttachments() const
     return _currentChatAttachments;
 }
 
+Chat *Chats::chat(const int id) const
+{
+    return _chatsHandler->chat(id);
+}
+
 void Chats::setCurrentChat(const int id)
 {
     if (_currentChatId != id)
@@ -114,7 +119,7 @@ void Chats::setCurrentChat(const int id)
     }
 }
 
-void Chats::openChat(const DialogItem dialog)
+void Chats::openChat(const DialogItem dialog, const bool setCurrent)
 {
     int id = dialog->id();
 
@@ -123,7 +128,10 @@ void Chats::openChat(const DialogItem dialog)
         _chatsHandler->create(dialog);
     }
 
-    setCurrentChat(id);
+    if (setCurrent)
+    {
+        setCurrentChat(id);
+    }
 }
 
 void Chats::onTimerUpdaterTimeout()

@@ -80,7 +80,7 @@ void ChatModel::prepend(const MessageBaseItem item, const bool replace)
 
 void ChatModel::replaceAll(const MessageList items)
 {
-    remove(0, rowCount());
+    removeNotFake(0, rowCount());
     append(items);
 
     emit rowsAllReplaced();
@@ -101,6 +101,38 @@ bool ChatModel::remove(int row, int count)
     endRemoveRows();
 
     return true;
+}
+
+bool ChatModel::removeNotFake(int row, int count)
+{
+    if (count <= 0 || row < 0)
+        return false;
+
+    int n = row;
+    int k = 0;
+
+    for (int i = 0; i < count; i++)
+    {
+        if ( (_messages->at(n + k)->isFake()) && (_messages->at(n + k)->messageType() != MessageBase::Typing))
+        {
+            if (k > 0)
+            {
+                remove(n, k);
+            }
+
+            n++;
+            k = 0;
+        }
+        else
+        {
+            k++;
+        }
+    }
+
+    if (k > 0)
+    {
+        remove(n, k);
+    }
 }
 
 MessageBaseItem ChatModel::at(const int row) const

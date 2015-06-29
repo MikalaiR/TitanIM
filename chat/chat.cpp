@@ -227,6 +227,11 @@ void Chat::markAsRead()
     Client::instance()->connection()->appendQuery(packet);
 }
 
+void Chat::refreshHistory()
+{
+    _model->load(20);
+}
+
 QString Chat::actionToString(const QString &author, const int act, const QString &arg, const int sex)
 {
     return Utils::actionToString(author, act, arg, sex);

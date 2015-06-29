@@ -29,7 +29,14 @@ CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 macx:ICON = $${PWD}/icon.icns
 macx:QMAKE_INFO_PLIST= $${PWD}/Info.plist
+macx:LIBS += -framework Foundation
+macx:QMAKE_CXXFLAGS = -ObjC++
+macx:QMAKE_CFLAGS = -ObjC++.
+macx:QT += macextras
+
 win32:RC_FILE = winRCFile.rc
+
+QMAKE_CXXFLAGS += -std=gnu++11
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -97,7 +104,8 @@ SOURCES += main.cpp \
     vk/wallparser.cpp \
     cache/networkaccessmanagerfactory.cpp \
     vk/engine.cpp \
-    vk/servicemsgitem.cpp
+    vk/servicemsgitem.cpp \
+    notification/notificator.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -166,7 +174,12 @@ HEADERS += \
     vk/wallparser.h \
     cache/networkaccessmanagerfactory.h \
     vk/engine.h \
-    vk/servicemsgitem.h
+    vk/servicemsgitem.h \
+    notification/notificator.h \
+    notification/macnotification.h
+
+OBJECTIVE_SOURCES += \
+    notification/macnotification.mm
 
 RESOURCES += \
     data/qml-desktop/qml/qml.qrc \
@@ -186,9 +199,3 @@ QML_IMPORT_PATH =
 # Please do not modify the following two lines. Required for deployment.
 include(qtquick2applicationviewer/qtquick2applicationviewer.pri)
 qtcAddDeployment()
-
-OTHER_FILES += \
-    data/qml-desktop/qml/VideoLayer.qml \
-    data/qml-desktop/qml/PhotoVideoAttachments.qml \
-    data/qml-desktop/qml/VideoViewer.qml \
-    data/qml-desktop/qml/EmoticonsBox.qml

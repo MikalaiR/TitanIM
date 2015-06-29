@@ -23,6 +23,9 @@ MainWindow::MainWindow(QWindow *parent) :
 
     engine()->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
 
+    connect(Notificator::instance(), SIGNAL(notificationClicked(int,int)), SLOT(notificationClicked(int,int)));
+    connect(Notificator::instance(), SIGNAL(notificationReplied(int,int,QString)), SLOT(notificationReplied(int,int,QString)));
+
     QString emoticonsTheme = Settings::instance()->dataDir() + "/smilies/default/"; //todo
     QString emoticonsRecent = Settings::instance()->configDir() + "/recentEmojis";
     Emoticons::instance()->setCurrentTheme(emoticonsTheme);
@@ -65,6 +68,7 @@ MainWindow::~MainWindow()
     Client::instance()->destroy();
     Chats::instance()->destroy();
     Emoticons::instance()->destroy();
+    Notificator::instance()->destroy();
     Settings::instance()->destroy();
 }
 
@@ -99,6 +103,27 @@ void MainWindow::rosterCurrentIndexChanged(const int i)
     Chats::instance()->openChat(dialog);
 }
 
+void MainWindow::openChat(const int uid, const bool setCurrent)
+{
+    int index = dialogsHandler->indexOf(uid, false);
+
+    if (index > -1)
+    {
+        DialogItem dialog = dialogsHandler->dialog(index, false);
+        Chats::instance()->openChat(dialog, setCurrent);
+    }
+    else
+    {
+        DialogItem dialog = DialogItem::create();
+        dialog->setId(uid);
+        dialog->setProfile(Client::instance()->engine()->getProfile(uid));
+        dialog->createStructure();
+        dialog->getAllFields(Client::instance()->connection(), true);
+//        dialogsHandler->model()->append(dialog); //todo
+        Chats::instance()->openChat(dialog, setCurrent);
+    }
+}
+
 void MainWindow::showExpanded()
 {
     QtQuick2ApplicationViewer::showExpanded();
@@ -127,6 +152,18 @@ QPoint MainWindow::mapToGlobal(const int x, const int y) const
 int MainWindow::fontPointSize() const
 {
     return 13; //todo
+}
+
+void MainWindow::notificationClicked(const int peer, const int mid)
+{
+    openChat(peer);
+    show();
+}
+
+void MainWindow::notificationReplied(const int peer, const int mid, const QString &response)
+{
+    openChat(peer, false);
+    Chats::instance()->chat(peer)->sendMessage(response);
 }
 
 void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)

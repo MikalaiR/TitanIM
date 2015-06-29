@@ -38,7 +38,7 @@ public:
 
     MessageBase();
     MessageType messageType() const;
-    int isFake() const;
+    bool isFake() const;
     void setIsFake(const bool isFake);
     int uid() const;
     void setUid(const int uid);

@@ -20,10 +20,6 @@ ProfileItemPrivate::ProfileItemPrivate()
     _online = false;
     _lastSeen = 0;
     _isLoading = false;
-
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(fullNameChanged())); //todo
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(photoMediumRectChanged())); //todo
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(sexChanged())); //todo
 }
 
 QString ProfileItemPrivate::firstName() const
@@ -37,6 +33,7 @@ void ProfileItemPrivate::setFirstName(const QString &firstName)
     {
         _firstName = firstName;
         emitPropertyChanged("firstName");
+        emit fullNameChanged();
     }
 }
 
@@ -51,12 +48,25 @@ void ProfileItemPrivate::setLastName(const QString &lastName)
     {
         _lastName = lastName;
         emitPropertyChanged("lastName");
+        emit fullNameChanged();
     }
 }
 
 QString ProfileItemPrivate::fullName() const
 {
     return _firstName + " " + _lastName;
+}
+
+void ProfileItemPrivate::setFullName(const QString &firstName, const QString &lastName)
+{
+    if ((_firstName != firstName) || (_lastName != lastName))
+    {
+        _firstName = firstName;
+        _lastName = lastName;
+
+        emitPropertyChanged("fullName");
+        emit fullNameChanged();
+    }
 }
 
 ProfileItemPrivate::Sex ProfileItemPrivate::sex() const
@@ -70,6 +80,7 @@ void ProfileItemPrivate::setSex(const Sex sex)
     {
         _sex = sex;
         emitPropertyChanged("sex");
+        emit sexChanged();
     }
 }
 
@@ -84,6 +95,7 @@ void ProfileItemPrivate::setPhotoMediumRect(const QString &photoMediumRect)
     {
         _photoMediumRect = photoMediumRect;
         emitPropertyChanged("photoMediumRect");
+        emit photoMediumRectChanged();
     }
 }
 
@@ -149,12 +161,16 @@ bool ProfileItemPrivate::isLoading() const
     return _isLoading;
 }
 
+bool ProfileItemPrivate::isEmpty() const
+{
+    return _firstName.isEmpty();
+}
+
 void ProfileItemPrivate::join(const ProfileItem other)
 {
-    if (other && !other->firstName().isEmpty())
+    if (other && !other->isEmpty())
     {
-        setFirstName(other->firstName());
-        setLastName(other->lastName());
+        setFullName(other->firstName(), other->lastName());
         setSex(other->sex());
         setPhotoMediumRect(other->photoMediumRect());
         setOnline(other->online());
@@ -203,7 +219,7 @@ void ProfileItemPrivate::loadFinished(const Packet *sender, const QVariantMap &r
     }
     else
     {
-        setFirstName("DELETED");
+        setFullName("DELETED");
         setPhotoMediumRect("http://vk.com/images/camera_b.gif");
     }
 

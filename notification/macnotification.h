@@ -11,33 +11,34 @@
  ***************************************************************************
 */
 
-#ifndef CHATSHANDLER_H
-#define CHATSHANDLER_H
+#ifndef MACNOTIFICATION
+#define MACNOTIFICATION
 
 #include <QObject>
-#include <QMap>
-#include "chat.h"
-#include "vk/client.h"
+#include <QtMac>
+#include <QPixmap>
+#include <Cocoa/Cocoa.h>
 
-class ChatsHandler : public QObject
+class MacNotification : public QObject
 {
     Q_OBJECT
 
 public:
-    ChatsHandler();
-    ~ChatsHandler();
-    void create(const DialogItem dialog);
-    bool contains(const int id) const;
-    Chat* chat(const int id) const;
-    void clear();
+    static MacNotification *instance();
+    static void destroy();
+    void showNotification(const int peer, const int mid, const QString &title, const QString &message, const bool withReply=false, const QPixmap &pixmap=QPixmap());
+    void clearAllNotifications();
+    bool hasUserNotificationCenterSupport(void);
 
 private:
-    QMap<int, Chat*> _chats;
+    MacNotification();
 
-protected slots:
-    void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
-    void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
-    void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+private:
+    static MacNotification *aInstance;
+
+signals:
+    void notificationClicked(const int peer, const int mid);
+    void notificationReplied(const int peer, const int mid, const QString &response);
 };
 
-#endif // CHATSHANDLER_H
+#endif // MACNOTIFICATION

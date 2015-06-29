@@ -335,6 +335,20 @@ void LongPoll::handler(const QVariantList &updates)
     }
 }
 
+void LongPoll::messageAdd(const MessageItem message, const ProfileItem profile)
+{
+    setMaxMsgId(message->id());
+
+    if (message->isOut())
+    {
+        emit messageOutAdded(message->fromId(), message, profile);
+    }
+    else
+    {
+        emit messageInAdded(message->fromId(), message, profile);
+    }
+}
+
 void LongPoll::onRunningChanged(const bool running)
 {
     if (running)
@@ -426,15 +440,24 @@ void LongPoll::onMessageAdded(const QVariantList &update)
         message->getAllFields(_connection);
     }
 
-    setMaxMsgId(mid);
+    ProfileItem profile = _engine->getProfile(message->uid());
 
-    if (message->isOut())
+    if (!profile->isEmpty())
     {
-        emit messageOutAdded(fromId, message, _engine->getProfile(message->uid()));
+        messageAdd(message, profile);
     }
     else
     {
-        emit messageInAdded(fromId, message, _engine->getProfile(message->uid()));
+        auto pConnection = QSharedPointer<QMetaObject::Connection>(new QMetaObject::Connection);
+        QMetaObject::Connection &connection = *pConnection;
+
+        auto lambda  = [this, message, profile, pConnection, &connection]()
+        {
+            QObject::disconnect(connection);
+            messageAdd(message, profile);
+        };
+
+        connection = QObject::connect(profile.data(), &ProfileItemPrivate::fullNameChanged, lambda);
     }
 }
 

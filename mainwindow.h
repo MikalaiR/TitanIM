@@ -25,6 +25,7 @@
 #include "chat/dialogshandler.h"
 #include "roster/rosterhandler.h"
 #include "chat/chats.h"
+#include "notification/notificator.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {
@@ -51,8 +52,11 @@ public slots:
     void showMainPage();
     void dialogCurrentIndexChanged(const int i);
     void rosterCurrentIndexChanged(const int i);
+    void openChat(const int uid, const bool setCurrent=true);
 
 private slots:
+    void notificationClicked(const int peer, const int mid);
+    void notificationReplied(const int peer, const int mid, const QString &response);
     void onConnected(const int uid, const QString &token, const QString &secret);
     void onDisconnected();
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);

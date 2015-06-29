@@ -20,6 +20,7 @@ DialogItemPrivate::DialogItemPrivate()
     _typingHandler = 0;
     _unreadCount = 0;
     _isCurrent = false;
+    _isLoading = false;
 
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
     connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
@@ -201,9 +202,9 @@ bool DialogItemPrivate::isLoading() const
 
 bool DialogItemPrivate::isEmpty() const
 {
-    //todo _message.isEmpty(), _profile.isEmpty()
+    //todo _message.isEmpty()
     bool result = !(_message && _message->id() != -1) ||
-                  !(_profile && (!_profile->firstName().isEmpty() || _profile->isLoading())) ||
+                  !(_profile && (!_profile->isEmpty() || _profile->isLoading())) ||
                   (_message->isGroupChat() && !_groupChatHandler);
 
     return result;

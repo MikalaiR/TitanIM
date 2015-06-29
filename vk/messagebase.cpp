@@ -26,7 +26,7 @@ MessageBase::MessageType MessageBase::messageType() const
     return _messageType;
 }
 
-int MessageBase::isFake() const
+bool MessageBase::isFake() const
 {
     return _isFake;
 }

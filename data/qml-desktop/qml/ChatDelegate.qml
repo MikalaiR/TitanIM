@@ -85,7 +85,7 @@ Item {
             id: service
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            active: model.messageType === MessageBase.Service || model.action !== -1
+            active: model.messageType === MessageBase.Service || (model.messageType === MessageBase.Text && model.action !== -1)
 
             sourceComponent: Column {
                 spacing: 4

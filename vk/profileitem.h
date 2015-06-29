@@ -44,6 +44,7 @@ public:
     QString lastName() const;
     void setLastName(const QString &lastName);
     QString fullName() const;
+    void setFullName(const QString &firstName, const QString &lastName="");
     Sex sex() const;
     void setSex(const Sex sex);
     QString photoMediumRect() const;
@@ -58,6 +59,7 @@ public:
     QString alphabet() const;
     void setAlphabet(const QString &alphabet);
     bool isLoading() const;
+    bool isEmpty() const;
 
 private:
     QString _firstName;

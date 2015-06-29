@@ -57,6 +57,7 @@ public:
     void prepend(const MessageBaseItem item, const bool replace=false);
     void replaceAll(const MessageList items);
     bool remove(int row, int count);
+    bool removeNotFake(int row, int count);
     MessageBaseItem at(const int row) const;
     int indexOf(const int id) const;
     void markAsRead(const int id);

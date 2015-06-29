@@ -39,6 +39,7 @@ public:
     DialogItemPrivate* currentChatDialog() const;
     ChatSortFilterProxyModel* currentChatModel() const;
     AttachmentsModel* currentChatAttachments() const;
+    Chat* chat(const int id) const;
 
 private:
     explicit Chats();
@@ -57,7 +58,7 @@ protected:
     void setCurrentChat(const int id);
 
 public slots:
-    void openChat(const DialogItem dialog);
+    void openChat(const DialogItem dialog, const bool setCurrent=true);
 
 protected slots:
     void onTimerUpdaterTimeout();

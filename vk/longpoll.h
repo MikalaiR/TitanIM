@@ -77,6 +77,7 @@ private:
     void longPoll();
     void getLongPollHistory();
     void handler(const QVariantList &updates);
+    void messageAdd(const MessageItem message, const ProfileItem profile);
 
 private:
     LongPollVars _longPollVars;
@@ -115,8 +116,8 @@ signals:
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int id);
     void messageFlagsReseted(const int mid, const int mask, const int id, const uint date);
-    void messageInAdded(const int id, const MessageItem message, const ProfileItem profile=ProfileItem());
-    void messageOutAdded(const int id, const MessageItem message, const ProfileItem profile=ProfileItem());
+    void messageInAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void messageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
     void inMessagesRead(const int id, const int mid);
     void outMessagesRead(const int id, const int mid);
     void userStatusChanged(const int uid, const bool online);

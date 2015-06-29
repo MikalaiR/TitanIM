@@ -29,8 +29,7 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     profile->beginChangeGroupProperties();
 
     profile->setId(uid);
-    profile->setFirstName(firstName);
-    profile->setLastName(lastName);
+    profile->setFullName(firstName, lastName);
     profile->setSex((ProfileItemPrivate::Sex)sex);
     profile->setPhotoMediumRect(photoMediumRect);
     profile->setLastSeen(lastSeen);
