@@ -22,9 +22,6 @@ RosterHandler::RosterHandler()
     _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
     _proxy->setSourceModel(_model);
 
-    connect(Client::instance()->longPoll(), SIGNAL(userStatusChanged(int,bool)), this, SLOT(onUserStatusChanged(int,bool)));
-    connect(Client::instance()->longPoll(), SIGNAL(resumed()), this, SLOT(getFriendsOnline()));
-
     qRegisterMetaType<RosterModel*>("RosterModel*");
 }
 
@@ -81,14 +78,6 @@ ProfileItem RosterHandler::item(const int id) const
     return _model->item(id);
 }
 
-void RosterHandler::getFriendsOnline()
-{
-    Packet *packet = new Packet("friends.getOnline");
-    packet->addParam("order", "hints");
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onFriendsOnline(const Packet*,QVariantMap)));
-    Client::instance()->connection()->appendQuery(packet);
-}
-
 void RosterHandler::setFilterWildcard(const QString &pattern)
 {
     _proxy->setFilterRegExp(QString("%1|%2|%3")
@@ -97,31 +86,3 @@ void RosterHandler::setFilterWildcard(const QString &pattern)
                             .arg(Utils::fromTranslit(pattern)));
 }
 
-void RosterHandler::onUserStatusChanged(const int uid, const bool online)
-{
-    int i = _model->indexOf(uid);
-
-    if (i > -1)
-    {
-        _model->at(i)->setOnline(online);
-    }
-}
-
-void RosterHandler::onFriendsOnline(const Packet *sender, const QVariantMap &result)
-{
-    QVariantList response = result.value("response").toList();
-    QSet<int> uids;
-
-    foreach (QVariant item, response)
-    {
-        uids.insert(item.toInt());
-    }
-
-    for (int i = 0; i < _model->rowCount(); i++)
-    {
-        ProfileItem profile = _model->at(i);
-        profile->setOnline(uids.contains(profile->id()));
-    }
-
-    delete sender;
-}

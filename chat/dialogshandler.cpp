@@ -37,6 +37,7 @@ DialogsHandler::DialogsHandler()
     connect(longPoll, SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
     connect(longPoll, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
     connect(longPoll, SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
+    connect(longPoll, SIGNAL(outMessagesRead(int,int)), this, SLOT(onOutMessagesRead(int,int)));
     connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
     connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
 
@@ -224,11 +225,27 @@ void DialogsHandler::onInMessagesRead(const int id, const int mid)
 
         if (dialog->message()->id() == mid)
         {
+            dialog->message()->setIsUnread(false);
             dialog->setUnreadCount(0);
         }
         else
         {
             dialog->getLastMessage(Client::instance()->connection());
+        }
+    }
+}
+
+void DialogsHandler::onOutMessagesRead(const int id, const int mid)
+{
+    int i = _model->indexOf(id);
+
+    if (i > -1)
+    {
+        DialogItem dialog = _model->at(i);
+
+        if (dialog->message()->id() == mid)
+        {
+            dialog->message()->setIsUnread(false);
         }
     }
 }

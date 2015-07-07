@@ -279,7 +279,7 @@ QString Utils::lastSeenToString(const uint lastSeen, const int sex)
 {
     if (lastSeen == 0)
     {
-        return QObject::tr("offline");
+        return "";
     }
 
     QDateTime dateTime = QDateTime::fromTime_t(lastSeen);

@@ -40,6 +40,10 @@ Client::Client()
     _engine = new Engine(_connection);
     _longPoll = new LongPoll(_connection, _engine);
 
+    connect(_longPoll, SIGNAL(userOnline(int)), _engine, SLOT(setUserOnline(int)));
+    connect(_longPoll, SIGNAL(userOffline(int,bool)), _engine, SLOT(setUserOffline(int,bool)));
+    connect(_longPoll, SIGNAL(resumed()), _engine, SLOT(getFriendsOnline()));
+
     _authSignup = 0;
 }
 

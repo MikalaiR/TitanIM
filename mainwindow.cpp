@@ -163,6 +163,7 @@ void MainWindow::notificationClicked(const int peer, const int mid)
 void MainWindow::notificationReplied(const int peer, const int mid, const QString &response)
 {
     openChat(peer, false);
+    Chats::instance()->chat(peer)->markAsRead();
     Chats::instance()->chat(peer)->sendMessage(response);
 }
 

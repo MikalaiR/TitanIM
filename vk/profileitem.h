@@ -75,11 +75,13 @@ private:
 public slots:
     void join(const ProfileItem other);
     void getAllFields(Connection *connection);
+    void getLastActivity(Connection *connection);
     void updateLastSeenText();
 
 protected slots:
     void setIsLoading(const bool isLoading);
     void loadFinished(const Packet *sender, const QVariantMap &result);
+    void getLastActivityFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
     void fullNameChanged();

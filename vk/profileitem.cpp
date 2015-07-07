@@ -199,6 +199,15 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
     connection->appendQuery(packet);
 }
 
+void ProfileItemPrivate::getLastActivity(Connection *connection)
+{
+    Packet *packet = new Packet("messages.getLastActivity");
+    packet->addParam("user_id", _id);
+
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLastActivityFinished(const Packet*,QVariantMap)));
+    connection->appendQuery(packet);
+}
+
 void ProfileItemPrivate::updateLastSeenText()
 {
     if (!_online)
@@ -222,6 +231,16 @@ void ProfileItemPrivate::loadFinished(const Packet *sender, const QVariantMap &r
         setFullName("DELETED");
         setPhotoMediumRect("http://vk.com/images/camera_b.gif");
     }
+
+    delete sender;
+}
+
+void ProfileItemPrivate::getLastActivityFinished(const Packet *sender, const QVariantMap &result)
+{
+    QVariantMap response = result.value("response").toMap();
+
+    setOnline(response.value("online").toBool());
+    setLastSeen(response.value("time").toInt());
 
     delete sender;
 }

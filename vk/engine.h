@@ -35,10 +35,16 @@ private:
 
 public slots:
     int uid() const;
+    void setUserOnline(const int uid);
+    void setUserOffline(const int uid, const bool isAway);
+    void getFriendsOnline();
     ProfileItem getProfile() const;
     QVariant getUser();
     ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());
     QVariant getUser(const int id);
+
+protected slots:
+    void onFriendsOnline(const Packet *sender, const QVariantMap &result);
 
 private slots:
     void onConnected(const int uid, const QString &token, const QString &secret);

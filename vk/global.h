@@ -59,5 +59,6 @@ enum Status
 };
 
 const int GROUP_CHAT_OFFSET = 2000000000;
+const int USER_OFFLINE_AWAY = 15;
 
 #endif // GLOBAL_H

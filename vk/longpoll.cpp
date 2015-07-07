@@ -480,17 +480,16 @@ void LongPoll::onOutMessagesRead(const QVariantList &update)
 void LongPoll::onUserOnline(const QVariantList &update)
 {
     int uid = qAbs(update.value(1).toInt());
-    bool online = true;
 
-    emit userStatusChanged(uid, online);
+    emit userOnline(uid);
 }
 
 void LongPoll::onUserOffline(const QVariantList &update)
 {
     int uid = qAbs(update.value(1).toInt());
-    bool online = false;
+    bool isAway = update.value(2).toBool();
 
-    emit userStatusChanged(uid, online);
+    emit userOffline(uid, isAway);
 }
 
 void LongPoll::onGroupChatUpdated(const QVariantList &update)

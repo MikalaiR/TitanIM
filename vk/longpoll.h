@@ -120,7 +120,8 @@ signals:
     void messageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
     void inMessagesRead(const int id, const int mid);
     void outMessagesRead(const int id, const int mid);
-    void userStatusChanged(const int uid, const bool online);
+    void userOnline(const int uid);
+    void userOffline(const int uid, const bool isAway);
     void groupChatUpdated(const int chatId, const bool self);
     void chatTyping(const int id, const int uid, const int chatId);
     void userCall(const int uid, const QString &callId);

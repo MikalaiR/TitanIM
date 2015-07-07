@@ -53,21 +53,32 @@ Item {
                 source: chats.currentChatDialog.decoration
             }
 
-            Column {
+            Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: avatar.right
                 anchors.leftMargin: 10
-                spacing: -1
+                height: childrenRect.height
+                width: childrenRect.width
 
-                Text {
-                    id: name
-                    text: chats.currentChatDialog.displayName
+                Column {
+                    spacing: -1
+
+                    Text {
+                        id: name
+                        text: chats.currentChatDialog.displayName
+                    }
+
+                    TextShadow {
+                        id: desc
+                        font.pointSize: main.fontPointSize - 2
+                        color: "gray"
+                        text: chats.currentChatDialog.description
+                    }
                 }
 
-                TextShadow {
-                    font.pointSize: main.fontPointSize - 2
-                    color: "gray"
-                    text: chats.currentChatDialog.description
+                Behavior on height {
+                    enabled: desc.text && chatView.count > 0
+                    NumberAnimation { duration: 80 }
                 }
             }
 

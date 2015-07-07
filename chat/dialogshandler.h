@@ -60,6 +60,7 @@ protected slots:
     void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
     void onLongPollChatTyping(const int id, const int uid, const int chatId);
     void onInMessagesRead(const int id, const int mid);
+    void onOutMessagesRead(const int id, const int mid);
     void onMessageFlagsSet(const int mid, const int mask, const int id);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
     void onCounterUnreadDialogs(const Packet *sender, const QVariantMap &result);

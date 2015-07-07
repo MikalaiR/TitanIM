@@ -17,7 +17,6 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 #include "rostermodel.h"
-#include "vk/client.h"
 
 class RosterHandler : public QObject
 {
@@ -39,13 +38,8 @@ private:
     RosterModel *_model;
     QSortFilterProxyModel *_proxy;
 
-public slots:
-    void getFriendsOnline();
-
 protected slots:
     void setFilterWildcard(const QString &pattern);
-    void onUserStatusChanged(const int uid, const bool online);
-    void onFriendsOnline(const Packet *sender, const QVariantMap &result);
 };
 
 #endif // ROSTERHANDLER_H

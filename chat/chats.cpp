@@ -115,6 +115,11 @@ void Chats::setCurrentChat(const int id)
 
         chat->markAsRead();
 
+        if (_currentDialog->profile()->lastSeen() == 0)
+        {
+            _currentDialog->profile()->getLastActivity(Client::instance()->connection());
+        }
+
         emit currentChatChanged(id);
     }
 }
