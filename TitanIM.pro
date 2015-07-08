@@ -36,7 +36,11 @@ macx:QT += macextras
 
 win32:RC_FILE = winRCFile.rc
 
-QMAKE_CXXFLAGS += -std=gnu++11
+greaterThan(QT_VERSION, 5.5) {
+    CONFIG += C++11
+} else {
+    QMAKE_CXXFLAGS += -std=gnu++11
+}
 
 SOURCES += main.cpp \
     mainwindow.cpp \
