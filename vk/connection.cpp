@@ -23,12 +23,15 @@ Connection::Connection(const QString &clientId, const QString &clientSecret)
     _urlServers.auth_server = "https://oauth.vk.com/token";
     _urlServers.api_server = "https://api.vk.com";
 
-    _status = Offline;
     _isHttps = true;
     _isProcessing = false;
+    _isAuthorized = false;
+
+    bearer = new QNetworkConfigurationManager(this);
+    connect(bearer, SIGNAL(onlineStateChanged(bool)), SLOT(onNetworkOnlineChanged(bool)));
 
     tooManyRequestsTimer = new QTimer();
-    tooManyRequestsTimer->setInterval(500);
+    tooManyRequestsTimer->setInterval(700);
     connect(tooManyRequestsTimer, SIGNAL(timeout()), this, SLOT(onTooManyRequestsTimerTick()));
 }
 
@@ -37,33 +40,9 @@ Connection::~Connection()
     delete tooManyRequestsTimer;
 }
 
-void Connection::setStatus(const Status &status)
-{
-    if (_status != status)
-    {
-        _status = status;
-        onStatusChanged(_status);
-    }
-}
-
-bool Connection::isOnline() const
-{
-    return _status == Online;
-}
-
-bool Connection::isOffline() const
-{
-    return _status == Offline;
-}
-
-bool Connection::isHttps() const
-{
-    return _isHttps;
-}
-
 void Connection::connectToVk(const QString &username, const QString &password, const bool https)
 {
-    if (!isOffline() || username.isEmpty() || password.isEmpty())
+    if (isAuthorized() || username.isEmpty() || password.isEmpty())
     {
         return;
     }
@@ -81,7 +60,7 @@ void Connection::connectToVk(const QString &username, const QString &password, c
 
 void Connection::connectToVk(const int uid, const QString &token, const QString &secret)
 {
-    if (!isOffline() || token.isEmpty())
+    if (isAuthorized() || token.isEmpty())
     {
         return;
     }
@@ -95,12 +74,33 @@ void Connection::connectToVk(const int uid, const QString &token, const QString 
 
     setHttpsMode(_sessionVars.secret.isEmpty());
 
-    setStatus(Online);
+    checkToken();
 }
 
 void Connection::disconnectVk()
 {
-    setStatus(Offline);
+    int uid = _sessionVars.user_id;
+
+    disconnect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    httpApi->deleteLater();
+    _queryList.clear();
+    _sessionVars.user_id = 0;
+    _sessionVars.access_token.clear();
+    _sessionVars.secret.clear();
+    _isProcessing = false;
+    _isAuthorized = false;
+
+    emit logout(uid);
+}
+
+bool Connection::isAuthorized() const
+{
+    return _isAuthorized;
+}
+
+bool Connection::isHttps() const
+{
+    return _isHttps;
 }
 
 void Connection::setHttpsMode(const bool isHttps)
@@ -143,6 +143,20 @@ void Connection::getToken(const QString &version)
     httpAuth->get(request);
 }
 
+void Connection::checkToken()
+{
+    if (_sessionVars.access_token.isEmpty())
+    {
+        onError(ErrorResponse::LoadTokenFailed, "Token empty");
+        return;
+    }
+
+    Packet *packet = new Packet("execute.magic");
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(successfullyToken(const Packet*,QVariantMap)));
+    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(unsuccessfullyToken(const Packet*,const ErrorResponse*)));
+    appendQuery(packet);
+}
+
 void Connection::getTokenFinished(QNetworkReply *networkReply)
 {
     if (networkReply->error() != QNetworkReply::NoError)
@@ -178,49 +192,56 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
 
     if (response.contains("access_token"))
     {
-        loginSuccess(response);
+        _sessionVars.access_token = response.value("access_token").toString();
+        _sessionVars.user_id = response.value("user_id").toInt();
+        _sessionVars.expires_in = response.value("expires_in").toString();
+        _sessionVars.secret = response.contains("secret") ? response.value("secret").toString() : "";
+
+        checkToken();
     }
     else
     {
-        loginFailure(response);
+        onError(ErrorResponse::LoadTokenFailed, "Access_token not found");
     }
 
     httpAuth->deleteLater();
 }
 
-void Connection::loginSuccess(const QVariantMap &response)
+void Connection::successfullyToken(const Packet *sender, const QVariantMap &result)
 {
-    _sessionVars.access_token = response.value("access_token").toString();
-    _sessionVars.user_id = response.value("user_id").toInt();
-    _sessionVars.expires_in = response.value("expires_in").toString();
-    _sessionVars.secret = response.contains("secret") ? response.value("secret").toString() : "";
+    QVariantMap response = result.value("response").toMap();
 
-    if (!_sessionVars.access_token.isEmpty())
-    {
-        setStatus(Online);
-    }
-    else
-    {
-        onError(ErrorResponse::LoadTokenFailed, "Load token failed");
-    }
+    uint unixtime = response.value("time").toUInt();
+    QDateTime dateTime = QDateTime::fromTime_t(unixtime).toLocalTime();
+    Utils::setServerDateTime(dateTime);
+
+    _isAuthorized = true;
+    emit authorized(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
+
+    delete sender;
 }
 
-void Connection::loginFailure(const QVariantMap &response)
+void Connection::unsuccessfullyToken(const Packet *sender, const ErrorResponse *errorResponse)
 {
-    ErrorResponse *errorResponse = new ErrorResponse(response);
-    onError(errorResponse);
-
-    return;
+    onError(ErrorResponse::LoadTokenFailed, "Check token - failed");
+    delete sender;
 }
 
 void Connection::appendQuery(Packet *packet)
 {
-    if (isOffline())
+    if (_sessionVars.access_token.isEmpty())
     {
         return;
     }
 
-    _queryList.enqueue(packet);
+    if (bearer->isOnline() || !packet->isPerishable())
+    {
+        _queryList.enqueue(packet);
+    }
+    else
+    {
+        packet->setError(ErrorResponse::ServerIsNotAvailable, "Server is not available");
+    }
 
     if (!_isProcessing)
     {
@@ -230,7 +251,7 @@ void Connection::appendQuery(Packet *packet)
 
 void Connection::execQuery()
 {
-    if (isOffline() || _queryList.isEmpty() || _isProcessing)
+    if (_queryList.isEmpty() || _isProcessing || !bearer->isOnline())
     {
         return;
     }
@@ -247,36 +268,22 @@ void Connection::execQuery()
     httpApi->post(request, currentPacket->urlQuery());
 }
 
-void Connection::clearQuery(const ErrorResponse::Error &code, const QString &msg)
-{
-    while (!_queryList.isEmpty())
-    {
-        ErrorResponse *errorResponse = new ErrorResponse(code, msg);
-        _queryList.dequeue()->setError(errorResponse);
-    }
-
-    _isProcessing = false;
-}
-
 void Connection::apiResponse(QNetworkReply *networkReply)
 {
-    if (isOffline())
+    if (_queryList.isEmpty())
     {
+        _isProcessing = false;
         networkReply->deleteLater();
         return;
     }
 
     if (networkReply->error() != QNetworkReply::NoError)
     {
-        if (networkReply->error() == QNetworkReply::UnknownNetworkError)
+        networkReply->deleteLater();
+        _isProcessing = false;
+
+        if (!_queryList.isEmpty())
         {
-            networkReply->deleteLater();
-            onError(ErrorResponse::ServerIsNotAvailable, "Server is not available");
-        }
-        else
-        {
-            networkReply->deleteLater();
-            _isProcessing = false;
             execQuery();
         }
 
@@ -325,22 +332,50 @@ void Connection::setCaptcha(const QString &sid, const QString &text)
         _isProcessing = false;
         execQuery();
     }
-    else if (isOffline())
+    else if (!isAuthorized())
     {
         //captcha in authorization
         _loginVars.captcha_sid = sid;
         _loginVars.captcha_key = text;
         getToken();
     }
-    else
-    {
-        onError(ErrorResponse::UserAuthorizationFailed, "User authorization failed");
-    }
 }
 
 void Connection::cancelCaptcha()
 {
-    clearQuery(ErrorResponse::CaptchaCanceled, "Captcha canceled");
+    clearAllQuery(ErrorResponse::CaptchaCanceled, "Captcha canceled");
+}
+
+void Connection::clearAllQuery(const ErrorResponse::Error &code, const QString &msg)
+{
+    while (!_queryList.isEmpty())
+    {
+        ErrorResponse *errorResponse = new ErrorResponse(code, msg);
+        _queryList.dequeue()->setError(errorResponse);
+    }
+
+    _isProcessing = false;
+}
+
+void Connection::clearPerishableQuery(const ErrorResponse::Error &code, const QString &msg)
+{
+    for (int i = 0; i < _queryList.count(); i++)
+    {
+        Packet *packet = _queryList.at(i);
+
+        if (packet->isPerishable())
+        {
+            packet->setError(code, msg);
+            _queryList.removeAt(i);
+
+            i--;
+        }
+    }
+}
+
+SessionVars Connection::session() const
+{
+    return _sessionVars;
 }
 
 void Connection::onTooManyRequestsTimerTick()
@@ -353,21 +388,30 @@ void Connection::onTooManyRequestsTimerTick()
     }
 }
 
-void Connection::onStatusChanged(const Status &status)
+void Connection::onNetworkOnlineChanged(const bool isOnline)
 {
-    switch (status)
-    {
-    case Online:
-    {
-        onConnected();
-        break;
-    }
+    static bool _isOnline = !isOnline;
 
-    case Offline:
+    if (_isOnline != isOnline)
     {
-        onDisconnected();
-        break;
-    }
+        _isOnline = isOnline;
+
+        if (isAuthorized())
+        {
+            emit networkOnlineChanged(isOnline);
+        }
+
+        if (!_queryList.isEmpty())
+        {
+            if (isOnline)
+            {
+                execQuery();
+            }
+            else
+            {
+                clearPerishableQuery(ErrorResponse::ServerIsNotAvailable, "Server is not available");
+            }
+        }
     }
 }
 
@@ -385,26 +429,11 @@ void Connection::onHttpsModeChanged(const bool isHttps)
     }
 }
 
-void Connection::onConnected()
-{
-    emit connected(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
-}
-
-void Connection::onDisconnected()
-{
-    disconnect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
-    httpApi->deleteLater();
-    _queryList.clear();
-    _isProcessing = false;
-
-    emit disconnected();
-}
-
 void Connection::onError(const ErrorResponse *errorResponse)
 {
     if (errorResponse->fatal())
     {
-        setStatus(Offline);
+        disconnectVk();
     }
 
     switch (errorResponse->code())

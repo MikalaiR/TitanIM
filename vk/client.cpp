@@ -33,16 +33,17 @@ void Client::destroy()
 Client::Client()
 {
     _connection = new Connection(clientId, clientSecret);
-    connect(_connection, SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
-    connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
+    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
+    connect(_connection, SIGNAL(networkOnlineChanged(bool)), this, SLOT(onNetworkOnlineChanged(bool)));
 
     _engine = new Engine(_connection);
     _longPoll = new LongPoll(_connection, _engine);
 
     connect(_longPoll, SIGNAL(userOnline(int)), _engine, SLOT(setUserOnline(int)));
     connect(_longPoll, SIGNAL(userOffline(int,bool)), _engine, SLOT(setUserOffline(int,bool)));
-    connect(_longPoll, SIGNAL(resumed()), _engine, SLOT(getFriendsOnline()));
+    connect(_longPoll, SIGNAL(obsoleteFriendsOnline()), _engine, SLOT(getFriendsOnline()));
 
     _authSignup = 0;
 }
@@ -89,27 +90,19 @@ ProfileItem Client::profile() const
     return _engine->getProfile();
 }
 
-void Client::getServerTime()
-{
-    Packet *serverTime = new Packet("utils.getServerTime");
-    connect(serverTime, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onServerTime(const Packet*,QVariantMap)));
-    _connection->appendQuery(serverTime);
-}
-
 void Client::trackVisitor()
 {
     Packet *visitor = new Packet("stats.trackVisitor");
     _connection->appendQuery(visitor);
 }
 
-void Client::onConnected(const int uid, const QString &token, const QString &secret)
+void Client::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
-    getServerTime(); //todo before connected
     trackVisitor();
     _longPoll->start();
 }
 
-void Client::onDisconnected()
+void Client::onLogout(const int uid)
 {
     _longPoll->stop();
 }
@@ -118,11 +111,14 @@ void Client::onError(const ErrorResponse::Error &error, const QString &text, con
 {
 }
 
-void Client::onServerTime(const Packet *sender, const QVariantMap &result)
+void Client::onNetworkOnlineChanged(const bool isOnline)
 {
-    uint unixtime = result.value("response").toUInt();
-    QDateTime dateTime = QDateTime::fromTime_t(unixtime).toLocalTime();
-    Utils::setServerDateTime(dateTime);
-
-    delete sender;
+    if (isOnline)
+    {
+        _longPoll->resume();
+    }
+    else
+    {
+        _longPoll->stop();
+    }
 }

@@ -36,9 +36,13 @@ MainWindow::MainWindow(QWindow *parent) :
     connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
     connect(authorization, SIGNAL(showMainPage()), this, SLOT(showMainPage()));
 
-    connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
+    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
+
+    connect(Client::instance()->longPoll(), SIGNAL(started()), this, SLOT(onLongPollStarted()));
+    connect(Client::instance()->longPoll(), SIGNAL(stopped()), this, SLOT(onLongPollStopped()));
+    connect(Client::instance()->longPoll(), SIGNAL(rebuild()), this, SLOT(onRebuild()));
 
     dialogsHandler = new DialogsHandler();
     rosterHandler = new RosterHandler();
@@ -56,7 +60,7 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType(QUrl("qrc:/qml/VideoViewer.qml"), "TitanIM.Viewer", 1, 0, "VideoViewer");
     qmlRegisterSingletonType(QUrl("qrc:/qml/EmoticonsBox.qml"), "TitanIM.Tool", 1, 0, "EmoticonsBox");
 
-    setTitle("TitanIM");
+    setTitle(QCoreApplication::applicationName());
     authorization->connectToVk();
 }
 
@@ -167,17 +171,38 @@ void MainWindow::notificationReplied(const int peer, const int mid, const QStrin
     Chats::instance()->chat(peer)->sendMessage(response);
 }
 
-void MainWindow::onConnected(const int uid, const QString &token, const QString &secret)
+void MainWindow::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
     dialogsHandler->model()->load();
     rosterHandler->model()->load();
 }
 
-void MainWindow::onDisconnected()
+void MainWindow::onLogout(const int uid)
 {
+    //todo
+    setTitle(QCoreApplication::applicationName());
 }
 
 void MainWindow::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
     qDebug() << "ERROR:" << error << text; //todo
+}
+
+void MainWindow::onLongPollStarted()
+{
+    setTitle(QCoreApplication::applicationName());
+}
+
+void MainWindow::onLongPollStopped()
+{
+    if (Client::instance()->connection()->isAuthorized())
+    {
+        setTitle(QCoreApplication::applicationName() + " - " + tr("Connecting..."));
+    }
+}
+
+void MainWindow::onRebuild()
+{
+    dialogsHandler->model()->load();
+    rosterHandler->model()->load();
 }

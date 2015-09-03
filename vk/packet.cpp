@@ -18,6 +18,7 @@ Packet::Packet(const QString &method, const QString &version)
     _method = method;
     _id = 0;
     _paramsPacket.clear();
+    _isPerishable = false;
     _errorResponse = 0;
 
     addParam("v", version);
@@ -44,6 +45,16 @@ void Packet::setId(const int id)
 QString Packet::method() const
 {
     return _method;
+}
+
+bool Packet::isPerishable() const
+{
+    return _isPerishable;
+}
+
+void Packet::setPerishable(const bool isPerishable)
+{
+    _isPerishable = isPerishable;
 }
 
 QString Packet::dataUser() const
@@ -145,6 +156,12 @@ void Packet::setError(ErrorResponse *errorResponse)
     {
         deleteLater();
     }
+}
+
+void Packet::setError(const ErrorResponse::Error &code, const QString &msg)
+{
+    ErrorResponse *error = new ErrorResponse(code, msg);
+    setError(error);
 }
 
 bool Packet::contains(const QString &key)

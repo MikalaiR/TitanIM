@@ -31,7 +31,7 @@ DialogsHandler::DialogsHandler()
 
     LongPoll *longPoll = Client::instance()->longPoll();
 
-    connect(longPoll, SIGNAL(resumed()), this, SLOT(getCounterUnreadDialogs()));
+    connect(longPoll, SIGNAL(obsoleteFriendsOnline()), this, SLOT(getCounterUnreadDialogs()));
     connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));

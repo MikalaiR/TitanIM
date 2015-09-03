@@ -32,6 +32,7 @@ private:
     Connection *_connection;
     ProfileItem _selfProfile;
     QHash<int, ProfileItem> *_profiles;
+    int _maxMsgId;
 
 public slots:
     int uid() const;
@@ -42,13 +43,15 @@ public slots:
     QVariant getUser();
     ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());
     QVariant getUser(const int id);
+    int maxMsgId() const;
+    void setMaxMsgId(const int mid);
 
 protected slots:
     void onFriendsOnline(const Packet *sender, const QVariantMap &result);
 
 private slots:
-    void onConnected(const int uid, const QString &token, const QString &secret);
-    void onDisconnected();
+    void onAuthorized(const int uid, const QString &token, const QString &secret);
+    void onLogout(const int uid);
 };
 
 #endif // ENGINE_H

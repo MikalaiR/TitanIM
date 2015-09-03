@@ -21,11 +21,12 @@ LongPoll::LongPoll(Connection *connection, Engine *engine)
     _engine = engine;
 
     _longPollVars.wait = 25;
-    _longPollVars.max_msg_id = 0;
-    _running = false;
+    _status = Offline;
 
-    httpLongPoll = new QNetworkAccessManager(this);
-    connect(httpLongPoll, SIGNAL(finished(QNetworkReply*)), this, SLOT(longPollResponse(QNetworkReply*)));
+    _httpLongPoll = new QNetworkAccessManager(this);
+    connect(_httpLongPoll, SIGNAL(finished(QNetworkReply*)), this, SLOT(longPollResponse(QNetworkReply*)));
+
+    connect(this, SIGNAL(rebuild()), this, SLOT(onRebuild()));
 }
 
 int LongPoll::wait() const
@@ -38,51 +39,31 @@ void LongPoll::setWait(const int sec)
     _longPollVars.wait = sec;
 }
 
-int LongPoll::maxMsgId() const
-{
-    return _longPollVars.max_msg_id;
-}
-
-void LongPoll::setMaxMsgId(const int mid)
-{
-    if (mid > _longPollVars.max_msg_id)
-    {
-        _longPollVars.max_msg_id = mid;
-    }
-}
-
 bool LongPoll::isRunning() const
 {
-    return _running;
+    return _status == Online;
 }
 
 void LongPoll::start()
 {
-    setRunning(true);
+    setStatus(Connecting);
+    getLongPollServer();
 }
 
 void LongPoll::stop()
 {
-    setRunning(false);
+    setStatus(Offline);
 }
 
 void LongPoll::resume()
 {
-    getLongPollHistory();
-}
-
-void LongPoll::setRunning(const bool running)
-{
-    if (running != _running)
-    {
-        _running = running;
-        onRunningChanged(_running);
-    }
+    setStatus(Connecting);
+    longPoll();
 }
 
 void LongPoll::getLongPollServer()
 {
-    if (!isRunning())
+    if (_status == Offline)
     {
         return;
     }
@@ -90,6 +71,7 @@ void LongPoll::getLongPollServer()
     bool isHttps = _connection->isHttps();
 
     Packet *packet = new Packet("messages.getLongPollServer");
+    packet->setPerishable(true);
     packet->addParam("use_ssl", QString::number(isHttps));
     packet->addParam("need_pts", 1);
     packet->setDataUser(isHttps ? "https://" : "http://");
@@ -108,13 +90,29 @@ void LongPoll::getLongPollServerFinished(const Packet *sender, const QVariantMap
 
     delete sender;
 
-    longPoll();
+    if (_longPollVars.ts.isEmpty())
+    {
+        getLongPollServer();
+        return;
+    }
+
+    if (_status != Offline)
+    {
+        setStatus(Online);
+        longPoll();
+    }
 }
 
 void LongPoll::longPoll()
 {
-    if (!isRunning())
+    if (_status == Offline)
     {
+        return;
+    }
+
+    if (_longPollVars.ts.isEmpty())
+    {
+        emit rebuild();
         return;
     }
 
@@ -122,22 +120,25 @@ void LongPoll::longPoll()
             .arg(_longPollVars.server)
             .arg(_longPollVars.key)
             .arg(_longPollVars.ts)
-            .arg(_longPollVars.wait);
+            .arg(_status == Connecting ? 3 : _longPollVars.wait);
 
     QNetworkRequest request;
     request.setUrl(requestUrl);
-    httpLongPoll->get(request);
+    QNetworkReply *replyLongPoll = _httpLongPoll->get(request);
+    connect(this, SIGNAL(stopped()), replyLongPoll, SLOT(abort()));
 }
 
 void LongPoll::longPollResponse(QNetworkReply *networkReply)
 {
-    if (!isRunning())
+    if (_status == Offline)
     {
+        networkReply->deleteLater();
         return;
     }
 
-    if (networkReply->error() != QNetworkReply::NoError)
+    if (networkReply->error() != QNetworkReply::NoError || networkReply->bytesAvailable() == 0)
     {
+        networkReply->deleteLater();
         getLongPollServer();
         return;
     }
@@ -145,14 +146,24 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
     QVariantMap response = Utils::parseJSON(networkReply->readAll()).toMap();
     networkReply->deleteLater();
 
-    if (response.isEmpty() || response.contains("failed"))
+    if (response.contains("failed"))
     {
-        getLongPollServer();
+        if (response.value("failed").toInt() == 2 && _status == Online)
+        {
+            getLongPollServer();
+        }
+        else
+        {
+            getLongPollHistory();
+        }
+
         return;
     }
 
     _longPollVars.ts = response.value("ts").toString();
     QVariantList updates = response.value("updates").toList();
+
+    setStatus(Online);
 
     handler(updates);
     longPoll();
@@ -161,9 +172,10 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
 void LongPoll::getLongPollHistory()
 {
     Packet *packet = new Packet("execute.messagesGetLongPollHistory");
+    packet->setPerishable(true);
     packet->addParam("ts", _longPollVars.ts);
     packet->addParam("pts", _longPollVars.pts);
-    packet->addParam("max_msg_id", _longPollVars.max_msg_id);
+    packet->addParam("max_msg_id", _engine->maxMsgId());
     packet->addParam("events_limit", 35000);
     packet->addParam("msgs_limit", 7000);
     packet->addParam("fields", "photo_100,online,last_seen,sex");
@@ -179,7 +191,7 @@ void LongPoll::getLongPollHistoryFinished(const Packet *sender, const QVariantMa
 
     if (response.contains("more"))
     {
-        emit rebase();
+        emit rebuild();
         delete sender;
         return;
     }
@@ -217,21 +229,49 @@ void LongPoll::getLongPollHistoryFinished(const Packet *sender, const QVariantMa
         }
     }
 
-    setMaxMsgId(maxMid);
+    _engine->setMaxMsgId(maxMid);
 
     QVariantList updates = response.value("history").toList();
     handler(updates);
 
-    emit resumed();
-    setRunning(true);
+    setStatus(Online);
+    getLongPollServer();
 
+    emit obsoleteFriendsOnline();
     delete sender;
 }
 
 void LongPoll::getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse)
 {
-    emit rebase();
+    if (errorResponse->code() != ErrorResponse::ServerIsNotAvailable)
+    {
+        emit rebuild();
+    }
+
     delete sender;
+}
+
+void LongPoll::onRebuild()
+{
+    getLongPollServer();
+}
+
+void LongPoll::setStatus(const Status status)
+{
+    if (status != _status)
+    {
+        _status = status;
+
+        switch (_status) {
+        case Online:
+            emit started();
+            break;
+
+        case Offline:
+            emit stopped();
+            break;
+        }
+    }
 }
 
 void LongPoll::handler(const QVariantList &updates)
@@ -337,7 +377,7 @@ void LongPoll::handler(const QVariantList &updates)
 
 void LongPoll::messageAdd(const MessageItem message, const ProfileItem profile)
 {
-    setMaxMsgId(message->id());
+    _engine->setMaxMsgId(message->id());
 
     if (message->isOut())
     {
@@ -346,14 +386,6 @@ void LongPoll::messageAdd(const MessageItem message, const ProfileItem profile)
     else
     {
         emit messageInAdded(message->fromId(), message, profile);
-    }
-}
-
-void LongPoll::onRunningChanged(const bool running)
-{
-    if (running)
-    {
-        getLongPollServer();
     }
 }
 

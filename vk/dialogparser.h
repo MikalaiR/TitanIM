@@ -15,6 +15,7 @@
 #define DIALOGPARSER_H
 
 #include <QObject>
+#include "client.h"
 #include "dialogitem.h"
 #include "dialoglist.h"
 #include "messageparser.h"

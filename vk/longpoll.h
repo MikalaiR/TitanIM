@@ -64,15 +64,13 @@ public:
     LongPoll(Connection *connection, Engine *engine);
     int wait() const;
     void setWait(const int sec);
-    int maxMsgId() const;
-    void setMaxMsgId(const int mid);
     bool isRunning() const;
     void start();
     void stop();
     void resume();
 
 private:
-    void setRunning(const bool running);
+    void setStatus(const Status status);
     void getLongPollServer();
     void longPoll();
     void getLongPollHistory();
@@ -83,8 +81,8 @@ private:
     LongPollVars _longPollVars;
     Connection *_connection;
     Engine *_engine;
-    QNetworkAccessManager *httpLongPoll;
-    bool _running;
+    QNetworkAccessManager *_httpLongPoll;
+    Status _status;
 
 protected:
     void onMessageDeleted(const QVariantList &update);
@@ -103,15 +101,17 @@ protected:
     void onUnreadDialogs(const QVariantList &update);
 
 private slots:
-    void onRunningChanged(const bool running);
     void getLongPollServerFinished(const Packet *sender, const QVariantMap &result);
     void longPollResponse(QNetworkReply *networkReply);
     void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &result);
     void getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse);
+    void onRebuild();
 
 signals:
-    void resumed();
-    void rebase();
+    void started();
+    void stopped();
+    void rebuild();
+    void obsoleteFriendsOnline();
     void messageDeleted(const int mid);
     void messageFlagsReplaced(const int mid, const int flags);
     void messageFlagsSet(const int mid, const int mask, const int id);

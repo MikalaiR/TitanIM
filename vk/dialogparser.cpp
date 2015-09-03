@@ -77,5 +77,7 @@ DialogList DialogParser::parser(const QVariantList &items, const ProfileList &pr
         dialogs->add(dialog);
     }
 
+    Client::instance()->engine()->setMaxMsgId(dialogs->at(0)->message()->id());
+
     return dialogs;
 }

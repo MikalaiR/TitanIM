@@ -15,8 +15,8 @@
 
 Authorization::Authorization()
 {
-    connect(Client::instance()->connection(), SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
+    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
     connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SLOT(onValidation(QString)));
@@ -34,7 +34,7 @@ void Authorization::connectToVk()
 
         QString uid = Settings::instance()->lastUid();
         Settings::instance()->setCurrentUid(uid);
-        QString token = Settings::instance()->loadProfile("main/token", "").toString();
+        QString token = Settings::instance()->loadProfile("main/token", "none").toString();
         QString secret = Settings::instance()->loadProfile("main/secret", "").toString();
 
         Client::instance()->connection()->connectToVk(uid.toInt(), token, secret);
@@ -56,9 +56,9 @@ void Authorization::cancelCaptcha()
     Client::instance()->connection()->cancelCaptcha();
 }
 
-void Authorization::onConnected(const int uid, const QString &token, const QString &secret)
+void Authorization::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
-    qDebug() << "connecting" << " " << token << " " << secret;
+    qDebug() << "authorized" << " " << token << " " << secret;
 
     Settings::instance()->setCurrentUid(QString::number(uid));
     Settings::instance()->saveProfile("main/uid", uid);
@@ -69,9 +69,9 @@ void Authorization::onConnected(const int uid, const QString &token, const QStri
     emit showMainPage();
 }
 
-void Authorization::onDisconnected()
+void Authorization::onLogout(const int uid)
 {
-    qDebug() << "disconnecting";
+    qDebug() << "logout";
 }
 
 void Authorization::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)

@@ -31,6 +31,8 @@ public:
     int id() const;
     void setId(const int id);
     QString method() const;
+    bool isPerishable() const;
+    void setPerishable(const bool isPerishable);
     QString dataUser() const;
     void setDataUser(const QString &dataUser);
     QVariantMap result() const;
@@ -45,12 +47,14 @@ public:
     QString value(const QString &key);
     void setResult(const QVariantMap &result);
     void setError(ErrorResponse *errorResponse);
+    void setError(const ErrorResponse::Error &code, const QString &msg);
     bool contains(const QString &key);
 
 private:
     int _id;
     QString _method;
     QMap<QString, QString> _paramsPacket;
+    bool _isPerishable;
     QString _dataUser;
     QVariantMap _result;
     ErrorResponse *_errorResponse;

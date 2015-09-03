@@ -16,10 +16,11 @@
 Engine::Engine(Connection *connection)
 {
     _connection = connection;
-    connect(_connection, SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
-    connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));//todo
+    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
 
     _profiles = new QHash<int, ProfileItem>();
+    _maxMsgId = 0;
 
     _selfProfile = ProfileItem::create();
     QQmlEngine::setObjectOwnership(_selfProfile.data(), QQmlEngine::CppOwnership);
@@ -63,6 +64,7 @@ void Engine::setUserOffline(const int uid, const bool isAway)
 void Engine::getFriendsOnline()
 {
     Packet *packet = new Packet("friends.getOnline");
+    packet->setPerishable(true);
     packet->addParam("order", "hints");
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onFriendsOnline(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
@@ -108,6 +110,19 @@ QVariant Engine::getUser(const int id)
     return QVariant::fromValue(profile.data());
 }
 
+int Engine::maxMsgId() const
+{
+    return _maxMsgId;
+}
+
+void Engine::setMaxMsgId(const int mid)
+{
+    if (mid > _maxMsgId)
+    {
+        _maxMsgId = mid;
+    }
+}
+
 void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
 {
     QVariantList response = result.value("response").toList();
@@ -135,13 +150,13 @@ void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
     delete sender;
 }
 
-void Engine::onConnected(const int uid, const QString &token, const QString &secret)
+void Engine::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
     _selfProfile->setId(uid);
     _selfProfile->getAllFields(_connection);
     _profiles->insert(uid, _selfProfile);
 }
 
-void Engine::onDisconnected()
+void Engine::onLogout(const int uid)
 {
 }

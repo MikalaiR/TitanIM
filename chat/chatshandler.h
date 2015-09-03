@@ -38,6 +38,8 @@ protected slots:
     void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
     void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void onObsoleteFriendsOnline();
+    void onRebuild();
 };
 
 #endif // CHATSHANDLER_H

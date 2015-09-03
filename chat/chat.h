@@ -35,6 +35,8 @@ public:
     ~Chat();
     int id() const;
     bool isGroupChat() const;
+    bool isCurrent() const;
+    bool isBusy() const;
     DialogItem dialog() const;
     ChatModel* model() const;
     int countUnsent() const;

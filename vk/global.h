@@ -49,12 +49,12 @@ struct LongPollVars
     QString ts;
     QString pts;
     int wait;
-    int max_msg_id;
 };
 
 enum Status
 {
     Offline,
+    Connecting,
     Online
 };
 

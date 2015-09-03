@@ -32,8 +32,8 @@ public slots:
     void cancelCaptcha();
 
 private slots:
-    void onConnected(const int uid, const QString &token, const QString &secret);
-    void onDisconnected();
+    void onAuthorized(const int uid, const QString &token, const QString &secret);
+    void onLogout(const int uid);
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
     void onValidation(const QString &validationUri);
 

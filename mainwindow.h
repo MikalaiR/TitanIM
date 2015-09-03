@@ -57,9 +57,12 @@ public slots:
 private slots:
     void notificationClicked(const int peer, const int mid);
     void notificationReplied(const int peer, const int mid, const QString &response);
-    void onConnected(const int uid, const QString &token, const QString &secret);
-    void onDisconnected();
+    void onAuthorized(const int uid, const QString &token, const QString &secret);
+    void onLogout(const int uid);
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
+    void onLongPollStarted();
+    void onLongPollStopped();
+    void onRebuild();
 };
 
 #endif // MAINWINDOW_H

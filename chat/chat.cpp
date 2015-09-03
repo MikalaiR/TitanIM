@@ -61,6 +61,16 @@ bool Chat::isGroupChat() const
     return _dialog->isGroupChat();
 }
 
+bool Chat::isCurrent() const
+{
+    return _dialog->isCurrent();
+}
+
+bool Chat::isBusy() const
+{
+    return countUnsent() || outAttachmentsCount();
+}
+
 DialogItem Chat::dialog() const
 {
     return _dialog;

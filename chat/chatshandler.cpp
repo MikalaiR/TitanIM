@@ -20,6 +20,8 @@ ChatsHandler::ChatsHandler()
     connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
+    connect(longPoll, SIGNAL(obsoleteFriendsOnline()), this, SLOT(onObsoleteFriendsOnline()));
+    connect(longPoll, SIGNAL(rebuild()), this, SLOT(onRebuild()));
 }
 
 ChatsHandler::~ChatsHandler()
@@ -104,6 +106,41 @@ void ChatsHandler::onMessageFlagsReseted(const int mid, const int mask, const in
         if (contains(id))
         {
             chat(id)->model()->markAsRead(mid);
+        }
+    }
+}
+
+void ChatsHandler::onObsoleteFriendsOnline()
+{
+    QMapIterator<int, Chat*> i(_chats);
+    while (i.hasNext()) {
+        i.next();
+        Chat* _chat = i.value();
+
+        if (_chat->isCurrent())
+        {
+            _chat->dialog()->profile()->getLastActivity(Client::instance()->connection());
+        }
+    }
+}
+
+void ChatsHandler::onRebuild()
+{
+    QMapIterator<int, Chat*> i(_chats);
+    while (i.hasNext()) {
+        i.next();
+
+        int _key = i.key();
+        Chat* _chat = i.value();
+
+        if (_chat->isCurrent() || _chat->isBusy())
+        {
+            _chat->refreshHistory();
+        }
+        else
+        {
+            _chats.remove(_key);
+            delete _chat;
         }
     }
 }
