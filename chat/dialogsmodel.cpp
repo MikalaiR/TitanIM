@@ -240,6 +240,11 @@ void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList
     if (!sender->offset())
     {
         replaceAll(dialogs);
+
+        if (sender->unreadDialogs() > 0)
+        {
+            Notificator::instance()->playSoundMessageIn();
+        }
     }
     else
     {

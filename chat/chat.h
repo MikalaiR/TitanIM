@@ -40,6 +40,7 @@ public:
     DialogItem dialog() const;
     ChatModel* model() const;
     int countUnsent() const;
+    int countUnread() const;
     QString textMessage() const;
     void setTextMessage(const QString &text);
     AttachmentList* outAttachments() const;

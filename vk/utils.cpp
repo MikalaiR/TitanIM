@@ -544,3 +544,8 @@ QString Utils::fromTranslit(const QString &str)
 
     return result;
 }
+
+bool Utils::applicationIsActive()
+{
+    return QGuiApplication::focusWindow() != 0;
+}

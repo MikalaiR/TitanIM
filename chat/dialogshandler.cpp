@@ -145,7 +145,7 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
     int i = _model->indexOf(id);
 
     //todo fixme
-    if (id == Chats::instance()->currentChatId() && message->isUnread())
+    if (id == Chats::instance()->currentChatId() && message->isUnread() && Utils::applicationIsActive())
     {
         _flagMarkAsRead = true;
         Chats::instance()->currentChat()->markAsRead();

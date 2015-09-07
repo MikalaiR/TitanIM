@@ -14,6 +14,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QtGui/QGuiApplication>
 #include <QJsonDocument>
 #include <QCryptographicHash>
 #include <QStringBuilder>
@@ -56,6 +57,7 @@ public:
     static QString fileSizeToText(int size);
     static QString toTranslit(const QString &str);
     static QString fromTranslit(const QString &str);
+    static bool applicationIsActive();
 
 private:
     static qint64 _lambdaServerTime;

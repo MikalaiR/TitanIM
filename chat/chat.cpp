@@ -86,6 +86,11 @@ int Chat::countUnsent() const
     return _countUnsent;
 }
 
+int Chat::countUnread() const
+{
+    return _dialog->unreadCount();
+}
+
 QString Chat::textMessage() const
 {
     return _textMessage;

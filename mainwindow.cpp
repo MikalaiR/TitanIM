@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWindow *parent) :
     connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
     connect(authorization, SIGNAL(showMainPage()), this, SLOT(showMainPage()));
 
+    connect(this, SIGNAL(activeChanged()), this, SLOT(onActiveChanged()));
+
     connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
@@ -169,6 +171,14 @@ void MainWindow::notificationReplied(const int peer, const int mid, const QStrin
     openChat(peer, false);
     Chats::instance()->chat(peer)->markAsRead();
     Chats::instance()->chat(peer)->sendMessage(response);
+}
+
+void MainWindow::onActiveChanged()
+{
+    if (isActive() && Chats::instance()->currentChatId() != 0 && Chats::instance()->currentChat()->countUnread() > 0)
+    {
+        Chats::instance()->currentChat()->markAsRead();
+    }
 }
 
 void MainWindow::onAuthorized(const int uid, const QString &token, const QString &secret)
