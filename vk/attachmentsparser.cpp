@@ -17,9 +17,7 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
 {
     AttachmentList *attachments = new AttachmentList();
 
-    const QMetaObject &metaObject = Attachment::staticMetaObject;
-    QMetaEnum metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("AttachmentType"));
-
+    QMetaEnum metaEnum = Attachment::metaEnumerator("AttachmentType");
     int type;
 
     foreach (QVariant item, items)
@@ -27,7 +25,7 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
         QString strType = item.toMap()["type"].toString();
         QVariantMap attachment = item.toMap()[strType].toMap();
 
-        type = metaEnum.keyToValue(Utils::firstUpper(strType).toUtf8());
+        type = metaEnum.keyToValue(Utils::firstUpper(strType).toLatin1());
 
         switch (type) {
         case Attachment::Photo:

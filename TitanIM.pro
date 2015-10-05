@@ -109,7 +109,12 @@ SOURCES += main.cpp \
     cache/networkaccessmanagerfactory.cpp \
     vk/engine.cpp \
     vk/servicemsgitem.cpp \
-    notification/notificator.cpp
+    notification/notificator.cpp \
+    vk/uploadphotoitem.cpp \
+    vk/uploaditem.cpp \
+    vk/uploaddocitem.cpp \
+    vk/uploadaudioitem.cpp \
+    vk/uploadvideoitem.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -180,7 +185,12 @@ HEADERS += \
     vk/engine.h \
     vk/servicemsgitem.h \
     notification/notificator.h \
-    notification/macnotification.h
+    notification/macnotification.h \
+    vk/uploadphotoitem.h \
+    vk/uploaditem.h \
+    vk/uploaddocitem.h \
+    vk/uploadaudioitem.h \
+    vk/uploadvideoitem.h
 
 OBJECTIVE_SOURCES += \
     notification/macnotification.mm

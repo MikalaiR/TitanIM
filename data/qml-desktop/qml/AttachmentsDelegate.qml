@@ -19,12 +19,29 @@ Item {
     height: width - 2
 
     Image {
+        id: img
         width: parent.width - 9
         height: parent.height - 9
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         source: model.decoration
         smooth: true
+    }
+
+    Text {
+        anchors.left: img.left
+        anchors.leftMargin: 5
+        anchors.right: img.right
+        anchors.rightMargin: 5
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 1
+        horizontalAlignment: Text.AlignHCenter
+        elide: Text.ElideRight
+        color: "white"
+        font.pointSize: main.fontPointSize - 2
+        style: Text.Outline
+        styleColor: "black"
+        text: model.display
     }
 
     Image {

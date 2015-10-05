@@ -11,37 +11,24 @@
  ***************************************************************************
 */
 
-#ifndef UPLOADFILE_H
-#define UPLOADFILE_H
+#ifndef UPLOADVIDEOITEM_H
+#define UPLOADVIDEOITEM_H
 
 #include <QObject>
-#include <QFile>
-#include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QHttpMultiPart>
-#include <QMimeDatabase>
+#include "uploaditem.h"
+#include "videoitem.h"
 
-class UploadFile : public QObject
+class UploadVideoItem : public UploadItem
 {
     Q_OBJECT
 
 public:
-    explicit UploadFile(QObject *parent = 0, const int begin=0, const int end=100);
-    void upload(const QUrl &url, const QString &fileName, const QString &field, QNetworkAccessManager *nam);
+    UploadVideoItem(Connection *connection, QNetworkAccessManager *manager);
+    void upload(AttachmentItem item) const;
 
-private:
-    int _beginPercent;
-    int _endPercent;
-
-private slots:
-    void uploadProgressHandler(qint64 bytesSent, qint64 bytesTotal);
-
-signals:
-    void finished(const QByteArray &result);
-    void error();
-    void uploadProgress(const int percent);
+protected slots:
+    void onVideoSave(const Packet *sender, const QVariantMap &result);
+    void onUploadFileFinished(const QByteArray &result);
 };
 
-#endif // UPLOADFILE_H
+#endif // UPLOADVIDEOITEM_H

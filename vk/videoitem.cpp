@@ -111,11 +111,27 @@ void VideoItemPrivate::setAccessKey(const QString &accessKey)
     }
 }
 
-QUrl VideoItemPrivate::url() const
+QUrl VideoItemPrivate::link() const
 {
-    QString url = QString("https://vk.com/video%1_%2")
+    if (id() == 0) return QUrl();
+
+    QString link = QString("https://vk.com/video%1_%2")
             .arg(ownerId())
             .arg(id());
 
-    return QUrl(url);
+    return QUrl(link);
+}
+
+QUrl VideoItemPrivate::url() const
+{
+    return _url;
+}
+
+void VideoItemPrivate::setUrl(const QUrl &url)
+{
+    if (_url != url)
+    {
+        _url = url;
+        emitPropertyChanged("url");
+    }
 }

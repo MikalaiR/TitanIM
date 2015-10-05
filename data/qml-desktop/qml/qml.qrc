@@ -86,5 +86,8 @@
         <file>images/search.png</file>
         <file>Avatar.qml</file>
         <file>ButtonItem.qml</file>
+        <file>images/upload_audio.png</file>
+        <file>images/upload_doc.png</file>
+        <file>images/upload_video.png</file>
     </qresource>
 </RCC>

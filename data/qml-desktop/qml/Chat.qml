@@ -109,7 +109,6 @@ Item {
         FileDialog {
             id: fileDialog
             title: "Please choose a file"
-            nameFilters: ["Image files (*.jpg *.jpeg *.png *.bmp *.gif)"]
             selectMultiple: true
 
             onAccepted: {
@@ -195,20 +194,33 @@ Item {
                 active: chats.currentChatAttachments.count
 
                 sourceComponent: ListView {
+                    property int oldCount: 0
                     spacing: 3
                     clip: true
                     orientation: ListView.Horizontal
                     model: chats.currentChatAttachments
                     delegate: AttachmentsDelegate { }
                     footer: Item { width: attachList.anchors.leftMargin }
+
                     remove: Transition {
                         ParallelAnimation {
                             NumberAnimation { property: "opacity"; to: 0; duration: 200 }
                             NumberAnimation { properties: "y"; to: 100; duration: 200 }
                         }
                     }
+
                     removeDisplaced: Transition {
                         NumberAnimation { properties: "x,y"; duration: 200 }
+                    }
+
+                    onCountChanged: {
+                        if (oldCount !== count) {
+                            if (count > oldCount) {
+                                positionViewAtEnd()
+                            }
+
+                            oldCount = count
+                        }
                     }
                 }
             }

@@ -17,6 +17,9 @@
 #include <QAbstractListModel>
 #include "vk/attachmentlist.h"
 #include "vk/photoitem.h"
+#include "vk/videoitem.h"
+#include "vk/audioitem.h"
+#include "vk/docitem.h"
 
 class AttachmentsModel : public QAbstractListModel
 {

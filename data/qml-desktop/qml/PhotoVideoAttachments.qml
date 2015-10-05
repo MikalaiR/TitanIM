@@ -73,7 +73,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     maximumValue: 100
                     value: modelData.uploadProgress
-                    visible: modelData.uploadProgress !== -1
+                    visible: modelData.uploadProgress !== -1 && modelData.uploadProgress !== 100
 
                     style: ProgressBarStyle {
                         background: Rectangle {
@@ -94,6 +94,16 @@ Item {
                 }
 
                 Loader {
+                    anchors.fill: parent
+                    active: modelData.isUploadError
+
+                    sourceComponent: Rectangle {
+                        color: "white"
+                        opacity: 0.7
+                    }
+                }
+
+                Loader {
                     property var video: modelData
 
                     anchors.fill: parent
@@ -107,7 +117,7 @@ Item {
                         if (modelData.type === Attachment.Photo) {
                             PhotoViewer.setItems(items, index)
                         } else {
-                            Qt.openUrlExternally(modelData.url) //todo add videoViewer
+                            Qt.openUrlExternally(modelData.link) //todo add videoViewer
                         }
                     }
                 }

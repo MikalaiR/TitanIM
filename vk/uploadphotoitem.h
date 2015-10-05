@@ -11,37 +11,25 @@
  ***************************************************************************
 */
 
-#ifndef UPLOADFILE_H
-#define UPLOADFILE_H
+#ifndef UPLOADPHOTOITEM_H
+#define UPLOADPHOTOITEM_H
 
 #include <QObject>
-#include <QFile>
-#include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QHttpMultiPart>
-#include <QMimeDatabase>
+#include "uploaditem.h"
+#include "photoitem.h"
 
-class UploadFile : public QObject
+class UploadPhotoItem : public UploadItem
 {
     Q_OBJECT
 
 public:
-    explicit UploadFile(QObject *parent = 0, const int begin=0, const int end=100);
-    void upload(const QUrl &url, const QString &fileName, const QString &field, QNetworkAccessManager *nam);
+    UploadPhotoItem(Connection *connection, QNetworkAccessManager *manager);
+    void upload(AttachmentItem item) const;
 
-private:
-    int _beginPercent;
-    int _endPercent;
-
-private slots:
-    void uploadProgressHandler(qint64 bytesSent, qint64 bytesTotal);
-
-signals:
-    void finished(const QByteArray &result);
-    void error();
-    void uploadProgress(const int percent);
+protected slots:
+    void onGetUploadServerFinished(const Packet *sender, const QVariantMap &result);
+    void onUploadFileFinished(const QByteArray &result);
+    void onSaveMessagesPhotoFinished(const Packet *sender, const QVariantMap &result);
 };
 
-#endif // UPLOADFILE_H
+#endif // UPLOADPHOTOITEM_H

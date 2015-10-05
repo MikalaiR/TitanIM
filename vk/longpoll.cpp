@@ -74,7 +74,7 @@ void LongPoll::getLongPollServer()
     packet->setPerishable(true);
     packet->addParam("use_ssl", QString::number(isHttps));
     packet->addParam("need_pts", 1);
-    packet->setDataUser(isHttps ? "https://" : "http://");
+    packet->setProperty("proto", isHttps ? "https://" : "http://");
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollServerFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
 }
@@ -83,7 +83,7 @@ void LongPoll::getLongPollServerFinished(const Packet *sender, const QVariantMap
 {
     QVariantMap response = result.value("response").toMap();
 
-    _longPollVars.server = sender->dataUser() + response.value("server").toString();
+    _longPollVars.server = sender->property("proto").toString() + response.value("server").toString();
     _longPollVars.key = response.value("key").toString();
     _longPollVars.ts = response.value("ts").toString();
     _longPollVars.pts = response.value("pts").toString();

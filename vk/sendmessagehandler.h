@@ -37,10 +37,12 @@ private:
     UploadAttachments *_uploadAttachments;
 
 private slots:
+    void createUploadAttach();
     void execSendMessageQuery();
     void sendMessage();
     void sendMessageFinished(const Packet *sender, const QVariantMap &result);
     void sendMessageError(const Packet *sender, const ErrorResponse *errorResponse);
+    void uploadAttachmentError();
 
 signals:
     void sending(const int internalMid);

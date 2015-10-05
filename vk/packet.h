@@ -33,8 +33,6 @@ public:
     QString method() const;
     bool isPerishable() const;
     void setPerishable(const bool isPerishable);
-    QString dataUser() const;
-    void setDataUser(const QString &dataUser);
     QVariantMap result() const;
     QVariantMap response() const;
     ErrorResponse *errorResponse() const;
@@ -55,7 +53,6 @@ private:
     QString _method;
     QMap<QString, QString> _paramsPacket;
     bool _isPerishable;
-    QString _dataUser;
     QVariantMap _result;
     ErrorResponse *_errorResponse;
 

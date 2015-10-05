@@ -12,6 +12,8 @@
 */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 import TitanIM.Viewer 1.0
 
 Item {
@@ -40,13 +42,13 @@ Item {
                 width: Math.min(maximumWidth, 240) - img.width
                 height: childrenRect.height
                 anchors.verticalCenter: img.verticalCenter
-                spacing: 3
+                spacing: description.visible || uploadVisible ? 3 : 0
 
                 Text {
                     id: name
                     anchors.left: parent.left
                     width: parent.width
-                    color: "black"
+                    color: modelData.isUploadError ? "#860004" : "black"
                     font.pointSize: main.fontPointSize
                     font.bold: true
                     font.family: "Helvetica"
@@ -63,7 +65,38 @@ Item {
                     font.pointSize: main.fontPointSize - 2
                     font.capitalization: Font.AllUppercase
                     elide: Text.ElideRight
-                    text: model.ext + ", " + model.sizeStr
+                    visible: text.length && !uploadVisible
+                    text: "%1%2%3"
+                          .arg(model.ext)
+                          .arg((model.size && model.ext.length) ? ", " : "")
+                          .arg(model.sizeStr)
+                }
+
+                ProgressBar {
+                    id: uploadProgress
+                    width: Math.max(name.contentWidth, description.contentWidth)
+                    height: visible ? implicitHeight : 0
+                    anchors.left: parent.left
+                    maximumValue: 100
+                    value: model.uploadProgress
+                    visible: uploadVisible
+
+                    style: ProgressBarStyle {
+                        background: Rectangle {
+                            implicitWidth: 150
+                            implicitHeight: 7
+                            radius: 2
+                            color: "lightgray"
+                            border.color: "gray"
+                            border.width: 1
+                        }
+
+                        progress: Rectangle {
+                            implicitHeight: 7
+                            color: "lightsteelblue"
+                            border.color: "steelblue"
+                        }
+                    }
                 }
             }
         }
@@ -105,7 +138,7 @@ Item {
                 anchors.leftMargin: isGif ? 5 : 0
                 anchors.verticalCenter: background.verticalCenter
                 horizontalAlignment: isGif ? Text.AlignLeft : Text.AlignHCenter
-                color: "white"
+                color: modelData.isUploadError ? "#860004" : "white"
                 font.pointSize: main.fontPointSize - 2
                 elide: Text.ElideMiddle
                 text: model.title
@@ -119,7 +152,7 @@ Item {
                 anchors.verticalCenter: background.verticalCenter
                 horizontalAlignment: Text.AlignRight
                 visible: isGif
-                color: "white"
+                color: modelData.isUploadError ? "#860004" : "white"
                 font.pointSize: main.fontPointSize - 2
                 elide: Text.ElideRight
                 text: model.sizeStr
@@ -137,8 +170,9 @@ Item {
             Loader {
                 id: content
                 property var model: modelData
+                property bool uploadVisible: modelData.uploadProgress !== -1 && modelData.uploadProgress !== 100
                 active: true
-                sourceComponent: modelData.isImage ? docImage : docFile
+                sourceComponent: modelData.isImage && !uploadVisible ? docImage : docFile
 
                 MouseArea {
                     anchors.fill: parent

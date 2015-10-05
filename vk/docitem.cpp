@@ -34,7 +34,7 @@ void DocItemPrivate::setTitle(const QString &title)
     }
 }
 
-int DocItemPrivate::size() const
+qint64 DocItemPrivate::size() const
 {
     return _size;
 }
@@ -44,7 +44,7 @@ QString DocItemPrivate::sizeStr() const
     return _sizeStr;
 }
 
-void DocItemPrivate::setSize(const int size)
+void DocItemPrivate::setSize(const qint64 size)
 {
     if (_size != size)
     {

@@ -94,10 +94,58 @@ QVariant AttachmentsModel::data(const QModelIndex &index, int role) const
         switch (role)
         {
         case Qt::DisplayRole:
-            return "Photo";
+            return "";
 
         case Qt::DecorationRole:
             return photo->src();
+        }
+
+        break;
+    }
+
+    case Attachment::Video:
+    {
+        VideoItem video = qobject_cast<VideoItem>(attachmentBase);
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return video->title();
+
+        case Qt::DecorationRole:
+            return "images/upload_video.png";
+        }
+
+        break;
+    }
+
+    case Attachment::Audio:
+    {
+        AudioItem audio = qobject_cast<AudioItem>(attachmentBase);
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return audio->title();
+
+        case Qt::DecorationRole:
+            return "images/upload_audio.png";
+        }
+
+        break;
+    }
+
+    case Attachment::Doc:
+    {
+        DocItem doc = qobject_cast<DocItem>(attachmentBase);
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return doc->title();
+
+        case Qt::DecorationRole:
+            return "images/upload_doc.png";
         }
 
         break;

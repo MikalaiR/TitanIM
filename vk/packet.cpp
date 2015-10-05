@@ -57,16 +57,6 @@ void Packet::setPerishable(const bool isPerishable)
     _isPerishable = isPerishable;
 }
 
-QString Packet::dataUser() const
-{
-    return _dataUser;
-}
-
-void Packet::setDataUser(const QString &dataUser)
-{
-    _dataUser = dataUser;
-}
-
 void Packet::signPacket(const QString &secret)
 {
     if (!secret.isEmpty())

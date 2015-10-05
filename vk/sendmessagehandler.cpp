@@ -18,13 +18,12 @@ SendMessageHandler::SendMessageHandler(Connection *connection)
     _connection = connection;
     _isProcessing = false;
 
-    _uploadAttachments = new UploadAttachments(_connection); //todo create if necessary?
-    connect(_uploadAttachments, SIGNAL(finished()), this, SLOT(sendMessage()));
+    _uploadAttachments = 0;
 }
 
 SendMessageHandler::~SendMessageHandler()
 {
-    delete _uploadAttachments;
+    if (_uploadAttachments) delete _uploadAttachments;
 }
 
 void SendMessageHandler::send(MessageItem message)
@@ -34,6 +33,16 @@ void SendMessageHandler::send(MessageItem message)
     if (!_isProcessing)
     {
         execSendMessageQuery();
+    }
+}
+
+void SendMessageHandler::createUploadAttach()
+{
+    if (!_uploadAttachments)
+    {
+        _uploadAttachments = new UploadAttachments(_connection);
+        connect(_uploadAttachments, SIGNAL(finished()), this, SLOT(sendMessage()));
+        connect(_uploadAttachments, SIGNAL(error()), this, SLOT(uploadAttachmentError()));
     }
 }
 
@@ -50,6 +59,7 @@ void SendMessageHandler::execSendMessageQuery()
 
     if (message->attachments() && message->attachments()->count() > 0)
     {
+        createUploadAttach();
         _uploadAttachments->setAttachments(message->attachments());
         _uploadAttachments->upload();
 
@@ -133,4 +143,15 @@ void SendMessageHandler::sendMessageError(const Packet *sender, const ErrorRespo
 
     emit unsuccessfullyMessageSent(internalMid);
     delete sender;
+}
+
+void SendMessageHandler::uploadAttachmentError()
+{
+    MessageItem message = _messageQuery.dequeue();
+    message->setIsError(true);
+
+    emit unsuccessfullyMessageSent(message->id());
+
+    _isProcessing = false;
+    execSendMessageQuery();
 }

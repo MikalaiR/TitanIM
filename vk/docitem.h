@@ -34,9 +34,9 @@ public:
     DocItemPrivate();
     QString title() const;
     void setTitle(const QString &title);
-    int size() const;
+    qint64 size() const;
     QString sizeStr() const;
-    void setSize(const int size);
+    void setSize(const qint64 size);
     QString ext() const;
     void setExt(const QString &ext);
     QUrl url() const;
@@ -47,7 +47,7 @@ public:
 
 private:
     QString _title;
-    int _size;
+    qint64 _size;
     QString _sizeStr;
     QString _ext;
     QUrl _url;

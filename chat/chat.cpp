@@ -213,12 +213,61 @@ void Chat::addAttachments(const QList<QUrl> &list)
 
     for (int i = 0; i < list.count(); i++)
     {
-        PhotoItem photo = PhotoItem::create();
-        photo->setUploadProgress(0);
-        photo->setSrc(list.at(i));
-        photo->setSrcBig(list.at(i));
+        QUrl fileName = list.at(i);
+        QFileInfo fileInfo(fileName.toString());
+        QString title = fileInfo.fileName();
 
-        _outAttachments->add(photo);
+        QString extStr = Utils::firstUpper(fileName.toLocalFile().section('.', -1).toLower());
+        int ext = Attachment::metaEnumerator("Extension").keyToValue(extStr.toLatin1());
+
+        switch (ext) {
+        case Attachment::Jpeg:
+        case Attachment::Jpg:
+        case Attachment::Png:
+        case Attachment::Bmp:
+        case Attachment::Gif:
+        {
+            PhotoItem photo = PhotoItem::create();
+            photo->setUploadProgress(0);
+            photo->setSrc(fileName);
+            photo->setSrcBig(fileName);
+            _outAttachments->add(photo);
+            break;
+        }
+
+        case Attachment::Avi:
+        case Attachment::Mpg:
+        {
+            VideoItem video = VideoItem::create();
+            video->setUploadProgress(0);
+            video->setTitle(title);
+            video->setSrc(QUrl("images/upload_video.png"));
+            video->setSrcBig(QUrl("images/upload_video.png"));
+            video->setUrl(fileName);
+            _outAttachments->add(video);
+            break;
+        }
+
+        case Attachment::Mp3:
+        {
+            AudioItem audio = AudioItem::create();
+            audio->setUploadProgress(0);
+            audio->setTitle(fileInfo.baseName());
+            audio->setUrl(fileName);
+            _outAttachments->add(audio);
+            break;
+        }
+
+        default:
+        {
+            DocItem doc = DocItem::create();
+            doc->setUploadProgress(0);
+            doc->setTitle(title);
+            doc->setUrl(fileName);
+            _outAttachments->add(doc);
+            break;
+        }
+        }
     }
 
     emit outAttachmentsChanged(_outAttachments);

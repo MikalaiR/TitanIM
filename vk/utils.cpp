@@ -506,7 +506,7 @@ void Utils::setServerDateTime(const QDateTime &dateTime)
     _lambdaServerTime = QDateTime::currentDateTime().secsTo(dateTime);
 }
 
-QString Utils::fileSizeToText(int size)
+QString Utils::fileSizeToText(qint64 size)
 {
     static QString si[9] = {QObject::tr("Bytes"),
                            QObject::tr("KB"),

@@ -15,7 +15,32 @@
 
 UploadAttachments::UploadAttachments(Connection *connection)
 {
-    _connection = connection;
+    _manager = new QNetworkAccessManager(this);
+
+    _uploadPhoto = new UploadPhotoItem(connection, _manager);
+    connect(_uploadPhoto, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
+    connect(_uploadPhoto, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+
+    _uploadDoc = new UploadDocItem(connection, _manager);
+    connect(_uploadDoc, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
+    connect(_uploadDoc, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+
+    _uploadAudio = new UploadAudioItem(connection, _manager);
+    connect(_uploadAudio, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
+    connect(_uploadAudio, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+
+    _uploadVideo = new UploadVideoItem(connection, _manager);
+    connect(_uploadVideo, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
+    connect(_uploadVideo, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+}
+
+UploadAttachments::~UploadAttachments()
+{
+    delete _uploadPhoto;
+    delete _uploadDoc;
+    delete _uploadAudio;
+    delete _uploadVideo;
+    delete _manager;
 }
 
 void UploadAttachments::setAttachments(AttachmentList *attachments)
@@ -31,7 +56,7 @@ void UploadAttachments::upload()
     {
         if (_countUpload == 0)
         {
-            emit finished();
+            checkAttach();
         }
 
         return;
@@ -40,18 +65,25 @@ void UploadAttachments::upload()
     switch (_attachments->at(_index)->attachmentType()) {
     case Attachment::Photo:
     {
-        PhotoItem photo = qobject_cast<PhotoItem>(_attachments->at(_index));
+        _uploadPhoto->upload(_attachments->at(_index));
+        break;
+    }
 
-        if (!photo->isUploading())
-        {
-            photo->setUploadProgress(10);
+    case Attachment::Doc:
+    {
+        _uploadDoc->upload(_attachments->at(_index));
+        break;
+    }
 
-            Packet *getUploadServer = new Packet("photos.getMessagesUploadServer");
-            getUploadServer->setId(_index);
-            connect(getUploadServer, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onGetUploadServerFinished(const Packet*,QVariantMap)));
-            _connection->appendQuery(getUploadServer);
-        }
+    case Attachment::Audio:
+    {
+        _uploadAudio->upload(_attachments->at(_index));
+        break;
+    }
 
+    case Attachment::Video:
+    {
+        _uploadVideo->upload(_attachments->at(_index));
         break;
     }
 
@@ -65,65 +97,32 @@ void UploadAttachments::upload()
     }
 }
 
-void UploadAttachments::onGetUploadServerFinished(const Packet *sender, const QVariantMap &result)
+void UploadAttachments::onNextUpload()
 {
-    QVariantMap response = result.value("response").toMap();
-
-    int id = sender->id();
-    QUrl uploadUrl = response.value("upload_url").toUrl();
-
-    PhotoItem photo = qobject_cast<PhotoItem>(_attachments->at(id));
-
-    UploadFile *uploadFile = new UploadFile(this);
-    uploadFile->setId(id);
-    connect(uploadFile, SIGNAL(finished(int,QByteArray)), this, SLOT(onUploadFileFinished(int,QByteArray)));
-    uploadFile->upload(uploadUrl, photo->src().toLocalFile(), "photo");
-
-    photo->setUploadProgress(photo->uploadProgress() + 10);
     _index++;
     upload();
-
-    delete sender;
 }
 
-void UploadAttachments::onUploadFileFinished(const int id, const QByteArray &result)
+void UploadAttachments::onUploadFinished()
 {
-    QVariantMap response = Utils::parseJSON(result).toMap();
-
-    Packet *saveMessagesPhoto = new Packet("photos.saveMessagesPhoto");
-    saveMessagesPhoto->addParam("server", response.value("server").toString());
-    saveMessagesPhoto->addParam("photo", response.value("photo").toString());
-    saveMessagesPhoto->addParam("hash", response.value("hash").toString());
-    saveMessagesPhoto->setId(id);
-    connect(saveMessagesPhoto, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSaveMessagesPhotoFinished(const Packet*,QVariantMap)));
-
-    PhotoItem photo = qobject_cast<PhotoItem>(_attachments->at(id));
-    photo->setUploadProgress(photo->uploadProgress() + 70);
-
-    _connection->appendQuery(saveMessagesPhoto);
-
-    UploadFile *uploadFile = qobject_cast<UploadFile*>(sender());
-    if (uploadFile) delete uploadFile;
-}
-
-void UploadAttachments::onSaveMessagesPhotoFinished(const Packet *sender, const QVariantMap &result)
-{
-    QVariantMap response = result.value("response").toList().value(0).toMap();
-    int id = sender->id();
-
-    PhotoItem photo = qobject_cast<PhotoItem>(_attachments->at(id));
-    photo->setId(response.value("id").toInt());
-    photo->setOwnerId(response.value("owner_id").toInt());
-    photo->setSrcBig(response.value("src_big").toUrl());
-
-    photo->setUploadProgress(100);
-
     _countUpload--;
 
     if (_countUpload == 0)
     {
-        emit finished();
+        checkAttach();
+    }
+}
+
+void UploadAttachments::checkAttach()
+{
+    for (int i = 0; i < _attachments->count(); i++)
+    {
+        if (_attachments->at(i)->isUploadError())
+        {
+            emit error();
+            return;
+        }
     }
 
-    delete sender;
+    emit finished();
 }

@@ -12,7 +12,8 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.2
 import TitanIM.Multimedia 1.0
 
 Item {
@@ -52,12 +53,13 @@ Item {
                 Column {
                     width: parent.width - icon.width - audio.spacing
                     anchors.verticalCenter: parent.verticalCenter
+                    spacing: uploadProgress.visible ? 5 : 0
 
                     Row {
                         Text {
                             id: title
                             width: artist.width
-                            color: "black"
+                            color: modelData.isUploadError ? "#860004" : "black"
                             font.pointSize: main.fontPointSize - 1
                             font.bold: true
                             elide: Text.ElideRight
@@ -79,7 +81,34 @@ Item {
                         color: "#505050"
                         font.pointSize: main.fontPointSize - 1
                         elide: Text.ElideRight
+                        visible: text.length && !uploadProgress.visible
                         text: modelData.artist
+                    }
+
+                    ProgressBar {
+                        id: uploadProgress
+                        z: 10
+                        width: parent.width - durationText.width - 7
+                        maximumValue: 100
+                        value: modelData.uploadProgress
+                        visible: modelData.uploadProgress !== -1 && modelData.uploadProgress !== 100
+
+                        style: ProgressBarStyle {
+                            background: Rectangle {
+                                implicitWidth: 150
+                                implicitHeight: 7
+                                radius: 2
+                                color: "lightgray"
+                                border.color: "gray"
+                                border.width: 1
+                            }
+
+                            progress: Rectangle {
+                                implicitHeight: 7
+                                color: "lightsteelblue"
+                                border.color: "steelblue"
+                            }
+                        }
                     }
                 }
             }

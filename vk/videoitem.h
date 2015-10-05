@@ -28,7 +28,7 @@ class VideoItemPrivate : public Attachment
     Q_PROPERTY(QUrl src READ src CONSTANT)
     Q_PROPERTY(QUrl srcBig READ srcBig CONSTANT)
     Q_PROPERTY(QString accessKey READ accessKey CONSTANT)
-    Q_PROPERTY(QUrl url READ url CONSTANT)
+    Q_PROPERTY(QUrl link READ link CONSTANT)
 
 public:
     VideoItemPrivate();
@@ -45,7 +45,9 @@ public:
     void setSrcBig(const QUrl &srcBig);
     QString accessKey() const;
     void setAccessKey(const QString &accessKey);
+    QUrl link() const;
     QUrl url() const;
+    void setUrl(const QUrl &url);
 
 private:
     QString _title;
@@ -54,6 +56,7 @@ private:
     QUrl _src;
     QUrl _srcBig;
     QString _accessKey;
+    QUrl _url;
 };
 
 typedef QSharedPointer<VideoItemPrivate> VideoItem;

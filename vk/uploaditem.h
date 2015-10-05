@@ -11,45 +11,29 @@
  ***************************************************************************
 */
 
-#ifndef UPLOADATTACHMENTS_H
-#define UPLOADATTACHMENTS_H
+#ifndef UPLOADITEM_H
+#define UPLOADITEM_H
 
 #include <QObject>
 #include "connection.h"
-#include "attachmentlist.h"
-#include "uploadphotoitem.h"
-#include "uploaddocitem.h"
-#include "uploadaudioitem.h"
-#include "uploadvideoitem.h"
+#include "attachmentitem.h"
+#include "uploadfile.h"
 
-class UploadAttachments : public QObject
+class UploadItem : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit UploadAttachments(Connection *connection);
-    ~UploadAttachments();
-    void setAttachments(AttachmentList *attachments);
-    void upload();
+    UploadItem(Connection *connection, QNetworkAccessManager *manager);
+    virtual void upload(AttachmentItem item) const = 0;
 
-private:
-    AttachmentList *_attachments;
-    int _index;
-    int _countUpload;
+protected:
+    Connection *_connection;
     QNetworkAccessManager *_manager;
-    UploadPhotoItem *_uploadPhoto;
-    UploadDocItem *_uploadDoc;
-    UploadAudioItem *_uploadAudio;
-    UploadVideoItem *_uploadVideo;
-
-protected slots:
-    void onNextUpload();
-    void onUploadFinished();
-    void checkAttach();
 
 signals:
+    void nextItem();
     void finished();
-    void error();
 };
 
-#endif // UPLOADATTACHMENTS_H
+#endif // UPLOADITEM_H

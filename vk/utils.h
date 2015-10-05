@@ -54,7 +54,7 @@ public:
     static void playSound(const QString &fileName, const QString &cmd="aplay -q");
     static QDateTime currentDateTime();
     static void setServerDateTime(const QDateTime &dateTime);
-    static QString fileSizeToText(int size);
+    static QString fileSizeToText(qint64 size);
     static QString toTranslit(const QString &str);
     static QString fromTranslit(const QString &str);
     static bool applicationIsActive();

@@ -11,37 +11,26 @@
  ***************************************************************************
 */
 
-#ifndef UPLOADFILE_H
-#define UPLOADFILE_H
+#ifndef UPLOADAUDIOITEM_H
+#define UPLOADAUDIOITEM_H
 
 #include <QObject>
-#include <QFile>
-#include <QFileInfo>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QHttpMultiPart>
-#include <QMimeDatabase>
+#include "uploaditem.h"
+#include "audioitem.h"
 
-class UploadFile : public QObject
+class UploadAudioItem : public UploadItem
 {
     Q_OBJECT
 
 public:
-    explicit UploadFile(QObject *parent = 0, const int begin=0, const int end=100);
-    void upload(const QUrl &url, const QString &fileName, const QString &field, QNetworkAccessManager *nam);
+    UploadAudioItem(Connection *connection, QNetworkAccessManager *manager);
+    void upload(AttachmentItem item) const;
 
-private:
-    int _beginPercent;
-    int _endPercent;
-
-private slots:
-    void uploadProgressHandler(qint64 bytesSent, qint64 bytesTotal);
-
-signals:
-    void finished(const QByteArray &result);
-    void error();
-    void uploadProgress(const int percent);
+protected slots:
+    void onGetUploadServerFinished(const Packet *sender, const QVariantMap &result);
+    void onUploadFileFinished(const QByteArray &result);
+    void onSaveMessagesAudioFinished(const Packet *sender, const QVariantMap &result);
+    void onSaveMessagesAudioError(const Packet *sender, const ErrorResponse *errorResponse);
 };
 
-#endif // UPLOADFILE_H
+#endif // UPLOADAUDIOITEM_H

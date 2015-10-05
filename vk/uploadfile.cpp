@@ -13,26 +13,14 @@
 
 #include "uploadfile.h"
 
-UploadFile::UploadFile(QObject *parent) :
+UploadFile::UploadFile(QObject *parent, const int begin, const int end) :
     QObject(parent)
 {
-    _id = 0;
-
-    _manager = new QNetworkAccessManager(this);
-    connect(_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(uploadFinished(QNetworkReply*)));
+    _beginPercent = begin;
+    _endPercent = end;
 }
 
-int UploadFile::id() const
-{
-    return _id;
-}
-
-void UploadFile::setId(const int id)
-{
-    _id = id;
-}
-
-void UploadFile::upload(const QUrl &url, const QString &fileName, const QString &field)
+void UploadFile::upload(const QUrl &url, const QString &fileName, const QString &field, QNetworkAccessManager *nam)
 {
     if (!QFile::exists(fileName))
         return;
@@ -57,26 +45,51 @@ void UploadFile::upload(const QUrl &url, const QString &fileName, const QString 
     QFile *file = new QFile(fileName);
     file->open(QIODevice::ReadOnly);
     httpPart.setBodyDevice(file);
-    file->setParent(multiPart);
 
     multiPart->append(httpPart);
 
     QNetworkRequest request(url);
-    QNetworkReply *networkReply = _manager->post(request, multiPart);
-    multiPart->setParent(networkReply);
+    QNetworkReply *networkReply = nam->post(request, multiPart);
+
+    auto uploadFinished = [=]()
+    {
+        file->close();
+
+        delete multiPart;
+        delete file;
+
+        if (networkReply->error() != QNetworkReply::NoError)
+        {
+            //qDebug() << networkReply->errorString();
+            networkReply->deleteLater();
+            emit error();
+            return;
+        }
+
+        QByteArray result = networkReply->readAll();
+        networkReply->deleteLater();
+
+        emit finished(result);
+    };
+
+    connect(networkReply, &QNetworkReply::finished, uploadFinished);
+    connect(networkReply, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(uploadProgressHandler(qint64,qint64)));
 }
 
-void UploadFile::uploadFinished(QNetworkReply *networkReply)
+void UploadFile::uploadProgressHandler(qint64 bytesSent, qint64 bytesTotal)
 {
-    if (networkReply->error() != QNetworkReply::NoError)
+    if (bytesTotal == 0 || bytesTotal == -1)
     {
-        //qDebug() << networkReply->errorString(); //todo emit error(_id);
-        networkReply->deleteLater();
         return;
     }
 
-    QByteArray result = networkReply->readAll();
-    networkReply->deleteLater();
+    static int oldPercent = 0;
+    int percent = (((float)bytesSent / bytesTotal) * (_endPercent - _beginPercent)) + _beginPercent;
 
-    emit finished(_id, result);
+    if (oldPercent != percent)
+    {
+        emit uploadProgress(percent);
+    }
+
+    oldPercent = percent;
 }
