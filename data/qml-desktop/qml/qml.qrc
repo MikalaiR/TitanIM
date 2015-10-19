@@ -89,5 +89,11 @@
         <file>images/upload_audio.png</file>
         <file>images/upload_doc.png</file>
         <file>images/upload_video.png</file>
+        <file>Settings.qml</file>
+        <file>MainWindow.qml</file>
+        <file>images/logo_vk.png</file>
+        <file>Profile.qml</file>
+        <file>UnderlineLabel.qml</file>
+        <file>UnderlineButton.qml</file>
     </qresource>
 </RCC>

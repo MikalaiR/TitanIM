@@ -54,7 +54,7 @@ Item {
                 wrapMode: Text.Wrap
                 readOnly: true
                 selectByMouse: true
-                onLinkActivated: Qt.openUrlExternally(link);
+                onLinkActivated: Qt.openUrlExternally(link)
             }
 
             Loader {

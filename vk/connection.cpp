@@ -60,7 +60,7 @@ void Connection::connectToVk(const QString &username, const QString &password, c
 
 void Connection::connectToVk(const int uid, const QString &token, const QString &secret)
 {
-    if (isAuthorized() || token.isEmpty())
+    if (isAuthorized())
     {
         return;
     }

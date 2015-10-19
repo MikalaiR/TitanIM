@@ -30,13 +30,16 @@
 class MainWindow : public QtQuick2ApplicationViewer
 {
     Q_OBJECT
-    Q_PROPERTY(int fontPointSize READ fontPointSize CONSTANT)
+    Q_PROPERTY(int fontPointSize READ fontPointSize WRITE setFontPointSize NOTIFY fontPointSizeChanged)
+    Q_PROPERTY(QString initialItem READ initialItem CONSTANT)
 
 public:
     explicit MainWindow(QWindow *parent = 0);
     ~MainWindow();
     void showExpanded();
     int fontPointSize() const;
+    void setFontPointSize(const int fontPointSize);
+    QString initialItem() const;
     Q_INVOKABLE QPoint positionGlobalCenter(const int width, const int height) const;
     Q_INVOKABLE QPoint positionGlobalCursor() const;
     Q_INVOKABLE QPoint mapToGlobal(const int x, const int y) const;
@@ -46,6 +49,8 @@ private:
     Authorization *authorization;
     DialogsHandler *dialogsHandler;
     RosterHandler *rosterHandler;
+    QString _initialItem;
+    int _fontPointSize;
 
 public slots:
     void showAuthPage();
@@ -64,6 +69,9 @@ private slots:
     void onLongPollStarted();
     void onLongPollStopped();
     void onRebuild();
+
+signals:
+    void fontPointSizeChanged();
 };
 
 #endif // MAINWINDOW_H

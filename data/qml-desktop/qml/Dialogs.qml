@@ -36,8 +36,10 @@ Item {
     }
 
     onCurrentChatIdChanged: {
-        if (tabBar.currentIndex === 0)
+        if (tabBar.currentIndex === 0) {
+            mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml"), immediate: true})
             return;
+        }
 
         var index = dialogsHandler.indexOf(currentChatId)
         if (index === -1) index = 0

@@ -39,6 +39,7 @@ public:
     void append(const ProfileItem item, const bool replace=false);
     void replaceAll(const ProfileList items);
     bool remove(int row, int count);
+    void removeAll();
     ProfileItem at(const int row);
     ProfileItem at(const QModelIndex &index);
     ProfileItem item(const int id) const;

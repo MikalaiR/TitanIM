@@ -110,6 +110,7 @@ void ProfileItemPrivate::setOnline(const bool online)
     {
         _online = online;
         emitPropertyChanged("online");
+        emit onlineChanged();
     }
 }
 
@@ -146,6 +147,77 @@ void ProfileItemPrivate::setActivity(const QString &activity)
     }
 }
 
+QString ProfileItemPrivate::bdate() const
+{
+    switch (_bdate.split('.').count()) {
+    case 3:
+        return QDate::fromString(_bdate, "d.M.yyyy").toString("d MMMM yyyy");
+        break;
+
+    case 2:
+        return QDate::fromString(_bdate, "d.M").toString("d MMMM");
+        break;
+
+    default:
+        return _bdate;
+    }
+}
+
+void ProfileItemPrivate::setBdate(const QString &bdate)
+{
+    if (_bdate != bdate)
+    {
+        _bdate = bdate;
+        emitPropertyChanged("bdate");
+        emit bdateChanged();
+    }
+}
+
+QString ProfileItemPrivate::domain() const
+{
+    return _domain;
+}
+
+void ProfileItemPrivate::setDomain(const QString &domain)
+{
+    if (_domain != domain)
+    {
+        _domain = domain;
+        emitPropertyChanged("domain");
+        emit domainChanged();
+    }
+}
+
+QString ProfileItemPrivate::city() const
+{
+    return _city;
+}
+
+void ProfileItemPrivate::setCity(const QString &city)
+{
+    if (_city != city)
+    {
+        _city = city;
+        emitPropertyChanged("city");
+        emit cityChanged();
+    }
+}
+
+QString ProfileItemPrivate::mobilePhone() const
+{
+    return _mobilePhone;
+}
+
+void ProfileItemPrivate::setMobilePhone(const QString &mobilePhone)
+{
+    if (_mobilePhone != mobilePhone)
+    {
+        _mobilePhone = mobilePhone;
+        emitPropertyChanged("mobilePhone");
+        emit mobilePhoneChanged();
+    }
+}
+
 QString ProfileItemPrivate::alphabet() const
 {
     return _alphabet;
@@ -175,6 +247,7 @@ void ProfileItemPrivate::join(const ProfileItem other)
         setPhotoMediumRect(other->photoMediumRect());
         setOnline(other->online());
         setLastSeen(other->lastSeen());
+        setDomain(other->domain());
     }
 }
 
@@ -193,7 +266,7 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
 
     Packet *packet = new Packet("users.get");
     packet->addParam("user_ids", _id);
-    packet->addParam("fields", "photo_100,online,last_seen,sex");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);

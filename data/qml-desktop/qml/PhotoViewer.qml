@@ -49,6 +49,13 @@ Item {
         window.requestActivate()
     }
 
+    function setUrl(url) {
+        var item = {type: Attachment.Photo, srcBig: url}
+        var items = [item]
+
+        setItems(items, 0)
+    }
+
     function setIndex(index) {
         __getNext(index)
         next()

@@ -19,6 +19,7 @@ Item {
 
     property string source: ""
     property bool online: false
+    property int radius: 30
 
     Image {
         id: img
@@ -34,7 +35,7 @@ Item {
     Rectangle {
         id: mask
         anchors.fill: img
-        radius: 30
+        radius: avatarImage.radius
         visible: false
     }
 

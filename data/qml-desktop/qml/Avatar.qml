@@ -19,6 +19,7 @@ Item {
 
     property var source
     property bool online: false
+    property int radius: 30
 
     Component {
         id: avatarItem
@@ -85,7 +86,7 @@ Item {
     Rectangle {
         id: mask
         anchors.fill: row
-        radius: 30
+        radius: avatar.radius
         visible: false
     }
 

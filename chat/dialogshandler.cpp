@@ -104,6 +104,13 @@ int DialogsHandler::indexOf(const int id, const bool proxyIndex) const
     }
 }
 
+void DialogsHandler::clear()
+{
+    _flagMarkAsRead = false;
+    setUnreadDialogs(0);
+    _model->removeAll();
+}
+
 void DialogsHandler::getCounterUnreadDialogs()
 {
     Packet *packet = new Packet("account.getCounters");

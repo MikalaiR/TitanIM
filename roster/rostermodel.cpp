@@ -63,7 +63,7 @@ void RosterModel::append(const ProfileItem item, const bool replace)
 
 void RosterModel::replaceAll(const ProfileList items)
 {
-    remove(0, rowCount());
+    removeAll();
     append(items);
 }
 
@@ -82,6 +82,13 @@ bool RosterModel::remove(int row, int count)
     endRemoveRows();
 
     return true;
+}
+
+void RosterModel::removeAll()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    _roster->clear();
+    endRemoveRows();
 }
 
 ProfileItem RosterModel::at(const int row)

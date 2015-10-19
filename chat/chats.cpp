@@ -88,6 +88,14 @@ Chat *Chats::chat(const int id) const
     return _chatsHandler->chat(id);
 }
 
+void Chats::clear()
+{
+    _currentChatId = 0;
+    _currentDialog = 0;
+    _chatsHandler->clear();
+    emit currentChatChanged(0);
+}
+
 void Chats::setCurrentChat(const int id)
 {
     if (_currentChatId != id)

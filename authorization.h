@@ -28,6 +28,7 @@ public:
 public slots:
     void connectToVk();
     void connectToVk(const QString &username, const QString &password);
+    void disconnectVk();
     void setCaptcha(const QString &sid, const QString &text);
     void cancelCaptcha();
 

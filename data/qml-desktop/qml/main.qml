@@ -12,84 +12,48 @@
 */
 
 import QtQuick 2.1
-import QtQuick.Controls 1.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 1.4
 
-Rectangle {
-    id: mainWindow
+StackView {
+    id: mainStackView
+    width: 300
+    height: 300
+    initialItem: Qt.resolvedUrl(main.initialItem)
 
-    SplitView {
-        id: splitView
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-
-        TabBarView {
-            id: tabBar
-            width: 280
-            height: parent.height
-            Layout.minimumWidth: 200
-            Layout.maximumWidth: 500
-
-            TabBarItem {
-                id: dialogsTab
-                title: "dialogs"
-                icon: "images/messages_tab.png"
-                badge: dialogsHandler.unreadDialogs;
-                Dialogs {id: dialogs}
-
-                onClicked: {
-                    if (dialogsTab.visible || badge > 0)
-                        dialogs.scrollToTop()
-                }
-            }
-
-            TabBarItem {
-                id: contactsTab
-                title: "contacts"
-                icon: "images/contacts_tab.png"
-                Roster {id: roster}
-
-                onClicked: {
-                    if (contactsTab.visible)
-                        roster.scrollToTop()
-
-                    roster.clearFilter()
-                    roster.forceActiveFocusFilter()
-                }
-            }
-
-            TabBarItem {
-                id: favoritesTab
-                title: "favorites"
-                icon: "images/favorites_tab.png"
-                Text {text: "favorites"}
-            }
-
-            TabBarItem {
-                id: settingsTab
-                title: "settings"
-                icon: "images/settings_tab.png"
-                Text {text: "settings"}
-            }
-
-            onWidthChanged: { //qml bug
-                if (width < 200) {
-                    splitView.enabled = false
-                    splitView.enabled = true
-                }
-            }
+    delegate: StackViewDelegate {
+        function transitionFinished(properties)
+        {
+            properties.exitItem.opacity = 1
         }
 
-        Chat {
-            Layout.fillWidth: true
+        pushTransition: StackViewTransition {
+            PropertyAnimation {
+                target: enterItem
+                property: "opacity"
+                from: 0
+                to: 1
+            }
+            PropertyAnimation {
+                target: exitItem
+                property: "opacity"
+                from: 1
+                to: 0
+            }
         }
     }
 
     Connections {
         target: authorization
 
-        onCaptcha: {
-            Qt.createComponent("Captcha.qml").createObject(mainWindow, {sid: captchaSid, img: captchaImg});
+        onShowAuthPage: {
+                mainStackView.push({item: Qt.resolvedUrl("Authorization.qml"), replace: true})
+        }
+
+        onShowMainPage: {
+            if (mainStackView.currentItem.name !== "mainWindow")
+            {
+                mainStackView.push({item: Qt.resolvedUrl("MainWindow.qml"), replace: true})
+            }
         }
     }
 }

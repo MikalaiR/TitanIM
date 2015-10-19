@@ -33,6 +33,7 @@ public:
     ProfileItem profile(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
     ProfileItem item(const int id) const;
+    void clear();
 
 private:
     RosterModel *_model;

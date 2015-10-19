@@ -63,6 +63,9 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType(QUrl("qrc:/qml/EmoticonsBox.qml"), "TitanIM.Tool", 1, 0, "EmoticonsBox");
 
     setTitle(QCoreApplication::applicationName());
+    _fontPointSize = 13;
+    setWidth(720);
+    setHeight(520);
     authorization->connectToVk();
 }
 
@@ -80,18 +83,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::showAuthPage()
 {
-    setWidth(400);
-    setHeight(220);
-    setSource(QUrl("qrc:/qml/Authorization.qml"));
-    showExpanded();
+    if (_initialItem.isEmpty())
+    {
+        _initialItem = "Authorization.qml";
+        setSource(QUrl("qrc:/qml/main.qml"));
+        showExpanded();
+    }
 }
 
 void MainWindow::showMainPage()
 {
-    setWidth(720);
-    setHeight(520);
-    setSource(QUrl("qrc:/qml/main.qml"));
-    showExpanded();
+    if (_initialItem.isEmpty())
+    {
+        _initialItem = "MainWindow.qml";
+        setSource(QUrl("qrc:/qml/main.qml"));
+        showExpanded();
+    }
 }
 
 void MainWindow::dialogCurrentIndexChanged(const int i)
@@ -157,7 +164,18 @@ QPoint MainWindow::mapToGlobal(const int x, const int y) const
 
 int MainWindow::fontPointSize() const
 {
-    return 13; //todo
+    return _fontPointSize;
+}
+
+void MainWindow::setFontPointSize(const int fontPointSize)
+{
+    _fontPointSize = fontPointSize;
+    emit fontPointSizeChanged();
+}
+
+QString MainWindow::initialItem() const
+{
+    return _initialItem;
 }
 
 void MainWindow::notificationClicked(const int peer, const int mid)
@@ -189,8 +207,11 @@ void MainWindow::onAuthorized(const int uid, const QString &token, const QString
 
 void MainWindow::onLogout(const int uid)
 {
-    //todo
     setTitle(QCoreApplication::applicationName());
+
+    dialogsHandler->clear();
+    rosterHandler->clear();
+    Chats::instance()->clear();
 }
 
 void MainWindow::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)

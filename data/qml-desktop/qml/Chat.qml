@@ -17,6 +17,7 @@ import QtQuick.Dialogs 1.0
 Item {
     id:chatFrame
 
+    readonly property string name: "chat"
     property color backgroundColor: "#DFE3EA"
     property color unreadHighlightColor: "#D6DDE8"
 
@@ -43,42 +44,54 @@ Item {
                 anchors.topMargin: -1
             }
 
-            Avatar {
-                id: avatar
-                width: 28
-                height: 28
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                source: chats.currentChatDialog.decoration
-            }
-
             Item {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: avatar.right
-                anchors.leftMargin: 10
-                height: childrenRect.height
                 width: childrenRect.width
+                height: parent.height
 
-                Column {
-                    spacing: -1
+                Avatar {
+                    id: avatar
+                    width: 28
+                    height: 28
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    source: chats.currentChatDialog.decoration
+                }
 
-                    Text {
-                        id: name
-                        text: chats.currentChatDialog.displayName
+                Item {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: avatar.right
+                    anchors.leftMargin: 10
+                    height: childrenRect.height
+                    width: childrenRect.width
+
+                    Column {
+                        spacing: -1
+
+                        Text {
+                            id: name
+                            text: chats.currentChatDialog.displayName
+                        }
+
+                        TextShadow {
+                            id: desc
+                            font.pointSize: main.fontPointSize - 2
+                            color: "gray"
+                            text: chats.currentChatDialog.description
+                        }
                     }
 
-                    TextShadow {
-                        id: desc
-                        font.pointSize: main.fontPointSize - 2
-                        color: "gray"
-                        text: chats.currentChatDialog.description
+                    Behavior on height {
+                        enabled: desc.text && chatView.count > 0
+                        NumberAnimation { duration: 80 }
                     }
                 }
 
-                Behavior on height {
-                    enabled: desc.text && chatView.count > 0
-                    NumberAnimation { duration: 80 }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        mainWindow.pushPage(Qt.resolvedUrl("Profile.qml"), "profile")
+                    }
                 }
             }
 
@@ -87,6 +100,13 @@ Item {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 source: "images/actions.png"
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("open menu")
+                    }
+                }
             }
         }
 

@@ -48,6 +48,7 @@ public:
     void append(const DialogItem item, const bool replace=false);
     void replaceAll(const DialogList items);
     bool remove(int row, int count);
+    void removeAll();
     DialogItem at(const int row);
     DialogItem at(const QModelIndex &index);
     int indexOf(const int id) const;

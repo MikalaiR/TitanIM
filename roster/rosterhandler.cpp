@@ -78,6 +78,11 @@ ProfileItem RosterHandler::item(const int id) const
     return _model->item(id);
 }
 
+void RosterHandler::clear()
+{
+    _model->removeAll();
+}
+
 void RosterHandler::setFilterWildcard(const QString &pattern)
 {
     _proxy->setFilterRegExp(QString("%1|%2|%3")

@@ -40,6 +40,7 @@ public:
     ChatSortFilterProxyModel* currentChatModel() const;
     AttachmentsModel* currentChatAttachments() const;
     Chat* chat(const int id) const;
+    void clear();
 
 private:
     explicit Chats();

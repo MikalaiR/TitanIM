@@ -24,6 +24,10 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     int lastSeen = item.contains("last_seen") ? item.value("last_seen").toMap().value("time").toInt() : 0;
     bool online = item.value("online").toInt() == 1 ? true : false;
     QString activity = item.contains("status") ? item.value("status").toString() : "";
+    QString bdate = item.contains("bdate") ? item.value("bdate").toString() : "";
+    QString domain = item.value("domain").toString();
+    QString city = item.contains("city") ? item.value("city").toMap().value("title").toString() : "";
+    QString mobilePhone = item.contains("mobile_phone") ? item.value("mobile_phone").toString() : "";
     QString alphabet = !firstName.isEmpty() ? QString(firstName.at(0)) : "";
 
     profile->beginChangeGroupProperties();
@@ -35,6 +39,10 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     profile->setLastSeen(lastSeen);
     profile->setOnline(online);
     profile->setActivity(activity);
+    profile->setBdate(bdate);
+    profile->setDomain(domain);
+    profile->setCity(city);
+    profile->setMobilePhone(mobilePhone);
     profile->setAlphabet(alphabet);
 
     profile->endChangeGroupProperties();

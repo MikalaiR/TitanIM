@@ -32,11 +32,11 @@ public:
     QString lastUid();
     QString configDir() const;
     QString dataDir() const;
-    QString profileDir() const;
+    QString profileDir(const QString &uid="") const;
     QString cacheDir() const;
-    void saveProfile(const QString &key, const QVariant &value);
+    void saveProfile(const QString &key, const QVariant &value, const QString &uid="");
     void saveMain(const QString &key, const QVariant &value);
-    QVariant loadProfile(const QString &key, const QVariant &defaultValue);
+    QVariant loadProfile(const QString &key, const QVariant &defaultValue, const QString &uid="");
     QVariant loadMain(const QString &key, const QVariant &defaultValue);
 
 private:

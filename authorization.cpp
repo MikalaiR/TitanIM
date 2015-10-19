@@ -46,6 +46,11 @@ void Authorization::connectToVk(const QString &username, const QString &password
     Client::instance()->connection()->connectToVk(username, password);
 }
 
+void Authorization::disconnectVk()
+{
+    Client::instance()->connection()->disconnectVk();
+}
+
 void Authorization::setCaptcha(const QString &sid, const QString &text)
 {
     Client::instance()->connection()->setCaptcha(sid, text);
@@ -72,6 +77,12 @@ void Authorization::onAuthorized(const int uid, const QString &token, const QStr
 void Authorization::onLogout(const int uid)
 {
     qDebug() << "logout";
+
+    Settings::instance()->saveProfile("main/token", "", QString::number(uid));
+    Settings::instance()->saveProfile("main/secret", "", QString::number(uid));
+    Settings::instance()->saveMain("profiles/last", "");
+
+    emit showAuthPage();
 }
 
 void Authorization::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)

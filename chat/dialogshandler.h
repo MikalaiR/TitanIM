@@ -39,6 +39,7 @@ public:
     QString typingText() const;
     DialogItem dialog(const int index, const bool isProxyIndex=true) const;
     Q_INVOKABLE int indexOf(const int id, const bool proxyIndex=true) const;
+    void clear();
 
 private:
     DialogsModel *_model;

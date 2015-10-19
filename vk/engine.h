@@ -39,6 +39,7 @@ public slots:
     void setUserOnline(const int uid);
     void setUserOffline(const int uid, const bool isAway);
     void getFriendsOnline();
+    void getSelfProfile();
     ProfileItem getProfile() const;
     QVariant getUser();
     ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());

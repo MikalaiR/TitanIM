@@ -66,7 +66,7 @@ void DialogsModel::append(const DialogItem item, const bool replace)
 
 void DialogsModel::replaceAll(const DialogList items)
 {
-    remove(0, rowCount());
+    removeAll();
     append(items);
 }
 
@@ -85,6 +85,13 @@ bool DialogsModel::remove(int row, int count)
     endRemoveRows();
 
     return true;
+}
+
+void DialogsModel::removeAll()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    _dialogs->clear();
+    endRemoveRows();
 }
 
 DialogItem DialogsModel::at(const int row)

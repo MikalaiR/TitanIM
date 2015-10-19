@@ -178,7 +178,7 @@ void LongPoll::getLongPollHistory()
     packet->addParam("max_msg_id", _engine->maxMsgId());
     packet->addParam("events_limit", 35000);
     packet->addParam("msgs_limit", 7000);
-    packet->addParam("fields", "photo_100,online,last_seen,sex");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollHistoryFinished(const Packet*,QVariantMap)));
     connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(getLongPollHistoryError(const Packet*,const ErrorResponse*)));

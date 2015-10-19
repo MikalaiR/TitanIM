@@ -70,6 +70,11 @@ void Engine::getFriendsOnline()
     _connection->appendQuery(packet);
 }
 
+void Engine::getSelfProfile()
+{
+    _selfProfile->getAllFields(_connection);
+}
+
 ProfileItem Engine::getProfile() const
 {
     return _selfProfile;
@@ -153,10 +158,12 @@ void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
 void Engine::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
     _selfProfile->setId(uid);
-    _selfProfile->getAllFields(_connection);
+    getSelfProfile();
     _profiles->insert(uid, _selfProfile);
 }
 
 void Engine::onLogout(const int uid)
 {
+    _profiles->clear();
+    _maxMsgId = 0;
 }

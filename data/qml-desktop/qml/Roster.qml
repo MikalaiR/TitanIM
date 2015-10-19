@@ -76,11 +76,14 @@ Item {
         section.property: "alphabet"
         section.labelPositioning: ViewSection.InlineLabels
         section.delegate: SectionHeading { }
+        currentIndex: -1
     }
 
     onCurrentChatIdChanged: {
-        if (tabBar.currentIndex === 1 && !filtered)
-            return;
+        if (tabBar.currentIndex === 1) {
+            mainWindow.pushPage({item: Qt.resolvedUrl("Profile.qml"), immediate: true}, "profile")
+            if (!filtered) return
+        }
 
         clearFilter()
 
