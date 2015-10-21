@@ -18,7 +18,9 @@ Item {
     id: profile
 
     readonly property string name: "profile"
-    property var profileItem: engine.getUser(chats.currentChatId)
+    property int uid: chats.currentChatId
+    property var profileItem: engine.getUser(uid)
+    property bool availablePhotosProfile: false
 
     Rectangle {
         anchors.fill: parent
@@ -31,7 +33,7 @@ Item {
         anchors.topMargin: 30
         contentWidth: content.width
         contentHeight: content.height
-        visible: chats.currentChatId !== 0
+        visible: uid !== 0
 
         MouseArea {
             anchors.fill: parent
@@ -60,7 +62,9 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        PhotoViewer.setUrl(profileItem.photoMediumRect)
+                        if (availablePhotosProfile) {
+                            PhotoViewer.setItems(engine.photosProfile(uid), 0)
+                        }
                     }
                 }
             }
@@ -98,28 +102,28 @@ Item {
 
                 UnderlineLabel {
                     visible: text.length
-                    label: "город"
+                    label: qsTr("city")
                     text: profileItem.city
                     select: true
                 }
 
                 UnderlineLabel {
                     visible: text.length
-                    label: "день рождения"
+                    label: qsTr("birthday")
                     text: profileItem.bdate
                     select: true
                 }
 
                 UnderlineLabel {
                     visible: text.length
-                    label: "мобильный"
+                    label: qsTr("mobile")
                     text: profileItem.mobilePhone
                     select: true
                 }
 
                 UnderlineLabel {
                     visible: profileItem.domain.length
-                    label: "ссылка"
+                    label: qsTr("link")
                     text: "https://vk.com/" + profileItem.domain
 
                     onClicked: {
@@ -138,7 +142,7 @@ Item {
                 spacing: 6
 
                 UnderlineButton {
-                    label: "Отправить сообщение"
+                    label: qsTr("Send message")
 
                     onClicked: {
                         mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml")})
@@ -146,10 +150,24 @@ Item {
                 }
 
                 UnderlineButton {
-                    label: "Заблокировать"
+                    label: qsTr("Block contact")
                 }
             }
         }
+    }
+
+    Connections {
+        target: engine
+        onPhotosProfileLoaded: {
+            if (uid === profile.uid) {
+                profile.availablePhotosProfile = true
+            }
+        }
+    }
+
+    onUidChanged: {
+        profile.availablePhotosProfile = false
+        engine.getPhotosProfile(uid)
     }
 }
 

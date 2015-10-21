@@ -19,6 +19,7 @@
 #include <QHash>
 #include "connection.h"
 #include "profileitem.h"
+#include "photospacket.h"
 
 class Engine : public QObject
 {
@@ -32,7 +33,9 @@ private:
     Connection *_connection;
     ProfileItem _selfProfile;
     QHash<int, ProfileItem> *_profiles;
+    PhotosPacket *_photosPacket;
     int _maxMsgId;
+    QList<PhotoItem> _currentPhotosProfile;
 
 public slots:
     int uid() const;
@@ -44,15 +47,21 @@ public slots:
     QVariant getUser();
     ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());
     QVariant getUser(const int id);
+    void getPhotosProfile(const int uid);
+    QVariantList photosProfile(const int uid);
     int maxMsgId() const;
     void setMaxMsgId(const int mid);
 
 protected slots:
     void onFriendsOnline(const Packet *sender, const QVariantMap &result);
+    void onGetPhotosProfile(const int id, const QList<PhotoItem> &photos);
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);
     void onLogout(const int uid);
+
+signals:
+    void photosProfileLoaded(const int uid);
 };
 
 #endif // ENGINE_H

@@ -90,7 +90,9 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        mainWindow.pushPage(Qt.resolvedUrl("Profile.qml"), "profile")
+                        if (!chats.currentChat.isGroupChat) { //todo
+                            mainWindow.pushPage(Qt.resolvedUrl("Profile.qml"), "profile")
+                        }
                     }
                 }
             }

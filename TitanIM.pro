@@ -114,7 +114,8 @@ SOURCES += main.cpp \
     vk/uploaditem.cpp \
     vk/uploaddocitem.cpp \
     vk/uploadaudioitem.cpp \
-    vk/uploadvideoitem.cpp
+    vk/uploadvideoitem.cpp \
+    vk/photospacket.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -190,7 +191,8 @@ HEADERS += \
     vk/uploaditem.h \
     vk/uploaddocitem.h \
     vk/uploadaudioitem.h \
-    vk/uploadvideoitem.h
+    vk/uploadvideoitem.h \
+    vk/photospacket.h
 
 OBJECTIVE_SOURCES += \
     notification/macnotification.mm

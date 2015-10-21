@@ -20,6 +20,7 @@ Engine::Engine(Connection *connection)
     connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
 
     _profiles = new QHash<int, ProfileItem>();
+    _photosPacket = 0;
     _maxMsgId = 0;
 
     _selfProfile = ProfileItem::create();
@@ -29,6 +30,7 @@ Engine::Engine(Connection *connection)
 Engine::~Engine()
 {
     delete _profiles;
+    if (_photosPacket) delete _photosPacket;
 }
 
 int Engine::uid() const
@@ -115,6 +117,30 @@ QVariant Engine::getUser(const int id)
     return QVariant::fromValue(profile.data());
 }
 
+void Engine::getPhotosProfile(const int uid)
+{
+    if (!_photosPacket)
+    {
+        _photosPacket = new PhotosPacket(_connection);
+        connect(_photosPacket, SIGNAL(photos(int,QList<PhotoItem>)), this, SLOT(onGetPhotosProfile(int,QList<PhotoItem>)));
+    }
+
+    _photosPacket->getPhotos(uid, "profile");
+}
+
+QVariantList Engine::photosProfile(const int uid)
+{
+    //todo uid. not only current profile
+
+    QVariantList list;
+
+    foreach (PhotoItem photo, _currentPhotosProfile) {
+        list.append(QVariant::fromValue(photo.data()));
+    }
+
+    return list;
+}
+
 int Engine::maxMsgId() const
 {
     return _maxMsgId;
@@ -153,6 +179,13 @@ void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
     }
 
     delete sender;
+}
+
+void Engine::onGetPhotosProfile(const int id, const QList<PhotoItem> &photos)
+{
+    _currentPhotosProfile = photos;
+
+    emit photosProfileLoaded(id);
 }
 
 void Engine::onAuthorized(const int uid, const QString &token, const QString &secret)

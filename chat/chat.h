@@ -28,6 +28,7 @@ class Chat : public QObject
 
     Q_PROPERTY(int outAttachmentsCount READ outAttachmentsCount NOTIFY outAttachmentsChanged)
     Q_PROPERTY(QString textMessage READ textMessage WRITE setTextMessage NOTIFY textMessageChanged)
+    Q_PROPERTY(bool isGroupChat READ isGroupChat CONSTANT)
 
 public:
     Chat();
