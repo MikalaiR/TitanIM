@@ -157,14 +157,21 @@ void Chats::onTimerUpdaterTimeout()
         }
         else
         {
-//            if (_currentDialog->profile()->isFriend()) //todo
-//            {
-                _currentDialog->profile()->updateLastSeenText();
-//            }
-//            else
-//            {
-//                _currentDialog->profile()->getAllFields();
-//            }
+            if (!_currentDialog->profile()->isFriend())
+            {
+                static int step = 0;
+                if (step == 4) //every 5 min check online
+                {
+                    _currentDialog->profile()->getLastActivity(Client::instance()->connection());
+                    step = 0;
+                }
+                else
+                {
+                    step++;
+                }
+            }
+
+            _currentDialog->profile()->updateLastSeenText();
         }
     }
 }

@@ -229,10 +229,15 @@ void DialogsHandler::onInMessagesRead(const int id, const int mid)
     if (i > -1)
     {
         DialogItem dialog = _model->at(i);
+        int lastMid = dialog->message()->id();
 
-        if (dialog->message()->id() == mid)
+        if ((lastMid == mid) || (dialog->message()->isOut() && lastMid - 1 == mid))
         {
-            dialog->message()->setIsUnread(false);
+            if (!dialog->message()->isOut())
+            {
+                dialog->message()->setIsUnread(false);
+            }
+
             dialog->setUnreadCount(0);
         }
         else

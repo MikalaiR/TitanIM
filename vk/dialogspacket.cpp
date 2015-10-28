@@ -21,7 +21,7 @@ DialogsPacket::DialogsPacket(Connection *connection)
     _count = 0;
     _serverCount = 0;
     _unreadDialogs = 0;
-    _fields = "photo_100,online,last_seen,sex,domain,bdate,city,contacts";
+    _fields = "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me";
 }
 
 void DialogsPacket::load(const int offset, const int count)

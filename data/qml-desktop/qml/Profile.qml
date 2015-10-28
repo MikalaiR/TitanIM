@@ -150,7 +150,15 @@ Item {
                 }
 
                 UnderlineButton {
-                    label: qsTr("Block contact")
+                    label: profileItem.blacklistedByMe ? qsTr("Unblock contact") : qsTr("Block contact")
+
+                    onClicked: {
+                        if (profileItem.blacklistedByMe) {
+                            engine.unbanUser(uid)
+                        } else {
+                            engine.banUser(uid)
+                        }
+                    }
                 }
             }
         }
@@ -168,6 +176,7 @@ Item {
     onUidChanged: {
         profile.availablePhotosProfile = false
         engine.getPhotosProfile(uid)
+        engine.updateUser(uid)
     }
 }
 

@@ -264,7 +264,7 @@ void DialogItemPrivate::getAllFields(Connection *connection, const bool want)
     Packet *packet = new Packet("execute.messagesGetDialog");
     packet->addParam("user_id", _id);
     packet->addParam("preview_length", 50);
-    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);

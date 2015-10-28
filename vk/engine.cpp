@@ -117,6 +117,14 @@ QVariant Engine::getUser(const int id)
     return QVariant::fromValue(profile.data());
 }
 
+void Engine::updateUser(const int id)
+{
+    if (_profiles->contains(id))
+    {
+        _profiles->value(id)->getAllFields(_connection);
+    }
+}
+
 void Engine::getPhotosProfile(const int uid)
 {
     if (!_photosPacket)
@@ -154,6 +162,34 @@ void Engine::setMaxMsgId(const int mid)
     }
 }
 
+void Engine::banUser(const int uid)
+{
+    Packet *packet = new Packet("account.banUser");
+    packet->setId(uid);
+    packet->addParam("user_id", uid);
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onBanUser(const Packet*,QVariantMap)));
+    _connection->appendQuery(packet);
+
+    if (_profiles->contains(uid))
+    {
+        _profiles->value(uid)->getAllFields(_connection);
+    }
+}
+
+void Engine::unbanUser(const int uid)
+{
+    Packet *packet = new Packet("account.unbanUser");
+    packet->setId(uid);
+    packet->addParam("user_id", uid);
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onUnbanUser(const Packet*,QVariantMap)));
+    _connection->appendQuery(packet);
+
+    if (_profiles->contains(uid))
+    {
+        _profiles->value(uid)->getAllFields(_connection);
+    }
+}
+
 void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
 {
     QVariantList response = result.value("response").toList();
@@ -186,6 +222,30 @@ void Engine::onGetPhotosProfile(const int id, const QList<PhotoItem> &photos)
     _currentPhotosProfile = photos;
 
     emit photosProfileLoaded(id);
+}
+
+void Engine::onBanUser(const Packet *sender, const QVariantMap &result)
+{
+    int id = sender->id();
+
+    if (result.value("response").toInt() == 1 && _profiles->contains(id))
+    {
+        _profiles->value(id)->setBlacklistedByMe(true);
+    }
+
+    delete sender;
+}
+
+void Engine::onUnbanUser(const Packet *sender, const QVariantMap &result)
+{
+    int id = sender->id();
+
+    if (result.value("response").toInt() == 1 && _profiles->contains(id))
+    {
+        _profiles->value(id)->setBlacklistedByMe(false);
+    }
+
+    delete sender;
 }
 
 void Engine::onAuthorized(const int uid, const QString &token, const QString &secret)

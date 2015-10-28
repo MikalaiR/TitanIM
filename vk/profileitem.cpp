@@ -19,6 +19,9 @@ ProfileItemPrivate::ProfileItemPrivate()
     _sex = Unknown;
     _online = false;
     _lastSeen = 0;
+    _friendStatus = FriendStatus::NotFriend;
+    _isTop = false;
+    _blacklistedByMe = false;
     _isLoading = false;
 }
 
@@ -228,6 +231,55 @@ void ProfileItemPrivate::setAlphabet(const QString &alphabet)
     _alphabet = alphabet;
 }
 
+bool ProfileItemPrivate::isTop() const
+{
+    return _isTop;
+}
+
+void ProfileItemPrivate::setTop(const bool isTop)
+{
+    if (_isTop != isTop)
+    {
+        _isTop = isTop;
+        emitPropertyChanged("isTop");
+    }
+}
+
+bool ProfileItemPrivate::blacklistedByMe() const
+{
+    return _blacklistedByMe;
+}
+
+void ProfileItemPrivate::setBlacklistedByMe(const bool blacklistedByMe)
+{
+    if (_blacklistedByMe != blacklistedByMe)
+    {
+        _blacklistedByMe = blacklistedByMe;
+        emitPropertyChanged("blacklistedByMe");
+        emit blacklistedByMeChanged();
+    }
+}
+
+ProfileItemPrivate::FriendStatus ProfileItemPrivate::friendStatus() const
+{
+    return _friendStatus;
+}
+
+void ProfileItemPrivate::setFriendStatus(const ProfileItemPrivate::FriendStatus friendStatus)
+{
+    if (_friendStatus != friendStatus)
+    {
+        _friendStatus = friendStatus;
+        emitPropertyChanged("friendStatus");
+        emit friendStatusChanged();
+    }
+}
+
+bool ProfileItemPrivate::isFriend() const
+{
+    return _friendStatus == FriendStatus::Friend;
+}
+
 bool ProfileItemPrivate::isLoading() const
 {
     return _isLoading;
@@ -247,7 +299,12 @@ void ProfileItemPrivate::join(const ProfileItem other)
         setPhotoMediumRect(other->photoMediumRect());
         setOnline(other->online());
         setLastSeen(other->lastSeen());
+        setBdate(other->bdate());
         setDomain(other->domain());
+        setCity(other->city());
+        setMobilePhone(other->mobilePhone());
+        setBlacklistedByMe(other->blacklistedByMe());
+        setFriendStatus(other->friendStatus());
     }
 }
 
@@ -266,7 +323,7 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
 
     Packet *packet = new Packet("users.get");
     packet->addParam("user_ids", _id);
-    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     connection->appendQuery(packet);

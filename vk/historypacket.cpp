@@ -32,7 +32,7 @@ void HistoryPacket::load(const int id, const int offset, const int count)
     packet->addParam("offset", offset);
     packet->addParam("count", count);
     packet->addParam("user_id", id);
-    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
     packet->setId(id);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);

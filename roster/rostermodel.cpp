@@ -150,7 +150,7 @@ QVariant RosterModel::data(const QModelIndex &index, int role) const
         return profile->activity();
 
     case AlphabetRole:
-        return profile->alphabet();
+        return profile->isTop() ? tr("Favorites") : profile->alphabet();
     }
 
     return QVariant();

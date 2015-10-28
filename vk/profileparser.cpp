@@ -29,6 +29,8 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     QString city = item.contains("city") ? item.value("city").toMap().value("title").toString() : "";
     QString mobilePhone = item.contains("mobile_phone") ? item.value("mobile_phone").toString() : "";
     QString alphabet = !firstName.isEmpty() ? QString(firstName.at(0)) : "";
+    int friendStatus = item.contains("friend_status") ? item.value("friend_status").toInt() : 0;
+    bool blacklistedByMe = item.contains("blacklisted_by_me") ? item.value("blacklisted_by_me").toInt() : 0;
 
     profile->beginChangeGroupProperties();
 
@@ -44,6 +46,8 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     profile->setCity(city);
     profile->setMobilePhone(mobilePhone);
     profile->setAlphabet(alphabet);
+    profile->setBlacklistedByMe(blacklistedByMe);
+    profile->setFriendStatus((ProfileItemPrivate::FriendStatus)friendStatus);
 
     profile->endChangeGroupProperties();
 }

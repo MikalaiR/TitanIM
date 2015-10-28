@@ -34,6 +34,8 @@ class ProfileItemPrivate : public NotifyPropertyBase
     Q_PROPERTY(QString domain READ domain NOTIFY domainChanged)
     Q_PROPERTY(QString city READ city NOTIFY cityChanged)
     Q_PROPERTY(QString mobilePhone READ mobilePhone NOTIFY mobilePhoneChanged)
+    Q_PROPERTY(bool blacklistedByMe READ blacklistedByMe NOTIFY blacklistedByMeChanged)
+    Q_PROPERTY(int friendStatus READ friendStatus NOTIFY friendStatusChanged)
 
 public:
     enum Sex
@@ -41,6 +43,14 @@ public:
         Unknown,
         Woman,
         Man
+    };
+
+    enum FriendStatus
+    {
+        NotFriend,
+        OutRequest,
+        InRequest,
+        Friend
     };
 
     ProfileItemPrivate();
@@ -71,6 +81,13 @@ public:
     void setMobilePhone(const QString &mobilePhone);
     QString alphabet() const;
     void setAlphabet(const QString &alphabet);
+    bool isTop() const;
+    void setTop(const bool isTop);
+    bool blacklistedByMe() const;
+    void setBlacklistedByMe(const bool blacklistedByMe);
+    FriendStatus friendStatus() const;
+    void setFriendStatus(const FriendStatus friendStatus);
+    bool isFriend() const;
     bool isLoading() const;
     bool isEmpty() const;
 
@@ -87,6 +104,9 @@ private:
     QString _city;
     QString _mobilePhone;
     QString _alphabet;
+    bool _isTop;
+    bool _blacklistedByMe;
+    FriendStatus _friendStatus;
     bool _isLoading;
 
 public slots:
@@ -109,6 +129,8 @@ signals:
     void domainChanged();
     void cityChanged();
     void mobilePhoneChanged();
+    void blacklistedByMeChanged();
+    void friendStatusChanged();
 };
 
 #endif // PROFILEITEM_H
