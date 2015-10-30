@@ -12,6 +12,7 @@
 */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.0
 
 Item {
@@ -98,15 +99,52 @@ Item {
             }
 
             Image {
+                id: profileMenuImg
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 source: "images/actions.png"
 
+                Menu {
+                    id: profileMenu
+                    property int width: 0
+
+                    MenuItem {
+                        text: qsTr("Open on VK")
+                        onTriggered: {
+                            Qt.openUrlExternally("https://vk.com/" + engine.getUser(chats.currentChatId).domain)
+                        }
+                    }
+
+                    MenuItem {
+                        text: qsTr("Clear message history")
+                        onTriggered: {
+                            chats.currentChat.clearHistory()
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        var maxWidth = 0
+
+                        for (var i = 0; i < profileMenu.items.length; i++) {
+                            var textItem = Qt.createQmlObject('import QtQuick 2.0;
+                                                               Text {
+                                                                   font.pointSize:' + profileMenu.__font.pointSize + ';
+                                                                   text: "' + profileMenu.items[i].text + '";
+                                                                   visible: false
+                                                               }', profileMenu)
+                            maxWidth = Math.max(maxWidth, textItem.width + 5)
+                        }
+
+                        profileMenu.width = maxWidth
+                    }
+                }
+
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log("open menu")
+                        var point = profileMenuImg.mapToItem(null, 0, 0)
+                        profileMenu.__popup(Qt.rect(point.x - profileMenu.width, point.y, 0, profileMenuImg.height))
                     }
                 }
             }

@@ -127,7 +127,7 @@ Item {
                     text: "https://vk.com/" + profileItem.domain
 
                     onClicked: {
-                        Qt.openUrlExternally(text);
+                        Qt.openUrlExternally(text)
                     }
                 }
             }

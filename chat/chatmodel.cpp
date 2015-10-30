@@ -145,7 +145,7 @@ int ChatModel::indexOf(const int id) const
     return _messages->indexOf(id);
 }
 
-void ChatModel::markAsRead(const int id)
+bool ChatModel::markAsRead(const int id)
 {
     int i = _messages->indexOf(id);
 
@@ -153,7 +153,24 @@ void ChatModel::markAsRead(const int id)
     {
         qobject_cast<MessageItem>(_messages->at(i))->setIsUnread(false);
         onItemChanged(i);
+        return true;
     }
+
+    return false;
+}
+
+bool ChatModel::markAsDeleted(const int id, const bool isDeleted)
+{
+    int i = _messages->indexOf(id);
+
+    if (i > -1)
+    {
+        qobject_cast<MessageItem>(_messages->at(i))->setDeleted(isDeleted);
+        onItemChanged(i);
+        return true;
+    }
+
+    return false;
 }
 
 QHash<int, QByteArray> ChatModel::roleNames() const

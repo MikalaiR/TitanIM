@@ -296,6 +296,13 @@ void Chat::refreshHistory()
     _model->load(20);
 }
 
+void Chat::clearHistory()
+{
+    Packet *packet = new Packet("messages.deleteDialog");
+    packet->addParam("user_id", _dialog->id());
+    Client::instance()->connection()->appendQuery(packet);
+}
+
 QString Chat::actionToString(const QString &author, const int act, const QString &arg, const int sex)
 {
     return Utils::actionToString(author, act, arg, sex);

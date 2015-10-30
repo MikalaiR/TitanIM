@@ -70,6 +70,7 @@ public slots:
     void removeAttachment(const int index);
     void markAsRead();
     void refreshHistory();
+    void clearHistory();
     QString actionToString(const QString &author, const int act, const QString &arg, const int sex);
 
 protected slots:

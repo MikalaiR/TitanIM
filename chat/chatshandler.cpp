@@ -19,6 +19,7 @@ ChatsHandler::ChatsHandler()
 
     connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
     connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
+    connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
     connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
     connect(longPoll, SIGNAL(obsoleteFriendsOnline()), this, SLOT(onObsoleteFriendsOnline()));
     connect(longPoll, SIGNAL(rebuild()), this, SLOT(onRebuild()));
@@ -99,13 +100,40 @@ void ChatsHandler::onLongPollMessageOutAdded(const int id, const MessageItem mes
     }
 }
 
+void ChatsHandler::onMessageFlagsSet(const int mid, const int mask, const int id)
+{
+    if (contains(id))
+    {
+        if ((mask & LongPoll::Deleted) || (mask & LongPoll::Spam))
+        {
+            chat(id)->model()->markAsDeleted(mid, true);
+        }
+    }
+}
+
 void ChatsHandler::onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date)
 {
-    if (mask & LongPoll::Unread)
+    if (contains(id))
     {
-        if (contains(id))
+        if (mask & LongPoll::Unread)
         {
             chat(id)->model()->markAsRead(mid);
+        }
+
+        if ((mask & LongPoll::Deleted) || (mask & LongPoll::Spam))
+        {
+            if (!chat(id)->model()->markAsDeleted(mid, false))
+            {
+                //recovery message
+                MessageItem message = MessageItem::create();
+                message->setId(mid);
+                message->setFromId(id);
+                message->setDate(QDateTime::fromTime_t(date).toLocalTime());
+                message->setDeleted(true); //not bug
+                message->getAllFields(Client::instance()->connection());
+
+                chat(id)->model()->append(message, true);
+            }
         }
     }
 }

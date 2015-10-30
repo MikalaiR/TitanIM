@@ -60,7 +60,8 @@ public:
     bool removeNotFake(int row, int count);
     MessageBaseItem at(const int row) const;
     int indexOf(const int id) const;
-    void markAsRead(const int id);
+    bool markAsRead(const int id);
+    bool markAsDeleted(const int id, const bool isDeleted);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
