@@ -95,5 +95,6 @@
         <file>Profile.qml</file>
         <file>UnderlineLabel.qml</file>
         <file>UnderlineButton.qml</file>
+        <file>MenuBox.qml</file>
     </qresource>
 </RCC>

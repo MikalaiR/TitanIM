@@ -99,15 +99,14 @@ Item {
             }
 
             Image {
-                id: profileMenuImg
+                id: profileMenuBtn
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 source: "images/actions.png"
 
-                Menu {
+                MenuBox {
                     id: profileMenu
-                    property int width: 0
 
                     MenuItem {
                         text: qsTr("Open on VK")
@@ -122,29 +121,13 @@ Item {
                             chats.currentChat.clearHistory()
                         }
                     }
-
-                    Component.onCompleted: {
-                        var maxWidth = 0
-
-                        for (var i = 0; i < profileMenu.items.length; i++) {
-                            var textItem = Qt.createQmlObject('import QtQuick 2.0;
-                                                               Text {
-                                                                   font.pointSize:' + profileMenu.__font.pointSize + ';
-                                                                   text: "' + profileMenu.items[i].text + '";
-                                                                   visible: false
-                                                               }', profileMenu)
-                            maxWidth = Math.max(maxWidth, textItem.width + 5)
-                        }
-
-                        profileMenu.width = maxWidth
-                    }
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        var point = profileMenuImg.mapToItem(null, 0, 0)
-                        profileMenu.__popup(Qt.rect(point.x - profileMenu.width, point.y, 0, profileMenuImg.height))
+                        var point = profileMenuBtn.mapToItem(null, 0, 0)
+                        profileMenu.showMenu(point.x - profileMenu.width, point.y + profileMenuBtn.height)
                     }
                 }
             }
@@ -168,11 +151,12 @@ Item {
 
         FileDialog {
             id: fileDialog
+            property bool asDoc: false
             title: "Please choose a file"
             selectMultiple: true
 
             onAccepted: {
-                chats.currentChat.addAttachments(fileDialog.fileUrls)
+                chats.currentChat.addAttachments(fileDialog.fileUrls, asDoc)
             }
         }
 
@@ -204,10 +188,52 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     source: "images/attach.png"
 
+                    MenuBox {
+                        id: uploadMenu
+
+                        MenuItem {
+                            text: qsTr("Photo")
+                            onTriggered: {
+                                fileDialog.nameFilters = ["Image files (*.jpg *.jpeg *.png *.bmp *.gif)", "All files (*)"]
+                                fileDialog.asDoc = false
+                                fileDialog.open()
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("Video")
+                            onTriggered: {
+                                fileDialog.nameFilters = ["Video files (*.avi *.mpg)", "All files (*)"]
+                                fileDialog.asDoc = false
+                                fileDialog.open()
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("Audio file")
+                            onTriggered: {
+                                fileDialog.nameFilters = ["Audio files (*.mp3)", "All files (*)"]
+                                fileDialog.asDoc = false
+                                fileDialog.open()
+                            }
+                        }
+
+                        MenuItem {
+                            text: qsTr("Document")
+                            onTriggered: {
+                                fileDialog.nameFilters = ["All files (*)"]
+                                fileDialog.asDoc = true
+                                fileDialog.open()
+                            }
+                        }
+                    }
+
                     MouseArea {
                         anchors.fill: parent
+                        anchors.margins: -7
                         onClicked: {
-                            fileDialog.open()
+                            var point = uploadBtn.mapToItem(null, 0, 0)
+                            uploadMenu.showMenu(point.x - 5, point.y - uploadMenu.height)
                         }
                     }
                 }

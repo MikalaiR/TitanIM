@@ -204,7 +204,7 @@ void Chat::sendTyping()
     Client::instance()->connection()->appendQuery(packet);
 }
 
-void Chat::addAttachments(const QList<QUrl> &list)
+void Chat::addAttachments(const QList<QUrl> &list, const bool asDoc)
 {
     if (!_outAttachments)
     {
@@ -217,8 +217,13 @@ void Chat::addAttachments(const QList<QUrl> &list)
         QFileInfo fileInfo(fileName.toString());
         QString title = fileInfo.fileName();
 
-        QString extStr = Utils::firstUpper(fileName.toLocalFile().section('.', -1).toLower());
-        int ext = Attachment::metaEnumerator("Extension").keyToValue(extStr.toLatin1());
+        int ext = -1;
+
+        if (!asDoc)
+        {
+            QString extStr = Utils::firstUpper(fileName.toLocalFile().section('.', -1).toLower());
+            ext = Attachment::metaEnumerator("Extension").keyToValue(extStr.toLatin1());
+        }
 
         switch (ext) {
         case Attachment::Jpeg:

@@ -66,7 +66,7 @@ public slots:
     void addServiceMsg(const ServiceMsgItem serviceMsg);
     void sendMessage(const QString &text);
     void sendTyping();
-    void addAttachments(const QList<QUrl> &list);
+    void addAttachments(const QList<QUrl> &list, const bool asDoc=false);
     void removeAttachment(const int index);
     void markAsRead();
     void refreshHistory();
