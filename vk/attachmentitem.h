@@ -41,7 +41,8 @@ public:
         Map = 32,
         Fwd_messages = 64,
         Gift = 128,
-        Wall = 256
+        Wall = 256,
+        Link = 512
     };
 
     enum Extension

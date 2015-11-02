@@ -11,28 +11,17 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef LINKPARSER_H
+#define LINKPARSER_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
-#include "wallparser.h"
-#include "linkparser.h"
+#include <QVariantMap>
+#include "linkitem.h"
 
-class AttachmentsParser : public QObject
+class LinkParser : public QObject
 {
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    static LinkItem parser(const QVariantMap &item);
 };
 
-#endif // ATTACHMENTSPARSER_H
+#endif // LINKPARSER_H

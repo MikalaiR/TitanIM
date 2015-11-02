@@ -11,28 +11,35 @@
  ***************************************************************************
 */
 
-#ifndef ATTACHMENTSPARSER_H
-#define ATTACHMENTSPARSER_H
+#ifndef LINKITEMPRIVATE_H
+#define LINKITEMPRIVATE_H
 
 #include <QObject>
-#include <QVariant>
-#include <QMetaEnum>
-#include <QDebug>
-#include "utils.h"
-#include "attachmentlist.h"
-#include "photoparser.h"
-#include "stickerparser.h"
-#include "audioparser.h"
-#include "videoparser.h"
-#include "docparser.h"
-#include "giftparser.h"
-#include "wallparser.h"
-#include "linkparser.h"
+#include <QUrl>
+#include "attachmentitem.h"
 
-class AttachmentsParser : public QObject
+class LinkItemPrivate : public Attachment
 {
+    Q_OBJECT
+    Q_PROPERTY(QString title READ title CONSTANT) //todo signal
+    Q_PROPERTY(QString description READ description CONSTANT)
+    Q_PROPERTY(QUrl url READ url CONSTANT)
+
 public:
-    static AttachmentList* parser(const QVariantList &items);
+    LinkItemPrivate();
+    QString title() const;
+    void setTitle(const QString &title);
+    QString description() const;
+    void setDescription(const QString &description);
+    QUrl url() const;
+    void setUrl(const QUrl &url);
+
+private:
+    QString _title;
+    QString _description;
+    QUrl _url;
 };
 
-#endif // ATTACHMENTSPARSER_H
+typedef QSharedPointer<LinkItemPrivate> LinkItem;
+
+#endif // LINKITEMPRIVATE_H

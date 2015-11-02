@@ -77,6 +77,13 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
             break;
         }
 
+        case Attachment::Link:
+        {
+            LinkItem link = LinkParser::parser(attachment);
+            attachments->add(link);
+            break;
+        }
+
         default:
         {
             qWarning() << "AttachmentsParser: unknown attachment" << strType;

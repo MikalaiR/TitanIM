@@ -81,6 +81,12 @@ QString AttachmentList::description() const
             break;
         }
 
+        case Attachment::Link:
+        {
+            return tr("Link");
+            break;
+        }
+
         default:
         {
             return tr("Attachment");
