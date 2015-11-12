@@ -19,6 +19,7 @@ MessageBase::MessageBase()
     _isFake = false;
     _uid = 0;
     _deleted = false;
+    _isChecked = false;
 }
 
 MessageBase::MessageType MessageBase::messageType() const
@@ -79,6 +80,20 @@ void MessageBase::setDeleted(const bool deleted)
     {
         _deleted = deleted;
         emitPropertyChanged("deleted");
+    }
+}
+
+bool MessageBase::isChecked() const
+{
+    return _isChecked;
+}
+
+void MessageBase::setChecked(const bool isChecked)
+{
+    if (_isChecked != isChecked)
+    {
+        _isChecked = isChecked;
+        emitPropertyChanged("isChecked");
     }
 }
 

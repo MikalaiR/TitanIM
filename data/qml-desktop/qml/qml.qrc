@@ -98,5 +98,8 @@
         <file>MenuBox.qml</file>
         <file>LinkAttachments.qml</file>
         <file>images/attach_link.png</file>
+        <file>images/message_checked.png</file>
+        <file>images/message_unchecked.png</file>
+        <file>images/close_popup.png</file>
     </qresource>
 </RCC>

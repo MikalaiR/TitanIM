@@ -33,6 +33,7 @@ Chat::Chat(const DialogItem dialog)
 
     _model = new ChatModel(_dialog, this);
     connect(_model, SIGNAL(rowsAllReplaced()), this, SLOT(onModelRowsAllReplaced()));
+    connect(_model, SIGNAL(selectedCountChanged(int)), this, SIGNAL(selectedCountChanged(int)));
 
     _countUnsent = 0;
     _outAttachments = 0;
@@ -122,6 +123,24 @@ int Chat::outAttachmentsCount() const
     {
         _outAttachments->count();
     }
+}
+
+int Chat::selectedCount() const
+{
+    return _model->selectedCount();
+}
+
+QString Chat::selectedCountStr() const
+{
+    int c = selectedCount();
+
+    if (c == 0)
+    {
+        return "";
+    }
+
+    QString s = Utils::pluralForm(c, QObject::tr("message", "1"), QObject::tr("messages", "2"), QObject::tr("messages", "5"));
+    return QString("%1 %2").arg(c).arg(s);
 }
 
 void Chat::addInMessage(const MessageItem message)
@@ -278,6 +297,23 @@ void Chat::addAttachments(const QList<QUrl> &list, const bool asDoc)
     emit outAttachmentsChanged(_outAttachments);
 }
 
+void Chat::addFwdMessages(const MessageList messages)
+{
+    if (messages->count() == 0)
+        return;
+
+    if (!_outAttachments)
+    {
+        _outAttachments = new AttachmentList();
+    }
+
+    FwdMsgItem fwdMsg = FwdMsgItem::create();
+    fwdMsg->setMessages(messages);
+
+    _outAttachments->add(fwdMsg);
+    emit outAttachmentsChanged(_outAttachments);
+}
+
 void Chat::removeAttachment(const int index)
 {
     if (!_outAttachments || !_outAttachments->count())
@@ -306,6 +342,26 @@ void Chat::clearHistory()
     Packet *packet = new Packet("messages.deleteDialog");
     packet->addParam("user_id", _dialog->id());
     Client::instance()->connection()->appendQuery(packet);
+}
+
+MessageList Chat::getSelectedItems() const
+{
+    return _model->getSelectedItems();
+}
+
+void Chat::deleteSelectedItems()
+{
+    _model->deleteSelectedItems();
+}
+
+void Chat::copyTextSelectedItems()
+{
+    _model->copyTextSelectedItems();
+}
+
+void Chat::clearSelected()
+{
+    _model->clearSelected();
 }
 
 QString Chat::actionToString(const QString &author, const int act, const QString &arg, const int sex)

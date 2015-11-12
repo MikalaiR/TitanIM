@@ -34,3 +34,20 @@ void fwdMsgItemPrivate::setMessages(const MessageList messages)
 {
     _messages = messages;
 }
+
+int fwdMsgItemPrivate::countMessages() const
+{
+    return _messages->count();
+}
+
+QString fwdMsgItemPrivate::toString() const
+{
+    QStringList list;
+
+    for (int i = 0; i < _messages->count(); i++)
+    {
+        list.append(QString::number(_messages->at(i)->id()));
+    }
+
+    return list.join(',');
+}

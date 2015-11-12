@@ -46,6 +46,8 @@ public:
     void setDate(const QDateTime &date);
     bool deleted() const;
     void setDeleted(const bool deleted);
+    bool isChecked() const;
+    void setChecked(const bool isChecked);
 
 protected:
     void setMessageType(const MessageType messageType);
@@ -56,6 +58,7 @@ protected:
     int _uid;
     QDateTime _date;
     bool _deleted;
+    bool _isChecked;
 };
 
 typedef QSharedPointer<MessageBase> MessageBaseItem;

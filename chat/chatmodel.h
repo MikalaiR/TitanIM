@@ -16,6 +16,7 @@
 
 #include <QAbstractListModel>
 #include <QStringList>
+#include <QClipboard>
 #include "vk/messagelist.h"
 #include "vk/dialogitem.h"
 #include "vk/typingitem.h"
@@ -45,7 +46,8 @@ public:
         SectionRole,
         ActionRole,
         ActionMidRole,
-        ActionTextRole
+        ActionTextRole,
+        isCheckedRole
     };
 
     explicit ChatModel(const DialogItem dialog, QObject *parent = 0);
@@ -60,6 +62,11 @@ public:
     bool removeNotFake(int row, int count);
     MessageBaseItem at(const int row) const;
     int indexOf(const int id) const;
+    MessageList getSelectedItems();
+    void deleteSelectedItems();
+    void copyTextSelectedItems();
+    void clearSelected();
+    int selectedCount() const;
     bool markAsRead(const int id);
     bool markAsDeleted(const int id, const bool isDeleted);
     QHash<int, QByteArray> roleNames() const;
@@ -76,10 +83,12 @@ private:
     int _serverCount;
     bool _lazyLoad;
     mutable bool _isLoading;
+    int _selectedCount;
 
 protected:
     bool canFetchMore(const QModelIndex &parent) const;
     void fetchMore(const QModelIndex &parent);
+    void setSelectedCount(const int count);
 
 protected slots:
     void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
@@ -87,6 +96,7 @@ protected slots:
 
 signals:
     void rowsAllReplaced();
+    void selectedCountChanged(const int count);
 };
 
 #endif // CHATMODEL_H

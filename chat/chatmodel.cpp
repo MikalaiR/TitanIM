@@ -27,6 +27,7 @@ ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     _serverCount = 0;
     _lazyLoad = true;
     _isLoading = false;
+    _selectedCount = 0;
 }
 
 ChatModel::~ChatModel()
@@ -145,6 +146,100 @@ int ChatModel::indexOf(const int id) const
     return _messages->indexOf(id);
 }
 
+MessageList ChatModel::getSelectedItems()
+{
+    MessageList list = MessageList::create();
+
+    for (int i = _messages->count() - 1; i >= 0; i--)
+    {
+        MessageBaseItem msg = _messages->at(i);
+
+        if (msg->isChecked())
+        {
+            msg->setChecked(false);
+            list->add(msg);
+        }
+    }
+
+    setSelectedCount(0);
+    return list;
+}
+
+void ChatModel::deleteSelectedItems()
+{
+    QStringList list;
+
+    for (int i = 0; i < _messages->count(); i++)
+    {
+        MessageBaseItem msg = _messages->at(i);
+
+        if (msg->isChecked())
+        {
+            msg->setChecked(false);
+            msg->setDeleted(true);
+            list.append(QString::number(msg->id()));
+        }
+    }
+
+    Packet *packet = new Packet("messages.delete");
+    packet->addParam("message_ids", list.join(','));
+    Client::instance()->connection()->appendQuery(packet);
+
+    setSelectedCount(0);
+}
+
+void ChatModel::copyTextSelectedItems()
+{
+    QStringList list;
+    Engine *engine = Client::instance()->engine();
+
+    for (int i = _messages->count() - 1; i >= 0; i--)
+    {
+        MessageItem msg = qobject_cast<MessageItem>(_messages->at(i));
+
+        if (msg->isChecked())
+        {
+            msg->setChecked(false);
+
+            QString name = msg->isOut() ? engine->getProfile()->fullName()
+                                        : engine->getProfile(msg->uid())->fullName();
+
+            QString date = msg->date().toString(", [d.MM.yyyy, hh:mm]");
+
+            list.append(name + date);
+            list.append(msg->plainBody());
+            list.append("");
+        }
+    }
+
+    QGuiApplication::clipboard()->setText(list.join('\n'));
+    setSelectedCount(0);
+}
+
+void ChatModel::clearSelected()
+{
+    for (int i = 0; i < _messages->count(); i++)
+    {
+        _messages->at(i)->setChecked(false);
+    }
+
+    setSelectedCount(0);
+}
+
+int ChatModel::selectedCount() const
+{
+    return _selectedCount;
+}
+
+void ChatModel::setSelectedCount(const int count)
+{
+    if (_selectedCount != count)
+    {
+        _selectedCount = count;
+        emit selectedCountChanged(count);
+    }
+}
+
 bool ChatModel::markAsRead(const int id)
 {
     int i = _messages->indexOf(id);
@@ -192,6 +287,7 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[ActionRole] = "action";
     roles[ActionMidRole] = "actionMid";
     roles[ActionTextRole] = "actionText";
+    roles[isCheckedRole] = "isChecked";
 
     return roles;
 }
@@ -225,6 +321,9 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
     case SectionRole:
         return Utils::dateToSection(messageBase->date());
+
+    case isCheckedRole:
+        return messageBase->isChecked();
     }
 
     //type role
@@ -296,6 +395,24 @@ bool ChatModel::setData(const QModelIndex &index, const QVariant &value, int rol
     if (!index.isValid() && !value.isValid() && index.row() >= _messages->count())
     {
         return false;
+    }
+
+    MessageBaseItem messageBase = _messages->at(index.row());
+
+    switch (role)
+    {
+    case isCheckedRole:
+        if (messageBase->isChecked() != value.toBool())
+        {
+            messageBase->setChecked(value.toBool());
+
+            if (value.toBool())
+                setSelectedCount(_selectedCount + 1);
+            else
+                setSelectedCount(_selectedCount - 1);
+
+            return true;
+        }
     }
 
     return false;

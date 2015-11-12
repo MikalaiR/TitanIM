@@ -29,6 +29,8 @@ class Chat : public QObject
     Q_PROPERTY(int outAttachmentsCount READ outAttachmentsCount NOTIFY outAttachmentsChanged)
     Q_PROPERTY(QString textMessage READ textMessage WRITE setTextMessage NOTIFY textMessageChanged)
     Q_PROPERTY(bool isGroupChat READ isGroupChat CONSTANT)
+    Q_PROPERTY(int selectedCount READ selectedCount NOTIFY selectedCountChanged)
+    Q_PROPERTY(QString selectedCountStr READ selectedCountStr NOTIFY selectedCountChanged)
 
 public:
     Chat();
@@ -46,6 +48,8 @@ public:
     void setTextMessage(const QString &text);
     AttachmentList* outAttachments() const;
     int outAttachmentsCount() const;
+    int selectedCount() const;
+    QString selectedCountStr() const;
 
 private:
     DialogItem _dialog;
@@ -67,10 +71,15 @@ public slots:
     void sendMessage(const QString &text);
     void sendTyping();
     void addAttachments(const QList<QUrl> &list, const bool asDoc=false);
+    void addFwdMessages(const MessageList messages);
     void removeAttachment(const int index);
     void markAsRead();
     void refreshHistory();
     void clearHistory();
+    MessageList getSelectedItems() const;
+    void deleteSelectedItems();
+    void copyTextSelectedItems();
+    void clearSelected();
     QString actionToString(const QString &author, const int act, const QString &arg, const int sex);
 
 protected slots:
@@ -82,6 +91,7 @@ protected slots:
 signals:
     void outAttachmentsChanged(AttachmentList *_outAttachments);
     void textMessageChanged(QString text);
+    void selectedCountChanged(const int count);
 };
 
 #endif // CHAT_H

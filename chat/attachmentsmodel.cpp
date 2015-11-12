@@ -65,6 +65,7 @@ QHash<int, QByteArray> AttachmentsModel::roleNames() const
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
     roles[TypeRole] = "attachmentType";
+    roles[CountFwdMsgRole] = "countFwdMsg";
 
     return roles;
 }
@@ -146,6 +147,23 @@ QVariant AttachmentsModel::data(const QModelIndex &index, int role) const
 
         case Qt::DecorationRole:
             return "images/upload_doc.png";
+        }
+
+        break;
+    }
+
+    case Attachment::Fwd_messages:
+    {
+        FwdMsgItem fwdMsg = qobject_cast<FwdMsgItem>(attachmentBase);
+        int count = fwdMsg->countMessages();
+
+        switch (role)
+        {
+        case Qt::DisplayRole:
+            return Utils::pluralForm(count, QObject::tr("message", "1"), QObject::tr("messages", "2"), QObject::tr("messages", "5"));
+
+        case CountFwdMsgRole:
+            return count;
         }
 
         break;

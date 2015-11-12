@@ -35,6 +35,7 @@ Chats::Chats()
 
     _currentChatId = 0;
     _currentDialog = 0;
+    _markAsForward = false;
 
     _timerUpdater = new QTimer(this);
     connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
@@ -98,6 +99,12 @@ void Chats::clear()
 
 void Chats::setCurrentChat(const int id)
 {
+    if (_markAsForward && _currentChatId != 0)
+    {
+        MessageList fwdMessages = currentChat()->model()->getSelectedItems();
+        _chatsHandler->chat(id)->addFwdMessages(fwdMessages);
+    }
+
     if (_currentChatId != id)
     {
         if (_currentDialog)
@@ -130,6 +137,8 @@ void Chats::setCurrentChat(const int id)
 
         emit currentChatChanged(id);
     }
+
+    markAsForward(false);
 }
 
 void Chats::openChat(const DialogItem dialog, const bool setCurrent)
@@ -144,6 +153,20 @@ void Chats::openChat(const DialogItem dialog, const bool setCurrent)
     if (setCurrent)
     {
         setCurrentChat(id);
+    }
+}
+
+bool Chats::isForward() const
+{
+    return _markAsForward;
+}
+
+void Chats::markAsForward(const bool isMark)
+{
+    if (_markAsForward != isMark)
+    {
+        _markAsForward = isMark;
+        emit isForwardChanged(isMark);
     }
 }
 

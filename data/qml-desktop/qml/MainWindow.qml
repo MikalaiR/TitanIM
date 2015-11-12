@@ -78,7 +78,7 @@ Rectangle {
                 Roster {id: roster}
 
                 onClicked: {
-                    if (chats.currentChatId !== 0) {
+                    if (chats.currentChatId !== 0 && !chats.isForward) {
                         pushPage({item: Qt.resolvedUrl("Profile.qml"), immediate: true}, "profile")
                     }
 

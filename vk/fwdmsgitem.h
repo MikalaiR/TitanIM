@@ -27,6 +27,8 @@ public:
     fwdMsgItemPrivate();
     QVariantList messages() const;
     void setMessages(const MessageList messages);
+    int countMessages() const;
+    QString toString() const;
 
 private:
     MessageList _messages;

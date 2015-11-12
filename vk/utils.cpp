@@ -259,20 +259,20 @@ QString Utils::pluralForm(const int n, const QString &form1, const QString &form
 
     if (n1 > 10 && n1 < 20)
     {
-        return QString("%1 %2").arg(n).arg(form5);
+        return form5;
     }
 
     if (n2 > 1 && n2 < 5)
     {
-        return QString("%1 %2").arg(n).arg(form2);
+        return form2;
     }
 
     if (n2 == 1)
     {
-        return QString("%1 %2").arg(n).arg(form1);
+        return form1;
     }
 
-    return QString("%1 %2").arg(n).arg(form5);
+    return form5;
 }
 
 QString Utils::lastSeenToString(const uint lastSeen, const int sex)
@@ -302,8 +302,9 @@ QString Utils::lastSeenToString(const uint lastSeen, const int sex)
         if (minutes < 60)
         {
             QString suffix = pluralForm(minutes, QObject::tr("minute", "1"), QObject::tr("minutes", "2"), QObject::tr("minutes", "5"));
-            return QString("%1 %2 %3")
+            return QString("%1 %2 %3 %4")
                     .arg(prefix)
+                    .arg(minutes)
                     .arg(suffix)
                     .arg(QObject::tr("ago"));
         }
@@ -313,8 +314,9 @@ QString Utils::lastSeenToString(const uint lastSeen, const int sex)
             int hours = minutes / 60;
 
             QString suffix = pluralForm(hours, QObject::tr("hour", "1"), QObject::tr("hours", "2"), QObject::tr("hours", "5"));
-            return QString("%1 %2 %3")
+            return QString("%1 %2 %3 %4")
                     .arg(prefix)
+                    .arg(hours)
                     .arg(suffix)
                     .arg(QObject::tr("ago"));
         }
@@ -342,7 +344,9 @@ QString Utils::peopleConversation(const int count)
         return QObject::tr("no members");
     }
 
-    return pluralForm(count, QObject::tr("member", "1"), QObject::tr("members", "2"), QObject::tr("members", "5"));
+    QString s = pluralForm(count, QObject::tr("member", "1"), QObject::tr("members", "2"), QObject::tr("members", "5"));
+
+    return QString("%1 %2").arg(count).arg(s);
 }
 
 QString Utils::actionToString(const QString &author, const int act, const QString &arg, const int sex)

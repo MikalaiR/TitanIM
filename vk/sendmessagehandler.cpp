@@ -96,7 +96,13 @@ void SendMessageHandler::sendMessage()
             AttachmentItem attachment = message->attachments()->at(i);
 
             switch (attachment->attachmentType()) {
-            //todo case add fwd_msg and map
+            case Attachment::Fwd_messages:
+            {
+                FwdMsgItem fwdMsg = qobject_cast<FwdMsgItem>(attachment);
+                packet->addParam("forward_messages", fwdMsg->toString());
+                break;
+            }
+
             default:
             {
                 attachments.append(attachment->toString());
@@ -105,7 +111,10 @@ void SendMessageHandler::sendMessage()
             }
         }
 
-        packet->addParam("attachment", attachments.join(','));
+        if (attachments.count() > 0)
+        {
+            packet->addParam("attachment", attachments.join(','));
+        }
     }
 
     packet->addParam("guid", QString::number(message->date().toMSecsSinceEpoch()));

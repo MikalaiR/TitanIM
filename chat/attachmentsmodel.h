@@ -20,6 +20,7 @@
 #include "vk/videoitem.h"
 #include "vk/audioitem.h"
 #include "vk/docitem.h"
+#include "vk/fwdmsgitem.h"
 
 class AttachmentsModel : public QAbstractListModel
 {
@@ -30,7 +31,8 @@ class AttachmentsModel : public QAbstractListModel
 public:
     enum chatRole
     {
-        TypeRole = Qt::UserRole
+        TypeRole = Qt::UserRole,
+        CountFwdMsgRole
     };
 
     AttachmentsModel(QObject *parent = 0);

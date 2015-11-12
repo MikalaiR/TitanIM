@@ -27,6 +27,7 @@ class MessageItemPrivate : public MessageBase
     Q_ENUMS(Action)
     Q_PROPERTY(int uid READ uid CONSTANT) //todo
     Q_PROPERTY(QString body READ body CONSTANT)
+    Q_PROPERTY(bool isOut READ isOut CONSTANT)
     Q_PROPERTY(AttachmentList* attachments READ attachments CONSTANT)
 
 public:

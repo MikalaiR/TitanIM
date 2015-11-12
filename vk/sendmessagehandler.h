@@ -18,6 +18,7 @@
 #include <QQueue>
 #include "connection.h"
 #include "messageitem.h"
+#include "fwdmsgitem.h"
 #include "uploadattachments.h"
 
 class SendMessageHandler : public QObject

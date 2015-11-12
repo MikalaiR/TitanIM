@@ -12,12 +12,13 @@
 */
 
 import QtQuick 2.0
+import QtQuick.Controls 1.4
 import TitanIM 2.0
 
 Item {
     id: chatDelegate
     width: chatDelegate.ListView.view.width
-    height: Math.max(avatar.height + 4, bubble.height + 9, service.height + 15) + sectionText.height
+    height: Math.max(avatar.height + 4, bubble.height + 9, service.height + 15, typing.height) + sectionText.height
 
     Rectangle {
         id: unreadHighlight
@@ -42,9 +43,7 @@ Item {
 
     Item {
         id: content
-
         property var profile: model.isOut ? engine.getUser() : engine.getUser(model.uid)
-
         anchors.top: sectionText.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
@@ -53,12 +52,26 @@ Item {
         anchors.rightMargin: 10
 
         Loader {
+            id: checkBox
+            anchors.left: parent.left
+            anchors.leftMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: 2
+            active: chatFrame.isEdit && !service.active
+
+            sourceComponent: Image {
+                source: model.isChecked ? "images/message_checked.png" : "images/message_unchecked.png"
+            }
+        }
+
+        Loader {
             id: avatar
+            width: active ? item.width : 0
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2
             LayoutMirroring.enabled: model.messageType === MessageBase.Text && model.isOut
-            active: !service.active
+            active: !service.active && !chatFrame.isEdit
 
             sourceComponent: AvatarImage {
                 width: 32
@@ -120,7 +133,7 @@ Item {
         Loader {
             id: bubble
             anchors.left: avatar.right
-            anchors.leftMargin: 3
+            anchors.leftMargin: checkBox.active && !model.isOut ? 35 : 3
             anchors.bottom: avatar.bottom
             anchors.bottomMargin: -2
             LayoutMirroring.enabled: model.isOut
@@ -135,6 +148,70 @@ Item {
                 text: model.display
                 time: model.timeStr
                 attachments: model.attachments
+            }
+        }
+    }
+
+    Loader {
+        id: contextMenu
+        active: false
+
+        sourceComponent: Menu {
+            id: ctxMenu
+
+            MenuItem {
+                text: qsTr("Copy text")
+                onTriggered: {
+                    model.isChecked = true
+                    chats.currentChat.copyTextSelectedItems()
+                    chatFrame.isEdit = false
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Forward message")
+                onTriggered: {
+                    model.isChecked = true
+                    chats.isForward = true
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Delete message")
+                onTriggered: {
+                    model.isChecked = true
+                    chats.currentChat.deleteSelectedItems()
+                    chatFrame.isEdit = false
+                }
+            }
+
+            MenuItem {
+                text: qsTr("Select message")
+                onTriggered: {
+                    model.isChecked = true
+                    chatFrame.isEdit = true
+                }
+            }
+        }
+
+        onActiveChanged: {
+            if (active) {
+                item.popup()
+                active = false
+            }
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: checkBox.active ? (Qt.LeftButton | Qt.RightButton) : Qt.RightButton
+        onClicked: {
+            if (checkBox.active) {
+                model.isChecked = mouse.button === Qt.RightButton ? true : !model.isChecked
+            }
+
+            if (mouse.button === Qt.RightButton) {
+                contextMenu.active = true
             }
         }
     }

@@ -37,12 +37,14 @@ private:
     int _maxMsgId;
     QList<PhotoItem> _currentPhotosProfile;
 
+protected:
+    void getSelfProfile();
+
 public slots:
     int uid() const;
     void setUserOnline(const int uid);
     void setUserOffline(const int uid, const bool isAway);
     void getFriendsOnline();
-    void getSelfProfile();
     ProfileItem getProfile() const;
     QVariant getUser();
     ProfileItem getProfile(const int id, ProfileItem defaultValue=ProfileItem());
