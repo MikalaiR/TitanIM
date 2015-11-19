@@ -18,13 +18,8 @@ Item {
     id: bubbleItem
 
     property int maximumWidth
-    property bool isOut: false
-    property bool isUnread: false
-    property bool isSending: false
-    property bool isError: false
-    property alias text: body.richText
-    property string time: ""
-    property var attachments
+    property color color: "transparent"
+    property var modelData
 
     implicitWidth: bubble.width
     implicitHeight: bubble.height
@@ -34,57 +29,67 @@ Item {
         width: Math.max(body.contentWidth, attachmentsView.width) + 29
         height: (body.contentHeight + attachmentsView.height) + (body.height ? 10 : 8) +
                 (attachmentsView.height && body.height ? 11 + content.spacing : 0)
-        source: bubbleItem.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
+        source: modelData.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
         smooth: true
+    }
 
-        Column {
-            id: content
-            anchors.left: bubble.left
-            anchors.leftMargin: bubbleItem.isOut ? 12 : 17
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.verticalCenterOffset: -1
-            spacing: 4
+    Loader {
+        anchors.fill: bubble
+        active: bubbleItem.color !== "transparent"
 
-            TextEditItem {
-                id: body
-                width: bubbleItem.maximumWidth
-                height: text.length ? implicitHeight + 2: 0
-                verticalAlignment: Text.AlignTop
-                font.pointSize: main.fontPointSize - 1
-                wrapMode: Text.Wrap
-                readOnly: true
-                selectByMouse: true
-                onLinkActivated: Qt.openUrlExternally(link)
-            }
+        sourceComponent: ColorOverlay {
+            source: bubble
+            color: bubbleItem.color
+        }
+    }
 
-            Loader {
-                id: attachmentsView
-                anchors.left: body.left
-                active: bubbleItem.attachments && bubbleItem.attachments.count()
+    Column {
+        id: content
+        anchors.left: bubble.left
+        anchors.leftMargin: modelData.isOut ? 12 : 17
+        anchors.verticalCenter: bubble.verticalCenter
+        anchors.verticalCenterOffset: -1
+        spacing: 4
 
-                sourceComponent: AttachmentsView {
-                    maximumWidth: bubbleItem.maximumWidth
-                    attachments: bubbleItem.attachments
-                }
+        TextEditItem {
+            id: body
+            width: bubbleItem.maximumWidth
+            height: text.length ? implicitHeight + 2: 0
+            verticalAlignment: Text.AlignTop
+            font.pointSize: main.fontPointSize - 1
+            text: modelData.display
+            wrapMode: Text.Wrap
+            readOnly: true
+            selectByMouse: true
+            onLinkActivated: Qt.openUrlExternally(link)
+        }
+
+        Loader {
+            id: attachmentsView
+            anchors.left: body.left
+            active: modelData.attachments && modelData.attachments.count()
+
+            sourceComponent: AttachmentsView {
+                maximumWidth: bubbleItem.maximumWidth
+                attachments: modelData.attachments
             }
         }
     }
 
     TextShadow {
-        LayoutMirroring.enabled: !bubbleItem.isOut
+        LayoutMirroring.enabled: !modelData.isOut
         anchors.right: parent.left
         anchors.rightMargin: 4
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 6
         font.pointSize: main.fontPointSize - 4
-        color: isError ? "#860004" : "#8B92A4"
-        text: isError ? qsTr("error") : isSending ? qsTr("sending...") : time
+        color: modelData.isError ? "#860004" : "#8B92A4"
+        text: modelData.isError ? qsTr("error") : (modelData.isSending ? qsTr("sending...") : modelData.timeStr)
     }
 
     Loader {
         anchors.fill: bubble
-        active: bubbleItem.attachments && !body.text.length &&
-                bubbleItem.attachments.count() === 1 && attachmentsView.item.photoCount === 1
+        active: modelData.isSingle
 
         sourceComponent: OpacityMask {
             source: attachmentsView

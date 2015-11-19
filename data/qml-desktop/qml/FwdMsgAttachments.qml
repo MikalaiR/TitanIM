@@ -122,6 +122,7 @@ Item {
                                 sourceComponent: AttachmentsView {
                                     maximumWidth: fwdMsgAttachments.maxWidth - 7
                                     attachments: modelData.attachments
+                                    isAttachInFwdMsg: true
                                 }
                             }
                         }

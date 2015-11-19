@@ -101,5 +101,6 @@
         <file>images/message_checked.png</file>
         <file>images/message_unchecked.png</file>
         <file>images/close_popup.png</file>
+        <file>images/gift.png</file>
     </qresource>
 </RCC>

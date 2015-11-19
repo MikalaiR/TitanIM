@@ -282,6 +282,8 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[IsOutRole] = "isOut";
     roles[IsError] = "isError";
     roles[IsSendingRole] = "isSending";
+    roles[IsGift] = "isGift";
+    roles[IsSingle] = "isSingle";
     roles[DeletedRole] = "deleted";
     roles[SectionRole] = "section";
     roles[ActionRole] = "action";
@@ -331,6 +333,7 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case MessageBase::Text:
     {
         MessageItem message = qobject_cast<MessageItem>(messageBase);
+        bool isAttachments = message->attachments();
 
         switch (role)
         {
@@ -354,6 +357,13 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
 
         case IsSendingRole:
             return message->isSending();
+
+        case IsGift:
+            return isAttachments && message->attachments()->filterByType(Attachment::Gift).count();
+
+        case IsSingle:
+            return isAttachments && message->body().isEmpty() && message->attachments()->count() == 1
+                    && message->attachments()->filterByType(Attachment::Photo).count() == 1;
 
         case ActionRole:
             return message->action();

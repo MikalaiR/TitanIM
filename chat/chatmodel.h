@@ -42,6 +42,8 @@ public:
         IsOutRole,
         IsError,
         IsSendingRole,
+        IsGift,
+        IsSingle,
         DeletedRole,
         SectionRole,
         ActionRole,

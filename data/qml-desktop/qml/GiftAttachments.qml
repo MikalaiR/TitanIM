@@ -17,7 +17,7 @@ Item {
     id: giftAttachments
 
     implicitWidth: img.width
-    implicitHeight: img.height
+    implicitHeight: img.height + (labelRow.visible ? 35 : 0)
 
     Image {
         id: img
@@ -26,5 +26,29 @@ Item {
         smooth: true
         fillMode: Image.PreserveAspectFit
         source: items[0].srcBig
+    }
+
+    Row {
+        id: labelRow
+        anchors.top: img.bottom
+        anchors.bottom: parent.bottom
+        anchors.topMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: !isAttachInFwdMsg
+        spacing: 5
+
+        Image {
+            source: "images/gift.png"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: -1
+        }
+
+        Text {
+            id: labelGift
+            height: parent.height
+            verticalAlignment: Text.AlignVCenter
+            color: "#7F7662"
+            text: qsTr("Gift")
+        }
     }
 }

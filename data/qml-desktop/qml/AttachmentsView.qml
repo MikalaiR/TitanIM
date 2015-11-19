@@ -19,7 +19,7 @@ Item {
 
     property int maximumWidth
     property var attachments
-    readonly property int photoCount: attachments.filterByType(Attachment.Photo).length //todo remove
+    property bool isAttachInFwdMsg: false
 
     property var __attachments: [
         {"items": attachments.filterByType(Attachment.Photo | Attachment.Video), "source": "PhotoVideoAttachments.qml"},
@@ -28,7 +28,7 @@ Item {
         {"items": attachments.filterByType(Attachment.Doc), "source": "DocAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Fwd_messages), "source": "FwdMsgAttachments.qml"},
-        {"items": attachments.filterByType(Attachment.Gift), "source": "GiftAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Gift), "source": "GiftAttachments.qml", "isAttachInFwdMsg" : isAttachInFwdMsg},
         {"items": attachments.filterByType(Attachment.Wall), "source": "WallAttachments.qml"},
         {"items": attachments.filterByType(Attachment.Link), "source": "LinkAttachments.qml"}
     ]

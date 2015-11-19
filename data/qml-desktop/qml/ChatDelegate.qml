@@ -141,13 +141,8 @@ Item {
 
             sourceComponent: BubbleItem {
                 maximumWidth: chatDelegate.width * 0.6
-                isOut: model.isOut
-                isUnread: model.isUnread
-                isSending: model.isSending
-                isError: model.isError
-                text: model.display
-                time: model.timeStr
-                attachments: model.attachments
+                color: model.isGift ? "#F4EBD7" : "transparent"
+                modelData: model
             }
         }
     }
