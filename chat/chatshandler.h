@@ -33,6 +33,7 @@ public:
 
 private:
     QMap<int, Chat*> _chats;
+    QQueue<int> _ids;
 
 protected slots:
     void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);

@@ -34,10 +34,21 @@ void ChatsHandler::create(const DialogItem dialog)
 {
     int id = dialog->id();
 
-    Chat *chat = new Chat(dialog);
-    _chats[id] = chat;
+    if (!_chats.contains(id))
+    {
+        Chat *chat = new Chat(dialog);
+        _chats[id] = chat;
+        _ids.enqueue(id);
 
-    chat->model()->load();
+        chat->model()->load();
+
+        if (_ids.count() > 10)
+        {
+            int key = _ids.dequeue();
+            delete _chats.value(key);
+            _chats.remove(key);
+        }
+    }
 }
 
 bool ChatsHandler::contains(const int id) const
@@ -59,6 +70,7 @@ void ChatsHandler::clear()
     }
 
     _chats.clear();
+    _ids.clear();
 }
 
 void ChatsHandler::onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile)
@@ -169,6 +181,7 @@ void ChatsHandler::onRebuild()
         {
             _chats.remove(_key);
             delete _chat;
+            _ids.removeOne(_key);
         }
     }
 }
