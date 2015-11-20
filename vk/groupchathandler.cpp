@@ -227,7 +227,7 @@ void GroupChatHandler::getAllFields()
 {
     Packet *packet = new Packet("messages.getChat");
     packet->addParam("chat_id", _chatId);
-    packet->addParam("fields", "photo_100");
+    packet->addParam("fields", "photo_100,online,last_seen,sex,domain");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     Client::instance()->connection()->appendQuery(packet);

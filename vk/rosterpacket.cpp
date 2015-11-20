@@ -79,9 +79,9 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
     QVariantMap response = result.value("response").toMap();
     ProfileList profiles;
 
-    bool isFirst = sender->method() == "execute.friendsGet";
+    int k = 0;
 
-    if (isFirst)
+    if (sender->method() == "execute.friendsGet")
     {
         profiles = ProfileList::create();
 
@@ -93,6 +93,7 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
             profiles->add(profile);
         }
 
+        k = profiles->count();
         profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList())->toList());
     }
     else
@@ -100,14 +101,15 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
         profiles = ProfileParser::parser(response.value("items").toList());
     }
 
-    for (int i = isFirst ? 5 : 0; i < profiles->count(); i++)
+    for (int i = k; i < profiles->count(); i++)
     {
         profiles->at(i)->setFriendStatus(ProfileItemPrivate::Friend);
 
-        //remove dublicate top profile (i > 5)
+        //remove dublicate top profile
         if (profiles->at(i)->isTop())
         {
             profiles->removeAt(i);
+            i--;
         }
     }
 
