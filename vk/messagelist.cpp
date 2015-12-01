@@ -23,7 +23,7 @@ int MessageListPrivate::notFakeMsgCount() const
 
     for (int i = 0; i < count(); i++)
     {
-        if (!at(i)->isFake() && !at(i)->deleted())
+        if (!at(i)->isFake() && !at(i)->isDeleted())
         {
             k++;
         }

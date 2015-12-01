@@ -25,7 +25,7 @@ class TypingItemPrivate : public MessageBase
 
 public:
     TypingItemPrivate();
-    inline bool isActive() const { return !_deleted; }
+    inline bool isActive() const { return !_isDeleted; }
 
 private:
     QTimer *_timer;

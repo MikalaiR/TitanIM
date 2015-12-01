@@ -44,8 +44,8 @@ public:
     void setUid(const int uid);
     QDateTime date() const;
     void setDate(const QDateTime &date);
-    bool deleted() const;
-    void setDeleted(const bool deleted);
+    bool isDeleted() const;
+    void setDeleted(const bool isDeleted);
     bool isChecked() const;
     void setChecked(const bool isChecked);
 
@@ -57,8 +57,11 @@ protected:
     bool _isFake;
     int _uid;
     QDateTime _date;
-    bool _deleted;
+    bool _isDeleted;
     bool _isChecked;
+
+signals:
+    void deleted(const int id);
 };
 
 typedef QSharedPointer<MessageBase> MessageBaseItem;

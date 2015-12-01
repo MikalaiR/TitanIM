@@ -46,10 +46,22 @@ void SendMessageHandler::createUploadAttach()
     }
 }
 
+void SendMessageHandler::deleteUploadAttach()
+{
+    if (_uploadAttachments)
+    {
+        disconnect(_uploadAttachments, SIGNAL(finished()), this, SLOT(sendMessage()));
+        disconnect(_uploadAttachments, SIGNAL(error()), this, SLOT(uploadAttachmentError()));
+        _uploadAttachments->deleteLater();
+        _uploadAttachments = 0;
+    }
+}
+
 void SendMessageHandler::execSendMessageQuery()
 {
     if (_messageQuery.count() == 0)
     {
+        _isProcessing = false;
         return;
     }
 
@@ -57,10 +69,19 @@ void SendMessageHandler::execSendMessageQuery()
 
     MessageItem message = _messageQuery.head();
 
+    if (message->isDeleted())
+    {
+        _messageQuery.removeFirst();
+        execSendMessageQuery();
+        return;
+    }
+
+    connect(message.data(), SIGNAL(deleted(int)), SLOT(onMessageDeleted(int)));
+
     if (message->attachments() && message->attachments()->count() > 0)
     {
         createUploadAttach();
-        _uploadAttachments->setAttachments(message->attachments());
+        _uploadAttachments->setAttachments(message->id(), message->attachments());
         _uploadAttachments->upload();
 
         return;
@@ -72,6 +93,8 @@ void SendMessageHandler::execSendMessageQuery()
 void SendMessageHandler::sendMessage()
 {
     MessageItem message = _messageQuery.dequeue();
+    disconnect(message.data(), SIGNAL(deleted(int)), this, SLOT(onMessageDeleted(int)));
+
     int internalMid = message->id();
     _messagesInProcessing[internalMid] = message;
 
@@ -128,6 +151,18 @@ void SendMessageHandler::sendMessage()
     execSendMessageQuery();
 }
 
+void SendMessageHandler::onMessageDeleted(const int id)
+{
+    if (_uploadAttachments->id() == id)
+    {
+        deleteUploadAttach();
+
+        _messageQuery.removeFirst();
+        _isProcessing = false;
+        execSendMessageQuery();
+    }
+}
+
 void SendMessageHandler::sendMessageFinished(const Packet *sender, const QVariantMap &result)
 {
     int response = result.value("response").toInt();
@@ -157,6 +192,7 @@ void SendMessageHandler::sendMessageError(const Packet *sender, const ErrorRespo
 void SendMessageHandler::uploadAttachmentError()
 {
     MessageItem message = _messageQuery.dequeue();
+    disconnect(message.data(), SIGNAL(deleted(int)), this, SLOT(onMessageDeleted(int)));
     message->setIsError(true);
 
     emit unsuccessfullyMessageSent(message->id());
@@ -164,3 +200,4 @@ void SendMessageHandler::uploadAttachmentError()
     _isProcessing = false;
     execSendMessageQuery();
 }
+

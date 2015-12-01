@@ -44,12 +44,12 @@ public:
         IsSendingRole,
         IsGift,
         IsSingle,
-        DeletedRole,
+        IsDeletedRole,
         SectionRole,
         ActionRole,
         ActionMidRole,
         ActionTextRole,
-        isCheckedRole
+        IsCheckedRole
     };
 
     explicit ChatModel(const DialogItem dialog, QObject *parent = 0);

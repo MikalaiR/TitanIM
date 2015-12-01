@@ -43,8 +43,9 @@ UploadAttachments::~UploadAttachments()
     delete _manager;
 }
 
-void UploadAttachments::setAttachments(AttachmentList *attachments)
+void UploadAttachments::setAttachments(const int id, AttachmentList *attachments)
 {
+    _id = id;
     _attachments = attachments;
     _index = 0;
     _countUpload = attachments->count();
@@ -95,6 +96,11 @@ void UploadAttachments::upload()
         break;
     }
     }
+}
+
+int UploadAttachments::id() const
+{
+    return _id;
 }
 
 void UploadAttachments::onNextUpload()

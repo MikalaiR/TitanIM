@@ -209,7 +209,7 @@ void LongPoll::getLongPollHistoryFinished(const Packet *sender, const QVariantMa
         int fromId = message->fromId();
         int uid = message->uid();
 
-        if (message->deleted() || message->uid() == 0)
+        if (message->isDeleted() || message->uid() == 0)
         {
             continue;
         }

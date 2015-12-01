@@ -18,7 +18,7 @@ MessageBase::MessageBase()
     _messageType = Unknown;
     _isFake = false;
     _uid = 0;
-    _deleted = false;
+    _isDeleted = false;
     _isChecked = false;
 }
 
@@ -69,17 +69,18 @@ void MessageBase::setDate(const QDateTime &date)
     }
 }
 
-bool MessageBase::deleted() const
+bool MessageBase::isDeleted() const
 {
-    return _deleted;
+    return _isDeleted;
 }
 
-void MessageBase::setDeleted(const bool deleted)
+void MessageBase::setDeleted(const bool isDeleted)
 {
-    if (_deleted != deleted)
+    if (_isDeleted != isDeleted)
     {
-        _deleted = deleted;
-        emitPropertyChanged("deleted");
+        _isDeleted = isDeleted;
+        emitPropertyChanged("isDeleted");
+        emit deleted(_id);
     }
 }
 

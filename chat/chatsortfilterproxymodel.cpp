@@ -54,6 +54,6 @@ bool ChatSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelInd
 
 bool ChatSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    const QVariant &data = sourceModel()->index(source_row, 0, source_parent).data(ChatModel::DeletedRole);
+    const QVariant &data = sourceModel()->index(source_row, 0, source_parent).data(ChatModel::IsDeletedRole);
     return !data.toBool();
 }

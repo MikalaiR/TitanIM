@@ -29,11 +29,13 @@ class UploadAttachments : public QObject
 public:
     explicit UploadAttachments(Connection *connection);
     ~UploadAttachments();
-    void setAttachments(AttachmentList *attachments);
+    void setAttachments(const int id, AttachmentList *attachments);
     void upload();
+    int id() const;
 
 private:
     AttachmentList *_attachments;
+    int _id;
     int _index;
     int _countUpload;
     QNetworkAccessManager *_manager;

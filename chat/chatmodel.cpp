@@ -284,12 +284,12 @@ QHash<int, QByteArray> ChatModel::roleNames() const
     roles[IsSendingRole] = "isSending";
     roles[IsGift] = "isGift";
     roles[IsSingle] = "isSingle";
-    roles[DeletedRole] = "deleted";
+    roles[IsDeletedRole] = "isDeleted";
     roles[SectionRole] = "section";
     roles[ActionRole] = "action";
     roles[ActionMidRole] = "actionMid";
     roles[ActionTextRole] = "actionText";
-    roles[isCheckedRole] = "isChecked";
+    roles[IsCheckedRole] = "isChecked";
 
     return roles;
 }
@@ -318,13 +318,13 @@ QVariant ChatModel::data(const QModelIndex &index, int role) const
     case DateRole:
         return messageBase->date();
 
-    case DeletedRole:
-        return messageBase->deleted();
+    case IsDeletedRole:
+        return messageBase->isDeleted();
 
     case SectionRole:
         return Utils::dateToSection(messageBase->date());
 
-    case isCheckedRole:
+    case IsCheckedRole:
         return messageBase->isChecked();
     }
 
@@ -411,7 +411,7 @@ bool ChatModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     switch (role)
     {
-    case isCheckedRole:
+    case IsCheckedRole:
         if (messageBase->isChecked() != value.toBool())
         {
             messageBase->setChecked(value.toBool());
