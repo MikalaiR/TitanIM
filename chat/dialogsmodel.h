@@ -30,11 +30,13 @@ public:
         DateRole,
         DateStrRole,
         UidRole,
+        FromRole,
         MidRole,
         IdRole,
         UnreadCountRole,
         IsOutRole,
         IsUnreadRole,
+        IsGroupChat,
         OnlineRole,
         TypingRole,
         EmojiRole

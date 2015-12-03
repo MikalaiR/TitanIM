@@ -122,11 +122,13 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[DateRole] = "date";
     roles[DateStrRole] = "dateStr";
     roles[UidRole] = "uid";
+    roles[FromRole] = "from";
     roles[MidRole] = "mid";
     roles[IdRole] = "id";
     roles[UnreadCountRole] = "unreadCount";
     roles[IsOutRole] = "isOut";
     roles[IsUnreadRole] = "isUnread";
+    roles[IsGroupChat] = "isGroupChat";
     roles[OnlineRole] = "online";
     roles[TypingRole] = "typing";
     roles[EmojiRole] = "emoji";
@@ -165,6 +167,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     case UidRole:
         return message->uid();
 
+    case FromRole:
+        return message->isOut() ? Client::instance()->uid() : message->uid();
+
     case MidRole:
         return message->id();
 
@@ -179,6 +184,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case IsUnreadRole:
         return message->isUnread();
+
+    case IsGroupChat:
+        return dialog->isGroupChat();
 
     case OnlineRole:
         return !dialog->isGroupChat() && profile->online();

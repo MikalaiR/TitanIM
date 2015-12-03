@@ -15,12 +15,23 @@ import QtQuick 2.0
 
 Item {
     id: dialogsDelegate
+
+    property color unreadHighlightColor: "#DFE3EA"
+
     width: dialogsDelegate.ListView.view.width
     height: avatar.height + 13
 
     HighlightListView {
         anchors.fill: parent
         visible: currentChatId === model.id
+    }
+
+    Rectangle {
+        id: unreadHighlightFull
+        anchors.fill: parent
+        color: unreadHighlightColor
+        opacity: 0.9
+        visible: model.isUnread && !model.isOut
     }
 
     Row {
@@ -43,7 +54,7 @@ Item {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
             anchors.topMargin: 1
-            spacing: model.emoji && !model.typing ? 4 : -1
+            spacing: model.emoji && !model.typing && !selfAvatar.visible ? 4 : -1
 
             Item {
                 width: parent.width
@@ -76,14 +87,28 @@ Item {
 
             Item {
                 width: parent.width
-                height: textBody.height
+                height: Math.max(textBody.height, selfAvatar.height + 7)
+
+                AvatarImage {
+                    id: selfAvatar
+                    width: avatar.height * 0.55
+                    height: visible ? avatar.height * 0.55 : 0
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: (model.isOut || model.isGroupChat) && (!model.typing)
+                    source: engine.getUser(model.from).photoMediumRect
+                    radius: 15
+                }
 
                 TextEditItem {
                     id: textBody
-                    anchors.left: parent.left
+                    anchors.left: selfAvatar.visible ? selfAvatar.right : parent.left
+                    anchors.leftMargin: selfAvatar.visible ? 5 : 0
                     anchors.right: unreadCount.visible ? unreadCount.left : parent.right
                     anchors.rightMargin: 7
-                    maximumLineCount: model.emoji ? 1 : 2
+                    anchors.verticalCenter: selfAvatar.verticalCenter
+                    anchors.verticalCenterOffset: selfAvatar.visible ? -2 : 0
+                    maximumLineCount: model.emoji || selfAvatar.visible ? 1 : 2
                     lineHeight: 0.9
                     color: "#707070"
                     font.pointSize: main.fontPointSize - 1
@@ -97,22 +122,22 @@ Item {
                     id: unreadHighlight
                     z: -1
                     anchors.fill: textBody
-                    anchors.topMargin: 1
+                    anchors.topMargin: -2
                     anchors.leftMargin: -2
-                    anchors.bottomMargin: -3
+                    anchors.bottomMargin: -5
                     anchors.rightMargin: -2
-                    color: "#DFE3EA"
-                    opacity: 0.5
+                    color: unreadHighlightColor
+                    opacity: 0.9
                     radius: 3
-                    visible: model.isUnread
+                    visible: model.isUnread && selfAvatar.visible
                 }
 
                 BadgeItem {
                     id: unreadCount
                     anchors.right: parent.right
                     anchors.rightMargin: 7
-                    anchors.top: textBody.top
-                    anchors.topMargin: model.emoji && !model.typing ? -2 : 4
+                    anchors.top: parent.top
+                    anchors.topMargin: model.emoji && !model.typing && !selfAvatar.visible ? -1 : 4
                     count: model.unreadCount
                 }
             }

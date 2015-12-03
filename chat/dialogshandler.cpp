@@ -181,7 +181,7 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
         if (!_flagMarkAsRead)
         {
             dialog->incUnreadDialogs();
-            Notificator::instance()->showNotification(id, message->id(), dialog->displayName(), message->plainBody(), true);
+            Notificator::instance()->showNotification(id, message->id(), Emoticons::instance()->toEmoji(dialog->displayName()), message->plainBody(), true);
         }
 
         Notificator::instance()->playSoundMessageIn();

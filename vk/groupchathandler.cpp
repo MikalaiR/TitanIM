@@ -151,7 +151,7 @@ void GroupChatHandler::setTitle(const QString &title)
 {
     if (_title != title)
     {
-        _title = title;
+        _title = Emoticons::instance()->fromEmoji(title);
         emit propertyChanged(_chatId, "title");
     }
 }
@@ -248,7 +248,7 @@ void GroupChatHandler::loadFinished(const Packet *sender, const QVariantMap &res
 {
     QVariantMap response = result.value("response").toMap();
 
-    _title = response.value("title").toString();
+    _title = Emoticons::instance()->fromEmoji(response.value("title").toString());
     _adminId = response.value("adminId").toInt();
     _cover = response.value("photo_100").toString();
     _kicked = (response.contains("kicked") && response.value("kicked").toInt());
