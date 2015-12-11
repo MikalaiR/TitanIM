@@ -28,7 +28,7 @@ Item {
         id: labelText
         anchors.top: parent.top
         text: underlineButton.label
-        color: underlineButton.color
+        color: enabled ? underlineButton.color : "grey"
         font.pointSize: main.fontPointSize + 1
 
         MouseArea {

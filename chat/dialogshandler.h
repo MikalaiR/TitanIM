@@ -64,6 +64,7 @@ protected slots:
     void onOutMessagesRead(const int id, const int mid);
     void onMessageFlagsSet(const int mid, const int mask, const int id);
     void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void onGroupChatUpdated(const int chatId, const bool self);
     void onCounterUnreadDialogs(const Packet *sender, const QVariantMap &result);
     void timerEvent(QTimerEvent *event);
 

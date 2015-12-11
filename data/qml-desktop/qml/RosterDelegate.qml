@@ -21,12 +21,16 @@ Item {
     MouseArea{
         anchors.fill: parent;
         onClicked: {
-            main.rosterCurrentIndexChanged(index);
-//            profilePage.clear();
-//            titanim.slotShowProfile(model.uid);
-//            titanim.slotWallGet(model.uid);
-//            profilePage.uid = model.uid;
-//            mainView.pageStack.push(profilePage);
+            if (!chats.isSelectUser) {
+                main.rosterCurrentIndexChanged(index)
+            } else {
+                if (chats.currentChatDialog.isGroupChat) {
+                    chats.currentChatDialog.groupChatHandler.addChatUser(model.uid)
+                    chats.isSelectUser = false
+                }
+            }
+
+            roster.clearFilter()
         }
     }
 

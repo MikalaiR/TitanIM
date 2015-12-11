@@ -16,9 +16,22 @@
 void DialogParser::parser(const QVariantMap &item, DialogItemPrivate *dialog, const ProfileList &profiles)
 {
     QVariantMap messageItem = item.contains("message") ? item.value("message").toMap() : item;
+
+    if (messageItem.isEmpty())
+    {
+        if (profiles->count() == 1 && !profiles->at(0)->id() == dialog->id())
+        {
+            dialog->setProfile(Client::instance()->engine()->getProfile(dialog->id()));
+            dialog->createStructure();
+        }
+
+        return;
+    }
+
     int unreadCount = item.contains("unread") ? item.value("unread").toInt() : 0;
 
     MessageItem message = MessageParser::parser(messageItem);
+    profiles->add(Client::instance()->profile());
     ProfileItem profile = profiles->item(message->uid());
 
     GroupChatHandler *groupChatHandler = 0;
@@ -26,21 +39,41 @@ void DialogParser::parser(const QVariantMap &item, DialogItemPrivate *dialog, co
     if (messageItem.contains("chat_active"))
     {
         groupChatHandler = new GroupChatHandler(message->chatId());
-        QVector<int> chatActive = Utils::toVectorInt(messageItem.value("chat_active").toList());
+        groupChatHandler->setAdminId(messageItem.value("admin_id").toInt());
+        int selfUid = Client::instance()->uid();
 
-        foreach (int uid, chatActive) {
-            groupChatHandler->addUser(profiles->item(uid));
+        QVector<int> chatActive = Utils::toVectorInt(messageItem.value("chat_active").toList());
+        if (chatActive.count() && chatActive.at(0) != selfUid)
+        {
+            chatActive.append(selfUid);
         }
 
+        ProfileList chatActiveList = ProfileList::create();
+        foreach (int uid, chatActive)
+        {
+            chatActiveList->add(profiles->item(uid));
+        }
+
+        groupChatHandler->setUsers(chatActiveList);
         groupChatHandler->setTitle(message->title());
 
-        if (messageItem.contains("users_count"))
+        if (messageItem.contains("users_count") && chatActive.count())
         {
             groupChatHandler->setUsersCount(messageItem.value("users_count").toInt());
         }
+        else
+        {
+            if (message->action() == MessageItemPrivate::Chat_kick_self && message->isOut())
+            {
+                groupChatHandler->setLeft(true);
+            }
+            else
+            {
+                groupChatHandler->setKicked(true);
+            }
+        }
 
         groupChatHandler->setCover(messageItem.value("photo_100").toString());
-        groupChatHandler->setAdminId(messageItem.value("admin_id").toInt());
     }
 
     dialog->beginChangeGroupProperties();

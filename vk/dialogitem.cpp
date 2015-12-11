@@ -31,7 +31,7 @@ DialogItemPrivate::~DialogItemPrivate()
 {
     if (_groupChatHandler)
     {
-        delete _groupChatHandler;
+        _groupChatHandler->deleteLater();
     }
 }
 
@@ -125,6 +125,7 @@ void DialogItemPrivate::setMessage(const MessageItem message)
 
 GroupChatHandler *DialogItemPrivate::groupChatHandler() const
 {
+    QQmlEngine::setObjectOwnership(_groupChatHandler, QQmlEngine::CppOwnership);
     return _groupChatHandler;
 }
 

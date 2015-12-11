@@ -129,7 +129,9 @@ T ObservableCollection<T>::item(const int id) const
             return i;
     }
 
-    return T::create();
+    T temp = T::create();
+    temp->setId(id);
+    return temp;
 }
 
 template <typename T>

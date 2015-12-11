@@ -80,7 +80,7 @@ Item {
     }
 
     onCurrentChatIdChanged: {
-        if (tabBar.currentIndex === 1 && !chats.isForward) {
+        if (tabBar.currentIndex === 1 && !chats.isForward && !chats.isSelectUser) {
             mainWindow.pushPage({item: Qt.resolvedUrl("Profile.qml"), immediate: true}, "profile")
             if (!filtered) return
         }

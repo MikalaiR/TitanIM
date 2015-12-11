@@ -20,6 +20,7 @@ Rectangle {
     readonly property string name: "mainWindow"
     property bool visiblePageStackView: false
     property int widthTabBar: 280
+    property alias tabBarCurrentIndex: tabBar.currentIndex
 
     function popPage(page) {
         pageStackView.pop(page)
@@ -64,10 +65,12 @@ Rectangle {
                 Dialogs {id: dialogs}
 
                 onClicked: {
-                    popPage({item: Qt.resolvedUrl("Chat.qml"), immediate: true})
+                    if (!chats.isSelectUser) {
+                        popPage({item: Qt.resolvedUrl("Chat.qml"), immediate: true})
 
-                    if (dialogsTab.visible || badge > 0)
-                        dialogs.scrollToTop()
+                        if (dialogsTab.visible || badge > 0)
+                            dialogs.scrollToTop()
+                    }
                 }
             }
 
@@ -78,15 +81,24 @@ Rectangle {
                 Roster {id: roster}
 
                 onClicked: {
-                    if (chats.currentChatId !== 0 && !chats.isForward) {
-                        pushPage({item: Qt.resolvedUrl("Profile.qml"), immediate: true}, "profile")
+                    if (chats.currentChatId !== 0 && !chats.isForward && !chats.isSelectUser) {
+                        if (chats.currentChat.isGroupChat) {
+                            pushPage({item: Qt.resolvedUrl("GroupChatInfo.qml"), immediate: true}, "groupChatInfo")
+                        } else {
+                            pushPage({item: Qt.resolvedUrl("Profile.qml"), immediate: true}, "profile")
+                        }
                     }
 
                     if (contactsTab.visible)
                         roster.scrollToTop()
 
                     roster.clearFilter()
-                    roster.forceActiveFocusFilter()
+                }
+
+                onVisibleChanged: {
+                    if (visible) {
+                        roster.forceActiveFocusFilter()
+                    }
                 }
             }
 

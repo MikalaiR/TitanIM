@@ -31,6 +31,7 @@ class Chats : public QObject
     Q_PROPERTY(ChatSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
     Q_PROPERTY(AttachmentsModel* currentChatAttachments READ currentChatAttachments NOTIFY currentChatChanged)
     Q_PROPERTY(bool isForward READ isForward WRITE markAsForward NOTIFY isForwardChanged)
+    Q_PROPERTY(bool isSelectUser READ isSelectUser WRITE markAsSelectUser NOTIFY isSelectUserChanged)
 
 public:
     static Chats *instance();
@@ -43,6 +44,8 @@ public:
     Chat* chat(const int id) const;
     bool isForward() const;
     void markAsForward(const bool isMark);
+    bool isSelectUser() const;
+    void markAsSelectUser(const bool isMark);
     void clear();
 
 private:
@@ -57,6 +60,7 @@ private:
     DialogItemPrivate *_currentDialog;
     AttachmentsModel *_currentChatAttachments;
     bool _markAsForward;
+    bool _isSelectUser;
     QTimer *_timerUpdater;
 
 protected:
@@ -71,6 +75,7 @@ protected slots:
 signals:
     void currentChatChanged(const int id);
     void isForwardChanged(const bool isForward);
+    void isSelectUserChanged(const bool isSelectUser);
 };
 
 #endif // CHATS_H

@@ -102,5 +102,6 @@
         <file>images/message_unchecked.png</file>
         <file>images/close_popup.png</file>
         <file>images/gift.png</file>
+        <file>GroupChatInfo.qml</file>
     </qresource>
 </RCC>

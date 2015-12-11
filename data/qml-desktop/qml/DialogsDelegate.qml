@@ -122,7 +122,7 @@ Item {
                     id: unreadHighlight
                     z: -1
                     anchors.fill: textBody
-                    anchors.topMargin: -2
+                    anchors.topMargin: -1
                     anchors.leftMargin: -2
                     anchors.bottomMargin: -5
                     anchors.rightMargin: -2
@@ -152,7 +152,14 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            main.dialogCurrentIndexChanged(index);
+            if (!chats.isSelectUser) {
+                main.dialogCurrentIndexChanged(index);
+            } else {
+                if (chats.currentChatDialog.isGroupChat && !model.isGroupChat) {
+                    chats.currentChatDialog.groupChatHandler.addChatUser(model.uid)
+                    chats.isSelectUser = false
+                }
+            }
         }
     }
 }

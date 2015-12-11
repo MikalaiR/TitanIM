@@ -16,21 +16,30 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QVariantList>
+#include "notifypropertybase.h"
 #include "global.h"
 #include "client.h"
 #include "profileparser.h"
 
-class GroupChatHandler : public QObject
+class GroupChatHandler : public NotifyPropertyBase
 {
     Q_OBJECT
 
+    Q_PROPERTY(QVariantList users READ users NOTIFY usersChanged)
+    Q_PROPERTY(int usersCount READ usersCount NOTIFY usersChanged)
+    Q_PROPERTY(int adminId READ adminId CONSTANT)
+    Q_PROPERTY(bool left READ left NOTIFY leftChanged)
+    Q_PROPERTY(bool kicked READ kicked NOTIFY kickedChanged)
+
 public:
     GroupChatHandler(const int chatId);
-    int id() const;
     int chatId() const;
-    void addUser(ProfileItem profile);
-    void removeUser(const int uid);
-    ProfileItem user(const int uid);
+    void setUsers(ProfileList profiles);
+    ProfileItem profile(const int uid);
+    QVariant user(const int uid);
+    ProfileList profiles();
+    QVariantList users();
     QStringList avatars() const;
     void refreshAvatars();
     int usersCount() const;
@@ -43,11 +52,13 @@ public:
     void setAdminId(const int adminId);
     bool isCover() const;
     bool kicked() const;
+    void setKicked(const bool kicked);
     bool left() const;
+    void setLeft(const bool left);
 
 private:
-    int _id;
     int _chatId;
+    ProfileItem _selfProfile;
     ProfileList _users;
     QStringList _avatars;
     int _usersCount;
@@ -61,13 +72,17 @@ public slots:
     void setActionMsg(const MessageItem msg);
     void getAllFields();
     void updatePeopleConversationText();
+    void addChatUser(const int uid);
+    void removeChatUser(const int uid=0);
 
 protected slots:
     void onUserChanged(const int i);
     void loadFinished(const Packet *sender, const QVariantMap &result);
 
 signals:
-    void propertyChanged(const int chatId, const QString &propertyName);
+    void usersChanged();
+    void leftChanged();
+    void kickedChanged();
 };
 
 #endif // GROUPCHATHANDLER_H

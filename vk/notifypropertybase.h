@@ -19,7 +19,7 @@
 class NotifyPropertyBase : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int id READ id) //todo
+    Q_PROPERTY(int id READ id CONSTANT) //todo
 
 public:
     NotifyPropertyBase();

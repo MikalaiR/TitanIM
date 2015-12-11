@@ -40,6 +40,7 @@ DialogsHandler::DialogsHandler()
     connect(longPoll, SIGNAL(outMessagesRead(int,int)), this, SLOT(onOutMessagesRead(int,int)));
     connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
     connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
+    connect(longPoll, SIGNAL(groupChatUpdated(int,bool)), this, SLOT(onGroupChatUpdated(int,bool)));
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
 
@@ -299,6 +300,17 @@ void DialogsHandler::onMessageFlagsReseted(const int mid, const int mask, const 
             dialog->getAllFields(Client::instance()->connection());
             _model->append(dialog);
         }
+    }
+}
+
+void DialogsHandler::onGroupChatUpdated(const int chatId, const bool self)
+{
+    int i = _model->indexOf(chatId + GROUP_CHAT_OFFSET);
+
+    if (i > -1)
+    {
+        DialogItem dialog = _model->at(i);
+        dialog->groupChatHandler()->getAllFields();
     }
 }
 

@@ -114,6 +114,9 @@ void ProfileItemPrivate::setOnline(const bool online)
         _online = online;
         emitPropertyChanged("online");
         emit onlineChanged();
+
+        emitPropertyChanged("lastSeen");
+        emit lastSeenChanged();
     }
 }
 
@@ -343,6 +346,7 @@ void ProfileItemPrivate::updateLastSeenText()
     if (!_online)
     {
         emitPropertyChanged("lastSeen");
+        emit lastSeenChanged();
     }
 }
 

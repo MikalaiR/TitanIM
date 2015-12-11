@@ -30,6 +30,8 @@ class DialogItemPrivate : public NotifyPropertyBase
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
     Q_PROPERTY(QStringList decoration READ decoration NOTIFY decorationChanged)
     Q_PROPERTY(QString description READ description NOTIFY descriptionChanged)
+    Q_PROPERTY(bool isGroupChat READ isGroupChat CONSTANT)
+    Q_PROPERTY(GroupChatHandler* groupChatHandler READ groupChatHandler CONSTANT)
 
 public:
     DialogItemPrivate();

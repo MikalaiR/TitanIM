@@ -36,6 +36,7 @@ Chats::Chats()
     _currentChatId = 0;
     _currentDialog = 0;
     _markAsForward = false;
+    _isSelectUser = false;
 
     _timerUpdater = new QTimer(this);
     connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
@@ -52,6 +53,7 @@ Chats::Chats()
     qRegisterMetaType<Attachment::AttachmentType>("Attachment::AttachmentType");
     qmlRegisterType<MessageBase>("TitanIM", 2, 0, "MessageBase");
     qRegisterMetaType<MessageBase::MessageType>("MessageBase::MessageType");
+    qRegisterMetaType<GroupChatHandler*>("GroupChatHandler*");
 }
 
 Chats::~Chats()
@@ -93,6 +95,8 @@ void Chats::clear()
 {
     _currentChatId = 0;
     _currentDialog = 0;
+    _markAsForward = false;
+    _isSelectUser = false;
     _chatsHandler->clear();
     emit currentChatChanged(0);
 }
@@ -167,6 +171,20 @@ void Chats::markAsForward(const bool isMark)
     {
         _markAsForward = isMark;
         emit isForwardChanged(isMark);
+    }
+}
+
+bool Chats::isSelectUser() const
+{
+    return _isSelectUser;
+}
+
+void Chats::markAsSelectUser(const bool isMark)
+{
+    if (_isSelectUser != isMark)
+    {
+        _isSelectUser = isMark;
+        emit isSelectUserChanged(isMark);
     }
 }
 

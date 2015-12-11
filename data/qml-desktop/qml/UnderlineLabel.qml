@@ -18,12 +18,16 @@ Item {
 
     property string label: ""
     property string text: ""
+    property bool labelBig: false
     property bool select: false
+    property color colorLabel: "#2B83DC"
+    property color colorText: "black"
+    property int spacing: 10
 
     signal clicked
 
     width: parent.width
-    height: childrenRect.height + 10
+    height: childrenRect.height + spacing
 
     Column {
         id: col
@@ -32,8 +36,8 @@ Item {
 
         Text {
             text: underlineLabel.label
-            color: "#2B83DC"
-            font.pointSize: main.fontPointSize - 1
+            color: underlineLabel.colorLabel
+            font.pointSize: labelBig ? main.fontPointSize : main.fontPointSize - 1
         }
 
         TextEdit {
@@ -41,7 +45,8 @@ Item {
             selectByMouse: true
             persistentSelection: true
             text: underlineLabel.text
-            font.pointSize: main.fontPointSize
+            font.pointSize: labelBig ? main.fontPointSize - 1 : main.fontPointSize
+            color: underlineLabel.colorText
             selectionColor: "#58a4e6"
 
             Loader {

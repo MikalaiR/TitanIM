@@ -181,7 +181,11 @@ Item {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                if (!chats.currentChat.isGroupChat) { //todo
+                                if (chats.currentChat.isGroupChat) {
+                                    mainWindow.pushPage(Qt.resolvedUrl("GroupChatInfo.qml"), "groupChatInfo")
+                                }
+                                else
+                                {
                                     mainWindow.pushPage(Qt.resolvedUrl("Profile.qml"), "profile")
                                 }
                             }
@@ -337,6 +341,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         anchors.margins: -7
+                        enabled: textArea.enabled
                         onClicked: {
                             var point = uploadBtn.mapToItem(null, 0, 0)
                             uploadMenu.showMenu(point.x - 5, point.y - uploadMenu.height)
@@ -348,18 +353,24 @@ Item {
                     id: textArea
                     minimumHeight: 26
                     width: parent.width - uploadBtn.width - 5
-                    placeholderText: qsTr("Write a message...")
+                    placeholderText: chats.currentChat.isGroupChat && chats.currentChatDialog.groupChatHandler.left ?
+                                         qsTr("Send a message to return to Conversation") : qsTr("Write a message...")
                     font.family: "Helvetica"
                     font.pixelSize: 12
-                    text: chats.currentChat.textMessage
+                    enabled: !chats.currentChat.isGroupChat || !chats.currentChatDialog.groupChatHandler.kicked
+                    text: enabled ? chats.currentChat.textMessage : qsTr("You were kicked out of the conversation")
 
                     onAccepted: {
-                        chats.currentChat.sendMessage(textArea.getFormattedText())
-                        chats.currentChat.textMessage = ""
+                        if (textArea.enabled) {
+                            chats.currentChat.sendMessage(textArea.getFormattedText())
+                            chats.currentChat.textMessage = ""
+                        }
                     }
 
                     onTextChanged: {
-                        chats.currentChat.textMessage = text
+                        if (enabled) {
+                            chats.currentChat.textMessage = text
+                        }
                     }
 
                     onPressed: {

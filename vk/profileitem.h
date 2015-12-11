@@ -28,6 +28,7 @@ class ProfileItemPrivate : public NotifyPropertyBase
     Q_OBJECT
     Q_PROPERTY(QString fullName READ fullName NOTIFY fullNameChanged)
     Q_PROPERTY(QString photoMediumRect READ photoMediumRect NOTIFY photoMediumRectChanged)
+    Q_PROPERTY(QString lastSeenText READ lastSeenText NOTIFY lastSeenChanged)
     Q_PROPERTY(int sex READ sex NOTIFY sexChanged)
     Q_PROPERTY(bool online READ online WRITE setOnline NOTIFY onlineChanged)
     Q_PROPERTY(QString bdate READ bdate NOTIFY bdateChanged)
@@ -123,6 +124,7 @@ protected slots:
 signals:
     void fullNameChanged();
     void photoMediumRectChanged();
+    void lastSeenChanged();
     void sexChanged();
     void onlineChanged();
     void bdateChanged();

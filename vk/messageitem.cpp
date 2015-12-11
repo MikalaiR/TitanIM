@@ -18,6 +18,7 @@ MessageItemPrivate::MessageItemPrivate()
 {
     setMessageType(Text);
 
+    _isOut = false;
     _isError = false;
     _deliveryReport = false;
     _chatId = 0;
@@ -169,7 +170,7 @@ QString MessageItemPrivate::shortBody() const
     }
     else
     {
-        return "...";
+        return "";
     }
 }
 
