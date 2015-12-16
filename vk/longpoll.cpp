@@ -171,7 +171,7 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
 
 void LongPoll::getLongPollHistory()
 {
-    Packet *packet = new Packet("execute.messagesGetLongPollHistory");
+    Packet *packet = new Packet("messages.getLongPollHistory");
     packet->setPerishable(true);
     packet->addParam("ts", _longPollVars.ts);
     packet->addParam("pts", _longPollVars.pts);

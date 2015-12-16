@@ -26,7 +26,7 @@ class Packet : public QObject
     Q_OBJECT
 
 public:
-    Packet(const QString &method, const QString &version="5.21");
+    Packet(const QString &method, const QString &version="5.40");
     ~Packet();
     int id() const;
     void setId(const int id);
