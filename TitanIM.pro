@@ -117,7 +117,8 @@ SOURCES += main.cpp \
     vk/uploadvideoitem.cpp \
     vk/photospacket.cpp \
     vk/linkitem.cpp \
-    vk/linkparser.cpp
+    vk/linkparser.cpp \
+    vk/pushsettings.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -196,7 +197,8 @@ HEADERS += \
     vk/uploadvideoitem.h \
     vk/photospacket.h \
     vk/linkitem.h \
-    vk/linkparser.h
+    vk/linkparser.h \
+    vk/pushsettings.h
 
 OBJECTIVE_SOURCES += \
     notification/macnotification.mm

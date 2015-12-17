@@ -22,6 +22,8 @@ DialogsModel::DialogsModel(QObject *parent) :
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
     connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const DialogList)), SLOT(onDialogsLoaded(const DialogsPacket*,const DialogList)));
 
+    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SLOT(onMuteUserChanged(int,bool)));
+
     _serverCount = 0;
     _isLoading = false;
     _endDate = 0;
@@ -129,6 +131,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     roles[IsOutRole] = "isOut";
     roles[IsUnreadRole] = "isUnread";
     roles[IsGroupChat] = "isGroupChat";
+    roles[IsMuteRole] = "isMuteRole";
     roles[OnlineRole] = "online";
     roles[TypingRole] = "typing";
     roles[EmojiRole] = "emoji";
@@ -187,6 +190,9 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
 
     case IsGroupChat:
         return dialog->isGroupChat();
+
+    case IsMuteRole:
+        return Client::instance()->pushSettings()->isMuteUser(dialog->id());
 
     case OnlineRole:
         return !dialog->isGroupChat() && profile->online();
@@ -284,4 +290,10 @@ void DialogsModel::onItemChanged(const int i)
         QModelIndex idx = index(i, 0);
         emit dataChanged(idx, idx);
     }
+}
+
+void DialogsModel::onMuteUserChanged(const int id, const bool isMute)
+{
+    QModelIndex idx = index(_dialogs->indexOf(id), 0);
+    emit dataChanged(idx, idx);
 }

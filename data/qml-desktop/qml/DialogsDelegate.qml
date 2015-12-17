@@ -64,13 +64,22 @@ Item {
                     id: name
                     anchors.left: parent.left
                     anchors.right: messageDate.left
-                    anchors.rightMargin: 5
+                    anchors.rightMargin: muteImg.visible ? muteImg.width + 7 : 5
                     color: "black"
                     font.pointSize: main.fontPointSize
                     font.bold: true
                     font.family: "Helvetica"
                     elide: Text.ElideRight
                     text: model.display
+                }
+
+                Image {
+                    id: muteImg
+                    x: name.contentWidth + 5
+                    anchors.verticalCenter: name.verticalCenter
+                    anchors.verticalCenterOffset: -1
+                    visible: model.isMuteRole
+                    source: "images/muted.png"
                 }
 
                 Text {

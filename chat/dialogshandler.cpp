@@ -179,13 +179,22 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
 
     if (message->isUnread())
     {
+        bool isMute = Client::instance()->pushSettings()->isMuteUser(id);
+
         if (!_flagMarkAsRead)
         {
             dialog->incUnreadDialogs();
-            Notificator::instance()->showNotification(id, message->id(), Emoticons::instance()->toEmoji(dialog->displayName()), message->plainBody(), true);
+
+            if (!isMute)
+            {
+                Notificator::instance()->showNotification(id, message->id(), Emoticons::instance()->toEmoji(dialog->displayName()),message->plainBody(), true);
+            }
         }
 
-        Notificator::instance()->playSoundMessageIn();
+        if (!isMute)
+        {
+            Notificator::instance()->playSoundMessageIn();
+        }
     }
 
     emit newMessage(false, id);

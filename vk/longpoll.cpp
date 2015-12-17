@@ -116,7 +116,7 @@ void LongPoll::longPoll()
         return;
     }
 
-    QString requestUrl = QString("%1?act=a_check&key=%2&ts=%3&wait=%4&mode=2")
+    QString requestUrl = QString("%1?act=a_check&key=%2&ts=%3&wait=%4&mode=42")
             .arg(_longPollVars.server)
             .arg(_longPollVars.key)
             .arg(_longPollVars.ts)
@@ -160,7 +160,16 @@ void LongPoll::longPollResponse(QNetworkReply *networkReply)
         return;
     }
 
-    _longPollVars.ts = response.value("ts").toString();
+    if (response.contains("ts"))
+    {
+        _longPollVars.ts = response.value("ts").toString();
+    }
+
+    if (response.contains("pts"))
+    {
+        _longPollVars.pts = response.value("pts").toString();
+    }
+
     QVariantList updates = response.value("updates").toList();
 
     setStatus(Online);
@@ -369,6 +378,12 @@ void LongPoll::handler(const QVariantList &updates)
             break;
         }
 
+        case SilenceModeUpdated:
+        {
+            onSilenceModeUpdated(update);
+            break;
+        }
+
         default:
             break;
         }
@@ -562,4 +577,15 @@ void LongPoll::onUnreadDialogs(const QVariantList &update)
     int count = update.value(1).toInt();
 
     emit unreadDialogs(count);
+}
+
+void LongPoll::onSilenceModeUpdated(const QVariantList &update)
+{
+    QVariantMap resp = update.value(1).toMap();
+
+    int uid = resp.value("peer_id").toInt();
+    bool isMute = !resp.value("sound").toBool();
+    uint disabledUntil = resp.value("disabled_until").toUInt();
+
+    emit silenceModeUpdated(uid, isMute, disabledUntil);
 }

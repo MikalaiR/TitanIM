@@ -11,53 +11,38 @@
  ***************************************************************************
 */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef PUSHSETTINGS_H
+#define PUSHSETTINGS_H
 
 #include <QObject>
 #include "connection.h"
-#include "longpoll.h"
-#include "signup.h"
-#include "engine.h"
-#include "pushsettings.h"
 
-class Client : public QObject
+class PushSettings : public QObject
 {
     Q_OBJECT
 
 public:
-    static Client *instance();
-    static void destroy();
-    Connection* connection() const;
-    Engine* engine() const;
-    LongPoll* longPoll() const;
-    PushSettings* pushSettings() const;
-    Signup* authSignup() const;
-    int uid() const;
-    ProfileItem profile() const;
+    PushSettings(Connection *connection);
+    void getSettings();
 
 private:
-    Client();
-    ~Client();
-
-private:
-    static Client *aInstance;
-    static QString clientId;
-    static QString clientSecret;
     Connection *_connection;
-    Engine *_engine;
-    LongPoll *_longPoll;
-    PushSettings *_pushSettings;
-    Signup *_authSignup;
+    QSet<int> _mute;
 
 public slots:
-    void trackVisitor();
+    void longPollSilenceModeUpdated(const int uid, const bool isMute, const uint disabledUntil);
+    bool isMuteUser(const int id) const;
+    void setMuteUser(const int id, const bool isMute);
+
+protected slots:
+    void onGetSettings(const Packet *sender, const QVariantMap &result);
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);
     void onLogout(const int uid);
-    void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
-    void onNetworkOnlineChanged(const bool isOnline);
+
+signals:
+    void muteUserChanged(const int id, const bool isMute);
 };
 
-#endif // CLIENT_H
+#endif // PUSHSETTINGS_H

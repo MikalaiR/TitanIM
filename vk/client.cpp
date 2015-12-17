@@ -40,16 +40,19 @@ Client::Client()
 
     _engine = new Engine(_connection);
     _longPoll = new LongPoll(_connection, _engine);
+    _pushSettings = new PushSettings(_connection);
 
     connect(_longPoll, SIGNAL(userOnline(int)), _engine, SLOT(setUserOnline(int)));
     connect(_longPoll, SIGNAL(userOffline(int,bool)), _engine, SLOT(setUserOffline(int,bool)));
     connect(_longPoll, SIGNAL(obsoleteFriendsOnline()), _engine, SLOT(getFriendsOnline()));
+    connect(_longPoll, SIGNAL(silenceModeUpdated(int,bool,uint)), _pushSettings, SLOT(longPollSilenceModeUpdated(int,bool,uint)));
 
     _authSignup = 0;
 }
 
 Client::~Client()
 {
+    delete _pushSettings;
     delete _longPoll;
     delete _engine;
     delete _connection;
@@ -68,6 +71,11 @@ Engine *Client::engine() const
 LongPoll *Client::longPoll() const
 {
     return _longPoll;
+}
+
+PushSettings *Client::pushSettings() const
+{
+    return _pushSettings;
 }
 
 Signup *Client::authSignup() const

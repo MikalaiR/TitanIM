@@ -42,11 +42,11 @@ public:
     ChatSortFilterProxyModel* currentChatModel() const;
     AttachmentsModel* currentChatAttachments() const;
     Chat* chat(const int id) const;
+    void clear();
     bool isForward() const;
     void markAsForward(const bool isMark);
     bool isSelectUser() const;
     void markAsSelectUser(const bool isMark);
-    void clear();
 
 private:
     explicit Chats();
@@ -68,12 +68,15 @@ protected:
 
 public slots:
     void openChat(const DialogItem dialog, const bool setCurrent=true);
+    bool isMuteUser(const int id) const;
+    void setMuteUser(const int id, const bool isMute);
 
 protected slots:
     void onTimerUpdaterTimeout();
 
 signals:
     void currentChatChanged(const int id);
+    void muteUserChanged(const int id, const bool isMute);
     void isForwardChanged(const bool isForward);
     void isSelectUserChanged(const bool isSelectUser);
 };

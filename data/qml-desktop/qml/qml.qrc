@@ -103,5 +103,11 @@
         <file>images/close_popup.png</file>
         <file>images/gift.png</file>
         <file>GroupChatInfo.qml</file>
+        <file>ToggleButtonItem.qml</file>
+        <file>images/toggle_background.png</file>
+        <file>images/toggle_item.png</file>
+        <file>images/toggle_on_background.png</file>
+        <file>UnderlineToggleButton.qml</file>
+        <file>images/muted.png</file>
     </qresource>
 </RCC>

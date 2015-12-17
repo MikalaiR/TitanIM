@@ -37,6 +37,7 @@ public:
         IsOutRole,
         IsUnreadRole,
         IsGroupChat,
+        IsMuteRole,
         OnlineRole,
         TypingRole,
         EmojiRole
@@ -75,6 +76,7 @@ protected:
 protected slots:
     void onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs);
     void onItemChanged(const int i);
+    void onMuteUserChanged(const int id, const bool isMute);
 
 signals:
     void unreadDialogs(const int count);

@@ -150,9 +150,19 @@ Item {
                 anchors.right: parent.right
                 anchors.rightMargin: 80
                 anchors.top: globalColumn1.bottom
-                anchors.topMargin: 10
+                anchors.topMargin: 15
                 visible: dialog.isGroupChat
                 spacing: 6
+
+                UnderlineToggleButton {
+                    id: toggleBtn
+                    label: qsTr("Notifications")
+                    on: !chats.isMuteUser(chatId)
+
+                    onClickedToggle: {
+                        chats.setMuteUser(chatId, !toggleBtn.on)
+                    }
+                }
 
                 UnderlineButton {
                     label: qsTr("Leave conversation")
@@ -225,9 +235,20 @@ Item {
         }
     }
 
+    Connections {
+        target: chats
+        onMuteUserChanged: {
+            if (id === groupChatInfo.chatId) {
+                toggleBtn.on = !isMute
+            }
+        }
+    }
+
     onChatIdChanged: {
         if (dialog.isGroupChat) {
             dialog.groupChatHandler.getAllFields()
         }
+
+        toggleBtn.on = !chats.isMuteUser(chatId)
     }
 }

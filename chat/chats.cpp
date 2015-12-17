@@ -42,6 +42,8 @@ Chats::Chats()
     connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
     _timerUpdater->start(60000);
 
+    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SIGNAL(muteUserChanged(int,bool)));
+
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
     qmlRegisterType<ProfileItemPrivate>("TitanIM", 2, 0, "ProfileItem");
@@ -186,6 +188,16 @@ void Chats::markAsSelectUser(const bool isMark)
         _isSelectUser = isMark;
         emit isSelectUserChanged(isMark);
     }
+}
+
+bool Chats::isMuteUser(const int id) const
+{
+    return Client::instance()->pushSettings()->isMuteUser(id);
+}
+
+void Chats::setMuteUser(const int id, const bool isMute)
+{
+    Client::instance()->pushSettings()->setMuteUser(id, isMute);
 }
 
 void Chats::onTimerUpdaterTimeout()

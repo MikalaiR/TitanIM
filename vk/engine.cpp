@@ -38,19 +38,19 @@ int Engine::uid() const
     return _selfProfile->id();
 }
 
-void Engine::setUserOnline(const int uid)
+void Engine::setUserOnline(const int id)
 {
-    if (_profiles->contains(uid))
+    if (_profiles->contains(id))
     {
-        _profiles->value(uid)->setOnline(true);
+        _profiles->value(id)->setOnline(true);
     }
 }
 
-void Engine::setUserOffline(const int uid, const bool isAway)
+void Engine::setUserOffline(const int id, const bool isAway)
 {
-    if (_profiles->contains(uid))
+    if (_profiles->contains(id))
     {
-        _profiles->value(uid)->setOnline(false);
+        _profiles->value(id)->setOnline(false);
 
         int min = 0;
 
@@ -59,7 +59,7 @@ void Engine::setUserOffline(const int uid, const bool isAway)
             min -= USER_OFFLINE_AWAY;
         }
 
-        _profiles->value(uid)->setLastSeen(Utils::currentDateTime().addSecs(min * 60).toTime_t());
+        _profiles->value(id)->setLastSeen(Utils::currentDateTime().addSecs(min * 60).toTime_t());
     }
 }
 
@@ -162,32 +162,50 @@ void Engine::setMaxMsgId(const int mid)
     }
 }
 
-void Engine::banUser(const int uid)
+void Engine::banUser(const int id)
 {
     Packet *packet = new Packet("account.banUser");
-    packet->setId(uid);
-    packet->addParam("user_id", uid);
+    packet->setId(id);
+    packet->addParam("user_id", id);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onBanUser(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
 
-    if (_profiles->contains(uid))
+    if (_profiles->contains(id))
     {
-        _profiles->value(uid)->getAllFields(_connection);
+        _profiles->value(id)->getAllFields(_connection);
     }
 }
 
-void Engine::unbanUser(const int uid)
+void Engine::unbanUser(const int id)
 {
     Packet *packet = new Packet("account.unbanUser");
-    packet->setId(uid);
-    packet->addParam("user_id", uid);
+    packet->setId(id);
+    packet->addParam("user_id", id);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onUnbanUser(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
 
-    if (_profiles->contains(uid))
+    if (_profiles->contains(id))
     {
-        _profiles->value(uid)->getAllFields(_connection);
+        _profiles->value(id)->getAllFields(_connection);
     }
+}
+
+void Engine::addFriend(const int id)
+{
+    Packet *packet = new Packet("friends.add");
+    packet->setId(id);
+    packet->addParam("user_id", id);
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onAddFriend(const Packet*,QVariantMap)));
+    _connection->appendQuery(packet);
+}
+
+void Engine::deleteFriend(const int id)
+{
+    Packet *packet = new Packet("friends.delete");
+    packet->setId(id);
+    packet->addParam("user_id", id);
+    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onDeleteFriend(const Packet*,QVariantMap)));
+    _connection->appendQuery(packet);
 }
 
 void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
@@ -243,6 +261,46 @@ void Engine::onUnbanUser(const Packet *sender, const QVariantMap &result)
     if (result.value("response").toInt() == 1 && _profiles->contains(id))
     {
         _profiles->value(id)->setBlacklistedByMe(false);
+    }
+
+    delete sender;
+}
+
+void Engine::onAddFriend(const Packet *sender, const QVariantMap &result)
+{
+    int id = sender->id();
+    int resp = result.value("response").toInt();
+
+    if (_profiles->contains(id))
+    {
+        if (resp == 2)
+        {
+            _profiles->value(id)->setFriendStatus(ProfileItemPrivate::Friend);
+        }
+        else
+        {
+            _profiles->value(id)->setFriendStatus(ProfileItemPrivate::OutRequest);
+        }
+    }
+
+    delete sender;
+}
+
+void Engine::onDeleteFriend(const Packet *sender, const QVariantMap &result)
+{
+    int id = sender->id();
+    QVariantMap resp = result.value("response").toMap();
+
+    if (_profiles->contains(id))
+    {
+        if (resp.value("friend_deleted").toInt() == 1 || resp.value("in_request_deleted").toInt() == 1)
+        {
+            _profiles->value(id)->setFriendStatus(ProfileItemPrivate::InRequest);
+        }
+        else if (resp.value("out_request_deleted").toInt() == 1)
+        {
+            _profiles->value(id)->setFriendStatus(ProfileItemPrivate::NotFriend);
+        }
     }
 
     delete sender;

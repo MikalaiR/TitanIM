@@ -42,8 +42,8 @@ protected:
 
 public slots:
     int uid() const;
-    void setUserOnline(const int uid);
-    void setUserOffline(const int uid, const bool isAway);
+    void setUserOnline(const int id);
+    void setUserOffline(const int id, const bool isAway);
     void getFriendsOnline();
     ProfileItem getProfile() const;
     QVariant getUser();
@@ -54,14 +54,18 @@ public slots:
     QVariantList photosProfile(const int uid);
     int maxMsgId() const;
     void setMaxMsgId(const int mid);
-    void banUser(const int uid);
-    void unbanUser(const int uid);
+    void banUser(const int id);
+    void unbanUser(const int id);
+    void addFriend(const int id);
+    void deleteFriend(const int id);
 
 protected slots:
     void onFriendsOnline(const Packet *sender, const QVariantMap &result);
     void onGetPhotosProfile(const int id, const QList<PhotoItem> &photos);
     void onBanUser(const Packet *sender, const QVariantMap &result);
     void onUnbanUser(const Packet *sender, const QVariantMap &result);
+    void onAddFriend(const Packet *sender, const QVariantMap &result);
+    void onDeleteFriend(const Packet *sender, const QVariantMap &result);
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);

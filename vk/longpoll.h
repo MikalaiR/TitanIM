@@ -44,7 +44,8 @@ public:
         ChatTyping = 61,
         GroupChatTyping = 62,
         UserCall = 70,
-        UnreadDialogs = 80
+        UnreadDialogs = 80,
+        SilenceModeUpdated = 114
     };
 
     enum MessageFlags
@@ -99,6 +100,7 @@ protected:
     void onGroupChatTyping(const QVariantList &update);
     void onUserCall(const QVariantList &update);
     void onUnreadDialogs(const QVariantList &update);
+    void onSilenceModeUpdated(const QVariantList &update);
 
 private slots:
     void getLongPollServerFinished(const Packet *sender, const QVariantMap &result);
@@ -126,6 +128,7 @@ signals:
     void chatTyping(const int id, const int uid, const int chatId);
     void userCall(const int uid, const QString &callId);
     void unreadDialogs(const int count);
+    void silenceModeUpdated(const int uid, const bool isMute, const uint disabledUntil);
 };
 
 #endif // LONGPOLL_H
