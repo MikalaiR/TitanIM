@@ -160,6 +160,7 @@ Item {
                     model.isChecked = true
                     chats.currentChat.copyTextSelectedItems()
                     chatFrame.isEdit = false
+                    contextMenu.active = false
                 }
             }
 
@@ -168,6 +169,7 @@ Item {
                 onTriggered: {
                     model.isChecked = true
                     chats.isForward = true
+                    contextMenu.active = false
                 }
             }
 
@@ -177,6 +179,7 @@ Item {
                     model.isChecked = true
                     chats.currentChat.deleteSelectedItems()
                     chatFrame.isEdit = false
+                    contextMenu.active = false
                 }
             }
 
@@ -185,6 +188,7 @@ Item {
                 onTriggered: {
                     model.isChecked = true
                     chatFrame.isEdit = true
+                    contextMenu.active = false
                 }
             }
         }
@@ -192,7 +196,6 @@ Item {
         onActiveChanged: {
             if (active) {
                 item.popup()
-                active = false
             }
         }
     }

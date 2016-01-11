@@ -29,9 +29,10 @@ CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 
 macx:ICON = $${PWD}/icon.icns
 macx:QMAKE_INFO_PLIST= $${PWD}/Info.plist
+macx:QMAKE_MAC_SDK = macosx10.11
 macx:LIBS += -framework Foundation
-macx:QMAKE_CXXFLAGS = -ObjC++
-macx:QMAKE_CFLAGS = -ObjC++.
+macx:QMAKE_CXXFLAGS += -ObjC++
+macx:QMAKE_CFLAGS += -ObjC++.
 macx:QT += macextras
 
 win32:RC_FILE = winRCFile.rc

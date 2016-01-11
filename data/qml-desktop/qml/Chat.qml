@@ -136,8 +136,10 @@ Item {
                     anchors.fill: parent
 
                     Item {
-                        width: childrenRect.width
                         height: parent.height
+                        anchors.left: parent.left
+                        anchors.right: profileMenuBtn.left
+                        anchors.rightMargin: 10
 
                         Avatar {
                             id: avatar
@@ -153,22 +155,27 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: avatar.right
                             anchors.leftMargin: 10
+                            anchors.right: parent.right
                             height: childrenRect.height
-                            width: childrenRect.width
 
                             Column {
+                                width: parent.width
                                 spacing: -1
 
                                 Text {
                                     id: name
+                                    width: parent.width
                                     text: chats.currentChatDialog.displayName
+                                    elide: Text.ElideRight
                                 }
 
                                 TextShadow {
                                     id: desc
+                                    width: parent.width
                                     font.pointSize: main.fontPointSize - 2
                                     color: "gray"
                                     text: chats.currentChatDialog.description
+                                    elide: Text.ElideRight
                                 }
                             }
 

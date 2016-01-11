@@ -64,13 +64,16 @@ Item {
                 anchors.verticalCenter: cover.verticalCenter
                 anchors.left: cover.right
                 anchors.leftMargin: 20
+                anchors.right: parent.right
+                anchors.rightMargin: 20
                 spacing: 3
 
                 Text {
                     id: name
-                    width: 100
+                    width: parent.width
                     font.pointSize: main.fontPointSize + 1
                     text: dialog.displayName
+                    elide: Text.ElideRight
                 }
 
                 Text {
