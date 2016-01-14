@@ -159,9 +159,7 @@ Item {
             z: -10
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: main.fontPointSize + 3
-            font.bold: true
-            font.family: "Helvetica"
+            font.pointSize: main.fontPointSize + 1
             color: "#8B92A4"
             text: qsTr("Loading...")
             wrapMode: Text.Wrap

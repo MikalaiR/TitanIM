@@ -35,11 +35,6 @@ Item {
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#f9f9f9"
-    }
-
     Flickable {
         id: flickableItem
         anchors.fill: parent

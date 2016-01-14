@@ -27,8 +27,6 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: 1
             font.pixelSize: 13
-            font.bold: true
-            font.family: "Helvetica"
             text: section
         }
     }

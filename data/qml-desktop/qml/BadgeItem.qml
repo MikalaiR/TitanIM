@@ -13,24 +13,23 @@
 
 import QtQuick 2.0
 
-BorderImage {
+Rectangle {
     id: badgeItem
 
     property int count: 0
 
-    source: "images/badge.png"
+    color: "#50A4E0"
+    radius: 10
     visible: badgeItem.count > 0
-    smooth: true
-    width: Math.max(badgeItem.sourceSize.width, badgeLabel.implicitWidth + 12)
-    height: Math.max(badgeItem.sourceSize.height, badgeLabel.implicitHeight)
-    border { left: 7; top: 8; right: 8; bottom: 9 }
+    width: badgeLabel.implicitWidth + 14
+    height: badgeLabel.implicitHeight + 7
 
     Text {
         id: badgeLabel
         font.pixelSize: 10
         anchors.centerIn: parent
+        anchors.verticalCenterOffset: 1
         color: "white"
-        font.bold: true
         text: badgeItem.count
     }
 }

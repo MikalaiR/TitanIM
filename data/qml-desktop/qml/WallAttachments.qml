@@ -36,7 +36,6 @@ Item {
             width: Math.min(maximumWidth, 240) - img.width
             height: childrenRect.height
             anchors.verticalCenter: img.verticalCenter
-            spacing: 3
 
             Text {
                 id: title
@@ -44,8 +43,6 @@ Item {
                 width: parent.width
                 color: "black"
                 font.pointSize: main.fontPointSize
-                font.bold: true
-                font.family: "Helvetica"
                 elide: Text.ElideRight
                 text: items[0].title
             }
@@ -55,8 +52,7 @@ Item {
                 anchors.left: parent.left
                 width: parent.width
                 color: "grey"
-                font.family: "Helvetica"
-                font.pointSize: main.fontPointSize - 2
+                font.pointSize: main.fontPointSize - 3
                 elide: Text.ElideRight
                 text: qsTr("Wall post")
             }

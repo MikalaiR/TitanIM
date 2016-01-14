@@ -31,14 +31,9 @@ Item {
         textArea.forceActiveFocus()
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#f9f9f9"
-    }
-
     Item {
         id: header
-        height: 38
+        height: 43
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -72,7 +67,7 @@ Item {
         clip: true
         model: rosterHandler.proxy;
         delegate: RosterDelegate { }
-        spacing: 2
+        spacing: 1
         section.property: "alphabet"
         section.labelPositioning: ViewSection.InlineLabels
         section.delegate: SectionHeading { }

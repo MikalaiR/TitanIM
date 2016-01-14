@@ -21,11 +21,6 @@ Item {
     property int chatId: chats.currentChatId
     property var dialog: chats.currentChatDialog
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#f9f9f9"
-    }
-
     Flickable {
         id: flickableItem
         anchors.fill: parent
@@ -188,7 +183,7 @@ Item {
         active: chats.isSelectUser
 
         sourceComponent: Rectangle {
-            color: "#f9f9f9"
+            color: "white"
             opacity: 0.95
 
             Column {

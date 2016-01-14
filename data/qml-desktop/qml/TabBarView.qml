@@ -42,10 +42,10 @@ FocusScope {
 
     Rectangle {
         id: t
-        implicitWidth: 44
+        implicitWidth: 50
         implicitHeight: parent.height
         anchors.left: parent.left
-        color: "#434547"
+        color: "#4c4c4d"
 
         ListView {
             id: tabrow
@@ -65,22 +65,25 @@ FocusScope {
                 implicitWidth: ListView.view.width
                 implicitHeight: ListView.view.width
 
-                Image {
+                Rectangle {
+                    id: highlight
                     anchors.fill: parent
-                    source: "images/tab.png"
+                    color: currentIndex == index ? "#424244" : "transparent"
+                }
 
-                    Image {
-                        anchors.centerIn: parent
-                        source: modelData.icon
-                    }
+                Image {
+                    width: 20
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectFit
+                    source: modelData.icon
                 }
 
                 BadgeItem {
                     id: badge
                     anchors.right: parent.right
-                    anchors.rightMargin: 1
+                    anchors.rightMargin: 3
                     anchors.top: parent.top
-                    anchors.topMargin: 2
+                    anchors.topMargin: 6
                     count: modelData.badge
                 }
 
@@ -88,7 +91,7 @@ FocusScope {
                     width: parent.width
                     height: 1
                     y: parent.height - 1
-                    color: "black"
+                    color: "#585858"
                 }
 
                 MouseArea {

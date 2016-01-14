@@ -20,12 +20,6 @@ Item {
 
     anchors.fill: parent
 
-    Rectangle {
-        id: backgroundFrame
-        anchors.fill: parent
-        color: "#f9f9f9"
-    }
-
     AvatarImage {
         id: avatar
         width: 70

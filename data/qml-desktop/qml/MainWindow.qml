@@ -19,7 +19,7 @@ Rectangle {
     id: mainWindow
     readonly property string name: "mainWindow"
     property bool visiblePageStackView: false
-    property int widthTabBar: 280
+    property int widthTabBar: 306
     property alias tabBarCurrentIndex: tabBar.currentIndex
 
     function popPage(page) {
@@ -52,6 +52,11 @@ Rectangle {
         id: splitView
         anchors.fill: parent
         orientation: Qt.Horizontal
+        handleDelegate: Rectangle {
+            width: 1
+            height: parent.height
+            color: "#E8E8E8"
+        }
 
         TabBarView {
             id: tabBar
@@ -103,10 +108,10 @@ Rectangle {
             }
 
             TabBarItem {
-                id: favoritesTab
-                title: "favorites"
-                icon: "images/favorites_tab.png"
-                Text {text: "favorites"}
+                id: musicTab
+                title: "audio"
+                icon: "images/audio_tab.png"
+                Text {text: "audio"}
             }
 
             TabBarItem {

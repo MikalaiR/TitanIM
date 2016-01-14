@@ -43,9 +43,9 @@ Item {
 
                     Rectangle {
                         id: line
-                        width: 2
+                        width: 1
                         height: message.height + 5
-                        color: "grey"
+                        color: "#CCCCCC"
                     }
 
                     Column {

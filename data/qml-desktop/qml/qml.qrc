@@ -1,12 +1,10 @@
 <RCC>
     <qresource prefix="/qml">
         <file>main.qml</file>
-        <file>images/tab_selected.png</file>
-        <file>images/tab.png</file>
         <file>TabBarItem.qml</file>
         <file>TabBarView.qml</file>
         <file>images/contacts_tab.png</file>
-        <file>images/favorites_tab.png</file>
+        <file>images/audio_tab.png</file>
         <file>images/messages_tab.png</file>
         <file>images/settings_tab.png</file>
         <file>Dialogs.qml</file>
@@ -21,13 +19,10 @@
         <file>HighlightListView.qml</file>
         <file>Chat.qml</file>
         <file>ChatDelegate.qml</file>
-        <file>images/grey_bubble_selected.png</file>
         <file>images/grey_bubble.png</file>
         <file>images/grey_bubble.sci</file>
-        <file>images/blue_bubble_selected.png</file>
         <file>images/blue_bubble.png</file>
         <file>images/blue_bubble.sci</file>
-        <file>images/header_separator.png</file>
         <file>HeaderSeparator.qml</file>
         <file>AttachmentsView.qml</file>
         <file>BubbleItem.qml</file>
@@ -38,7 +33,6 @@
         <file>TextShadow.qml</file>
         <file>SectionText.qml</file>
         <file>images/actions.png</file>
-        <file>images/badge.png</file>
         <file>BadgeItem.qml</file>
         <file>images/typing.png</file>
         <file>TextEditItem.qml</file>

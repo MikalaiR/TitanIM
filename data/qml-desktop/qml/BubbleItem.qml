@@ -27,7 +27,7 @@ Item {
     BorderImage {
         id: bubble
         width: Math.max(body.contentWidth, attachmentsView.width) + 29
-        height: (body.contentHeight + attachmentsView.height) + (body.height ? 10 : 8) +
+        height: (body.contentHeight + attachmentsView.height) + (body.height ? 8 : 6) +
                 (attachmentsView.height && body.height ? 11 + content.spacing : 0)
         source: modelData.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
         smooth: true
@@ -48,7 +48,6 @@ Item {
         anchors.left: bubble.left
         anchors.leftMargin: modelData.isOut ? 12 : 17
         anchors.verticalCenter: bubble.verticalCenter
-        anchors.verticalCenterOffset: -1
         spacing: 4
 
         TextEditItem {
@@ -76,12 +75,12 @@ Item {
         }
     }
 
-    TextShadow {
+    Text {
         LayoutMirroring.enabled: !modelData.isOut
         anchors.right: parent.left
         anchors.rightMargin: 4
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 6
+        anchors.bottomMargin: 5
         font.pointSize: main.fontPointSize - 4
         color: modelData.isError ? "#860004" : "#8B92A4"
         text: modelData.isError ? qsTr("error") : (modelData.isSending ? qsTr("sending...") : modelData.timeStr)

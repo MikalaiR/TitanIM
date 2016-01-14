@@ -20,8 +20,8 @@ Item {
     id:chatFrame
 
     readonly property string name: "chat"
-    property color backgroundColor: "#DFE3EA"
-    property color unreadHighlightColor: "#D6DDE8"
+    property color backgroundColor: "#ECF1F7"
+    property color unreadHighlightColor: "#e3ecf5"
     property bool isEdit: false
 
     Rectangle {
@@ -39,12 +39,11 @@ Item {
             id: header
             z: 1
             width: parent.width
-            height: 38
+            height: 43
             anchors.top: parent.top
 
             HeaderSeparator {
                 anchors.top: parent.bottom
-                anchors.topMargin: -1
             }
 
             Component {
@@ -107,7 +106,7 @@ Item {
                         }
                     }
 
-                    TextShadow {
+                    Text {
                         anchors.right: parent.right
                         anchors.rightMargin: 15
                         anchors.verticalCenter: parent.verticalCenter
@@ -169,7 +168,7 @@ Item {
                                     elide: Text.ElideRight
                                 }
 
-                                TextShadow {
+                                Text {
                                     id: desc
                                     width: parent.width
                                     font.pointSize: main.fontPointSize - 2
@@ -442,13 +441,11 @@ Item {
         anchors.fill: parent
         visible: chats.currentChatId === 0
 
-        TextShadow {
+        Text {
             width: parent.width
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignHCenter
             font.pointSize: main.fontPointSize + 5
-            font.bold: true
-            font.family: "Helvetica"
             color: "#8B92A4"
             text: qsTr("Select the dialog to start a conversation")
             wrapMode: Text.Wrap
@@ -462,7 +459,7 @@ Item {
         active: chats.isForward
 
         sourceComponent: Rectangle {
-            color: "#f9f9f9"
+            color: "white"
             opacity: 0.95
 
             Column {

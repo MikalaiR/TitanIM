@@ -16,10 +16,10 @@ import QtQuick 2.0
 Item {
     id: dialogsDelegate
 
-    property color unreadHighlightColor: "#DFE3EA"
+    property color unreadHighlightColor: "#e3ecf5"
 
     width: dialogsDelegate.ListView.view.width
-    height: avatar.height + 13
+    height: avatar.height + 21
 
     HighlightListView {
         anchors.fill: parent
@@ -53,7 +53,6 @@ Item {
         Column {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
-            anchors.topMargin: 1
             spacing: model.emoji && !model.typing && !selfAvatar.visible ? 4 : -1
 
             Item {
@@ -67,8 +66,6 @@ Item {
                     anchors.rightMargin: muteImg.visible ? muteImg.width + 7 : 5
                     color: "black"
                     font.pointSize: main.fontPointSize
-                    font.bold: true
-                    font.family: "Helvetica"
                     elide: Text.ElideRight
                     text: model.display
                 }
@@ -87,9 +84,8 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: name.verticalCenter
-                    color: "#1769ad"
-                    font.family: "Helvetica"
-                    font.pointSize: main.fontPointSize - 2
+                    color: "#707070"
+                    font.pointSize: main.fontPointSize - 3
                     text: model.dateStr
                 }
             }
@@ -144,9 +140,9 @@ Item {
                 BadgeItem {
                     id: unreadCount
                     anchors.right: parent.right
-                    anchors.rightMargin: 7
+                    anchors.rightMargin: 8
                     anchors.top: parent.top
-                    anchors.topMargin: model.emoji && !model.typing && !selfAvatar.visible ? -1 : 4
+                    anchors.topMargin: model.emoji && !model.typing && !selfAvatar.visible ? 0 : 5
                     count: model.unreadCount
                 }
             }

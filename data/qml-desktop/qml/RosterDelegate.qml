@@ -16,7 +16,7 @@ import QtQuick 2.0
 Item {
     id: rosterDelegate;
     width: rosterDelegate.ListView.view.width
-    height: avatar.height + 13
+    height: avatar.height + 17
 
     MouseArea{
         anchors.fill: parent;
@@ -66,8 +66,6 @@ Item {
                 width: parent.width
                 color: "black"
                 font.pointSize: main.fontPointSize
-                font.bold: true
-                font.family: "Helvetica"
                 elide: Text.ElideRight
                 text: model.display
             }

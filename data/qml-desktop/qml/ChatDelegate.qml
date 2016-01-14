@@ -85,6 +85,7 @@ Item {
             anchors.left: avatar.right
             anchors.leftMargin: 4
             anchors.bottom: avatar.bottom
+            anchors.bottomMargin: 2
             active: model.messageType === MessageBase.Typing
 
             sourceComponent: Image {
@@ -111,7 +112,7 @@ Item {
                     wrapMode: Text.Wrap
                     readOnly: true
                     selectByMouse: true
-                    color: "#808080"
+                    color: "#8B92A4"
                     text: model.messageType === MessageBase.Service
                           ? model.display
                           : chats.currentChat.actionToString(content.profile.fullName, model.action, model.actionText, content.profile.sex);
@@ -135,7 +136,7 @@ Item {
             anchors.left: avatar.right
             anchors.leftMargin: checkBox.active && !model.isOut ? 35 : 3
             anchors.bottom: avatar.bottom
-            anchors.bottomMargin: -2
+            anchors.bottomMargin: 2
             LayoutMirroring.enabled: model.isOut
             active: model.messageType === MessageBase.Text && !service.active
 
@@ -209,6 +210,7 @@ Item {
             }
 
             if (mouse.button === Qt.RightButton) {
+                contextMenu.active = false
                 contextMenu.active = true
             }
         }

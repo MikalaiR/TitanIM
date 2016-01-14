@@ -22,17 +22,12 @@ Item {
         dialogsView.positionViewAtBeginning()
     }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#f9f9f9"
-    }
-
     ListView {
         id: dialogsView;
         anchors.fill: parent
         model: dialogsHandler.proxy;
         delegate: DialogsDelegate { }
-        spacing: 2
+        spacing: 1
     }
 
     onCurrentChatIdChanged: {

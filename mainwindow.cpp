@@ -64,8 +64,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
     setTitle(QCoreApplication::applicationName());
     _fontPointSize = 13;
-    setWidth(720);
-    setHeight(520);
+    setWidth(770);
+    setHeight(560);
     authorization->connectToVk();
 }
 

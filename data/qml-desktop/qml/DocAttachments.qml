@@ -42,7 +42,7 @@ Item {
                 width: Math.min(maximumWidth, 240) - img.width
                 height: childrenRect.height
                 anchors.verticalCenter: img.verticalCenter
-                spacing: description.visible || uploadVisible ? 3 : 0
+                spacing: uploadVisible ? 3 : 0
 
                 Text {
                     id: name
@@ -50,8 +50,6 @@ Item {
                     width: parent.width
                     color: modelData.isUploadError ? "#860004" : "black"
                     font.pointSize: main.fontPointSize
-                    font.bold: true
-                    font.family: "Helvetica"
                     elide: Text.ElideRight
                     text: model.title
                 }
@@ -61,8 +59,7 @@ Item {
                     anchors.left: parent.left
                     width: parent.width
                     color: "grey"
-                    font.family: "Helvetica"
-                    font.pointSize: main.fontPointSize - 2
+                    font.pointSize: main.fontPointSize - 3
                     font.capitalization: Font.AllUppercase
                     elide: Text.ElideRight
                     visible: text.length && !uploadVisible

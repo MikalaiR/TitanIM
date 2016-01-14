@@ -16,7 +16,7 @@ import QtQuick 2.0
 Rectangle {
     id: onlineIcon
     radius: 10
-    color: "#f9f9f9"
+    color: "white"
 
     Rectangle {
         width: parent.width - 4

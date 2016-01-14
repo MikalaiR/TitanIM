@@ -18,16 +18,14 @@ Item {
 
     property string text: ""
 
-    height: visible ? textShadow.height + 16 : 0
-    width: textShadow.width
+    height: visible ? label.height + 16 : 0
+    width: label.width
 
-    TextShadow {
-        id: textShadow
+    Text {
+        id: label
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 3
         font.pointSize: main.fontPointSize - 2
-        font.bold: true
-        font.family: "Helvetica"
         color: "#8B92A4"
         text: sectionText.text
     }
