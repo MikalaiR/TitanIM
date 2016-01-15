@@ -97,6 +97,10 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onPressed: {
+                        if (root.currentIndex !== index) {
+                            __tabs.get(root.currentIndex).tab.visible = false
+                        }
+
                         modelData.clicked()
                         root.currentIndex = index
                     }

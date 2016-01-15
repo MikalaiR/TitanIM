@@ -108,7 +108,7 @@ Rectangle {
             }
 
             TabBarItem {
-                id: musicTab
+                id: audioTab
                 title: "audio"
                 icon: "images/audio_tab.png"
                 Text {text: "audio"}
@@ -123,6 +123,16 @@ Rectangle {
                 onClicked: {
                     engine.getSelfProfile()
                 }
+
+                onVisibleChanged: {
+                    if (visible) {
+                        visiblePageStackView = false
+                    }
+                    else
+                    {
+                        visiblePageStackView = true
+                    }
+                }
             }
 
             onWidthChanged: { //qml bug
@@ -130,13 +140,6 @@ Rectangle {
                     splitView.enabled = false
                     splitView.enabled = true
                 }
-            }
-
-            onCurrentIndexChanged: {
-                if (currentIndex == 3)
-                    visiblePageStackView = false
-                else
-                    visiblePageStackView = true
             }
         }
 
