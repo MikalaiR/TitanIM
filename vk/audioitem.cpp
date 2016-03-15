@@ -60,9 +60,7 @@ QString AudioItemPrivate::durationStr() const
         return "";
     }
 
-    int m = _duration / 60;
-    int s = _duration - (m * 60);
-    return QString("%1:%2").arg(m).arg(QString().number(s).rightJustified(2, '0'));
+    return Utils::durationToText(_duration);
 }
 
 void AudioItemPrivate::setDuration(const int duration)

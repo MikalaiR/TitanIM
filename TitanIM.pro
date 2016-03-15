@@ -119,7 +119,12 @@ SOURCES += main.cpp \
     vk/photospacket.cpp \
     vk/linkitem.cpp \
     vk/linkparser.cpp \
-    vk/pushsettings.cpp
+    vk/pushsettings.cpp \
+    audio/audio.cpp \
+    vk/audiopacket.cpp \
+    vk/audiolist.cpp \
+    audio/audiomodel.cpp \
+    audio/audioalbumsmodel.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -199,7 +204,12 @@ HEADERS += \
     vk/photospacket.h \
     vk/linkitem.h \
     vk/linkparser.h \
-    vk/pushsettings.h
+    vk/pushsettings.h \
+    audio/audio.h \
+    vk/audiopacket.h \
+    vk/audiolist.h \
+    audio/audiomodel.h \
+    audio/audioalbumsmodel.h
 
 OBJECTIVE_SOURCES += \
     notification/macnotification.mm

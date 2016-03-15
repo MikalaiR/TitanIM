@@ -553,3 +553,10 @@ bool Utils::applicationIsActive()
 {
     return QGuiApplication::focusWindow() != 0;
 }
+
+QString Utils::durationToText(const int duration)
+{
+    int min = duration / 60;
+    int sec = duration - (min * 60);
+    return QString("%1:%2").arg(min).arg(QString().number(sec).rightJustified(2, '0'));
+}

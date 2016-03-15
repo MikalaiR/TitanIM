@@ -103,5 +103,19 @@
         <file>images/toggle_on_background.png</file>
         <file>UnderlineToggleButton.qml</file>
         <file>images/muted.png</file>
+        <file>Audio.qml</file>
+        <file>AudioAlbums.qml</file>
+        <file>AudioDelegate.qml</file>
+        <file>AudioAlbumsDelegate.qml</file>
+        <file>images/playlist.png</file>
+        <file>images/pl_play.png</file>
+        <file>images/pl_pause.png</file>
+        <file>images/pl_forward.png</file>
+        <file>images/pl_rewind.png</file>
+        <file>AudioBar.qml</file>
+        <file>images/pl_random.png</file>
+        <file>images/pl_repeat.png</file>
+        <file>images/pause_tab.png</file>
+        <file>images/play_tab.png</file>
     </qresource>
 </RCC>

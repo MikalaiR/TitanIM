@@ -39,6 +39,8 @@ private slots:
     void onValidation(const QString &validationUri);
 
 signals:
+    void authorized(const int uid, const QString &token, const QString &secret);
+    void logout(const int uid);
     void captcha(const QString &captchaSid, const QString &captchaImg);
     void showAuthPage();
     void showMainPage();

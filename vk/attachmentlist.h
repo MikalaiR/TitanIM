@@ -29,7 +29,7 @@ public:
     QString description() const;
 
 public slots:
-    QVariantList filterByType(const int attachmentType) const;
+    QVariantList filterByType(const int attachmentType, const bool sharedPointer=false) const;
 };
 
 #endif // ATTACHMENTLIST_H

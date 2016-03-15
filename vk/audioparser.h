@@ -17,11 +17,13 @@
 #include <QObject>
 #include <QVariantMap>
 #include "audioitem.h"
+#include "audiolist.h"
 
 class AudioParser : public QObject
 {
 public:
     static AudioItem parser(const QVariantMap &item);
+    static AudioList parser(const QVariantList &items);
 };
 
 #endif // AUDIOPARSER_H

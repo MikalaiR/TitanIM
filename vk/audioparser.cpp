@@ -33,3 +33,16 @@ AudioItem AudioParser::parser(const QVariantMap &item)
 
     return audio;
 }
+
+AudioList AudioParser::parser(const QVariantList &items)
+{
+    AudioList audioList = AudioList::create();
+
+    foreach (QVariant item, items)
+    {
+        AudioItem audio = parser(item.toMap());
+        audioList->add(audio);
+    }
+
+    return audioList;
+}

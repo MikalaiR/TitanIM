@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QUrl>
 #include "attachmentitem.h"
+#include "utils.h"
 
 class AudioItemPrivate : public Attachment
 {

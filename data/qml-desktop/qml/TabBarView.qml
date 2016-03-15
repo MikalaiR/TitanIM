@@ -19,6 +19,8 @@ FocusScope {
     property int currentIndex: 0
     property int count: 0
     property ListModel __tabs: ListModel {}
+    property Component widget
+    property bool visibleWidget: false
 
     function removeTab(index) {
         var tab = __tabs.get(index).tab
@@ -29,6 +31,10 @@ FocusScope {
             currentIndex--
 
         __setOpacities()
+    }
+
+    function currentItemTitle() {
+        return root.__tabs.get(currentIndex).tab.title
     }
 
     function __setOpacities() {
@@ -49,7 +55,10 @@ FocusScope {
 
         ListView {
             id: tabrow
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.bottom: widgetItem.visible ? widgetItem.top : parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
 
             Accessible.role: Accessible.PageTabList
             orientation: Qt.Vertical
@@ -105,6 +114,27 @@ FocusScope {
                         root.currentIndex = index
                     }
                 }
+            }
+        }
+
+        Item {
+            id: widgetItem
+            width: parent.width
+            height: footerLoader.height
+            anchors.bottom: parent.bottom
+            visible: root.visibleWidget
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#585858"
+            }
+
+            Loader {
+                id: footerLoader
+                width: parent.width
+                sourceComponent: root.widget
+                active: root.widget
             }
         }
     }

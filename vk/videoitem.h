@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QUrl>
 #include "attachmentitem.h"
+#include "utils.h"
 
 class VideoItemPrivate : public Attachment
 {

@@ -14,11 +14,13 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.0
+import TitanIM.Multimedia 1.0
 
 Rectangle {
     id: mainWindow
     readonly property string name: "mainWindow"
     property bool visiblePageStackView: false
+    property bool visibleAudioBar: false
     property int widthTabBar: 306
     property alias tabBarCurrentIndex: tabBar.currentIndex
 
@@ -111,7 +113,20 @@ Rectangle {
                 id: audioTab
                 title: "audio"
                 icon: "images/audio_tab.png"
-                Text {text: "audio"}
+                AudioAlbums {id: audioAlbums}
+
+                onVisibleChanged: {
+                    if (visible) {
+                        pushPage({item: Qt.resolvedUrl("Audio.qml"), immediate: true}, "audio")
+                        mainWindow.visibleAudioBar = true
+                        audioAlbums.prepare()
+                    }
+                    else
+                    {
+                        pageStackView.pop({immediate: true})
+                        mainWindow.visibleAudioBar = false
+                    }
+                }
             }
 
             TabBarItem {
@@ -134,6 +149,34 @@ Rectangle {
                     }
                 }
             }
+
+            widget: Item {
+                height: 45
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: tabBar.currentItemTitle() !== "audio"
+                    onClicked: {
+                        mainWindow.visibleAudioBar = !mainWindow.visibleAudioBar
+                    }
+                }
+
+                Image {
+                    width: 20
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectFit
+                    source: AudioPlayer.playing ? "images/pause_tab.png" : "images/play_tab.png"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            audio.pause()
+                        }
+                    }
+                }
+            }
+
+            visibleWidget: audio.currentAudio && tabBar.currentItemTitle() !== "audio"
 
             onWidthChanged: { //qml bug
                 if (width < 200) {
@@ -175,6 +218,27 @@ Rectangle {
                     to: 0
                 }
             }
+        }
+    }
+
+    AudioBar {
+        id: audioBar
+        height: 45
+        anchors.left: parent.left
+        anchors.leftMargin: 50
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        visible: mainWindow.visibleAudioBar
+    }
+
+    MouseArea {
+        id: autoHideAudioBar
+        anchors.fill: parent
+        anchors.bottomMargin: 45
+        enabled: mainWindow.visibleAudioBar && tabBar.currentItemTitle() !== "audio"
+
+        onClicked: {
+            mainWindow.visibleAudioBar = false
         }
     }
 

@@ -26,6 +26,7 @@
 #include "roster/rosterhandler.h"
 #include "chat/chats.h"
 #include "notification/notificator.h"
+#include "audio/audio.h"
 
 class MainWindow : public QtQuick2ApplicationViewer
 {

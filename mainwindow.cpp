@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());
     rootContext()->setContextProperty("emoticons", Emoticons::instance());
+    rootContext()->setContextProperty("audio", Audio::instance());
 
     qmlRegisterSingletonType(QUrl("qrc:/qml/AudioPlayerObject.qml"), "TitanIM.Multimedia", 1, 0, "AudioPlayer");
     qmlRegisterSingletonType(QUrl("qrc:/qml/PhotoViewer.qml"), "TitanIM.Viewer", 1, 0, "PhotoViewer");
@@ -212,6 +213,7 @@ void MainWindow::onLogout(const int uid)
     dialogsHandler->clear();
     rosterHandler->clear();
     Chats::instance()->clear();
+    Audio::instance()->clear();
 }
 
 void MainWindow::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)

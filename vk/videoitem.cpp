@@ -55,9 +55,7 @@ int VideoItemPrivate::duration() const
 
 QString VideoItemPrivate::durationStr() const
 {
-    int m = _duration / 60;
-    int s = _duration - (m * 60);
-    return QString("%1:%2").arg(m).arg(QString().number(s).rightJustified(2, '0'));
+    return Utils::durationToText(_duration);
 }
 
 void VideoItemPrivate::setDuration(const int duration)

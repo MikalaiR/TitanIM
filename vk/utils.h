@@ -58,6 +58,7 @@ public:
     static QString toTranslit(const QString &str);
     static QString fromTranslit(const QString &str);
     static bool applicationIsActive();
+    static QString durationToText(const int duration);
 
 private:
     static qint64 _lambdaServerTime;

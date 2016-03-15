@@ -100,7 +100,7 @@ QString AttachmentList::description() const
     }
 }
 
-QVariantList AttachmentList::filterByType(const int attachmentType) const
+QVariantList AttachmentList::filterByType(const int attachmentType, const bool sharedPointer) const
 {
     QVariantList list;
 
@@ -108,7 +108,14 @@ QVariantList AttachmentList::filterByType(const int attachmentType) const
     {
         if (at(i)->attachmentType() & attachmentType)
         {
-            list.append(QVariant::fromValue(at(i).data()));
+            if (sharedPointer)
+            {
+                list.append(QVariant::fromValue(at(i)));
+            }
+            else
+            {
+                list.append(QVariant::fromValue(at(i).data()));
+            }
         }
     }
 

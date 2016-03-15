@@ -26,7 +26,6 @@ public:
     DialogListPrivate();
 };
 
-
 typedef QSharedPointer<DialogListPrivate> DialogList;
 
 #endif // DIALOGLIST_H

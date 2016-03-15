@@ -20,6 +20,9 @@ Authorization::Authorization()
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
     connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SLOT(onValidation(QString)));
+
+    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SIGNAL(authorized(int,QString,QString)));
+    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SIGNAL(logout(int)));
 }
 
 void Authorization::connectToVk()

@@ -11,11 +11,21 @@
  ***************************************************************************
 */
 
-import QtQuick 2.0
+#ifndef AUDIOLIST_H
+#define AUDIOLIST_H
 
-Rectangle{
-    id: highlightListView
-    width: parent.width
-    opacity: 0.3
-    color: "#83a6d3"
-}
+#include <QSharedPointer>
+#include "observablecollection.h"
+#include "audioitem.h"
+
+class AudioListPrivate : public ObservableCollection<AudioItem>
+{
+    Q_OBJECT
+
+public:
+    AudioListPrivate();
+};
+
+typedef QSharedPointer<AudioListPrivate> AudioList;
+
+#endif // AUDIOLIST_H

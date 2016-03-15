@@ -22,7 +22,7 @@ Item {
     property alias text: textArea.text
     property alias font: textArea.font
     property alias cursorPosition: textArea.cursorPosition
-    property alias length: textArea.length
+    property int length: textArea.length
     property string placeholderText: ""
     property int minimumHeight: 26
     property int maximumHeight: 91

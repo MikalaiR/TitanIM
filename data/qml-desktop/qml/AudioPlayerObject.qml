@@ -19,25 +19,52 @@ import QtMultimedia 5.0
 Item {
     id: audioPlayer
     property url audioUrl;
-    readonly property bool playing: audio.playbackState === Audio.PlayingState
-    readonly property bool paused: audio.playbackState === Audio.PausedState
-    readonly property bool stopped: audio.playbackState === Audio.StoppedState
-    property alias position: audio.position
+    readonly property bool playing: player.playbackState === Audio.PlayingState
+    readonly property bool paused: player.playbackState === Audio.PausedState
+    readonly property bool stopped: player.playbackState === Audio.StoppedState
+    property int position: 0
+    property int duration: 0
+    property alias volume: player.volume
 
     function playUrl(url) {
         if (url === audioUrl) {
-            if (audio.playbackState !== Audio.PlayingState)
-                audio.play();
+            if (player.playbackState !== Audio.PlayingState)
+                player.play()
             else
-                audio.pause();
+                player.pause()
         } else {
-            audioUrl = url;
-            audio.source = audioUrl;
-            audio.play();
+            player.stop()
+            player.seek(0)
+            audioPlayer.position = 0
+            audioPlayer.duration = audio.currentAudio.duration * 1000
+            audioUrl = url
+            player.source = audioUrl
+            player.play()
         }
     }
 
+    function seek(offset) {
+        player.seek(offset)
+    }
+
     Audio {
-        id: audio
+        id: player
+
+        onStatusChanged: {
+            if (status === Audio.EndOfMedia) {
+                audio.next()
+            }
+        }
+
+        onPositionChanged: {
+            audioPlayer.position = Math.min(player.position, audioPlayer.duration)
+        }
+    }
+
+    Connections {
+        target: audio
+        onCurrentAudioChanged: {
+            playUrl(audio.currentAudio.url)
+        }
     }
 }
