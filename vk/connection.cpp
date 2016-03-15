@@ -262,6 +262,11 @@ void Connection::execQuery()
     currentPacket->addParam("access_token", _sessionVars.access_token);
     currentPacket->signPacket(_sessionVars.secret);
 
+    if (_isHttps)
+    {
+        currentPacket->addParam("https", 1);
+    }
+
     QNetworkRequest request;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setUrl(QUrl(_urlServers.api_server + currentPacket->urlPath()));
