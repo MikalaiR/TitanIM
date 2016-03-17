@@ -22,7 +22,7 @@ void ProfileParser::parser(const QVariantMap &item, ProfileItemPrivate *profile)
     QString photoMediumRect = item.contains("photo_100") ? item.value("photo_100").toString()
                                                          : item.value("photo_medium_rec").toString();
     int lastSeen = item.contains("last_seen") ? item.value("last_seen").toMap().value("time").toInt() : 0;
-    bool online = item.value("online").toInt() == 1 ? true : false;
+    bool online = item.contains("online") ? item.value("online").toInt() : 0;
     QString activity = item.contains("status") ? item.value("status").toString() : "";
     QString bdate = item.contains("bdate") ? item.value("bdate").toString() : "";
     QString domain = item.value("domain").toString();

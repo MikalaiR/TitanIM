@@ -373,8 +373,14 @@ void ProfileItemPrivate::getLastActivityFinished(const Packet *sender, const QVa
 {
     QVariantMap response = result.value("response").toMap();
 
-    setOnline(response.value("online").toBool());
-    setLastSeen(response.value("time").toInt());
+    bool online = response.value("online").toBool();
+    int lastSeen = response.value("time").toInt();
+
+    if (lastSeen != 0)
+    {
+        setOnline(online);
+        setLastSeen(lastSeen);
+    }
 
     delete sender;
 }

@@ -171,6 +171,7 @@ Item {
                                 Text {
                                     id: desc
                                     width: parent.width
+                                    height: text.length ? implicitHeight : 0
                                     font.pointSize: main.fontPointSize - 2
                                     color: "gray"
                                     text: chats.currentChatDialog.description
