@@ -67,4 +67,11 @@ Item {
             playUrl(audio.currentAudio.url)
         }
     }
+
+    Connections {
+        target: authorization
+        onLogout: {
+            player.stop()
+        }
+    }
 }

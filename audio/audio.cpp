@@ -113,7 +113,6 @@ void Audio::setCurrentAlbumId(const int albumId)
 
 void Audio::clear()
 {
-    pause();
     _albums->removeAll();
     _model->removeAll();
     setCurrentIndex(-1);
