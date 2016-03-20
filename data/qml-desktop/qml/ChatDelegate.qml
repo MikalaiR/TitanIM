@@ -77,6 +77,13 @@ Item {
                 width: 32
                 height: 32
                 source: content.profile.photoMediumRect
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        main.openChat(content.profile.id)
+                    }
+                }
             }
         }
 

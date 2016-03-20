@@ -155,6 +155,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
                     enabled: tabBar.currentItemTitle() !== "audio"
                     onClicked: {
                         mainWindow.visibleAudioBar = !mainWindow.visibleAudioBar
@@ -169,8 +170,13 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         onClicked: {
-                            audio.pause()
+                            if (mouse.button === Qt.LeftButton) {
+                                audio.pause()
+                            } else {
+                                mainWindow.visibleAudioBar = !mainWindow.visibleAudioBar
+                            }
                         }
                     }
                 }
@@ -235,6 +241,7 @@ Rectangle {
         id: autoHideAudioBar
         anchors.fill: parent
         anchors.bottomMargin: 45
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         enabled: mainWindow.visibleAudioBar && tabBar.currentItemTitle() !== "audio"
 
         onClicked: {

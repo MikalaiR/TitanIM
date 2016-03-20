@@ -113,6 +113,13 @@ Item {
                         text: audio.currentAudio ? audio.currentAudio.artist + " - " + audio.currentAudio.title : qsTr("No music is playing")
                         elide: Text.ElideRight
                         color: "#313030"
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                tabBar.setCurrentItem("audio")
+                            }
+                        }
                     }
 
                     Text {
@@ -147,7 +154,7 @@ Item {
                     MouseArea {
                         id: seekMouseArea
                         anchors.fill: parent
-                        anchors.topMargin: -10
+                        anchors.topMargin: -7
                         anchors.bottomMargin: -10
                         hoverEnabled: true
 

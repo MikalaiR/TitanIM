@@ -32,6 +32,12 @@ Item {
 
             roster.clearFilter()
         }
+
+        onDoubleClicked: {
+            if (!chats.isSelectUser) {
+                mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml")})
+            }
+        }
     }
 
     HighlightListView {

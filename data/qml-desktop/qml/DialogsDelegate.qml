@@ -159,6 +159,7 @@ Item {
         onClicked: {
             if (!chats.isSelectUser) {
                 main.dialogCurrentIndexChanged(index);
+                mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml")})
             } else {
                 if (chats.currentChatDialog.isGroupChat && !model.isGroupChat) {
                     chats.currentChatDialog.groupChatHandler.addChatUser(model.uid)

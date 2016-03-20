@@ -52,46 +52,56 @@ Item {
                         id: message
                         spacing: 3
 
-                        Row {
+                        Item {
                             id: header
                             width: parent.width
                             height: childrenRect.height
-                            spacing: 5
 
-                            AvatarImage {
-                                id: avatar
-                                width: 30
-                                height: 30
-                                source: profile.photoMediumRect
-                            }
+                            Row {
+                                spacing: 5
 
-                            Column {
-                                width: fwdMsgAttachments.maxWidth - avatar.width - 14
-                                height: childrenRect.height
-                                anchors.verticalCenter: avatar.verticalCenter
-                                spacing: 3
-
-                                Text {
-                                    id: name
-                                    anchors.left: parent.left
-                                    width: parent.width
-                                    color: "black"
-                                    font.pointSize: main.fontPointSize
-                                    font.bold: true
-                                    font.family: "Helvetica"
-                                    elide: Text.ElideRight
-                                    text: profile.fullName
+                                AvatarImage {
+                                    id: avatar
+                                    width: 30
+                                    height: 30
+                                    source: profile.photoMediumRect
                                 }
 
-                                Text {
-                                    id: messageDate
-                                    anchors.left: parent.left
-                                    width: parent.width
-                                    color: "#1769ad"
-                                    font.family: "Helvetica"
-                                    font.pointSize: main.fontPointSize - 2
-                                    elide: Text.ElideRight
-                                    text: Qt.formatDateTime(modelData.date, "dd.MM.yyyy, hh:mm")
+                                Column {
+                                    width: fwdMsgAttachments.maxWidth - avatar.width - 14
+                                    height: childrenRect.height
+                                    anchors.verticalCenter: avatar.verticalCenter
+                                    spacing: 3
+
+                                    Text {
+                                        id: name
+                                        anchors.left: parent.left
+                                        width: parent.width
+                                        color: "black"
+                                        font.pointSize: main.fontPointSize
+                                        font.bold: true
+                                        font.family: "Helvetica"
+                                        elide: Text.ElideRight
+                                        text: profile.fullName
+                                    }
+
+                                    Text {
+                                        id: messageDate
+                                        anchors.left: parent.left
+                                        width: parent.width
+                                        color: "#1769ad"
+                                        font.family: "Helvetica"
+                                        font.pointSize: main.fontPointSize - 2
+                                        elide: Text.ElideRight
+                                        text: Qt.formatDateTime(modelData.date, "dd.MM.yyyy, hh:mm")
+                                    }
+                                }
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    main.openChat(profile.id)
                                 }
                             }
                         }

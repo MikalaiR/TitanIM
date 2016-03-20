@@ -37,6 +37,16 @@ FocusScope {
         return root.__tabs.get(currentIndex).tab.title
     }
 
+    function setCurrentItem(title) {
+        for (var i = 0; i < __tabs.count; ++i) {
+            var child = __tabs.get(i).tab
+
+            if (child.title === title) {
+                __setCurrentItem(i, child)
+            }
+        }
+    }
+
     function __setOpacities() {
         for (var i = 0; i < __tabs.count; ++i) {
             var child = __tabs.get(i).tab
@@ -44,6 +54,15 @@ FocusScope {
         }
 
         count = __tabs.count
+    }
+
+    function __setCurrentItem(index, tab) {
+        if (root.currentIndex !== index) {
+            __tabs.get(root.currentIndex).tab.visible = false
+        }
+
+        tab.clicked()
+        root.currentIndex = index
     }
 
     Rectangle {
@@ -106,12 +125,7 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onPressed: {
-                        if (root.currentIndex !== index) {
-                            __tabs.get(root.currentIndex).tab.visible = false
-                        }
-
-                        modelData.clicked()
-                        root.currentIndex = index
+                        __setCurrentItem(index, modelData)
                     }
                 }
             }
