@@ -144,6 +144,7 @@ void DialogsHandler::setUnreadDialogs(const int unreadDialogs)
     if (_unreadDialogs != serverUnreadDialogs)
     {
         _unreadDialogs = serverUnreadDialogs;
+        Notificator::instance()->setBadge(_unreadDialogs);
         emit unreadDialogsChanged(_unreadDialogs);
     }
 }

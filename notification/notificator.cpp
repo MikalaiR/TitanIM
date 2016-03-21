@@ -61,3 +61,12 @@ void Notificator::playSoundMessageIn()
     static QString cmd = Settings::instance()->loadMain("main/cmdSound", "aplay -q").toString();
     Utils::playSound(fileName, cmd);
 }
+
+void Notificator::setBadge(const int count)
+{
+#if defined(Q_OS_MAC)
+    QtMac::setBadgeLabelText(count > 0 ? QString::number(count) : "");
+#else
+    //todo win and lin
+#endif
+}

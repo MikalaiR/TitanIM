@@ -34,6 +34,7 @@ private:
 
 public slots:
     void playSoundMessageIn();
+    void setBadge(const int count);
 
 private:
     static Notificator *aInstance;
