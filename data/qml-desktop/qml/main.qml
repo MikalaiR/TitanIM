@@ -55,5 +55,14 @@ StackView {
                 mainStackView.push({item: Qt.resolvedUrl("MainWindow.qml"), replace: true})
             }
         }
+
+        onValidation: {
+            mainStackView.push({item: Qt.resolvedUrl("Validation.qml"), replace: true, properties: {uri: validationUri}})
+        }
+
+        onVerification: {
+            mainStackView.push({item: Qt.resolvedUrl("Verification.qml"), replace: true,
+                                   properties: {sid: validationSid, phone: phoneMask, isSms: sms, uri: validationUri}})
+        }
     }
 }

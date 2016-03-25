@@ -37,6 +37,9 @@ Client::Client()
     connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
     connect(_connection, SIGNAL(networkOnlineChanged(bool)), this, SLOT(onNetworkOnlineChanged(bool)));
+    connect(_connection, SIGNAL(validation(QString)), this, SLOT(onValidation()));
+    connect(_connection, SIGNAL(verification(QString,QString,bool,QString)), this, SLOT(onValidation()));
+    connect(_connection, SIGNAL(sessionChanged(int,QString,QString)), this, SLOT(onSessionChanged(int,QString,QString)));
 
     _engine = new Engine(_connection);
     _longPoll = new LongPoll(_connection, _engine);
@@ -129,4 +132,14 @@ void Client::onNetworkOnlineChanged(const bool isOnline)
     {
         _longPoll->stop();
     }
+}
+
+void Client::onValidation()
+{
+    _longPoll->stop();
+}
+
+void Client::onSessionChanged(const int uid, const QString &token, const QString &secret)
+{
+    _longPoll->resume();
 }

@@ -58,6 +58,8 @@ private slots:
     void onLogout(const int uid);
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
     void onNetworkOnlineChanged(const bool isOnline);
+    void onValidation();
+    void onSessionChanged(const int uid, const QString &token, const QString &secret);
 };
 
 #endif // CLIENT_H

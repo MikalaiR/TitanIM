@@ -45,6 +45,13 @@ public:
         TryLater = 1112
     };
 
+    enum ValidationType
+    {
+        Unkown,
+        TwoFactorApp,
+        TwoFactorSms
+    };
+
     ErrorResponse(const QVariantMap &response);
     ErrorResponse(const Error &code, const QString &msg);
     Error code() const;
@@ -53,6 +60,9 @@ public:
     bool fatal() const;
     QString captchaSid() const;
     QString captchaImg() const;
+    ValidationType validationType() const;
+    QString validationSid() const;
+    QString validationPhone() const;
     QString validationUri() const;
     static bool isGlobal(const Error &code);
     static bool isFatal(const Error &code);
@@ -64,6 +74,9 @@ private:
     bool _fatal;
     QString _captchaSid;
     QString _captchaImg;
+    ValidationType _validationType;
+    QString _validationSid;
+    QString _validationPhone;
     QString _validationUri;
 };
 

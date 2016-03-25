@@ -31,17 +31,23 @@ public slots:
     void disconnectVk();
     void setCaptcha(const QString &sid, const QString &text);
     void cancelCaptcha();
+    void setVerificationCode(const QString &sid, const QString &code);
+    void checkUrlValidation(const QUrl &url);
+    void showValidation(const QString &validationUri);
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);
+    void saveSession(const int uid, const QString &token, const QString &secret);
     void onLogout(const int uid);
     void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
-    void onValidation(const QString &validationUri);
 
 signals:
     void authorized(const int uid, const QString &token, const QString &secret);
     void logout(const int uid);
     void captcha(const QString &captchaSid, const QString &captchaImg);
+    void validation(const QString &validationUri);
+    void verification(const QString &validationSid, const QString &phoneMask, const bool sms, const QString &validationUri);
+    void incorrectCode();
     void showAuthPage();
     void showMainPage();
 };

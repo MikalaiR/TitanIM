@@ -117,5 +117,8 @@
         <file>images/pl_repeat.png</file>
         <file>images/pause_tab.png</file>
         <file>images/play_tab.png</file>
+        <file>Validation.qml</file>
+        <file>Verification.qml</file>
+        <file>LogoHeader.qml</file>
     </qresource>
 </RCC>

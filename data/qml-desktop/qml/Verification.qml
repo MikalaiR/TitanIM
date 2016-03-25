@@ -16,25 +16,30 @@ import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.4
 
 Rectangle {
-    id: authWindow
-    readonly property string name: "authWindow"
+    id: verificationWindow
+    readonly property string name: "verificationWindow"
+    property string sid: ""
+    property string phone: ""
+    property bool isSms: false
+    property string uri: ""
 
-    function connectToVk() {
-        if (login.text.length == 0){
-            login.forceActiveFocus()
+    function verificationCode() {
+        if (code.text.length == 0){
+            code.forceActiveFocus()
             return
         }
 
-        if (pass.text.length == 0){
-            pass.forceActiveFocus()
-            return
-        }
-
-        authWindow.focus = true
+        verificationWindow.focus = true
         nextLabel.enabled = false
-        login.enabled = false
-        pass.enabled = false
-        authorization.connectToVk(login.text, pass.text)
+        code.enabled = false
+        authorization.setVerificationCode(verificationWindow.sid, code.text)
+    }
+
+    function reset() {
+        code.text = ""
+        nextLabel.enabled = true
+        code.enabled = true
+        code.forceActiveFocus()
     }
 
     Rectangle {
@@ -61,56 +66,33 @@ Rectangle {
             anchors.left: headerRow.left
             spacing: 8
 
+            Text {
+                height: 30
+                width: rowCode.width
+                anchors.right: parent.right
+                text: isSms ? qsTr("Enter the confirmation code we've sent to you via SMS")
+                            : qsTr("Enter the code provided by the code generating app")
+                verticalAlignment: Text.AlignTop
+                font.pointSize: 12
+                color: "grey"
+            }
+
             Row {
+                id: rowCode
                 anchors.right: parent.right
                 spacing: 10
 
                 Text {
-                    anchors.verticalCenter: login.verticalCenter
-                    text: qsTr("login")
+                    anchors.verticalCenter: code.verticalCenter
+                    text: isSms ? qsTr("sms") : qsTr("code")
                     font.pointSize: 12
                     color: "grey"
                 }
 
                 TextField {
-                    id: login
+                    id: code
                     width: 250
-                    placeholderText: qsTr("phone or email")
-                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly | Qt.ImhNoPredictiveText
-                    style: TextFieldStyle {
-                            textColor: control.enabled ? "black" : "grey"
-                            background: Item {}
-                    }
-
-                    Keys.onReturnPressed: {
-                        pass.forceActiveFocus()
-                    }
-                }
-            }
-
-            Rectangle {
-                height: 1
-                width: login.width
-                anchors.right: parent.right
-                color: "#e8e8e8"
-            }
-
-            Row {
-                anchors.right: parent.right
-                spacing: 10
-
-                Text {
-                    anchors.verticalCenter: pass.verticalCenter
-                    text: qsTr("password")
-                    font.pointSize: 12
-                    color: "grey"
-                }
-
-                TextField {
-                    id: pass
-                    width: 250
-                    placeholderText: qsTr("password")
-                    echoMode: TextInput.Password
+                    placeholderText: qsTr("enter your code")
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
                     style: TextFieldStyle {
                             textColor: control.enabled ? "black" : "grey"
@@ -118,16 +100,33 @@ Rectangle {
                     }
 
                     Keys.onReturnPressed: {
-                        connectToVk()
+                        verificationCode()
                     }
                 }
             }
 
             Rectangle {
                 height: 1
-                width: pass.width
+                width: code.width
                 anchors.right: parent.right
                 color: "#e8e8e8"
+            }
+
+            Text {
+                id: problemLabel
+                width: rowCode.width
+                anchors.right: parent.right
+                text: qsTr("Any trouble receiving codes?")
+                horizontalAlignment: Text.AlignRight
+                font.pointSize: 11
+                color: "#2C83D6"
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        authorization.showValidation(uri)
+                    }
+                }
             }
         }
 
@@ -142,7 +141,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    connectToVk()
+                    verificationCode()
                 }
             }
         }
@@ -151,12 +150,16 @@ Rectangle {
     Connections {
         target: authorization
 
+        onIncorrectCode: {
+            reset()
+        }
+
         onCaptcha: {
-            Qt.createComponent("Captcha.qml").createObject(authWindow, {sid: captchaSid, img: captchaImg})
+            Qt.createComponent("Captcha.qml").createObject(verificationWindow, {sid: captchaSid, img: captchaImg})
         }
     }
 
     Component.onCompleted: {
-        login.forceActiveFocus()
+        code.forceActiveFocus()
     }
 }

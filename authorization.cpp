@@ -18,11 +18,13 @@ Authorization::Authorization()
     connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
     connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
-    connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SLOT(onValidation(QString)));
+    connect(Client::instance()->connection(), SIGNAL(sessionChanged(int,QString,QString)), this, SLOT(saveSession(int,QString,QString)));
 
     connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SIGNAL(authorized(int,QString,QString)));
     connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SIGNAL(logout(int)));
+    connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
+    connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SIGNAL(validation(QString)));
+    connect(Client::instance()->connection(), SIGNAL(verification(QString,QString,bool,QString)), this, SIGNAL(verification(QString,QString,bool,QString)));
 }
 
 void Authorization::connectToVk()
@@ -64,23 +66,65 @@ void Authorization::cancelCaptcha()
     Client::instance()->connection()->cancelCaptcha();
 }
 
+void Authorization::setVerificationCode(const QString &sid, const QString &code)
+{
+    Client::instance()->connection()->setVerificationCode(sid, code);
+}
+
+void Authorization::checkUrlValidation(const QUrl &url)
+{
+    if (url.fileName() == "blank.html")
+    {
+        QString fragment = url.fragment();
+
+        if (fragment.contains("success=1"))
+        {
+            SessionVars session;
+            QUrlQuery urlQuery = QUrlQuery(fragment);
+
+            session.access_token = urlQuery.queryItemValue("access_token");
+            session.user_id = urlQuery.queryItemValue("user_id").toInt();
+            session.expires_in = 0;
+            session.secret = fragment.contains("secret") ? urlQuery.queryItemValue("secret") : "";
+
+            Client::instance()->connection()->setSession(session);
+            emit showMainPage();
+        }
+        else if (fragment.contains("cancel=1"))
+        {
+            SessionVars session = Client::instance()->connection()->session();
+            Client::instance()->connection()->setSession(session);
+            emit showMainPage();
+        }
+        else
+        {
+            disconnectVk();
+        }
+    }
+}
+
+void Authorization::showValidation(const QString &validationUri)
+{
+    emit validation(validationUri);
+}
+
 void Authorization::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
-    qDebug() << "authorized" << " " << token << " " << secret;
+    saveSession(uid, token, secret);
+    emit showMainPage();
+}
 
+void Authorization::saveSession(const int uid, const QString &token, const QString &secret)
+{
     Settings::instance()->setCurrentUid(QString::number(uid));
     Settings::instance()->saveProfile("main/uid", uid);
     Settings::instance()->saveProfile("main/token", token);
     Settings::instance()->saveProfile("main/secret", secret);
     Settings::instance()->saveMain("profiles/last", uid);
-
-    emit showMainPage();
 }
 
 void Authorization::onLogout(const int uid)
 {
-    qDebug() << "logout";
-
     Settings::instance()->saveProfile("main/token", "", QString::number(uid));
     Settings::instance()->saveProfile("main/secret", "", QString::number(uid));
     Settings::instance()->saveMain("profiles/last", "");
@@ -90,14 +134,24 @@ void Authorization::onLogout(const int uid)
 
 void Authorization::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
-    if (error == ErrorResponse::UserAuthorizationFailed || error == ErrorResponse::LoadTokenFailed)
+    switch (error) {
+    case ErrorResponse::UserAuthorizationFailed:
+    case ErrorResponse::LoadTokenFailed:
     {
         //todo remove token and secret
         emit showAuthPage();
+        break;
     }
-}
 
-void Authorization::onValidation(const QString &validationUri)
-{
-    qDebug() << "VALIDATION:" << validationUri; //todo
+    case ErrorResponse::UnknownErrorOccured:
+    {
+        emit incorrectCode();
+        break;
+    }
+
+    default:
+    {
+        break;
+    }
+    }
 }

@@ -27,6 +27,8 @@ Connection::Connection(const QString &clientId, const QString &clientSecret)
     _isProcessing = false;
     _isAuthorized = false;
 
+    httpApi = 0;
+
     bearer = new QNetworkConfigurationManager(this);
     connect(bearer, SIGNAL(onlineStateChanged(bool)), SLOT(onNetworkOnlineChanged(bool)));
 
@@ -82,11 +84,18 @@ void Connection::disconnectVk()
     int uid = _sessionVars.user_id;
 
     disconnect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
-    httpApi->deleteLater();
+
+    if (httpApi)
+    {
+        httpApi->deleteLater();
+        httpApi = 0;
+    }
+
     _queryList.clear();
     _sessionVars.user_id = 0;
     _sessionVars.access_token.clear();
     _sessionVars.secret.clear();
+    _sessionVars.expires_in = 0;
     _isProcessing = false;
     _isAuthorized = false;
 
@@ -135,6 +144,15 @@ void Connection::getToken(const QString &version)
         _loginVars.captcha_key.clear();
     }
 
+    if (!_loginVars.sid.isEmpty())
+    {
+        urlQuery.addQueryItem("sid", _loginVars.sid);
+        urlQuery.addQueryItem("code", _loginVars.code);
+
+        _loginVars.sid.clear();
+        _loginVars.code.clear();
+    }
+
     QUrl authUrl(_urlServers.auth_server);
     authUrl.setQuery(urlQuery);
 
@@ -151,7 +169,10 @@ void Connection::checkToken()
         return;
     }
 
+    _isProcessing = false;
+
     Packet *packet = new Packet("execute.magic");
+    packet->setPerishable(true);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(successfullyToken(const Packet*,QVariantMap)));
     connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(unsuccessfullyToken(const Packet*,const ErrorResponse*)));
     appendQuery(packet);
@@ -194,7 +215,7 @@ void Connection::getTokenFinished(QNetworkReply *networkReply)
     {
         _sessionVars.access_token = response.value("access_token").toString();
         _sessionVars.user_id = response.value("user_id").toInt();
-        _sessionVars.expires_in = response.value("expires_in").toString();
+        _sessionVars.expires_in = response.value("expires_in").toInt();
         _sessionVars.secret = response.contains("secret") ? response.value("secret").toString() : "";
 
         checkToken();
@@ -215,8 +236,15 @@ void Connection::successfullyToken(const Packet *sender, const QVariantMap &resu
     QDateTime dateTime = QDateTime::fromTime_t(unixtime).toLocalTime();
     Utils::setServerDateTime(dateTime);
 
-    _isAuthorized = true;
-    emit authorized(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
+    if (!_isAuthorized)
+    {
+        _isAuthorized = true;
+        emit authorized(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
+    }
+    else
+    {
+        emit sessionChanged(_sessionVars.user_id, _sessionVars.access_token, _sessionVars.secret);
+    }
 
     delete sender;
 }
@@ -351,6 +379,13 @@ void Connection::cancelCaptcha()
     clearAllQuery(ErrorResponse::CaptchaCanceled, "Captcha canceled");
 }
 
+void Connection::setVerificationCode(const QString &sid, const QString &code)
+{
+    _loginVars.sid = sid;
+    _loginVars.code = code;
+    getToken();
+}
+
 void Connection::clearAllQuery(const ErrorResponse::Error &code, const QString &msg)
 {
     while (!_queryList.isEmpty())
@@ -378,9 +413,31 @@ void Connection::clearPerishableQuery(const ErrorResponse::Error &code, const QS
     }
 }
 
+void Connection::sendVerificationSms(const QString &sid)
+{
+    //todo request private method vk api
+}
+
 SessionVars Connection::session() const
 {
     return _sessionVars;
+}
+
+void Connection::setSession(const SessionVars session)
+{
+    if (!session.access_token.isEmpty())
+    {
+        _sessionVars.access_token = session.access_token;
+        _sessionVars.user_id = session.user_id;
+        _sessionVars.expires_in = session.expires_in;
+        _sessionVars.secret = session.secret;
+
+        checkToken();
+    }
+    else
+    {
+        onError(ErrorResponse::LoadTokenFailed, "Access_token not found");
+    }
 }
 
 void Connection::onTooManyRequestsTimerTick()
@@ -468,7 +525,34 @@ void Connection::onError(const ErrorResponse *errorResponse)
 
     case ErrorResponse::ValidationRequired:
     {
-        emit validation(errorResponse->validationUri());
+        clearPerishableQuery(ErrorResponse::ValidationRequired, "Validation required");
+
+        switch (errorResponse->validationType())
+        {
+        case ErrorResponse::TwoFactorApp:
+//        case ErrorResponse::TwoFactorSms: //todo request private method vk api
+        {
+            QString sid = errorResponse->validationSid();
+            QString phone = errorResponse->validationPhone();
+            bool isSms = errorResponse->validationType() == ErrorResponse::TwoFactorSms;
+            QString uri = errorResponse->validationUri();
+
+            if (isSms)
+            {
+                sendVerificationSms(sid);
+            }
+
+            emit verification(sid, phone, isSms, uri);
+            break;
+        }
+
+        default:
+        {
+            emit validation(errorResponse->validationUri());
+            break;
+        }
+        }
+
         break;
     }
 

@@ -26,13 +26,15 @@ struct LoginVars
     QString scope;
     QString captcha_sid;
     QString captcha_key;
+    QString sid;
+    QString code;
 };
 
 struct SessionVars
 {
     QString access_token;
     QString secret;
-    QString expires_in;
+    int expires_in;
     int user_id;
 };
 

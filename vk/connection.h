@@ -43,11 +43,14 @@ public:
     void appendQuery(Packet *packet);
     void setCaptcha(const QString &sid, const QString &text);
     void cancelCaptcha();
+    void setVerificationCode(const QString &sid, const QString &code);
+    void sendVerificationSms(const QString &sid);
     SessionVars session() const;
+    void setSession(const SessionVars session);
 
 private:
     void setHttpsMode(const bool isHttps);
-    void getToken(const QString &version="5.21");
+    void getToken(const QString &version="5.37");
     void checkToken();
     void execQuery();
     void clearAllQuery(const ErrorResponse::Error &code, const QString &msg);
@@ -85,6 +88,8 @@ signals:
     void error(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
     void captcha(const QString &captchaSid, const QString &captchaImg);
     void validation(const QString &validationUri);
+    void verification(const QString &validationSid, const QString &phoneMask, const bool sms, const QString &validationUri);
+    void sessionChanged(const int uid, const QString &token, const QString &secret);
     void networkOnlineChanged(bool isOnline);
 };
 
