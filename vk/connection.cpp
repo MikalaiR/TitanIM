@@ -172,7 +172,6 @@ void Connection::checkToken()
     _isProcessing = false;
 
     Packet *packet = new Packet("execute.magic");
-    packet->setPerishable(true);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(successfullyToken(const Packet*,QVariantMap)));
     connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(unsuccessfullyToken(const Packet*,const ErrorResponse*)));
     appendQuery(packet);
