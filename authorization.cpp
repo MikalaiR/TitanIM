@@ -108,10 +108,23 @@ void Authorization::showValidation(const QString &validationUri)
     emit validation(validationUri);
 }
 
+void Authorization::keepOnline(const bool on)
+{
+    Client::instance()->keepOnline(on);
+
+    if (!on)
+    {
+        Client::instance()->setOffline();
+    }
+}
+
 void Authorization::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
     saveSession(uid, token, secret);
     emit showMainPage();
+
+    bool keepOnline = Settings::instance()->loadProfile("main/keepOnline", true).toBool();
+    Client::instance()->keepOnline(keepOnline);
 }
 
 void Authorization::saveSession(const int uid, const QString &token, const QString &secret)

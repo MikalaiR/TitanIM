@@ -217,6 +217,11 @@ void Chat::sendMessage(const QString &text)
 
 void Chat::sendTyping()
 {
+    if (!Settings::instance()->loadProfile("chat/autoRead", true).toBool() && countUnread())
+    {
+        markAsRead();
+    }
+
     Packet *packet = new Packet("messages.setActivity");
     packet->addParam("user_id", _dialog->id());
     packet->addParam("type", "typing");

@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWindow *parent) :
     rootContext()->setContextProperty("authorization", authorization);
     rootContext()->setContextProperty("main", this);
     rootContext()->setContextProperty("engine", Client::instance()->engine());
+    rootContext()->setContextProperty("settings", Settings::instance());
     rootContext()->setContextProperty("dialogsHandler", dialogsHandler);
     rootContext()->setContextProperty("rosterHandler", rosterHandler);
     rootContext()->setContextProperty("chats", Chats::instance());
@@ -194,7 +195,8 @@ void MainWindow::notificationReplied(const int peer, const int mid, const QStrin
 
 void MainWindow::onActiveChanged()
 {
-    if (isActive() && Chats::instance()->currentChatId() != 0 && Chats::instance()->currentChat()->countUnread() > 0)
+    if (isActive() && Chats::instance()->currentChatId() != 0 && Chats::instance()->currentChat()->countUnread() > 0
+            && Settings::instance()->loadProfile("chat/autoRead", true).toBool())
     {
         Chats::instance()->currentChat()->markAsRead();
     }

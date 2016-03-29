@@ -134,7 +134,10 @@ void Chats::setCurrentChat(const int id)
         _currentChatAttachments->setAttachments(chat->outAttachments());
         connect(chat, SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
 
-        chat->markAsRead();
+        if (Settings::instance()->loadProfile("chat/autoRead", true).toBool())
+        {
+            chat->markAsRead();
+        }
 
         if (_currentDialog->profile()->lastSeen() == 0)
         {

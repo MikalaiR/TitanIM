@@ -17,13 +17,15 @@ import QtQuick.Controls.Styles 1.2
 
 Button {
     id: buttonItem
+    property color colorLabel: "grey"
+    property color colorBorder: "#DADADA"
 
     style: ButtonStyle {
         background: Rectangle {
             implicitWidth: 100
             implicitHeight: 25
             border.width: control.activeFocus ? 2 : 1
-            border.color: "#DADADA"
+            border.color: buttonItem.colorBorder
             radius: 7
             color: control.pressed ? "#E8E8E8" : "white"
         }
@@ -31,7 +33,7 @@ Button {
         label: Text {
             horizontalAlignment: Text.AlignHCenter
             text: control.text
-            color: "grey"
+            color: buttonItem.colorLabel
             fontSizeMode: Text.Fit
         }
     }

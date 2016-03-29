@@ -135,8 +135,18 @@ QVariant Settings::loadProfile(const QString &key, const QVariant &defaultValue,
     return settings.value(key, defaultValue);
 }
 
+bool Settings::loadBoolProfile(const QString &key, const bool &defaultValue, const QString &uid)
+{
+    return loadProfile(key, defaultValue, uid).toBool();
+}
+
 QVariant Settings::loadMain(const QString &key, const QVariant &defaultValue)
 {
     QSettings settingsMain(configDir() + "/settings.ini", QSettings::IniFormat);
     return settingsMain.value(key, defaultValue);
+}
+
+bool Settings::loadBoolMain(const QString &key, const bool &defaultValue)
+{
+    return loadMain(key, defaultValue).toBool();
 }

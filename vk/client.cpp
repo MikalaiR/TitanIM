@@ -51,6 +51,10 @@ Client::Client()
     connect(_longPoll, SIGNAL(silenceModeUpdated(int,bool,uint)), _pushSettings, SLOT(longPollSilenceModeUpdated(int,bool,uint)));
 
     _authSignup = 0;
+
+    _timerOnline = new QTimer(this);
+    _timerOnline->setInterval(USER_OFFLINE_AWAY * 1000);
+    connect(_timerOnline, SIGNAL(timeout()), this, SLOT(onKeepOnlineTimerTimeout()));
 }
 
 Client::~Client()
@@ -107,6 +111,33 @@ void Client::trackVisitor()
     _connection->appendQuery(visitor);
 }
 
+void Client::setOnline()
+{
+    Packet *account = new Packet("account.setOnline");
+    account->setPerishable(true);
+    _connection->appendQuery(account);
+}
+
+void Client::setOffline()
+{
+    Packet *account = new Packet("account.setOffline");
+    account->setPerishable(true);
+    _connection->appendQuery(account);
+}
+
+void Client::keepOnline(const bool on)
+{
+    if (on)
+    {
+        setOnline();
+        _timerOnline->start();
+    }
+    else
+    {
+        _timerOnline->stop();
+    }
+}
+
 void Client::onAuthorized(const int uid, const QString &token, const QString &secret)
 {
     trackVisitor();
@@ -116,6 +147,7 @@ void Client::onAuthorized(const int uid, const QString &token, const QString &se
 void Client::onLogout(const int uid)
 {
     _longPoll->stop();
+    keepOnline(false);
 }
 
 void Client::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
@@ -127,6 +159,11 @@ void Client::onNetworkOnlineChanged(const bool isOnline)
     if (isOnline)
     {
         _longPoll->resume();
+
+        if (_timerOnline->isActive())
+        {
+            setOnline();
+        }
     }
     else
     {
@@ -142,4 +179,17 @@ void Client::onValidation()
 void Client::onSessionChanged(const int uid, const QString &token, const QString &secret)
 {
     _longPoll->resume();
+
+    if (_timerOnline->isActive())
+    {
+        setOnline();
+    }
+}
+
+void Client::onKeepOnlineTimerTimeout()
+{
+    if (_longPoll->isRunning())
+    {
+        setOnline();
+    }
 }

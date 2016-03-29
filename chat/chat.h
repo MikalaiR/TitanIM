@@ -21,6 +21,7 @@
 #include "vk/servicemsgitem.h"
 #include "vk/sendmessagehandler.h"
 #include "chatmodel.h"
+#include "settings.h"
 
 class Chat : public QObject
 {

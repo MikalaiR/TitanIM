@@ -154,7 +154,8 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
     int i = _model->indexOf(id);
 
     //todo fixme
-    if (id == Chats::instance()->currentChatId() && message->isUnread() && Utils::applicationIsActive())
+    if (id == Chats::instance()->currentChatId() && message->isUnread() && Utils::applicationIsActive()
+            && Settings::instance()->loadProfile("chat/autoRead", true).toBool())
     {
         _flagMarkAsRead = true;
         Chats::instance()->currentChat()->markAsRead();
@@ -186,7 +187,7 @@ void DialogsHandler::onLongPollMessageInAdded(const int id, const MessageItem me
         {
             dialog->incUnreadDialogs();
 
-            if (!isMute)
+            if (!isMute && (!Utils::applicationIsActive() || id != Chats::instance()->currentChatId()))
             {
                 Notificator::instance()->showNotification(id, message->id(), Emoticons::instance()->toEmoji(dialog->displayName()),message->plainBody(), true);
             }

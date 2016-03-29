@@ -35,6 +35,7 @@ public:
     Signup* authSignup() const;
     int uid() const;
     ProfileItem profile() const;
+    void keepOnline(const bool on=true);
 
 private:
     Client();
@@ -49,9 +50,12 @@ private:
     LongPoll *_longPoll;
     PushSettings *_pushSettings;
     Signup *_authSignup;
+    QTimer *_timerOnline;
 
 public slots:
     void trackVisitor();
+    void setOnline();
+    void setOffline();
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);
@@ -60,6 +64,7 @@ private slots:
     void onNetworkOnlineChanged(const bool isOnline);
     void onValidation();
     void onSessionChanged(const int uid, const QString &token, const QString &secret);
+    void onKeepOnlineTimerTimeout();
 };
 
 #endif // CLIENT_H

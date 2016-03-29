@@ -34,6 +34,7 @@ public slots:
     void setVerificationCode(const QString &sid, const QString &code);
     void checkUrlValidation(const QUrl &url);
     void showValidation(const QString &validationUri);
+    void keepOnline(const bool on=true);
 
 private slots:
     void onAuthorized(const int uid, const QString &token, const QString &secret);

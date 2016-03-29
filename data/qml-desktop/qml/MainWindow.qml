@@ -133,9 +133,10 @@ Rectangle {
                 id: settingsTab
                 title: "settings"
                 icon: "images/settings_tab.png"
-                Settings {id: settings}
+                Settings {id: settingsView}
 
                 onClicked: {
+                    settingsView.refresh()
                     engine.getSelfProfile()
                 }
 

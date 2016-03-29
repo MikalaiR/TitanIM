@@ -210,6 +210,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
+        hoverEnabled: true
         acceptedButtons: checkBox.active ? (Qt.LeftButton | Qt.RightButton) : Qt.RightButton
         onClicked: {
             if (checkBox.active) {
@@ -219,6 +220,13 @@ Item {
             if (mouse.button === Qt.RightButton) {
                 contextMenu.active = false
                 contextMenu.active = true
+            }
+        }
+
+        onEntered: {
+            if (model.isUnread)
+            {
+                chats.currentChat.markAsRead()
             }
         }
     }
