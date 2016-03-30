@@ -27,6 +27,9 @@ LongPoll::LongPoll(Connection *connection, Engine *engine)
     connect(_httpLongPoll, SIGNAL(finished(QNetworkReply*)), this, SLOT(longPollResponse(QNetworkReply*)));
 
     connect(this, SIGNAL(rebuild()), this, SLOT(onRebuild()));
+
+    _timerRequest = new QTimer(this);
+    connect(_timerRequest, SIGNAL(timeout()), this, SLOT(onTimerRequestTimeout()));
 }
 
 int LongPoll::wait() const
@@ -126,10 +129,15 @@ void LongPoll::longPoll()
     request.setUrl(requestUrl);
     QNetworkReply *replyLongPoll = _httpLongPoll->get(request);
     connect(this, SIGNAL(stopped()), replyLongPoll, SLOT(abort()));
+    connect(this, SIGNAL(stopped()), _timerRequest, SLOT(stop()));
+
+    _timerRequest->start((_longPollVars.wait + 35) * 1000);
 }
 
 void LongPoll::longPollResponse(QNetworkReply *networkReply)
 {
+    _timerRequest->stop();
+
     if (_status == Offline)
     {
         networkReply->deleteLater();
@@ -263,6 +271,12 @@ void LongPoll::getLongPollHistoryError(const Packet *sender, const ErrorResponse
 void LongPoll::onRebuild()
 {
     getLongPollServer();
+}
+
+void LongPoll::onTimerRequestTimeout()
+{
+    stop();
+    resume();
 }
 
 void LongPoll::setStatus(const Status status)

@@ -84,6 +84,7 @@ private:
     Engine *_engine;
     QNetworkAccessManager *_httpLongPoll;
     Status _status;
+    QTimer *_timerRequest;
 
 protected:
     void onMessageDeleted(const QVariantList &update);
@@ -108,6 +109,7 @@ private slots:
     void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &result);
     void getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse);
     void onRebuild();
+    void onTimerRequestTimeout();
 
 signals:
     void started();
