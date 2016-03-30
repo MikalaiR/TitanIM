@@ -30,23 +30,32 @@ void Chats::destroy()
 Chats::Chats()
 {
     _chatsHandler = new ChatsHandler();
+    _proxy = new ChatSortFilterProxyModel(this);
+    _currentChatAttachments = new AttachmentsModel(this);
 
     _currentChatId = 0;
-    _dialog = 0;
+    _currentDialog = 0;
+    _markAsForward = false;
+    _isSelectUser = false;
 
-    _proxy = new QSortFilterProxyModel(this);
-//    _proxy->setDynamicSortFilter(true);
-//    _proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-//    _proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-//    _proxy->setSortRole(Qt::UserRole);
-//    _proxy->sort(0, Qt::DescendingOrder);
+    _timerUpdater = new QTimer(this);
+    connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
+    _timerUpdater->start(60000);
+
+    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SIGNAL(muteUserChanged(int,bool)));
 
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
+    qmlRegisterType<ProfileItemPrivate>("TitanIM", 2, 0, "ProfileItem");
+    qRegisterMetaType<ChatSortFilterProxyModel*>("ChatSortFilterProxyModel*");
     qRegisterMetaType<QSortFilterProxyModel*>("QSortFilterProxyModel*");
+    qRegisterMetaType<AttachmentsModel*>("AttachmentsModel*");
     qmlRegisterType<AttachmentList>("TitanIM", 2, 0, "AttachmentList");
     qmlRegisterType<Attachment>("TitanIM", 2, 0, "Attachment");
     qRegisterMetaType<Attachment::AttachmentType>("Attachment::AttachmentType");
+    qmlRegisterType<MessageBase>("TitanIM", 2, 0, "MessageBase");
+    qRegisterMetaType<MessageBase::MessageType>("MessageBase::MessageType");
+    qRegisterMetaType<GroupChatHandler*>("GroupChatHandler*");
 }
 
 Chats::~Chats()
@@ -66,27 +75,82 @@ Chat *Chats::currentChat() const
 
 DialogItemPrivate *Chats::currentChatDialog() const
 {
-    return _dialog;
+    return _currentDialog;
 }
 
-QSortFilterProxyModel* Chats::currentChatModel() const
+ChatSortFilterProxyModel* Chats::currentChatModel() const
 {
     return _proxy;
 }
 
+AttachmentsModel *Chats::currentChatAttachments() const
+{
+    return _currentChatAttachments;
+}
+
+Chat *Chats::chat(const int id) const
+{
+    return _chatsHandler->chat(id);
+}
+
+void Chats::clear()
+{
+    _currentChatId = 0;
+    _currentDialog = 0;
+    _markAsForward = false;
+    _isSelectUser = false;
+    _chatsHandler->clear();
+    emit currentChatChanged(0);
+}
+
 void Chats::setCurrentChat(const int id)
 {
+    if (_markAsForward && _currentChatId != 0)
+    {
+        MessageList fwdMessages = currentChat()->model()->getSelectedItems();
+        _chatsHandler->chat(id)->addFwdMessages(fwdMessages);
+    }
+
     if (_currentChatId != id)
     {
+        if (_currentDialog)
+        {
+            _currentDialog->setCurrent(false);
+        }
+
+        Chat *chat = _chatsHandler->chat(id);
+
+        chat->model()->setLazyLoad(false);
+        _proxy->setSourceModel(chat->model());
+        chat->model()->setLazyLoad(true);
+
+        _currentDialog = chat->dialog().data();
+        _currentDialog->setCurrent(true);
+
+        int exCurrentChatId = _currentChatId;
         _currentChatId = id;
-        _proxy->setSourceModel(_chatsHandler->chat(id)->model());
-        _dialog = _chatsHandler->chat(id)->dialog().data();
+
+        disconnect(_chatsHandler->chat(exCurrentChatId), SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
+        _currentChatAttachments->setAttachments(chat->outAttachments());
+        connect(chat, SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
+
+        if (Settings::instance()->loadProfile("chat/autoRead", true).toBool())
+        {
+            chat->markAsRead();
+        }
+
+        if (_currentDialog->profile()->lastSeen() == 0)
+        {
+            _currentDialog->profile()->getLastActivity(Client::instance()->connection());
+        }
 
         emit currentChatChanged(id);
     }
+
+    markAsForward(false);
 }
 
-void Chats::openChat(const DialogItem dialog)
+void Chats::openChat(const DialogItem dialog, const bool setCurrent)
 {
     int id = dialog->id();
 
@@ -95,5 +159,75 @@ void Chats::openChat(const DialogItem dialog)
         _chatsHandler->create(dialog);
     }
 
-    setCurrentChat(id);
+    if (setCurrent)
+    {
+        setCurrentChat(id);
+    }
+}
+
+bool Chats::isForward() const
+{
+    return _markAsForward;
+}
+
+void Chats::markAsForward(const bool isMark)
+{
+    if (_markAsForward != isMark)
+    {
+        _markAsForward = isMark;
+        emit isForwardChanged(isMark);
+    }
+}
+
+bool Chats::isSelectUser() const
+{
+    return _isSelectUser;
+}
+
+void Chats::markAsSelectUser(const bool isMark)
+{
+    if (_isSelectUser != isMark)
+    {
+        _isSelectUser = isMark;
+        emit isSelectUserChanged(isMark);
+    }
+}
+
+bool Chats::isMuteUser(const int id) const
+{
+    return Client::instance()->pushSettings()->isMuteUser(id);
+}
+
+void Chats::setMuteUser(const int id, const bool isMute)
+{
+    Client::instance()->pushSettings()->setMuteUser(id, isMute);
+}
+
+void Chats::onTimerUpdaterTimeout()
+{
+    if (_currentDialog)
+    {
+        if (_currentDialog->isGroupChat())
+        {
+            _currentDialog->groupChatHandler()->updatePeopleConversationText();
+        }
+        else
+        {
+            if (!_currentDialog->profile()->isFriend())
+            {
+                static int step = 0;
+                if (step == 4) //every 5 min check online
+                {
+                    _currentDialog->profile()->getLastActivity(Client::instance()->connection());
+                    step = 0;
+                }
+                else
+                {
+                    step++;
+                }
+            }
+
+            _currentDialog->profile()->updateLastSeenText();
+        }
+    }
 }

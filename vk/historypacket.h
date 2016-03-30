@@ -17,6 +17,7 @@
 #include <QObject>
 #include "connection.h"
 #include "messageparser.h"
+#include "profileparser.h"
 
 class HistoryPacket : public QObject
 {
@@ -24,10 +25,18 @@ class HistoryPacket : public QObject
 
 public:
     explicit HistoryPacket(Connection *connection);
-    void load(const int id, const int offset=0, const int count=20);
+    void load(const int id, const int offset, const int count);
+    int offset() const;
+    int count() const;
+    int serverCount() const;
+    int unreadCount() const;
 
 private:
     Connection *_connection;
+    int _offset;
+    int _count;
+    int _serverCount;
+    int _unreadCount;
 
 private slots:
     void loadFinished(const Packet *sender, const QVariantMap &result);

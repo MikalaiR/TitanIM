@@ -16,3 +16,18 @@
 MessageListPrivate::MessageListPrivate()
 {
 }
+
+int MessageListPrivate::notFakeMsgCount() const
+{
+    int k = 0;
+
+    for (int i = 0; i < count(); i++)
+    {
+        if (!at(i)->isFake() && !at(i)->isDeleted())
+        {
+            k++;
+        }
+    }
+
+    return k;
+}

@@ -21,6 +21,12 @@ DialogsModel::DialogsModel(QObject *parent) :
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
     connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const DialogList)), SLOT(onDialogsLoaded(const DialogsPacket*,const DialogList)));
+
+    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SLOT(onMuteUserChanged(int,bool)));
+
+    _serverCount = 0;
+    _isLoading = false;
+    _endDate = 0;
 }
 
 DialogsModel::~DialogsModel()
@@ -62,7 +68,7 @@ void DialogsModel::append(const DialogItem item, const bool replace)
 
 void DialogsModel::replaceAll(const DialogList items)
 {
-    remove(0, rowCount());
+    removeAll();
     append(items);
 }
 
@@ -83,6 +89,13 @@ bool DialogsModel::remove(int row, int count)
     return true;
 }
 
+void DialogsModel::removeAll()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    _dialogs->clear();
+    endRemoveRows();
+}
+
 DialogItem DialogsModel::at(const int row)
 {
     return _dialogs->at(row);
@@ -98,19 +111,30 @@ int DialogsModel::indexOf(const int id) const
     return _dialogs->indexOf(id);
 }
 
+uint DialogsModel::endDate() const
+{
+    return _endDate;
+}
+
 QHash<int, QByteArray> DialogsModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
-    roles[bodyRole] = "body";
-    roles[dateRole] = "date";
-    roles[dateStrRole] = "dateStr";
-    roles[uidRole] = "uid";
-    roles[midRole] = "mid";
-    roles[idRole] = "id";
-    roles[isUnreadRole] = "isUnread";
-    roles[isOutRole] = "isOut";
-    roles[onlineRole] = "online";
+    roles[BodyRole] = "body";
+    roles[DateRole] = "date";
+    roles[DateStrRole] = "dateStr";
+    roles[UidRole] = "uid";
+    roles[FromRole] = "from";
+    roles[MidRole] = "mid";
+    roles[IdRole] = "id";
+    roles[UnreadCountRole] = "unreadCount";
+    roles[IsOutRole] = "isOut";
+    roles[IsUnreadRole] = "isUnread";
+    roles[IsGroupChat] = "isGroupChat";
+    roles[IsMuteRole] = "isMuteRole";
+    roles[OnlineRole] = "online";
+    roles[TypingRole] = "typing";
+    roles[EmojiRole] = "emoji";
 
     return roles;
 }
@@ -125,7 +149,6 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     DialogItem dialog = _dialogs->at(index.row());
     MessageItem message = dialog->message();
     ProfileItem profile = dialog->profile();
-    GroupChatHandler *groupChatHandler = dialog->groupChatHandler();
 
     switch (role)
     {
@@ -135,32 +158,50 @@ QVariant DialogsModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return dialog->decoration();
 
-    case bodyRole:
-        return message->body();
+    case BodyRole:
+        return message->shortBody();
 
-    case dateRole:
+    case DateRole:
         return message->date();
 
-    case dateStrRole:
+    case DateStrRole:
         return Utils::dateToText(message->date());
 
-    case uidRole:
+    case UidRole:
         return message->uid();
 
-    case midRole:
+    case FromRole:
+        return message->isOut() ? Client::instance()->uid() : message->uid();
+
+    case MidRole:
         return message->id();
 
-    case idRole:
+    case IdRole:
         return dialog->id();
 
-    case isUnreadRole:
-        return message->isUnread();
+    case UnreadCountRole:
+        return dialog->unreadCount();
 
-    case isOutRole:
+    case IsOutRole:
         return message->isOut();
 
-    case onlineRole:
-        return profile->online();
+    case IsUnreadRole:
+        return message->isUnread();
+
+    case IsGroupChat:
+        return dialog->isGroupChat();
+
+    case IsMuteRole:
+        return Client::instance()->pushSettings()->isMuteUser(dialog->id());
+
+    case OnlineRole:
+        return !dialog->isGroupChat() && profile->online();
+
+    case TypingRole:
+        return dialog->isTyping();
+
+    case EmojiRole:
+        return message->emoji();
     }
 
     return QVariant();
@@ -195,20 +236,64 @@ Qt::ItemFlags DialogsModel::flags(const QModelIndex &index) const
     }
 }
 
+bool DialogsModel::canFetchMore(const QModelIndex &parent) const
+{
+    if (_isLoading || _dialogs->count() >= _serverCount)
+    {
+        return false;
+    }
+
+    _isLoading = true;
+    return true;
+}
+
+void DialogsModel::fetchMore(const QModelIndex &parent)
+{
+    loadNext();
+}
+
 void DialogsModel::onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs)
 {
+    _serverCount = sender->serverCount();
+
+    emit unreadDialogs(sender->unreadDialogs());
+
     if (!sender->offset())
     {
         replaceAll(dialogs);
+
+        if (sender->unreadDialogs() > 0)
+        {
+            Notificator::instance()->playSoundMessageIn();
+        }
     }
     else
     {
         append(dialogs);
     }
+
+    _endDate = dialogs->last()->message()->unixtime();
+
+    _isLoading = false;
 }
 
 void DialogsModel::onItemChanged(const int i)
 {
-    QModelIndex idx = index(i, 0);
+    if (_dialogs->at(i)->message()->id() == 0 || _dialogs->at(i)->message()->unixtime() < _endDate)
+    {
+        beginRemoveRows(QModelIndex(), i, i);
+        _dialogs->removeAt(i);
+        endRemoveRows();
+    }
+    else
+    {
+        QModelIndex idx = index(i, 0);
+        emit dataChanged(idx, idx);
+    }
+}
+
+void DialogsModel::onMuteUserChanged(const int id, const bool isMute)
+{
+    QModelIndex idx = index(_dialogs->indexOf(id), 0);
     emit dataChanged(idx, idx);
 }

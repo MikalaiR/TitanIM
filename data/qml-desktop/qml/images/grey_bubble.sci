@@ -1,5 +1,5 @@
-border.left: 21
-border.top: 13
-border.bottom: 16
-border.right: 17
+border.left: 16
+border.top: 11
+border.bottom: 11
+border.right: 11
 source: grey_bubble.png

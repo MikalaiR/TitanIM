@@ -15,15 +15,22 @@
 #define PROFILEPARSER_H
 
 #include <QVariantMap>
+#include "client.h"
 #include "profileitem.h"
 #include "profilelist.h"
-#include "utils.h"
+
+class ProfileItemPrivate;
 
 class ProfileParser : public QObject
 {
+private:
+    friend class ProfileItemPrivate;
+    static void parser(const QVariantMap &item, ProfileItemPrivate *profile);
+
 public:
-    static ProfileItem parser(const QVariantMap &item);
-    static ProfileList parser(const QVariantList &items);
+    static void parser(const QVariantMap &item, ProfileItem profile);
+    static ProfileItem parser(const QVariantMap &item, const bool isCached=true);
+    static ProfileList parser(const QVariantList &items, const bool isCached=true);
 };
 
 #endif // PROFILEPARSER_H

@@ -67,6 +67,8 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
         }
         }
 
+        _validationType = ValidationType::Unkown;
+
         if (_code == CaptchaNeeded)
         {
             _captchaSid = error["captcha_sid"].toString();
@@ -74,6 +76,23 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
         }
         else if (_code == ValidationRequired)
         {
+            if (error.contains("validation_type"))
+            {
+                QString validTypeStr = error["validation_type"].toString();
+
+                if (validTypeStr == "2fa_app")
+                {
+                    _validationType = ValidationType::TwoFactorApp;
+                }
+                else if (validTypeStr == "2fa_sms")
+                {
+                    _validationType = ValidationType::TwoFactorSms;
+                }
+
+                _validationSid = error["validation_sid"].toString();
+                _validationPhone = error["phone_mask"].toString();
+            }
+
             _validationUri = error["redirect_uri"].toString();
         }
     }
@@ -87,7 +106,7 @@ ErrorResponse::ErrorResponse(const QVariantMap &response)
     _fatal = isFatal(_code);
 }
 
-ErrorResponse::ErrorResponse(const Error &code, const QString &msg)
+ErrorResponse::ErrorResponse(const ErrorResponse::Error &code, const QString &msg)
 {
     _code = code;
     _msg = msg;
@@ -95,7 +114,7 @@ ErrorResponse::ErrorResponse(const Error &code, const QString &msg)
     _fatal = isFatal(_code);
 }
 
-Error ErrorResponse::code() const
+ErrorResponse::Error ErrorResponse::code() const
 {
     return _code;
 }
@@ -125,12 +144,27 @@ QString ErrorResponse::captchaImg() const
     return _captchaImg;
 }
 
+ErrorResponse::ValidationType ErrorResponse::validationType() const
+{
+    return _validationType;
+}
+
+QString ErrorResponse::validationSid() const
+{
+    return _validationSid;
+}
+
+QString ErrorResponse::validationPhone() const
+{
+    return _validationPhone;
+}
+
 QString ErrorResponse::validationUri() const
 {
     return _validationUri;
 }
 
-bool ErrorResponse::isGlobal(const Error &code)
+bool ErrorResponse::isGlobal(const ErrorResponse::Error &code)
 {
     if (code == LoadTokenFailed ||
         code == TimeoutLongPollServer ||
@@ -153,12 +187,11 @@ bool ErrorResponse::isGlobal(const Error &code)
     }
 }
 
-bool ErrorResponse::isFatal(const Error &code)
+bool ErrorResponse::isFatal(const ErrorResponse::Error &code)
 {
     if (code == LoadTokenFailed ||
         code == ApplicationIsDisabled ||
-        code == UserAuthorizationFailed ||
-        code == ValidationRequired)
+        code == UserAuthorizationFailed)
     {
         return true;
     }

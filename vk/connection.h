@@ -18,6 +18,8 @@
 #include <QDebug>
 #include <QQueue>
 #include <QTimer>
+#include <QUrlQuery>
+#include <QNetworkConfigurationManager>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -33,54 +35,62 @@ class Connection : public QObject
 public:
     Connection(const QString &clientId, const QString &clientSecret);
     ~Connection();
-    bool isOnline() const;
-    bool isOffline() const;
-    bool isHttps() const;
     void connectToVk(const QString &username, const QString &password, const bool https=true);
     void connectToVk(const int uid, const QString &token, const QString &secret="");
     void disconnectVk();
+    bool isAuthorized() const;
+    bool isHttps() const;
     void appendQuery(Packet *packet);
     void setCaptcha(const QString &sid, const QString &text);
+    void cancelCaptcha();
+    void setVerificationCode(const QString &sid, const QString &code);
+    void sendVerificationSms(const QString &sid);
+    SessionVars session() const;
+    void setSession(const SessionVars session);
 
 private:
-    void setStatus(const Status &status);
     void setHttpsMode(const bool isHttps);
-    void getToken();
-    void loginSuccess(const QVariantMap &response);
-    void loginFailure(const QVariantMap &response);
+    void getToken(const QString &version="5.37");
+    void checkToken();
     void execQuery();
+    void clearAllQuery(const ErrorResponse::Error &code, const QString &msg);
+    void clearPerishableQuery(const ErrorResponse::Error &code, const QString &msg);
 
 private:
     LoginVars _loginVars;
     SessionVars _sessionVars;
     UrlServers _urlServers;
-    Status _status;
     bool _isHttps;
     bool _isProcessing;
+    bool _isAuthorized;
     QQueue<Packet*> _queryList;
     QTimer *tooManyRequestsTimer;
+    QNetworkConfigurationManager *bearer;
     QNetworkAccessManager *httpAuth;
     QNetworkAccessManager *httpApi;
 
 protected:
-    void onStatusChanged(const Status &status);
     void onHttpsModeChanged(const bool isHttps);
-    void onConnected();
-    void onDisconnected();
     void onError(const ErrorResponse *errorResponse);
-    void onError(const Error &code, const QString &msg);
+    void onError(const ErrorResponse::Error &code, const QString &msg);
 
 private slots:
     void getTokenFinished(QNetworkReply *networkReply);
+    void successfullyToken(const Packet *sender, const QVariantMap &result);
+    void unsuccessfullyToken(const Packet *sender, const ErrorResponse *errorResponse);
     void apiResponse(QNetworkReply *networkReply);
+    void onNetworkOnlineChanged(const bool isOnline);
     void onTooManyRequestsTimerTick();
 
 signals:
-    void connected(const int uid, const QString &token, const QString &secret);
-    void disconnected();
-    void error(const Error &error, const QString &text, const bool global, const bool fatal);
+    void authorized(const int uid, const QString &token, const QString &secret);
+    void logout(const int uid);
+    void error(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
     void captcha(const QString &captchaSid, const QString &captchaImg);
     void validation(const QString &validationUri);
+    void verification(const QString &validationSid, const QString &phoneMask, const bool sms, const QString &validationUri);
+    void sessionChanged(const int uid, const QString &token, const QString &secret);
+    void networkOnlineChanged(bool isOnline);
 };
 
 #endif // CONNECTION_H

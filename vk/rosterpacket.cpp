@@ -16,7 +16,7 @@
 RosterPacket::RosterPacket(Connection *connection)
 {
     _connection = connection;
-    _fields = "photo_100,online";
+    _fields = "photo_100,online,last_seen,sex,domain,bdate,city,contacts";
     _needFavorites = false;
 }
 
@@ -28,24 +28,17 @@ void RosterPacket::load(const int offset, const int count)
 
     if (_offset == 0 && _needFavorites)
     {
-        packet = new Packet("execute");
-
-        QString script = "var favorites=API.friends.get({\"fields\":\"" + _fields + "\",\"count\":5,\"order\":\"hints\"});"
-                + "var friends=API.friends.get({\"fields\":\"" + _fields + "\",\"offset\":" + QString::number(_offset)
-                + ",\"count\":" + QString::number(_count) + ",\"order\":\"name\"});"
-                + "return {\"favorites\":favorites, \"friends\":friends};";
-
-        packet->addParam("code", script);
+        packet = new Packet("execute.friendsGet");
     }
     else
     {
         packet = new Packet("friends.get");
-
-        packet->addParam("fields", _fields);
-        packet->addParam("offset", _offset);
-        packet->addParam("count", _count);
-        packet->addParam("order", "name");
     }
+
+    packet->addParam("fields", _fields);
+    packet->addParam("offset", _offset);
+    packet->addParam("count", _count);
+    packet->addParam("order", "name");
 
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
@@ -86,22 +79,38 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
     QVariantMap response = result.value("response").toMap();
     ProfileList profiles;
 
-    if (sender->method() == "execute")
+    int k = 0;
+
+    if (sender->method() == "execute.friendsGet")
     {
         profiles = ProfileList::create();
 
         foreach (QVariant item, response.value("favorites").toMap().value("items").toList())
         {
             ProfileItem profile = ProfileParser::parser(item.toMap());
-            profile->setAlphabet(tr("Favorites"));
+            profile->setFriendStatus(ProfileItemPrivate::Friend);
+            profile->setTop(true);
             profiles->add(profile);
         }
 
+        k = profiles->count();
         profiles->add(ProfileParser::parser(response.value("friends").toMap().value("items").toList())->toList());
     }
     else
     {
         profiles = ProfileParser::parser(response.value("items").toList());
+    }
+
+    for (int i = k; i < profiles->count(); i++)
+    {
+        profiles->at(i)->setFriendStatus(ProfileItemPrivate::Friend);
+
+        //remove dublicate top profile
+        if (profiles->at(i)->isTop())
+        {
+            profiles->removeAt(i);
+            i--;
+        }
     }
 
     emit roster(this, profiles);

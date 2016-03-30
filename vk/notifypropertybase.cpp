@@ -16,6 +16,7 @@
 NotifyPropertyBase::NotifyPropertyBase()
 {
     _id = 0;
+    _blockSignalPropertyChanged = false;
 }
 
 void NotifyPropertyBase::setId(const int id)
@@ -23,6 +24,20 @@ void NotifyPropertyBase::setId(const int id)
     if (_id != id)
     {
         _id = id;
-        emit propertyChanged(_id, "id");
+        emitPropertyChanged("id");
+    }
+}
+
+void NotifyPropertyBase::beginChangeGroupProperties()
+{
+    _blockSignalPropertyChanged = true;
+}
+
+void NotifyPropertyBase::endChangeGroupProperties()
+{
+    if (_blockSignalPropertyChanged)
+    {
+        _blockSignalPropertyChanged = false;
+        emit propertyChanged(_id, "all");
     }
 }

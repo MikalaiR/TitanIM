@@ -33,19 +33,35 @@ void Client::destroy()
 Client::Client()
 {
     _connection = new Connection(clientId, clientSecret);
-    connect(_connection, SIGNAL(connected(int,QString,QString)), this, SLOT(onConnected(int,QString,QString)));
-    connect(_connection, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
-    connect(_connection, SIGNAL(error(Error,QString,bool,bool)), this, SLOT(onError(Error,QString,bool,bool)));
+    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
+    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
+    connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
+    connect(_connection, SIGNAL(networkOnlineChanged(bool)), this, SLOT(onNetworkOnlineChanged(bool)));
+    connect(_connection, SIGNAL(validation(QString)), this, SLOT(onValidation()));
+    connect(_connection, SIGNAL(verification(QString,QString,bool,QString)), this, SLOT(onValidation()));
+    connect(_connection, SIGNAL(sessionChanged(int,QString,QString)), this, SLOT(onSessionChanged(int,QString,QString)));
 
-    _longPoll = new LongPoll(_connection);
+    _engine = new Engine(_connection);
+    _longPoll = new LongPoll(_connection, _engine);
+    _pushSettings = new PushSettings(_connection);
+
+    connect(_longPoll, SIGNAL(userOnline(int)), _engine, SLOT(setUserOnline(int)));
+    connect(_longPoll, SIGNAL(userOffline(int,bool)), _engine, SLOT(setUserOffline(int,bool)));
+    connect(_longPoll, SIGNAL(obsoleteFriendsOnline()), _engine, SLOT(getFriendsOnline()));
+    connect(_longPoll, SIGNAL(silenceModeUpdated(int,bool,uint)), _pushSettings, SLOT(longPollSilenceModeUpdated(int,bool,uint)));
 
     _authSignup = 0;
-    _uid = 0;
+
+    _timerOnline = new QTimer(this);
+    _timerOnline->setInterval(USER_OFFLINE_AWAY * 1000);
+    connect(_timerOnline, SIGNAL(timeout()), this, SLOT(onKeepOnlineTimerTimeout()));
 }
 
 Client::~Client()
 {
+    delete _pushSettings;
     delete _longPoll;
+    delete _engine;
     delete _connection;
 }
 
@@ -54,9 +70,19 @@ Connection *Client::connection() const
     return _connection;
 }
 
+Engine *Client::engine() const
+{
+    return _engine;
+}
+
 LongPoll *Client::longPoll() const
 {
     return _longPoll;
+}
+
+PushSettings *Client::pushSettings() const
+{
+    return _pushSettings;
 }
 
 Signup *Client::authSignup() const
@@ -71,47 +97,99 @@ Signup *Client::authSignup() const
 
 int Client::uid() const
 {
-    return _uid;
+    return _engine->uid();
 }
 
 ProfileItem Client::profile() const
 {
-    return _profile;
+    return _engine->getProfile();
 }
 
-void Client::getProfile()
+void Client::trackVisitor()
 {
-    Packet *selfProfile = new Packet("users.get");
-    selfProfile->addParam("uids", _uid);
-    selfProfile->addParam("fields", "photo_100");
-
-    connect(selfProfile, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSelfProfile(const Packet*,QVariantMap)));
-    _connection->appendQuery(selfProfile);
+    Packet *visitor = new Packet("stats.trackVisitor");
+    _connection->appendQuery(visitor);
 }
 
-void Client::onConnected(const int uid, const QString &token, const QString &secret)
+void Client::setOnline()
 {
-    _uid = uid;
-    getProfile();
-    _longPoll->setRunning(true);
+    Packet *account = new Packet("account.setOnline");
+    account->setPerishable(true);
+    _connection->appendQuery(account);
 }
 
-void Client::onDisconnected()
+void Client::setOffline()
 {
-    _uid = 0;
-    _profile.clear();
-
-    _longPoll->setRunning(false);
+    Packet *account = new Packet("account.setOffline");
+    account->setPerishable(true);
+    _connection->appendQuery(account);
 }
 
-void Client::onError(const Error &error, const QString &text, const bool global, const bool fatal)
+void Client::keepOnline(const bool on)
+{
+    if (on)
+    {
+        setOnline();
+        _timerOnline->start();
+    }
+    else
+    {
+        _timerOnline->stop();
+    }
+}
+
+void Client::onAuthorized(const int uid, const QString &token, const QString &secret)
+{
+    trackVisitor();
+    _longPoll->start();
+}
+
+void Client::onLogout(const int uid)
+{
+    _longPoll->stop();
+    keepOnline(false);
+}
+
+void Client::onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal)
 {
 }
 
-void Client::onSelfProfile(const Packet *sender, const QVariantMap &result)
+void Client::onNetworkOnlineChanged(const bool isOnline)
 {
-    QVariantList response = result.value("response").toList();
-    _profile = ProfileParser::parser(response.at(0).toMap());
+    if (isOnline)
+    {
+        _longPoll->resume();
 
-    delete sender;
+        if (_timerOnline->isActive())
+        {
+            setOnline();
+        }
+    }
+    else
+    {
+        _longPoll->stop();
+    }
+}
+
+void Client::onValidation()
+{
+    _longPoll->stop();
+}
+
+void Client::onSessionChanged(const int uid, const QString &token, const QString &secret)
+{
+    _longPoll->resume();
+
+    if (_timerOnline->isActive())
+    {
+        setOnline();
+    }
+}
+
+void Client::onKeepOnlineTimerTimeout()
+{
+    if (_longPoll->isRunning())
+    {
+        setOnline();
+    }
 }

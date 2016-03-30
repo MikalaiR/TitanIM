@@ -12,48 +12,57 @@
 */
 
 import QtQuick 2.1
-import QtQuick.Controls 1.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 1.4
 
-Rectangle {
-    SplitView {
-        anchors.fill: parent
-        orientation: Qt.Horizontal
+StackView {
+    id: mainStackView
+    width: 300
+    height: 300
+    initialItem: Qt.resolvedUrl(main.initialItem)
 
-        TabBarView {
-            id: tabBar
-            width: 280
-            height: parent.height
-            Layout.minimumWidth: 200
-            Layout.maximumWidth: 500
+    delegate: StackViewDelegate {
+        function transitionFinished(properties)
+        {
+            properties.exitItem.opacity = 1
+        }
 
-            TabBarItem {
-                title: "1"
-                icon: "images/messages_tab.png"
-                Dialogs { }
+        pushTransition: StackViewTransition {
+            PropertyAnimation {
+                target: enterItem
+                property: "opacity"
+                from: 0
+                to: 1
             }
-
-            TabBarItem {
-                title: "2"
-                icon: "images/contacts_tab.png"
-                Roster { }
+            PropertyAnimation {
+                target: exitItem
+                property: "opacity"
+                from: 1
+                to: 0
             }
+        }
+    }
 
-            TabBarItem {
-                title: "3"
-                icon: "images/favorites_tab.png"
-                Text{text: "3"}
-            }
+    Connections {
+        target: authorization
 
-            TabBarItem {
-                title: "4"
-                icon: "images/settings_tab.png"
-                Text{text: "4"}
+        onShowAuthPage: {
+                mainStackView.push({item: Qt.resolvedUrl("Authorization.qml"), replace: true})
+        }
+
+        onShowMainPage: {
+            if (mainStackView.currentItem.name !== "mainWindow")
+            {
+                mainStackView.push({item: Qt.resolvedUrl("MainWindow.qml"), replace: true})
             }
         }
 
-        Chat {
-            Layout.fillWidth: true
+        onValidation: {
+            mainStackView.push({item: Qt.resolvedUrl("Validation.qml"), replace: true, properties: {uri: validationUri}})
+        }
+
+        onVerification: {
+            mainStackView.push({item: Qt.resolvedUrl("Verification.qml"), replace: true,
+                                   properties: {sid: validationSid, phone: phoneMask, isSms: sms, uri: validationUri}})
         }
     }
 }

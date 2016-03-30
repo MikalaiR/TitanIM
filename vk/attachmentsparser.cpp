@@ -17,35 +17,76 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
 {
     AttachmentList *attachments = new AttachmentList();
 
-    const QMetaObject &metaObject = Attachment::staticMetaObject;
-    QMetaEnum metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("AttachmentType"));
-
-    Attachment::AttachmentType type;
+    QMetaEnum metaEnum = Attachment::metaEnumerator("AttachmentType");
+    int type;
 
     foreach (QVariant item, items)
     {
         QString strType = item.toMap()["type"].toString();
         QVariantMap attachment = item.toMap()[strType].toMap();
 
-        type = (Attachment::AttachmentType)metaEnum.keyToValue(strType.toUtf8());
+        type = metaEnum.keyToValue(Utils::firstUpper(strType).toLatin1());
 
         switch (type) {
-        case Attachment::photo:
+        case Attachment::Photo:
         {
             PhotoItem photo = PhotoParser::parser(attachment);
             attachments->add(photo);
             break;
         }
 
-        case Attachment::unknown:
+        case Attachment::Sticker:
         {
-            qWarning() << "AttachmentsParser: unknown attachment" << strType;
+            StickerItem sticker = StickerParser::parser(attachment);
+            attachments->add(sticker);
+            break;
+        }
+
+        case Attachment::Audio:
+        {
+            AudioItem audio = AudioParser::parser(attachment);
+            attachments->add(audio);
+            break;
+        }
+
+        case Attachment::Video:
+        {
+            VideoItem video = VideoParser::parser(attachment);
+            attachments->add(video);
+            break;
+        }
+
+        case Attachment::Doc:
+        {
+            DocItem doc = DocParser::parser(attachment);
+            attachments->add(doc);
+            break;
+        }
+
+        case Attachment::Gift:
+        {
+            GiftItem gift = GiftParser::parser(attachment);
+            attachments->add(gift);
+            break;
+        }
+
+        case Attachment::Wall:
+        {
+            WallItem wall = WallParser::parser(attachment);
+            attachments->add(wall);
+            break;
+        }
+
+        case Attachment::Link:
+        {
+            LinkItem link = LinkParser::parser(attachment);
+            attachments->add(link);
             break;
         }
 
         default:
         {
-            qWarning() << "AttachmentsParser: not implemented parser" << strType;
+            qWarning() << "AttachmentsParser: unknown attachment" << strType;
             break;
         }
         }

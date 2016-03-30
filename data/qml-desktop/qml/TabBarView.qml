@@ -19,6 +19,8 @@ FocusScope {
     property int currentIndex: 0
     property int count: 0
     property ListModel __tabs: ListModel {}
+    property Component widget
+    property bool visibleWidget: false
 
     function removeTab(index) {
         var tab = __tabs.get(index).tab
@@ -31,6 +33,20 @@ FocusScope {
         __setOpacities()
     }
 
+    function currentItemTitle() {
+        return root.__tabs.get(currentIndex).tab.title
+    }
+
+    function setCurrentItem(title) {
+        for (var i = 0; i < __tabs.count; ++i) {
+            var child = __tabs.get(i).tab
+
+            if (child.title === title) {
+                __setCurrentItem(i, child)
+            }
+        }
+    }
+
     function __setOpacities() {
         for (var i = 0; i < __tabs.count; ++i) {
             var child = __tabs.get(i).tab
@@ -40,16 +56,28 @@ FocusScope {
         count = __tabs.count
     }
 
+    function __setCurrentItem(index, tab) {
+        if (root.currentIndex !== index) {
+            __tabs.get(root.currentIndex).tab.visible = false
+        }
+
+        tab.clicked()
+        root.currentIndex = index
+    }
+
     Rectangle {
         id: t
-        implicitWidth: 44
+        implicitWidth: 50
         implicitHeight: parent.height
         anchors.left: parent.left
-        color: "#434547"
+        color: "#4c4c4d"
 
         ListView {
             id: tabrow
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.bottom: widgetItem.visible ? widgetItem.top : parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
 
             Accessible.role: Accessible.PageTabList
             orientation: Qt.Vertical
@@ -65,29 +93,62 @@ FocusScope {
                 implicitWidth: ListView.view.width
                 implicitHeight: ListView.view.width
 
-                Image {
+                Rectangle {
+                    id: highlight
                     anchors.fill: parent
-                    source: "images/tab.png"
+                    color: currentIndex == index ? "#424244" : "transparent"
+                }
 
-                    Image {
-                        anchors.centerIn: parent
-                        source: modelData.icon
-                    }
+                Image {
+                    width: 20
+                    anchors.centerIn: parent
+                    fillMode: Image.PreserveAspectFit
+                    source: modelData.icon
+                }
+
+                BadgeItem {
+                    id: badge
+                    anchors.right: parent.right
+                    anchors.rightMargin: 3
+                    anchors.top: parent.top
+                    anchors.topMargin: 6
+                    count: modelData.badge
                 }
 
                 Rectangle {
                     width: parent.width
                     height: 1
                     y: parent.height - 1
-                    color: "black"
+                    color: "#585858"
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onPressed: {
-                        root.currentIndex = index;
+                        __setCurrentItem(index, modelData)
                     }
                 }
+            }
+        }
+
+        Item {
+            id: widgetItem
+            width: parent.width
+            height: footerLoader.height
+            anchors.bottom: parent.bottom
+            visible: root.visibleWidget
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#585858"
+            }
+
+            Loader {
+                id: footerLoader
+                width: parent.width
+                sourceComponent: root.widget
+                active: root.widget
             }
         }
     }

@@ -19,14 +19,36 @@ Item {
 
     property int maximumWidth
     property var attachments
-    readonly property alias photoCount: photoAttachments.count
+    property bool isAttachInFwdMsg: false
 
-    implicitWidth: photoAttachments.implicitWidth
-    implicitHeight: photoAttachments.implicitHeight
+    property var __attachments: [
+        {"items": attachments.filterByType(Attachment.Photo | Attachment.Video), "source": "PhotoVideoAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Sticker), "source": "StickerAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Map), "source": "MapAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Doc), "source": "DocAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Audio), "source": "AudioAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Fwd_messages), "source": "FwdMsgAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Gift), "source": "GiftAttachments.qml", "isAttachInFwdMsg" : isAttachInFwdMsg},
+        {"items": attachments.filterByType(Attachment.Wall), "source": "WallAttachments.qml"},
+        {"items": attachments.filterByType(Attachment.Link), "source": "LinkAttachments.qml"}
+    ]
 
-    PhotoAttachments {
-        id: photoAttachments
-        maximumWidth: attachmentsView.maximumWidth
-        photoList: attachments.filterByType(Attachment.photo)
+    implicitWidth: attachmentsFrame.width
+    implicitHeight: attachmentsFrame.height
+
+    Column {
+        id: attachmentsFrame
+        spacing: 5
+
+        Repeater {
+            model: __attachments
+
+            Loader {
+                property int maximumWidth: attachmentsView.maximumWidth
+                property var items: modelData.items
+                active: modelData.items.length
+                source: modelData.source
+            }
+        }
     }
 }

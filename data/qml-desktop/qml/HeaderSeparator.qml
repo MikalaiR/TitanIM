@@ -13,10 +13,10 @@
 
 import QtQuick 2.0
 
-Image {
+Rectangle {
     id: headerSeparator
     width: parent.width
-    height: 5
+    height: 1
     z:1
-    source: "images/header_separator.png"
+    color: "#dbd7d4"
 }

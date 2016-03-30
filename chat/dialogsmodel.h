@@ -17,6 +17,7 @@
 #include <QAbstractListModel>
 #include "vk/client.h"
 #include "vk/dialogspacket.h"
+#include "notification/notificator.h"
 
 class DialogsModel : public QAbstractListModel
 {
@@ -25,15 +26,21 @@ class DialogsModel : public QAbstractListModel
 public:
     enum dialogsRole
     {
-        bodyRole = Qt::UserRole,
-        dateRole,
-        dateStrRole,
-        uidRole,
-        midRole,
-        idRole,
-        isUnreadRole,
-        isOutRole,
-        onlineRole
+        BodyRole = Qt::UserRole,
+        DateRole,
+        DateStrRole,
+        UidRole,
+        FromRole,
+        MidRole,
+        IdRole,
+        UnreadCountRole,
+        IsOutRole,
+        IsUnreadRole,
+        IsGroupChat,
+        IsMuteRole,
+        OnlineRole,
+        TypingRole,
+        EmojiRole
     };
 
     explicit DialogsModel(QObject *parent = 0);
@@ -44,9 +51,11 @@ public:
     void append(const DialogItem item, const bool replace=false);
     void replaceAll(const DialogList items);
     bool remove(int row, int count);
+    void removeAll();
     DialogItem at(const int row);
     DialogItem at(const QModelIndex &index);
     int indexOf(const int id) const;
+    uint endDate() const;
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
@@ -56,10 +65,21 @@ public:
 private:
     DialogList _dialogs;
     DialogsPacket *_dialogsPacket;
+    int _serverCount;
+    mutable bool _isLoading;
+    uint _endDate;
+
+protected:
+    bool canFetchMore(const QModelIndex &parent) const;
+    void fetchMore(const QModelIndex &parent);
 
 protected slots:
     void onDialogsLoaded(const DialogsPacket *sender, const DialogList &dialogs);
     void onItemChanged(const int i);
+    void onMuteUserChanged(const int id, const bool isMute);
+
+signals:
+    void unreadDialogs(const int count);
 };
 
 #endif // DIALOGSMODEL_H

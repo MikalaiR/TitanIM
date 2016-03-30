@@ -16,16 +16,17 @@
 
 #include <QSharedPointer>
 #include "observablecollection.h"
+#include "messagebase.h"
 #include "messageitem.h"
 
-class MessageListPrivate : public ObservableCollection<MessageItem>
+class MessageListPrivate : public ObservableCollection<MessageBaseItem>
 {
     Q_OBJECT
 
 public:
     MessageListPrivate();
+    int notFakeMsgCount() const;
 };
-
 
 typedef QSharedPointer<MessageListPrivate> MessageList;
 

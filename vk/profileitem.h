@@ -18,18 +18,49 @@
 #include <QSharedPointer>
 #include "notifypropertybase.h"
 #include "global.h"
+#include "connection.h"
+
+class ProfileItemPrivate;
+typedef QSharedPointer<ProfileItemPrivate> ProfileItem;
 
 class ProfileItemPrivate : public NotifyPropertyBase
 {
     Q_OBJECT
+    Q_PROPERTY(QString fullName READ fullName NOTIFY fullNameChanged)
+    Q_PROPERTY(QString photoMediumRect READ photoMediumRect NOTIFY photoMediumRectChanged)
+    Q_PROPERTY(QString lastSeenText READ lastSeenText NOTIFY lastSeenChanged)
+    Q_PROPERTY(int sex READ sex NOTIFY sexChanged)
+    Q_PROPERTY(bool online READ online WRITE setOnline NOTIFY onlineChanged)
+    Q_PROPERTY(QString bdate READ bdate NOTIFY bdateChanged)
+    Q_PROPERTY(QString domain READ domain NOTIFY domainChanged)
+    Q_PROPERTY(QString city READ city NOTIFY cityChanged)
+    Q_PROPERTY(QString mobilePhone READ mobilePhone NOTIFY mobilePhoneChanged)
+    Q_PROPERTY(bool blacklistedByMe READ blacklistedByMe NOTIFY blacklistedByMeChanged)
+    Q_PROPERTY(int friendStatus READ friendStatus NOTIFY friendStatusChanged)
 
 public:
+    enum Sex
+    {
+        Unknown,
+        Woman,
+        Man
+    };
+
+    enum FriendStatus
+    {
+        NotFriend,
+        OutRequest,
+        InRequest,
+        Friend
+    };
+
     ProfileItemPrivate();
     QString firstName() const;
     void setFirstName(const QString &firstName);
     QString lastName() const;
     void setLastName(const QString &lastName);
     QString fullName() const;
+    void setFullName(const QString &firstName, const QString &lastName="");
     Sex sex() const;
     void setSex(const Sex sex);
     QString photoMediumRect() const;
@@ -38,10 +69,28 @@ public:
     void setOnline(const bool online);
     int lastSeen() const;
     void setLastSeen(const int lastSeen);
+    QString lastSeenText() const;
     QString activity() const;
     void setActivity(const QString &activity);
+    QString bdate() const;
+    void setBdate(const QString &bdate);
+    QString domain() const;
+    void setDomain(const QString &domain);
+    QString city() const;
+    void setCity(const QString &city);
+    QString mobilePhone() const;
+    void setMobilePhone(const QString &mobilePhone);
     QString alphabet() const;
     void setAlphabet(const QString &alphabet);
+    bool isTop() const;
+    void setTop(const bool isTop);
+    bool blacklistedByMe() const;
+    void setBlacklistedByMe(const bool blacklistedByMe);
+    FriendStatus friendStatus() const;
+    void setFriendStatus(const FriendStatus friendStatus);
+    bool isFriend() const;
+    bool isLoading() const;
+    bool isEmpty() const;
 
 private:
     QString _firstName;
@@ -51,9 +100,39 @@ private:
     bool _online;
     int _lastSeen;
     QString _activity;
+    QString _bdate;
+    QString _domain;
+    QString _city;
+    QString _mobilePhone;
     QString _alphabet;
-};
+    bool _isTop;
+    bool _blacklistedByMe;
+    FriendStatus _friendStatus;
+    bool _isLoading;
 
-typedef QSharedPointer<ProfileItemPrivate> ProfileItem;
+public slots:
+    void join(const ProfileItem other);
+    void getAllFields(Connection *connection);
+    void getLastActivity(Connection *connection);
+    void updateLastSeenText();
+
+protected slots:
+    void setIsLoading(const bool isLoading);
+    void loadFinished(const Packet *sender, const QVariantMap &result);
+    void getLastActivityFinished(const Packet *sender, const QVariantMap &result);
+
+signals:
+    void fullNameChanged();
+    void photoMediumRectChanged();
+    void lastSeenChanged();
+    void sexChanged();
+    void onlineChanged();
+    void bdateChanged();
+    void domainChanged();
+    void cityChanged();
+    void mobilePhoneChanged();
+    void blacklistedByMeChanged();
+    void friendStatusChanged();
+};
 
 #endif // PROFILEITEM_H

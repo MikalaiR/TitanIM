@@ -18,7 +18,6 @@
 #include <QMap>
 #include "chat.h"
 #include "vk/client.h"
-#include "vk/historypacket.h"
 
 class ChatsHandler : public QObject
 {
@@ -34,12 +33,15 @@ public:
 
 private:
     QMap<int, Chat*> _chats;
-    HistoryPacket *_historyPacket;
+    QQueue<int> _ids;
 
 protected slots:
-    void onLongPollMessageInAdded(const DialogItem dialog);
-    void onLongPollMessageOutAdded(const DialogItem dialog);
-    void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
+    void onLongPollMessageInAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void onLongPollMessageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void onMessageFlagsSet(const int mid, const int mask, const int id);
+    void onMessageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void onObsoleteFriendsOnline();
+    void onRebuild();
 };
 
 #endif // CHATSHANDLER_H

@@ -16,17 +16,27 @@ import QtQuick 2.0
 Item {
     id: rosterDelegate;
     width: rosterDelegate.ListView.view.width
-    height: avatar.height + 13
+    height: avatar.height + 17
 
     MouseArea{
         anchors.fill: parent;
         onClicked: {
-            main.rosterCurrentIndexChanged(index);
-//            profilePage.clear();
-//            titanim.slotShowProfile(model.uid);
-//            titanim.slotWallGet(model.uid);
-//            profilePage.uid = model.uid;
-//            mainView.pageStack.push(profilePage);
+            if (!chats.isSelectUser) {
+                main.rosterCurrentIndexChanged(index)
+            } else {
+                if (chats.currentChatDialog.isGroupChat) {
+                    chats.currentChatDialog.groupChatHandler.addChatUser(model.uid)
+                    chats.isSelectUser = false
+                }
+            }
+
+            roster.clearFilter()
+        }
+
+        onDoubleClicked: {
+            if (!chats.isSelectUser) {
+                mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml")})
+            }
         }
     }
 
@@ -43,11 +53,12 @@ Item {
 
         AvatarImage {
             id: avatar
-            width: 30
-            height: 30
+            width: 35
+            height: 35
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -1
             source: model.decoration
+            online: model.online
         }
 
         Column {
@@ -56,31 +67,13 @@ Item {
 
             spacing: -2
 
-            Item {
+            Text {
+                id: name
                 width: parent.width
-                height: name.height
-
-                Text {
-                    id: name
-                    width: Math.min(implicitWidth, parent.width - onlineImg.width)
-                    anchors.left: parent.left
-                    color: "black"
-                    font.pointSize: 13
-                    font.bold: true
-                    font.family: "Helvetica"
-                    elide: Text.ElideRight
-                    text: model.display
-                }
-
-                Image {
-                    id: onlineImg
-                    width: visible ? implicitWidth : 0
-                    anchors.left: name.right
-                    anchors.leftMargin: 6
-                    anchors.verticalCenter: name.verticalCenter
-                    visible: model.online;
-                    source: "images/ic_online_up.png";
-                }
+                color: "black"
+                font.pointSize: main.fontPointSize
+                elide: Text.ElideRight
+                text: model.display
             }
 
             Text {
@@ -91,7 +84,7 @@ Item {
                 lineHeight: 0.8
                 elide: Text.ElideRight
                 color: "#707070"
-                font.pointSize: 13 - 1
+                font.pointSize: main.fontPointSize - 1
                 wrapMode: Text.Wrap
                 text: model.activity
             }

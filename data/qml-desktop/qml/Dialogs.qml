@@ -18,16 +18,36 @@ Item {
 
     property int currentChatId: chats.currentChatId
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#f9f9f9"
+    function scrollToTop() {
+        dialogsView.positionViewAtBeginning()
     }
 
-    ListView{
+    ListView {
         id: dialogsView;
         anchors.fill: parent
-        model: dialogsModel;
+        model: dialogsHandler.proxy;
         delegate: DialogsDelegate { }
-        spacing: 2
+        spacing: 1
+    }
+
+    onCurrentChatIdChanged: {
+        if (tabBar.currentIndex === 0) {
+            mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml"), immediate: true})
+            return;
+        }
+
+        var index = dialogsHandler.indexOf(currentChatId)
+        if (index === -1) index = 0
+        dialogsView.positionViewAtIndex(index, ListView.Center)
+    }
+
+    Connections {
+        target: dialogsHandler
+
+        onNewMessage: {
+            if (id === currentChatId) {
+                scrollToTop()
+            }
+        }
     }
 }

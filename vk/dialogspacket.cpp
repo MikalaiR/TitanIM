@@ -16,36 +16,25 @@
 DialogsPacket::DialogsPacket(Connection *connection)
 {
     _connection = connection;
-    _fields = "photo_100,online,last_seen,sex";
+
+    _offset = 0;
+    _count = 0;
+    _serverCount = 0;
+    _unreadDialogs = 0;
+    _fields = "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me";
 }
 
 void DialogsPacket::load(const int offset, const int count)
 {
-    Packet *packet = new Packet("execute");
-    QString script;
     _offset = offset;
     _count = count;
 
-    if (offset == 0)
-    {
-        script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset) + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
-               + "var i=0;var s=\"\";"
-               + "while(i<d.items.length){s=s+\",\"+d.items[i].chat_active;i=i+1;};"
-               + "var p=API.users.get({\"user_ids\":d.items@.user_id+s,\"fields\":\"" + _fields + "\"});"
-               + "var m=API.messages.get({\"filters\":1,\"preview_length\":1});"
-               + "var f=API.friends.getRequests({\"count\":1000});"
-               + "return {\"dialogs\":d,\"profiles\":p,\"countNewMsg\":m.count,\"countNewFriends\":f.count};";
-    }
-    else
-    {
-        script = "var d=API.messages.getDialogs({\"offset\":" + QString::number(offset) + ",\"count\":" + QString::number(count) + ",\"preview_length\":50});"
-               + "var i=0;var s=\"\";"
-               + "while(i<d.items.length){s=s+\",\"+d.items[i].chat_active;i=i+1;};"
-               + "var p=API.users.get({\"user_ids\":d.items@.user_id+s,\"fields\":\"" + _fields + "\"});"
-               + "return {\"dialogs\":d,\"profiles\":p};";
-    }
+    Packet *packet = new Packet("execute.messagesGetDialogs");
+    packet->addParam("offset", _offset);
+    packet->addParam("count", _count);
+    packet->addParam("preview_length", 50);
+    packet->addParam("fields", _fields);
 
-    packet->addParam("code", script);
     connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
     _connection->appendQuery(packet);
 }
@@ -58,6 +47,16 @@ int DialogsPacket::offset() const
 int DialogsPacket::count() const
 {
     return _count;
+}
+
+int DialogsPacket::serverCount() const
+{
+    return _serverCount;
+}
+
+int DialogsPacket::unreadDialogs() const
+{
+    return _unreadDialogs;
 }
 
 QString DialogsPacket::fields() const
@@ -73,12 +72,13 @@ void DialogsPacket::setFields(const QString &fields)
 void DialogsPacket::loadFinished(const Packet *sender, const QVariantMap &result)
 {
     QVariantMap response = result.value("response").toMap();
+    QVariantMap dialogsItem = response.value("dialogs").toMap();
 
     ProfileList profiles = ProfileParser::parser(response.value("profiles").toList());
-    DialogList dialogList = DialogParser::parser(response.value("dialogs").toMap()["items"].toList(), profiles);
+    DialogList dialogList = DialogParser::parser(dialogsItem.value("items").toList(), profiles);
 
-    int countNewMessages = response.value("countNewMsg").toInt();
-    int countRequestsFriends = response.value("countNewFriends").toInt();
+    _serverCount = dialogsItem.value("count").toInt();
+    _unreadDialogs = dialogsItem.contains("unread_dialogs") ? dialogsItem.value("unread_dialogs").toInt() : 0;
 
     emit dialogs(this, dialogList);
     delete sender;

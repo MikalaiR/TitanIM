@@ -16,8 +16,13 @@
 
 #include <QAbstractListModel>
 #include <QStringList>
+#include <QClipboard>
 #include "vk/messagelist.h"
 #include "vk/dialogitem.h"
+#include "vk/typingitem.h"
+#include "vk/servicemsgitem.h"
+#include "vk/client.h"
+#include "vk/historypacket.h"
 #include "vk/utils.h"
 
 class ChatModel : public QAbstractListModel
@@ -27,39 +32,73 @@ class ChatModel : public QAbstractListModel
 public:
     enum chatRole
     {
-        bodyRole = Qt::UserRole,
-        dateRole,
-        dateStrRole,
-        attachmentsRole,
-        uidRole,
-        midRole,
-        isUnreadRole,
-        isOutRole
+        IdRole = Qt::UserRole,
+        MessageTypeRole,
+        DateRole,
+        TimeStrRole,
+        AttachmentsRole,
+        UidRole,
+        IsUnreadRole,
+        IsOutRole,
+        IsError,
+        IsSendingRole,
+        IsGift,
+        IsSingle,
+        IsDeletedRole,
+        SectionRole,
+        ActionRole,
+        ActionMidRole,
+        ActionTextRole,
+        IsCheckedRole
     };
 
-    explicit ChatModel(const DialogItem dialog, const ProfileItem ownProfile, QObject *parent = 0);
+    explicit ChatModel(const DialogItem dialog, QObject *parent = 0);
     ~ChatModel();
+    void load(const int count=20);
+    void loadNext(const int count=20);
     void append(const MessageList items);
-    void append(const MessageItem item, const bool replace=false);
-    void prepend(const MessageItem item, const bool replace=false);
+    void append(const MessageBaseItem item, const bool replace=false);
+    void prepend(const MessageBaseItem item, const bool replace=false);
     void replaceAll(const MessageList items);
     bool remove(int row, int count);
-    MessageItem at(const int row) const;
-    int indexOf(const int mid) const;
+    bool removeNotFake(int row, int count);
+    MessageBaseItem at(const int row) const;
+    int indexOf(const int id) const;
+    MessageList getSelectedItems();
+    void deleteSelectedItems();
+    void copyTextSelectedItems();
+    void clearSelected();
+    int selectedCount() const;
+    bool markAsRead(const int id);
+    bool markAsDeleted(const int id, const bool isDeleted);
     QHash<int, QByteArray> roleNames() const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant& value, int role = Qt::EditRole);
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    void setLazyLoad(const bool on);
 
 private:
     MessageList _messages;
     DialogItem _dialog;
-    ProfileItem _ownProfile;
+    HistoryPacket *_historyPacket;
+    int _serverCount;
+    bool _lazyLoad;
+    mutable bool _isLoading;
+    int _selectedCount;
+
+protected:
+    bool canFetchMore(const QModelIndex &parent) const;
+    void fetchMore(const QModelIndex &parent);
+    void setSelectedCount(const int count);
 
 protected slots:
+    void onHistoryLoaded(const HistoryPacket *sender, const int id, const MessageList &messages);
     void onItemChanged(const int i);
-    void onRowsChanged(const QModelIndex &parent, int first, int last);
+
+signals:
+    void rowsAllReplaced();
+    void selectedCountChanged(const int count);
 };
 
 #endif // CHATMODEL_H

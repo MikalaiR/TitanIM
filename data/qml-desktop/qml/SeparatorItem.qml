@@ -13,20 +13,9 @@
 
 import QtQuick 2.0
 
-Column {
+Rectangle {
     id: separatorItem
     width: parent.width
-    height: 2
-
-    Rectangle {
-        width: parent.width
-        height: 1
-        color: "#dbd7d4"
-    }
-
-    Rectangle {
-        width: parent.width
-        height: 1
-        color: "#fcfcfc"
-    }
+    height: 1
+    color: "#E8E8E8"
 }

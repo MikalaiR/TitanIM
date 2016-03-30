@@ -28,6 +28,8 @@ public:
     void load(const int offset, const int count);
     int offset() const;
     int count() const;
+    int serverCount() const;
+    int unreadDialogs() const;
     QString fields() const;
     void setFields(const QString &fields);
 
@@ -35,6 +37,8 @@ private:
     Connection *_connection;
     int _offset;
     int _count;
+    int _serverCount;
+    int _unreadDialogs;
     QString _fields;
 
 private slots:

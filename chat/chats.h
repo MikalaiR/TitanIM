@@ -15,10 +15,12 @@
 #define CHATS_H
 
 #include <QObject>
-#include <QSortFilterProxyModel>
 #include <QQmlComponent>
+#include "chatsortfilterproxymodel.h"
 #include "chatshandler.h"
+#include "attachmentsmodel.h"
 #include "vk/dialogitem.h"
+#include "settings.h"
 
 class Chats : public QObject
 {
@@ -27,7 +29,10 @@ class Chats : public QObject
     Q_PROPERTY(int currentChatId READ currentChatId NOTIFY currentChatChanged)
     Q_PROPERTY(Chat* currentChat READ currentChat NOTIFY currentChatChanged)
     Q_PROPERTY(DialogItemPrivate* currentChatDialog READ currentChatDialog NOTIFY currentChatChanged)
-    Q_PROPERTY(QSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
+    Q_PROPERTY(ChatSortFilterProxyModel* currentChatModel READ currentChatModel CONSTANT)
+    Q_PROPERTY(AttachmentsModel* currentChatAttachments READ currentChatAttachments NOTIFY currentChatChanged)
+    Q_PROPERTY(bool isForward READ isForward WRITE markAsForward NOTIFY isForwardChanged)
+    Q_PROPERTY(bool isSelectUser READ isSelectUser WRITE markAsSelectUser NOTIFY isSelectUserChanged)
 
 public:
     static Chats *instance();
@@ -35,7 +40,14 @@ public:
     int currentChatId() const;
     Chat* currentChat() const;
     DialogItemPrivate* currentChatDialog() const;
-    QSortFilterProxyModel* currentChatModel() const;
+    ChatSortFilterProxyModel* currentChatModel() const;
+    AttachmentsModel* currentChatAttachments() const;
+    Chat* chat(const int id) const;
+    void clear();
+    bool isForward() const;
+    void markAsForward(const bool isMark);
+    bool isSelectUser() const;
+    void markAsSelectUser(const bool isMark);
 
 private:
     explicit Chats();
@@ -45,17 +57,29 @@ private:
     static Chats *aInstance;
     ChatsHandler *_chatsHandler;
     int _currentChatId;
-    QSortFilterProxyModel *_proxy;
-    DialogItemPrivate *_dialog;
+    ChatSortFilterProxyModel *_proxy;
+    DialogItemPrivate *_currentDialog;
+    AttachmentsModel *_currentChatAttachments;
+    bool _markAsForward;
+    bool _isSelectUser;
+    QTimer *_timerUpdater;
 
 protected:
     void setCurrentChat(const int id);
 
 public slots:
-    void openChat(const DialogItem dialog);
+    void openChat(const DialogItem dialog, const bool setCurrent=true);
+    bool isMuteUser(const int id) const;
+    void setMuteUser(const int id, const bool isMute);
+
+protected slots:
+    void onTimerUpdaterTimeout();
 
 signals:
     void currentChatChanged(const int id);
+    void muteUserChanged(const int id, const bool isMute);
+    void isForwardChanged(const bool isForward);
+    void isSelectUserChanged(const bool isSelectUser);
 };
 
 #endif // CHATS_H

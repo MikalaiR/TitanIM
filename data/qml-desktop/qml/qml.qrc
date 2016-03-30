@@ -1,12 +1,10 @@
 <RCC>
     <qresource prefix="/qml">
         <file>main.qml</file>
-        <file>images/tab_selected.png</file>
-        <file>images/tab.png</file>
         <file>TabBarItem.qml</file>
         <file>TabBarView.qml</file>
         <file>images/contacts_tab.png</file>
-        <file>images/favorites_tab.png</file>
+        <file>images/audio_tab.png</file>
         <file>images/messages_tab.png</file>
         <file>images/settings_tab.png</file>
         <file>Dialogs.qml</file>
@@ -21,20 +19,106 @@
         <file>HighlightListView.qml</file>
         <file>Chat.qml</file>
         <file>ChatDelegate.qml</file>
-        <file>images/grey_bubble_selected.png</file>
         <file>images/grey_bubble.png</file>
         <file>images/grey_bubble.sci</file>
-        <file>images/blue_bubble_selected.png</file>
         <file>images/blue_bubble.png</file>
         <file>images/blue_bubble.sci</file>
-        <file>images/header_separator.png</file>
         <file>HeaderSeparator.qml</file>
-        <file>images/input_field.png</file>
         <file>AttachmentsView.qml</file>
-        <file>ImageMask.qml</file>
         <file>BubbleItem.qml</file>
-        <file>PhotoAttachments.qml</file>
         <file>Authorization.qml</file>
         <file>images/logo_full.png</file>
+        <file>images/attach.png</file>
+        <file>OnlineIcon.qml</file>
+        <file>TextShadow.qml</file>
+        <file>SectionText.qml</file>
+        <file>images/actions.png</file>
+        <file>BadgeItem.qml</file>
+        <file>images/typing.png</file>
+        <file>TextEditItem.qml</file>
+        <file>TextAreaItem.qml</file>
+        <file>Captcha.qml</file>
+        <file>NotificationBox.qml</file>
+        <file>StickerAttachments.qml</file>
+        <file>AttachmentsDelegate.qml</file>
+        <file>images/delete_attach.png</file>
+        <file>AudioAttachments.qml</file>
+        <file>images/pause.png</file>
+        <file>images/play.png</file>
+        <file>AudioPlayerObject.qml</file>
+        <file>images/video_play.png</file>
+        <file>VideoLayer.qml</file>
+        <file>PhotoVideoAttachments.qml</file>
+        <file>MapAttachments.qml</file>
+        <file>images/map_pin.png</file>
+        <file>FwdMsgAttachments.qml</file>
+        <file>DocAttachments.qml</file>
+        <file>images/attach_doc.png</file>
+        <file>GiftAttachments.qml</file>
+        <file>WallAttachments.qml</file>
+        <file>images/attach_wall.png</file>
+        <file>PhotoViewer.qml</file>
+        <file>VideoViewer.qml</file>
+        <file>ToolWindow.qml</file>
+        <file>images/spinner.png</file>
+        <file>SpinnerItem.qml</file>
+        <file>images/emoticons_button.png</file>
+        <file>EmoticonsBox.qml</file>
+        <file>images/emoticons_popover.png</file>
+        <file>images/emoji_block1.png</file>
+        <file>images/emoji_block2.png</file>
+        <file>images/emoji_block3.png</file>
+        <file>images/emoji_block4.png</file>
+        <file>images/emoji_block5.png</file>
+        <file>images/emoji_block6.png</file>
+        <file>images/emoji_block1_selected.png</file>
+        <file>images/emoji_block2_selected.png</file>
+        <file>images/emoji_block3_selected.png</file>
+        <file>images/emoji_block4_selected.png</file>
+        <file>images/emoji_block5_selected.png</file>
+        <file>images/emoji_block6_selected.png</file>
+        <file>images/search.png</file>
+        <file>Avatar.qml</file>
+        <file>ButtonItem.qml</file>
+        <file>images/upload_audio.png</file>
+        <file>images/upload_doc.png</file>
+        <file>images/upload_video.png</file>
+        <file>Settings.qml</file>
+        <file>MainWindow.qml</file>
+        <file>images/logo_vk.png</file>
+        <file>Profile.qml</file>
+        <file>UnderlineLabel.qml</file>
+        <file>UnderlineButton.qml</file>
+        <file>MenuBox.qml</file>
+        <file>LinkAttachments.qml</file>
+        <file>images/attach_link.png</file>
+        <file>images/message_checked.png</file>
+        <file>images/message_unchecked.png</file>
+        <file>images/close_popup.png</file>
+        <file>images/gift.png</file>
+        <file>GroupChatInfo.qml</file>
+        <file>ToggleButtonItem.qml</file>
+        <file>images/toggle_background.png</file>
+        <file>images/toggle_item.png</file>
+        <file>images/toggle_on_background.png</file>
+        <file>UnderlineToggleButton.qml</file>
+        <file>images/muted.png</file>
+        <file>Audio.qml</file>
+        <file>AudioAlbums.qml</file>
+        <file>AudioDelegate.qml</file>
+        <file>AudioAlbumsDelegate.qml</file>
+        <file>images/playlist.png</file>
+        <file>images/pl_play.png</file>
+        <file>images/pl_pause.png</file>
+        <file>images/pl_forward.png</file>
+        <file>images/pl_rewind.png</file>
+        <file>AudioBar.qml</file>
+        <file>images/pl_random.png</file>
+        <file>images/pl_repeat.png</file>
+        <file>images/pause_tab.png</file>
+        <file>images/play_tab.png</file>
+        <file>Validation.qml</file>
+        <file>Verification.qml</file>
+        <file>LogoHeader.qml</file>
     </qresource>
 </RCC>

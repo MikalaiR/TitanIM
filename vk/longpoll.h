@@ -19,9 +19,10 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include "connection.h"
+#include "engine.h"
 #include "global.h"
-#include "profileparser.h"
-#include "dialogparser.h"
+#include "messageitem.h"
+#include "profileitem.h"
 
 class LongPoll : public QObject
 {
@@ -34,31 +35,56 @@ public:
         MessageFlagsReplaced = 1,
         MessageFlagsSet = 2,
         MessageFlagsReseted = 3,
-        MessageAdded = 101,
+        MessageAdded = 4,
+        InMessagesRead = 6,
+        OutMessagesRead = 7,
         UserOnline = 8,
         UserOffline = 9,
         GroupChatUpdated = 51,
         ChatTyping = 61,
         GroupChatTyping = 62,
-        UserCall = 70
+        UserCall = 70,
+        UnreadDialogs = 80,
+        SilenceModeUpdated = 114
     };
 
-    LongPoll(Connection *connection);
+    enum MessageFlags
+    {
+        Unread = 1,
+        Outbox = 2,
+        Replied = 4,
+        Important = 8,
+        Chat = 16,
+        Friends = 32,
+        Spam = 64,
+        Deleted = 128,
+        Fixed = 256,
+        Media = 512
+    };
+
+    LongPoll(Connection *connection, Engine *engine);
     int wait() const;
     void setWait(const int sec);
     bool isRunning() const;
-    void setRunning(const bool running);
+    void start();
+    void stop();
+    void resume();
 
 private:
+    void setStatus(const Status status);
     void getLongPollServer();
     void longPoll();
+    void getLongPollHistory();
     void handler(const QVariantList &updates);
+    void messageAdd(const MessageItem message, const ProfileItem profile);
 
 private:
     LongPollVars _longPollVars;
     Connection *_connection;
-    QNetworkAccessManager *httpLongPoll;
-    bool _running;
+    Engine *_engine;
+    QNetworkAccessManager *_httpLongPoll;
+    Status _status;
+    QTimer *_timerRequest;
 
 protected:
     void onMessageDeleted(const QVariantList &update);
@@ -66,30 +92,45 @@ protected:
     void onMessageFlagsSet(const QVariantList &update);
     void onMessageFlagsReseted(const QVariantList &update);
     void onMessageAdded(const QVariantList &update);
+    void onInMessagesRead(const QVariantList &update);
+    void onOutMessagesRead(const QVariantList &update);
     void onUserOnline(const QVariantList &update);
     void onUserOffline(const QVariantList &update);
     void onGroupChatUpdated(const QVariantList &update);
     void onChatTyping(const QVariantList &update);
     void onGroupChatTyping(const QVariantList &update);
     void onUserCall(const QVariantList &update);
+    void onUnreadDialogs(const QVariantList &update);
+    void onSilenceModeUpdated(const QVariantList &update);
 
 private slots:
-    void onRunningChanged(const bool running);
     void getLongPollServerFinished(const Packet *sender, const QVariantMap &result);
     void longPollResponse(QNetworkReply *networkReply);
+    void getLongPollHistoryFinished(const Packet *sender, const QVariantMap &result);
+    void getLongPollHistoryError(const Packet *sender, const ErrorResponse *errorResponse);
+    void onRebuild();
+    void onTimerRequestTimeout();
 
 signals:
+    void started();
+    void stopped();
+    void rebuild();
+    void obsoleteFriendsOnline();
     void messageDeleted(const int mid);
     void messageFlagsReplaced(const int mid, const int flags);
-    void messageFlagsSet(const int mid, const int mask, const int uid);
-    void messageFlagsReseted(const int mid, const int mask, const int uid);
-    void messageInAdded(const DialogItem dialog);
-    void messageOutAdded(const DialogItem dialog);
-    void userStatusChanged(const int uid, const bool online);
+    void messageFlagsSet(const int mid, const int mask, const int id);
+    void messageFlagsReseted(const int mid, const int mask, const int id, const uint date);
+    void messageInAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void messageOutAdded(const int id, const MessageItem message, const ProfileItem profile);
+    void inMessagesRead(const int id, const int mid);
+    void outMessagesRead(const int id, const int mid);
+    void userOnline(const int uid);
+    void userOffline(const int uid, const bool isAway);
     void groupChatUpdated(const int chatId, const bool self);
-    void chatTyping(const int uid, const int flags);
-    void groupChatTyping(const int uid, const int chatId);
+    void chatTyping(const int id, const int uid, const int chatId);
     void userCall(const int uid, const QString &callId);
+    void unreadDialogs(const int count);
+    void silenceModeUpdated(const int uid, const bool isMute, const uint disabledUntil);
 };
 
 #endif // LONGPOLL_H

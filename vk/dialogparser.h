@@ -15,14 +15,22 @@
 #define DIALOGPARSER_H
 
 #include <QObject>
+#include "client.h"
 #include "dialogitem.h"
 #include "dialoglist.h"
 #include "messageparser.h"
 #include "utils.h"
 
+class DialogItemPrivate;
+
 class DialogParser : public QObject
 {
+private:
+    friend class DialogItemPrivate;
+    static void parser(const QVariantMap &item, DialogItemPrivate *dialog, const ProfileList &profiles);
+
 public:
+    static void parser(const QVariantMap &item, DialogItem dialog, const ProfileList &profiles);
     static DialogItem parser(const QVariantMap &item, const ProfileList &profiles);
     static DialogList parser(const QVariantList &items, const ProfileList &profiles);
 };

@@ -15,13 +15,14 @@
 #define PHOTOITEM_H
 
 #include <QObject>
+#include <QUrl>
 #include "attachmentitem.h"
 
 class PhotoItemPrivate : public Attachment
 {
     Q_OBJECT
-    Q_PROPERTY(QString src READ src CONSTANT) //todo signal
-    Q_PROPERTY(QString srcBig READ srcBig CONSTANT)
+    Q_PROPERTY(QUrl src READ src CONSTANT) //todo signal
+    Q_PROPERTY(QUrl srcBig READ srcBig CONSTANT)
     Q_PROPERTY(int width READ width CONSTANT)
     Q_PROPERTY(int height READ height CONSTANT)
 
@@ -29,12 +30,10 @@ public:
     PhotoItemPrivate();
     int albumId() const;
     void setAlbumId(const int albumId);
-    int ownerId() const;
-    void setOwnerId(const int ownerId);
-    QString src() const;
-    void setSrc(const QString &src);
-    QString srcBig() const;
-    void setSrcBig(const QString &srcBig);
+    QUrl src() const;
+    void setSrc(const QUrl &src);
+    QUrl srcBig() const;
+    void setSrcBig(const QUrl &srcBig);
     int width() const;
     void setWidth(const int width);
     int height() const;
@@ -42,9 +41,8 @@ public:
 
 private:
     int _albumId;
-    int _ownerId;
-    QString _src;
-    QString _srcBig;
+    QUrl _src;
+    QUrl _srcBig;
     int _width;
     int _height;
 };

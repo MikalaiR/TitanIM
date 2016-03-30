@@ -49,9 +49,21 @@ void RosterModel::append(const ProfileList items)
     endInsertRows();
 }
 
-void RosterModel::replace(const ProfileList items)
+void RosterModel::append(const ProfileItem item, const bool replace)
 {
-    remove(0, rowCount());
+    if (replace && _roster->replace(item))
+    {
+        return;
+    }
+
+    beginInsertRows(QModelIndex(), _roster->count(), _roster->count());
+    _roster->add(item);
+    endInsertRows();
+}
+
+void RosterModel::replaceAll(const ProfileList items)
+{
+    removeAll();
     append(items);
 }
 
@@ -72,19 +84,41 @@ bool RosterModel::remove(int row, int count)
     return true;
 }
 
+void RosterModel::removeAll()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    _roster->clear();
+    endRemoveRows();
+}
+
 ProfileItem RosterModel::at(const int row)
 {
     return _roster->at(row);
+}
+
+ProfileItem RosterModel::at(const QModelIndex &index)
+{
+    return _roster->at(index.row());
+}
+
+ProfileItem RosterModel::item(const int id) const
+{
+    return _roster->item(id);
+}
+
+int RosterModel::indexOf(const int id) const
+{
+    return _roster->indexOf(id);
 }
 
 QHash<int, QByteArray> RosterModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
 
-    roles[uidRole] = "uid";
-    roles[onlineRole] = "online";
-    roles[activityRole] = "activity";
-    roles[alphabetRole] = "alphabet";
+    roles[UidRole] = "uid";
+    roles[OnlineRole] = "online";
+    roles[ActivityRole] = "activity";
+    roles[AlphabetRole] = "alphabet";
 
     return roles;
 }
@@ -106,17 +140,17 @@ QVariant RosterModel::data(const QModelIndex &index, int role) const
     case Qt::DecorationRole:
         return profile->photoMediumRect();
 
-    case uidRole:
+    case UidRole:
         return profile->id();
 
-    case onlineRole:
+    case OnlineRole:
         return profile->online();
 
-    case activityRole:
+    case ActivityRole:
         return profile->activity();
 
-    case alphabetRole:
-        return profile->alphabet();
+    case AlphabetRole:
+        return profile->isTop() ? tr("Favorites") : profile->alphabet();
     }
 
     return QVariant();
@@ -155,7 +189,7 @@ void RosterModel::onRosterLoaded(const RosterPacket *sender, const ProfileList &
 {
     if (!sender->offset())
     {
-        replace(roster);
+        replaceAll(roster);
     }
     else
     {

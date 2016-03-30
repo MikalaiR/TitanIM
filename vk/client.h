@@ -15,12 +15,11 @@
 #define CLIENT_H
 
 #include <QObject>
-#include <QDebug>
 #include "connection.h"
 #include "longpoll.h"
 #include "signup.h"
-#include "global.h"
-#include "profileitem.h"
+#include "engine.h"
+#include "pushsettings.h"
 
 class Client : public QObject
 {
@@ -30,11 +29,13 @@ public:
     static Client *instance();
     static void destroy();
     Connection* connection() const;
+    Engine* engine() const;
     LongPoll* longPoll() const;
+    PushSettings* pushSettings() const;
     Signup* authSignup() const;
     int uid() const;
     ProfileItem profile() const;
-    void getProfile();
+    void keepOnline(const bool on=true);
 
 private:
     Client();
@@ -45,16 +46,25 @@ private:
     static QString clientId;
     static QString clientSecret;
     Connection *_connection;
+    Engine *_engine;
     LongPoll *_longPoll;
+    PushSettings *_pushSettings;
     Signup *_authSignup;
-    int _uid;
-    ProfileItem _profile;
+    QTimer *_timerOnline;
+
+public slots:
+    void trackVisitor();
+    void setOnline();
+    void setOffline();
 
 private slots:
-    void onConnected(const int uid, const QString &token, const QString &secret);
-    void onDisconnected();
-    void onError(const Error &error, const QString &text, const bool global, const bool fatal);
-    void onSelfProfile(const Packet *sender, const QVariantMap &result);
+    void onAuthorized(const int uid, const QString &token, const QString &secret);
+    void onLogout(const int uid);
+    void onError(const ErrorResponse::Error &error, const QString &text, const bool global, const bool fatal);
+    void onNetworkOnlineChanged(const bool isOnline);
+    void onValidation();
+    void onSessionChanged(const int uid, const QString &token, const QString &secret);
+    void onKeepOnlineTimerTimeout();
 };
 
 #endif // CLIENT_H

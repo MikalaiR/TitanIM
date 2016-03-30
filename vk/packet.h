@@ -17,7 +17,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QMap>
-#include "global.h"
+#include <QMetaMethod>
 #include "errorresponse.h"
 #include "utils.h"
 
@@ -26,13 +26,13 @@ class Packet : public QObject
     Q_OBJECT
 
 public:
-    Packet(const QString &method, const QString &version="5.5");
+    Packet(const QString &method, const QString &version="5.37");
     ~Packet();
     int id() const;
     void setId(const int id);
     QString method() const;
-    QString dataUser() const;
-    void setDataUser(const QString &dataUser);
+    bool isPerishable() const;
+    void setPerishable(const bool isPerishable);
     QVariantMap result() const;
     QVariantMap response() const;
     ErrorResponse *errorResponse() const;
@@ -45,19 +45,20 @@ public:
     QString value(const QString &key);
     void setResult(const QVariantMap &result);
     void setError(ErrorResponse *errorResponse);
+    void setError(const ErrorResponse::Error &code, const QString &msg);
     bool contains(const QString &key);
 
 private:
     int _id;
     QString _method;
     QMap<QString, QString> _paramsPacket;
-    QString _dataUser;
+    bool _isPerishable;
     QVariantMap _result;
     ErrorResponse *_errorResponse;
 
 signals:
     void finished(const Packet *sender, const QVariantMap &result);
-    void error(const Error &error, const QString &text, const bool global, const bool fatal);
+    void error(const Packet *sender, const ErrorResponse *errorResponse);
 };
 
 QDebug operator<<(QDebug dbg, const Packet &packet);

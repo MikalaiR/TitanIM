@@ -1,80 +1,162 @@
+/*
+    Copyright (c) 2013 by Ruslan Nazarov <818151@gmail.com>
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************
+*/
+
 import QtQuick 2.0
 import QtQuick.Controls 1.0
+import QtQuick.Controls.Styles 1.4
 
 Rectangle {
-    Rectangle {
-        anchors.fill: parent;
-        color: "#4e729a"
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#42658c" }
-            GradientStop { position: 1.0; color: "#5a7da5" }
+    id: authWindow
+    readonly property string name: "authWindow"
+
+    function connectToVk() {
+        if (login.text.length == 0){
+            login.forceActiveFocus()
+            return
         }
+
+        if (pass.text.length == 0){
+            pass.forceActiveFocus()
+            return
+        }
+
+        authWindow.focus = true
+        nextLabel.enabled = false
+        login.enabled = false
+        pass.enabled = false
+        authorization.connectToVk(login.text, pass.text)
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "white"
     }
 
     Column {
-        id: column;
-        width: parent.width - 40;
-        anchors.centerIn: parent;
-        spacing: 20;
+        id: column
+        width: parent.width - 100
+        height: 300
+        anchors.centerIn: parent
+        anchors.verticalCenterOffset: -30
+        spacing: 50
 
-        Image {
-            id: logo;
-            height: 35
-            anchors.horizontalCenter: parent.horizontalCenter;
-            source: "images/logo_full.png";
-            fillMode: Image.PreserveAspectFit
+        LogoHeader {
+            id: headerRow
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenterOffset: -30
         }
 
         Column {
-            width: parent.width
-            spacing: 3;
+            id: formCol
+            anchors.left: headerRow.left
+            spacing: 8
 
-            TextField {
-                id: login;
-                width: parent.width;
-                placeholderText: qsTr("Email");
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly | Qt.ImhNoPredictiveText;
+            Row {
+                anchors.right: parent.right
+                spacing: 10
 
-                Keys.onReturnPressed: {
-                    pass.forceActiveFocus();
+                Text {
+                    anchors.verticalCenter: login.verticalCenter
+                    text: qsTr("login")
+                    font.pointSize: 12
+                    color: "grey"
+                }
+
+                TextField {
+                    id: login
+                    width: 250
+                    placeholderText: qsTr("phone or email")
+                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly | Qt.ImhNoPredictiveText
+                    style: TextFieldStyle {
+                            textColor: control.enabled ? "black" : "grey"
+                            background: Item {}
+                    }
+
+                    Keys.onReturnPressed: {
+                        pass.forceActiveFocus()
+                    }
                 }
             }
 
-            TextField {
-                id: pass;
-                width: parent.width;
-                placeholderText: qsTr("Password");
-                echoMode: TextInput.Password;
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText;
+            Rectangle {
+                height: 1
+                width: login.width
+                anchors.right: parent.right
+                color: "#e8e8e8"
+            }
 
-                Keys.onReturnPressed: {
-                    if (login.text.length == 0){
-                        login.forceActiveFocus();
-                        return;
+            Row {
+                anchors.right: parent.right
+                spacing: 10
+
+                Text {
+                    anchors.verticalCenter: pass.verticalCenter
+                    text: qsTr("password")
+                    font.pointSize: 12
+                    color: "grey"
+                }
+
+                TextField {
+                    id: pass
+                    width: 250
+                    placeholderText: qsTr("password")
+                    echoMode: TextInput.Password
+                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
+                    style: TextFieldStyle {
+                            textColor: control.enabled ? "black" : "grey"
+                            background: Item {}
                     }
 
-                    if (pass.text.length == 0){
-                        pass.forceActiveFocus();
-                        return;
+                    Keys.onReturnPressed: {
+                        connectToVk()
                     }
-
-                    parent.focus = true;
-                    authorization.connectToVk(login.text, pass.text);
                 }
             }
 
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter;
-                color: "white";
-                text: qsTr("Sign up for VKontakte");
+            Rectangle {
+                height: 1
+                width: pass.width
+                anchors.right: parent.right
+                color: "#e8e8e8"
+            }
+        }
 
-                MouseArea {
-                    anchors.fill: parent;
-                    onClicked: {
-                        //                joinDialog.open();
-                    }
+        Text {
+            id:nextLabel
+            anchors.right: formCol.right
+            anchors.rightMargin: 250 - width - 10
+            text: qsTr("Next")
+            color: "#2C83D6"
+            font.pointSize: 13
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    connectToVk()
                 }
             }
         }
+    }
+
+    Connections {
+        target: authorization
+
+        onCaptcha: {
+            Qt.createComponent("Captcha.qml").createObject(authWindow, {sid: captchaSid, img: captchaImg})
+        }
+    }
+
+    Component.onCompleted: {
+        login.forceActiveFocus()
     }
 }

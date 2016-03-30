@@ -18,6 +18,7 @@ Packet::Packet(const QString &method, const QString &version)
     _method = method;
     _id = 0;
     _paramsPacket.clear();
+    _isPerishable = false;
     _errorResponse = 0;
 
     addParam("v", version);
@@ -46,14 +47,14 @@ QString Packet::method() const
     return _method;
 }
 
-QString Packet::dataUser() const
+bool Packet::isPerishable() const
 {
-    return _dataUser;
+    return _isPerishable;
 }
 
-void Packet::setDataUser(const QString &dataUser)
+void Packet::setPerishable(const bool isPerishable)
 {
-    _dataUser = dataUser;
+    _isPerishable = isPerishable;
 }
 
 void Packet::signPacket(const QString &secret)
@@ -121,14 +122,36 @@ void Packet::setResult(const QVariantMap &result)
 {
     _result = result;
 
-    emit finished(this, _result);
+    static const QMetaMethod finishedSignal = QMetaMethod::fromSignal(&Packet::finished);
+
+    if (isSignalConnected(finishedSignal)) {
+        emit finished(this, _result);
+    }
+    else
+    {
+        deleteLater();
+    }
 }
 
 void Packet::setError(ErrorResponse *errorResponse)
 {
     _errorResponse = errorResponse;
 
-    emit error(_errorResponse->code(), _errorResponse->msg(), _errorResponse->global(), _errorResponse->fatal());
+    static const QMetaMethod errorSignal = QMetaMethod::fromSignal(&Packet::error);
+
+    if (isSignalConnected(errorSignal)) {
+        emit error(this, _errorResponse);
+    }
+    else
+    {
+        deleteLater();
+    }
+}
+
+void Packet::setError(const ErrorResponse::Error &code, const QString &msg)
+{
+    ErrorResponse *error = new ErrorResponse(code, msg);
+    setError(error);
 }
 
 bool Packet::contains(const QString &key)

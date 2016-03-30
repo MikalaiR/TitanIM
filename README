@@ -1,6 +1,5 @@
 TitanIM
----------
-
+-------
 TitanIM is cross-platform client of the social network VK. It is based on Qt.
 
 TitanIM is released under the terms of the GNU General Public License,
@@ -8,15 +7,21 @@ version 3 or later.
 
 Web Site:
   http://titanim.ru
-  http://gitorious.org/titanim
-  http://bitbucket.org/rusnazarov/titanim
+
+Bug tracker:
+  http://bitbucket.org/rusnazarov/titanim/issues
 
 Source:
-  http://gitorious.org/titanim
-  http://bitbucket.org/rusnazarov/titanim
+  http://bitbucket.org/rusnazarov/titanim (ver. 2.x, Qt5.5)
+  http://bitbucket.org/rusnazarov/titanim-old (ver. 1.x, Qt4.5 - 4.8) obsolete
+  http://bitbucket.org/rusnazarov/titanim-csharp (C# class VK)
 
 VK group:
   http://vk.com/titanim
+
+Store:
+  http://store.ovi.com/content/203243 Mobile (MeeGo)
+  http://store.ovi.com/content/298308 Mobile (MeeGo)
 
 
 Portable Version
@@ -27,5 +32,4 @@ Portable Version
 
 Known Issues
 ------------
-  - not native look and feel in Mac OS
-
+  - not native scroll in Mac OS

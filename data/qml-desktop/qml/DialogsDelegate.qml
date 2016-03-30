@@ -15,19 +15,23 @@ import QtQuick 2.0
 
 Item {
     id: dialogsDelegate
-    width: dialogsDelegate.ListView.view.width
-    height: avatar.height + 13
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            main.dialogCurrentIndexChanged(index);
-        }
-    }
+    property color unreadHighlightColor: "#e3ecf5"
+
+    width: dialogsDelegate.ListView.view.width
+    height: avatar.height + 21
 
     HighlightListView {
         anchors.fill: parent
         visible: currentChatId === model.id
+    }
+
+    Rectangle {
+        id: unreadHighlightFull
+        anchors.fill: parent
+        color: unreadHighlightColor
+        opacity: 0.9
+        visible: model.isUnread && !model.isOut
     }
 
     Row {
@@ -36,33 +40,20 @@ Item {
         x: 10
         spacing: 7
 
-        AvatarItem {
+        Avatar {
             id: avatar
             width: 40
             height: 40
             anchors.verticalCenter: parent.verticalCenter
             anchors.verticalCenterOffset: -1
             source: model.decoration
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-//                    if (model.uid > 0){
-//                        profilePage.clear();
-//                        titanim.slotShowProfile(model.uid);
-//                        titanim.slotWallGet(model.uid);
-//                        profilePage.uid = model.uid;
-//                        mainView.pageStack.push(profilePage);
-//                    }
-                }
-            }
+            online: model.online
         }
 
         Column {
             width: dialogsDelegate.width - dialog.x - avatar.width - dialog.spacing
             anchors.top: avatar.top
-            anchors.topMargin: 1
-            spacing: -2
+            spacing: model.emoji && !model.typing && !selfAvatar.visible ? 4 : -1
 
             Item {
                 width: parent.width
@@ -72,13 +63,20 @@ Item {
                     id: name
                     anchors.left: parent.left
                     anchors.right: messageDate.left
-                    anchors.rightMargin: 5
+                    anchors.rightMargin: muteImg.visible ? muteImg.width + 7 : 5
                     color: "black"
-                    font.pointSize: 13
-                    font.bold: true
-                    font.family: "Helvetica"
+                    font.pointSize: main.fontPointSize
                     elide: Text.ElideRight
                     text: model.display
+                }
+
+                Image {
+                    id: muteImg
+                    x: name.contentWidth + 5
+                    anchors.verticalCenter: name.verticalCenter
+                    anchors.verticalCenterOffset: -1
+                    visible: model.isMuteRole
+                    source: "images/muted.png"
                 }
 
                 Text {
@@ -86,23 +84,67 @@ Item {
                     anchors.right: parent.right
                     anchors.rightMargin: 10
                     anchors.verticalCenter: name.verticalCenter
-                    color: "#1769ad"
-                    font.family: "Helvetica"
-                    font.pointSize: 13 - 2
+                    color: "#707070"
+                    font.pointSize: main.fontPointSize - 3
                     text: model.dateStr
                 }
             }
 
-            Text {
-                id: textBody
+            Item {
                 width: parent.width
-                maximumLineCount: 2
-                lineHeight: 0.8
-                elide: Text.ElideRight
-                color: "#707070"
-                font.pointSize: 13 - 1
-                wrapMode: Text.Wrap
-                text: model.body
+                height: Math.max(textBody.height, selfAvatar.height + 7)
+
+                AvatarImage {
+                    id: selfAvatar
+                    width: avatar.height * 0.55
+                    height: visible ? avatar.height * 0.55 : 0
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: (model.isOut || model.isGroupChat) && (!model.typing)
+                    source: engine.getUser(model.from).photoMediumRect
+                    radius: 15
+                }
+
+                TextEditItem {
+                    id: textBody
+                    anchors.left: selfAvatar.visible ? selfAvatar.right : parent.left
+                    anchors.leftMargin: selfAvatar.visible ? 5 : 0
+                    anchors.right: unreadCount.visible ? unreadCount.left : parent.right
+                    anchors.rightMargin: 7
+                    anchors.verticalCenter: selfAvatar.verticalCenter
+                    anchors.verticalCenterOffset: selfAvatar.visible ? -2 : 0
+                    maximumLineCount: model.emoji || selfAvatar.visible ? 1 : 2
+                    lineHeight: 0.9
+                    color: "#707070"
+                    font.pointSize: main.fontPointSize - 1
+                    font.italic: model.typing
+                    wrapMode: Text.Wrap
+                    richText: model.typing ? dialogsHandler.typingText : model.body
+                    activeFocusOnPress: false
+                }
+
+                Rectangle {
+                    id: unreadHighlight
+                    z: -1
+                    anchors.fill: textBody
+                    anchors.topMargin: -1
+                    anchors.leftMargin: -2
+                    anchors.bottomMargin: -5
+                    anchors.rightMargin: -2
+                    color: unreadHighlightColor
+                    opacity: 0.9
+                    radius: 3
+                    visible: model.isUnread && selfAvatar.visible
+                }
+
+                BadgeItem {
+                    id: unreadCount
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8
+                    anchors.top: parent.top
+                    anchors.topMargin: model.emoji && !model.typing && !selfAvatar.visible ? 0 : 5
+                    count: model.unreadCount
+                }
             }
         }
     }
@@ -110,5 +152,20 @@ Item {
     SeparatorItem {
         id: separator
         anchors.top: dialogsDelegate.bottom
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            if (!chats.isSelectUser) {
+                main.dialogCurrentIndexChanged(index);
+                mainWindow.popPage({item: Qt.resolvedUrl("Chat.qml")})
+            } else {
+                if (chats.currentChatDialog.isGroupChat && !model.isGroupChat) {
+                    chats.currentChatDialog.groupChatHandler.addChatUser(model.uid)
+                    chats.isSelectUser = false
+                }
+            }
+        }
     }
 }

@@ -16,13 +16,42 @@
 
 #include <QObject>
 #include <QVariant>
-#include "global.h"
 
 class ErrorResponse : public QObject
 {
     Q_OBJECT
 
 public:
+    enum Error
+    {
+        CaptchaCanceled = -4,
+        LoadTokenFailed = -3,
+        TimeoutLongPollServer = -2,
+        ServerIsNotAvailable = -1,
+        UnknownErrorOccured = 1,
+        ApplicationIsDisabled = 2,
+        UnknownMethodPassed = 3,
+        IncorrectSignature = 4,
+        UserAuthorizationFailed = 5,
+        TooManyRequestsPerSecond = 6,
+        DeniedByUser = 7,
+        InternalServerError = 10,
+        CaptchaNeeded = 14,
+        AccessDenied = 15,
+        HttpAuthorizationFailed = 16,
+        ValidationRequired = 17,
+        OutOfLimits = 103,
+        PhoneUsedAnotherUser = 1004,
+        TryLater = 1112
+    };
+
+    enum ValidationType
+    {
+        Unkown,
+        TwoFactorApp,
+        TwoFactorSms
+    };
+
     ErrorResponse(const QVariantMap &response);
     ErrorResponse(const Error &code, const QString &msg);
     Error code() const;
@@ -31,6 +60,9 @@ public:
     bool fatal() const;
     QString captchaSid() const;
     QString captchaImg() const;
+    ValidationType validationType() const;
+    QString validationSid() const;
+    QString validationPhone() const;
     QString validationUri() const;
     static bool isGlobal(const Error &code);
     static bool isFatal(const Error &code);
@@ -42,6 +74,9 @@ private:
     bool _fatal;
     QString _captchaSid;
     QString _captchaImg;
+    ValidationType _validationType;
+    QString _validationSid;
+    QString _validationPhone;
     QString _validationUri;
 };
 

@@ -22,19 +22,19 @@ PhotoItem PhotoParser::parser(const QVariantMap &item)
     int ownerId = item.value("owner_id").toInt();
 
     QVariantMap photoItem;
-    QString src;
-    QString srcBig;
+    QUrl src;
+    QUrl srcBig;
 
     if (item.contains("sizes"))
     {
-        src = item.value("sizes").toList().at(1).toMap().value("src").toString();
+        src = item.value("sizes").toList().at(1).toMap().value("src").toUrl();
         photoItem = item.value("sizes").toList().at(2).toMap();
-        srcBig = photoItem.value("src").toString();
+        srcBig = photoItem.value("src").toUrl();
     }
     else
     {
-        src = item.value("photo_130").toString();
-        srcBig = item.value("photo_604").toString();
+        src = item.value("photo_130").toUrl();
+        srcBig = item.contains("photo_807") ? item.value("photo_807").toUrl() : item.value("photo_604").toUrl();
         photoItem = item;
     }
 
