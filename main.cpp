@@ -13,6 +13,7 @@
 
 #include <QtGui/QGuiApplication>
 #include <QTextCodec>
+#include <QtWebEngine>
 #include <QFont>
 #include "mainwindow.h"
 
@@ -23,8 +24,10 @@ int main(int argc, char *argv[])
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
 
+    QtWebEngine::initialize();
+
     QCoreApplication::setApplicationName("TitanIM");
-    QCoreApplication::setApplicationVersion("2.0.2");
+    QCoreApplication::setApplicationVersion("2.0.3");
     QCoreApplication::setOrganizationName("Ruslan Nazarov");
     QCoreApplication::setOrganizationDomain("http://titanim.ru");
 

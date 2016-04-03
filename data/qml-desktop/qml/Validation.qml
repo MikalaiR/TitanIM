@@ -12,15 +12,15 @@
 */
 
 import QtQuick 2.0
-import QtWebKit 3.0
+import QtWebEngine 1.1
 
 Rectangle {
     id: validationWindow
     readonly property string name: "validationWindow"
-    property alias uri: webView.url
+    property alias uri: webEngineView.url
 
-    WebView {
-        id: webView
+    WebEngineView {
+        id: webEngineView
         z: 1
         anchors.fill: parent
     }

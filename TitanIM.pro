@@ -3,7 +3,8 @@
 # -------------------------------------------------
 
 QT += network \
-      multimedia
+      multimedia \
+      webengine
 
 TARGET = titanim
 TEMPLATE = app
