@@ -43,6 +43,7 @@ public:
         IsError,
         IsSendingRole,
         IsGift,
+        IsSticker,
         IsSingle,
         IsDeletedRole,
         SectionRole,

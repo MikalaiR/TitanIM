@@ -31,11 +31,12 @@ Item {
                 (attachmentsView.height && body.height ? 11 + content.spacing : 0)
         source: modelData.isOut ? "images/blue_bubble.sci" : "images/grey_bubble.sci"
         smooth: true
+        visible: !modelData.isSticker
     }
 
     Loader {
         anchors.fill: bubble
-        active: bubbleItem.color !== "transparent"
+        active: bubbleItem.color !== Qt.rgba(0, 0, 0, 0)
 
         sourceComponent: ColorOverlay {
             source: bubble

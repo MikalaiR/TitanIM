@@ -16,15 +16,14 @@ import QtQuick 2.0
 Item {
     id: stickerAttachments
 
-    implicitWidth: img.width
-    implicitHeight: img.height
+    implicitWidth: img.width - 15
+    implicitHeight: img.height - 15
 
     Image {
         id: img
-        width: items[0].width > items[0].height ? 128 : 128 * items[0].width / items[0].height
-        height: items[0].height > items[0].width ? 128 : 128 * items[0].height / items[0].width
+        width: items[0].width > items[0].height ? 200 : 200 * items[0].width / items[0].height
+        height: items[0].height > items[0].width ? 200 : 200 * items[0].height / items[0].width
         smooth: true
-        fillMode: Image.Tile
         source: items[0].src
     }
 }

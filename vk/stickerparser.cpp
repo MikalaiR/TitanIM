@@ -18,7 +18,7 @@ StickerItem StickerParser::parser(const QVariantMap &item)
     StickerItem sticker = StickerItem::create();
 
     int id = item.value("id").toInt();
-    QUrl src = item.value("photo_128").toUrl();
+    QUrl src = item.value("photo_256").toUrl();
     int width = item.value("width").toInt();
     int height = item.value("height").toInt();
 
