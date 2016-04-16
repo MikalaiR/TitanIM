@@ -196,7 +196,6 @@ HEADERS += \
     vk/engine.h \
     vk/servicemsgitem.h \
     notification/notificator.h \
-    notification/macnotification.h \
     vk/uploadphotoitem.h \
     vk/uploaditem.h \
     vk/uploaddocitem.h \
@@ -212,7 +211,10 @@ HEADERS += \
     audio/audiomodel.h \
     audio/audioalbumsmodel.h
 
-OBJECTIVE_SOURCES += \
+macx:HEADERS += \
+    notification/macnotification.h \
+
+macx:OBJECTIVE_SOURCES += \
     notification/macnotification.mm
 
 RESOURCES += \
