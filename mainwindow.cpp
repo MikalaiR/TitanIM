@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWindow *parent) :
                      Settings::instance()->dataDir() + "/translations");
     qApp->installTranslator(translator);
 
+    setDefaultFont();
     engine()->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
 
     connect(Notificator::instance(), SIGNAL(notificationClicked(int,int)), SLOT(notificationClicked(int,int)));
@@ -65,7 +66,6 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType(QUrl("qrc:/qml/EmoticonsBox.qml"), "TitanIM.Tool", 1, 0, "EmoticonsBox");
 
     setTitle(QCoreApplication::applicationName());
-    _fontPointSize = 13;
     setWidth(770);
     setHeight(560);
     authorization->connectToVk();
@@ -162,6 +162,32 @@ QPoint MainWindow::positionGlobalCursor() const
 QPoint MainWindow::mapToGlobal(const int x, const int y) const
 {
     return QWindow::mapToGlobal(QPoint(x, y));
+}
+
+void MainWindow::setDefaultFont()
+{
+    QFont defaultFont;
+
+#if defined(Q_OS_MAC)
+    defaultFont.setFamily("Geneva");
+    _fontPointSize = 13;
+#elif defined(Q_OS_WIN)
+    //todo win
+    _fontPointSize = 13;
+#else
+    int id = QFontDatabase::addApplicationFont(":/qml/fonts/Ubuntu-L.ttf");
+
+    if (id != -1)
+    {
+        QString family = QFontDatabase::applicationFontFamilies(id).first();
+        defaultFont.setFamily(family);
+        defaultFont.setWeight(QFont::Light);
+    }
+
+    _fontPointSize = 11;
+#endif
+
+    qApp->setFont(defaultFont);
 }
 
 int MainWindow::fontPointSize() const

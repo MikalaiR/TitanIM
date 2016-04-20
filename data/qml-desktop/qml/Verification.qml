@@ -73,7 +73,7 @@ Rectangle {
                 text: isSms ? qsTr("Enter the confirmation code we've sent to you via SMS")
                             : qsTr("Enter the code provided by the code generating app")
                 verticalAlignment: Text.AlignTop
-                font.pointSize: 12
+                font.pointSize: main.fontPointSize - 1
                 color: "grey"
             }
 
@@ -85,7 +85,7 @@ Rectangle {
                 Text {
                     anchors.verticalCenter: code.verticalCenter
                     text: isSms ? qsTr("sms") : qsTr("code")
-                    font.pointSize: 12
+                    font.pointSize: main.fontPointSize - 1
                     color: "grey"
                 }
 
@@ -94,6 +94,7 @@ Rectangle {
                     width: 250
                     placeholderText: qsTr("enter your code")
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
+                    font.pointSize: main.fontPointSize
                     style: TextFieldStyle {
                             textColor: control.enabled ? "black" : "grey"
                             background: Item {}
@@ -118,7 +119,7 @@ Rectangle {
                 anchors.right: parent.right
                 text: qsTr("Any trouble receiving codes?")
                 horizontalAlignment: Text.AlignRight
-                font.pointSize: 11
+                font.pointSize: main.fontPointSize - 2
                 color: "#2C83D6"
 
                 MouseArea {
@@ -136,7 +137,7 @@ Rectangle {
             anchors.rightMargin: 250 - width - 10
             text: qsTr("Next")
             color: "#2C83D6"
-            font.pointSize: 13
+            font.pointSize: main.fontPointSize
 
             MouseArea {
                 anchors.fill: parent

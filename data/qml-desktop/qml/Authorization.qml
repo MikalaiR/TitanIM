@@ -68,7 +68,7 @@ Rectangle {
                 Text {
                     anchors.verticalCenter: login.verticalCenter
                     text: qsTr("login")
-                    font.pointSize: 12
+                    font.pointSize: main.fontPointSize - 1
                     color: "grey"
                 }
 
@@ -77,6 +77,7 @@ Rectangle {
                     width: 250
                     placeholderText: qsTr("phone or email")
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly | Qt.ImhNoPredictiveText
+                    font.pointSize: main.fontPointSize
                     style: TextFieldStyle {
                             textColor: control.enabled ? "black" : "grey"
                             background: Item {}
@@ -102,7 +103,7 @@ Rectangle {
                 Text {
                     anchors.verticalCenter: pass.verticalCenter
                     text: qsTr("password")
-                    font.pointSize: 12
+                    font.pointSize: main.fontPointSize - 1
                     color: "grey"
                 }
 
@@ -112,6 +113,7 @@ Rectangle {
                     placeholderText: qsTr("password")
                     echoMode: TextInput.Password
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
+                    font.pointSize: main.fontPointSize
                     style: TextFieldStyle {
                             textColor: control.enabled ? "black" : "grey"
                             background: Item {}
@@ -137,7 +139,7 @@ Rectangle {
             anchors.rightMargin: 250 - width - 10
             text: qsTr("Next")
             color: "#2C83D6"
-            font.pointSize: 13
+            font.pointSize: main.fontPointSize
 
             MouseArea {
                 anchors.fill: parent

@@ -58,6 +58,7 @@ Item {
                 Text {
                     id: status
                     color: "grey"
+                    font.pointSize: main.fontPointSize
                     text: profile.online ? qsTr("online") : qsTr("offline")
                     visible: name.text.length > 1
                 }

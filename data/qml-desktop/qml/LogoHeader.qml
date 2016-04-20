@@ -31,12 +31,12 @@ Row {
 
         Text {
             text: "TitanIM"
-            font.pointSize: 21
+            font.pointSize: main.fontPointSize + 8
         }
 
         Text {
             text: qsTr("Client for social network VK")
-            font.pointSize: 11
+            font.pointSize: main.fontPointSize - 2
             color: "grey"
         }
     }

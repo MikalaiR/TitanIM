@@ -164,6 +164,7 @@ Item {
                                 Text {
                                     id: name
                                     width: parent.width
+                                    font.pointSize: main.fontPointSize
                                     text: chats.currentChatDialog.displayName
                                     elide: Text.ElideRight
                                 }

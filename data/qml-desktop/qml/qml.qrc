@@ -120,5 +120,6 @@
         <file>Validation.qml</file>
         <file>Verification.qml</file>
         <file>LogoHeader.qml</file>
+        <file>fonts/Ubuntu-L.ttf</file>
     </qresource>
 </RCC>

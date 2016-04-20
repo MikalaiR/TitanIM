@@ -26,9 +26,9 @@ Rectangle {
 
     Text {
         id: badgeLabel
-        font.pixelSize: 10
+        font.pointSize: main.fontPointSize - 3
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: 1
+        anchors.verticalCenterOffset: badgeItem.height & 1 ? 0 : 1
         color: "white"
         text: badgeItem.count
     }

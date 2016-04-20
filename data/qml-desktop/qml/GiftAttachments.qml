@@ -48,6 +48,7 @@ Item {
             height: parent.height
             verticalAlignment: Text.AlignVCenter
             color: "#7F7662"
+            font.pointSize: main.fontPointSize
             text: qsTr("Gift")
         }
     }

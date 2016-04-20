@@ -16,6 +16,7 @@
 
 #include <QQmlContext>
 #include <QTranslator>
+#include <QFontDatabase>
 #include <QScreen>
 #include <QDebug>
 #include "qtquick2applicationviewer.h"
@@ -44,6 +45,9 @@ public:
     Q_INVOKABLE QPoint positionGlobalCenter(const int width, const int height) const;
     Q_INVOKABLE QPoint positionGlobalCursor() const;
     Q_INVOKABLE QPoint mapToGlobal(const int x, const int y) const;
+
+protected:
+    void setDefaultFont();
 
 private:
     QTranslator *translator;
