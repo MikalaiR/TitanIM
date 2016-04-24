@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("TitanIM");
     QCoreApplication::setApplicationVersion("2.0.3");
-    QCoreApplication::setOrganizationName("Ruslan Nazarov");
+    QCoreApplication::setOrganizationName("rnazarov");
     QCoreApplication::setOrganizationDomain("http://titanim.ru");
 
     MainWindow w;

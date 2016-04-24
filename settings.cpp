@@ -35,13 +35,16 @@ Settings::Settings()
     }
     else
     {
-        _configDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/TitanIM";
+        _configDir = QString("%1/%2/%3").arg(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation),
+                                             QCoreApplication::organizationName(),
+                                             QCoreApplication::applicationName());
     }
 
     #if defined(Q_OS_MAC)
     _dataDir = QCoreApplication::applicationDirPath() + "/../Resources/data";
     #elif defined(Q_OS_UNIX)
-    _dataDir = "/opt/titanim/data";
+    _dataDir = QString("/opt/%1/%2/data").arg(QCoreApplication::organizationName(),
+                                              QCoreApplication::applicationName().toLower());
     #elif defined(Q_OS_WIN)
     _dataDir = QCoreApplication::applicationDirPath() + "/data";
     #else
