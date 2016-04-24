@@ -50,8 +50,10 @@ void Notificator::showNotification(const int peer, const int mid, const QString 
 {
 #if defined(Q_OS_MAC)
     MacNotification::instance()->showNotification(peer, mid, title, message, withReply, pixmap);
+#elif defined(Q_OS_WIN)
+    //todo win
 #else
-    //todo win and lin
+    QProcess::startDetached(QString("notify-send \"%1\" \"%2\" -i titanim").arg(title).arg(message));
 #endif
 }
 
