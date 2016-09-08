@@ -14,6 +14,7 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.0
+import AsemanTools 1.0 as Aseman
 import TitanIM.Multimedia 1.0
 
 Rectangle {
@@ -249,6 +250,36 @@ Rectangle {
             mainWindow.visibleAudioBar = false
         }
     }
+
+    Aseman.SystemTray
+    {
+        icon: "images/logo_vk.png"
+        visible: true
+        property ApplicationWindow mainTWindow
+
+        menu: [qsTr("Show"), "", qsTr("Quit")]
+
+
+        onMenuTriggered: {
+            switch(index) {
+            case 0:
+                main.visible = true
+                break
+            case 2:
+                Aseman.AsemanApp.exit(0)
+                break
+            }
+        }
+
+        onActivated: {
+            switch(reason) {
+            case Aseman.SystemTray.ActivateTrigger:
+                main.visible = !main.visible
+                break
+            }
+        }
+    }
+
 
     Connections {
         target: authorization

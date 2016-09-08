@@ -10,15 +10,16 @@
  *                                                                         *
  ***************************************************************************
 */
-
+#include <QApplication>
 #include <QtGui/QGuiApplication>
 #include <QTextCodec>
 #include <QtWebEngine>
+#include <QSystemTrayIcon>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);

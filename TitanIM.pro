@@ -4,7 +4,8 @@
 
 QT += network \
       multimedia \
-      webengine
+      webengine \
+      widgets
 
 TARGET = titanim
 TEMPLATE = app

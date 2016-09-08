@@ -116,7 +116,7 @@ Item {
         minimumWidth: img.width
         minimumHeight: img.height
         modality: Qt.NonModal
-        flags: Qt.Dialog
+//        flags: Qt.Dialog
         visible: true
         color: "#DFE3EA"
         title: qsTr("Photo %1 of %2").arg(currentIndex + 1).arg(count)
