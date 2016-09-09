@@ -5,7 +5,8 @@
 QT += network \
       multimedia \
       webengine \
-      widgets
+      widgets \
+      dbus
 
 TARGET = titanim
 TEMPLATE = app
@@ -126,7 +127,12 @@ SOURCES += main.cpp \
     vk/audiopacket.cpp \
     vk/audiolist.cpp \
     audio/audiomodel.cpp \
-    audio/audioalbumsmodel.cpp
+    audio/audioalbumsmodel.cpp \
+    asemantools/asemanlinuxnativenotification.cpp \
+    asemantools/asemanmacnativenotification.cpp \
+    asemantools/asemannativenotification.cpp \
+    asemantools/asemannativenotificationitem.cpp \
+    asemantools/asemannotification.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -210,7 +216,12 @@ HEADERS += \
     vk/audiopacket.h \
     vk/audiolist.h \
     audio/audiomodel.h \
-    audio/audioalbumsmodel.h
+    audio/audioalbumsmodel.h \
+    asemantools/asemanlinuxnativenotification.h \
+    asemantools/asemanmacnativenotification.h \
+    asemantools/asemannativenotification.h \
+    asemantools/asemannativenotificationitem.h \
+    asemantools/asemannotification.h
 
 macx:HEADERS += \
     notification/macnotification.h \

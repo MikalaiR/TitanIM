@@ -121,5 +121,6 @@
         <file>Verification.qml</file>
         <file>LogoHeader.qml</file>
         <file>fonts/Ubuntu-L.ttf</file>
+        <file>images/logo_vk_msg.png</file>
     </qresource>
 </RCC>

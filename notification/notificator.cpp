@@ -37,6 +37,9 @@ Notificator::Notificator()
     connect(MacNotification::instance(), SIGNAL(notificationClicked(int,int)), this, SIGNAL(notificationClicked(int,int)));
     connect(MacNotification::instance(), SIGNAL(notificationReplied(int,int,QString)), this, SIGNAL(notificationReplied(int,int,QString)));
 #endif
+    p = new AsemanNotification();
+    connect(p, SIGNAL(notifyAction(uint, QString&)), this, SLOT(notifyAction(uint, QString&)));
+
 }
 
 Notificator::~Notificator()
@@ -53,7 +56,8 @@ void Notificator::showNotification(const int peer, const int mid, const QString 
 #elif defined(Q_OS_WIN)
     //todo win
 #else
-    QProcess::startDetached(QString("notify-send \"%1\" \"%2\" -i titanim").arg(title).arg(message));
+    uint id = p->sendNotify(title, message, QString(), 0, -1);
+    nl[id] = { peer, mid };
 #endif
 }
 
@@ -71,4 +75,18 @@ void Notificator::setBadge(const int count)
 #else
     //todo win and lin
 #endif
+}
+
+void Notificator::notifyAction(uint id, QString &act)
+{
+    if (act != "default") return;
+    auto it = nl.find(id);
+
+    if (it != nl.end())
+    {
+        int peer = it->first;
+        int mid = it->second;
+        nl.erase(it);
+        emit notificationClicked(peer, mid);
+    }
 }

@@ -253,7 +253,7 @@ Rectangle {
 
     Aseman.SystemTray
     {
-        icon: "images/logo_vk.png"
+        icon: dialogsHandler.unreadDialogs ? "images/logo_vk_msg.png" : "images/logo_vk.png"
         visible: true
         property ApplicationWindow mainTWindow
 

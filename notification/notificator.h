@@ -19,6 +19,9 @@
 #include "vk/utils.h"
 #include "settings.h"
 
+#define LINUX_NATIVE_ASEMAN_NOTIFICATION
+#include "asemantools/asemannotification.h"
+
 class Notificator : public QObject
 {
     Q_OBJECT
@@ -37,7 +40,12 @@ public slots:
     void setBadge(const int count);
 
 private:
+    QMap<uint, QPair<int, int>> nl;
     static Notificator *aInstance;
+    AsemanNotification *p;
+
+private slots:
+    void notifyAction(uint id, QString &act);
 
 signals:
     void notificationClicked(const int peer, const int mid);

@@ -62,7 +62,7 @@ Item {
         maximumHeight: height
         minimumWidth: width
         minimumHeight: height
-        flags: Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.ToolTip
+        flags: Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint //| Qt.ToolTip
         visible: box.activeFocus
         color: "transparent"
 
