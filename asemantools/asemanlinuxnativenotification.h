@@ -4,6 +4,35 @@
 #include <QObject>
 #include <QStringList>
 #include <QColor>
+#include <QImage>
+#include <QPixmap>
+#include <QtDBus>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusArgument>
+#include <QDBusInterface>
+#include <QCoreApplication>
+#include <QDebug>
+
+struct iiibiiay
+{
+    iiibiiay(QPixmap& img);
+    iiibiiay();
+    static const int id;
+    int width;
+    int height;
+    int rowstride;
+    int bitsPerSample;
+    int channels;
+    bool hasAlpha;
+    QByteArray image;
+};
+
+Q_DECLARE_METATYPE(iiibiiay);
+
+QDBusArgument &operator<<(QDBusArgument &a, const iiibiiay &i);
+const QDBusArgument & operator >>(const QDBusArgument &a, iiibiiay &i);
+
 
 class QDBusMessage;
 class AsemanLinuxNativeNotificationPrivate;
@@ -20,7 +49,7 @@ public:
     QColor color() const;
 
 public slots:
-    uint sendNotify(const QString & title, const QString & body, const QString & icon, uint replace_id = 0, int timeOut = 3000 , const QStringList &actions = QStringList());
+    uint sendNotify(const QString & title, const QString & body, const QVariant &icon, uint replace_id = 0, int timeOut = 3000 , const QStringList &actions = QStringList());
     void closeNotification( uint id );
 
 signals:

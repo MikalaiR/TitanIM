@@ -50,7 +50,7 @@ QColor AsemanMacNativeNotification::color() const
     return p->color;
 }
 
-uint AsemanMacNativeNotification::sendNotify(const QString &title, const QString &body, const QString &icon, uint replace_id, int timeOut, const QStringList &actions)
+uint AsemanMacNativeNotification::sendNotify(const QString &title, const QString &body, const QVariant &icon, uint replace_id, int timeOut, const QStringList &actions)
 {
     uint result = replace_id;
 
@@ -70,7 +70,7 @@ uint AsemanMacNativeNotification::sendNotify(const QString &title, const QString
 
     item->showMessage(title, body, QSystemTrayIcon::Information, timeOut);
     item->actions = actions;
-    item->icon = icon;
+    item->icon = icon.toString();
 
     if(timeOut)
         QTimer::singleShot(timeOut+500, item, SLOT(deleteLater()));

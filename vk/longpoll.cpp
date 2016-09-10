@@ -72,7 +72,6 @@ void LongPoll::getLongPollServer()
     }
 
     bool isHttps = _connection->isHttps();
-
     Packet *packet = new Packet("messages.getLongPollServer");
     packet->setPerishable(true);
     packet->addParam("use_ssl", QString::number(isHttps));

@@ -45,7 +45,7 @@ private:
     AsemanNotification *p;
 
 private slots:
-    void notifyAction(uint id, QString &act);
+    void notifyAction(uint id, const QString &act);
 
 signals:
     void notificationClicked(const int peer, const int mid);

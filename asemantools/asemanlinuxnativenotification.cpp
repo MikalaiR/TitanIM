@@ -8,11 +8,38 @@
 
 #include "asemanlinuxnativenotification.h"
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusArgument>
-#include <QCoreApplication>
-#include <QDebug>
+iiibiiay::iiibiiay(QPixmap& pixmap)
+{
+    QImage img = pixmap.toImage();
+    if(img.format()!=QImage::Format_ARGB32)
+    img = img.convertToFormat(QImage::Format_ARGB32);
+    width = img.width();
+    height = img.height();
+    rowstride = img.bytesPerLine();
+    hasAlpha = img.hasAlphaChannel();
+    channels = img.isGrayscale()?1:hasAlpha?4:3;
+    bitsPerSample = img.depth()/channels;
+    image.append( (char*)img.rgbSwapped().bits(), img.byteCount() );
+}
+iiibiiay::iiibiiay(){}
+const int iiibiiay::id(qDBusRegisterMetaType<iiibiiay>());
+
+QDBusArgument &operator<<(QDBusArgument &a, const iiibiiay &i)
+{
+    a.beginStructure();
+    a << i.width<<i.height<<i.rowstride<<i.hasAlpha<<i.bitsPerSample<<i.channels<<i.image;
+    a.endStructure();
+    return a;
+}
+
+const QDBusArgument & operator >>(const QDBusArgument &a,  iiibiiay &i)
+{
+    a.beginStructure();
+    a >> i.width>> i.height>> i.rowstride>> i.hasAlpha>> i.bitsPerSample>> i.channels>> i.image;
+    a.endStructure();
+    return a;
+}
+
 
 class AsemanLinuxNativeNotificationPrivate
 {
@@ -47,16 +74,25 @@ QColor AsemanLinuxNativeNotification::color() const
     return p->color;
 }
 
-uint AsemanLinuxNativeNotification::sendNotify(const QString &title, const QString &body, const QString &icon, uint replace_id, int timeOut, const QStringList &actions)
+uint AsemanLinuxNativeNotification::sendNotify(const QString &title, const QString &body, const QVariant &icon, uint replace_id, int timeOut, const QStringList &actions)
 {
     QVariantList args;
     args << QCoreApplication::applicationName();
     args << replace_id;
-    args << icon;
+    args << (icon.type() == QVariant::Type::String ? icon.toString() : "TitanIM");
     args << title;
     args << body;
-    args << QVariant::fromValue<QStringList>(actions) ;
-    args << QVariant::fromValue<QVariantMap>(QVariantMap());
+    args << QVariant::fromValue<QStringList>(actions);
+
+    QVariantMap hints;
+    if (icon.type() == QVariant::Type::Pixmap)
+    {
+        QPixmap px(qvariant_cast<QPixmap>(icon));
+        hints.insert("image-data", QVariant(iiibiiay::id).fromValue(iiibiiay(px)));
+    }
+
+    args << QVariant::fromValue<QVariantMap>(hints);
+
     args << timeOut;
 
     QDBusMessage omsg = QDBusMessage::createMethodCall( DBUS_SERVICE , DBUS_PATH , DBUS_OBJECT , DBUS_NOTIFY );

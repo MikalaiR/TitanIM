@@ -31,7 +31,7 @@ QColor AsemanNativeNotification::color() const
     return p->color;
 }
 
-uint AsemanNativeNotification::sendNotify(const QString &title, const QString &body, const QString &icon, uint replace_id, int timeOut, const QStringList &actions)
+uint AsemanNativeNotification::sendNotify(const QString &title, const QString &body, const QVariant &icon, uint replace_id, int timeOut, const QStringList &actions)
 {
     uint result = replace_id;
 
@@ -53,7 +53,7 @@ uint AsemanNativeNotification::sendNotify(const QString &title, const QString &b
 
     item->setTitle(title);
     item->setBody(body);
-    item->setIcon(icon);
+    item->setIcon(icon.toString());
     item->setActions(actions);
     item->setTimeOut(timeOut);
     item->show();
