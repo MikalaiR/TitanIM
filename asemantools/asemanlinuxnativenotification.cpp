@@ -11,15 +11,16 @@
 iiibiiay::iiibiiay(QPixmap& pixmap)
 {
     QImage img = pixmap.toImage();
-    if(img.format()!=QImage::Format_ARGB32)
-    img = img.convertToFormat(QImage::Format_ARGB32);
+    if(img.format() != QImage::Format_ARGB32)
+        img = img.convertToFormat(QImage::Format_ARGB32);
+
     width = img.width();
     height = img.height();
     rowstride = img.bytesPerLine();
     hasAlpha = img.hasAlphaChannel();
-    channels = img.isGrayscale()?1:hasAlpha?4:3;
+    channels = img.isGrayscale() ? 1 : (hasAlpha ? 4 : 3);
     bitsPerSample = img.depth()/channels;
-    image.append( (char*)img.rgbSwapped().bits(), img.byteCount() );
+    image.append( reinterpret_cast<char*>(img.rgbSwapped().bits()), img.byteCount() );
 }
 iiibiiay::iiibiiay(){}
 const int iiibiiay::id(qDBusRegisterMetaType<iiibiiay>());
@@ -27,7 +28,7 @@ const int iiibiiay::id(qDBusRegisterMetaType<iiibiiay>());
 QDBusArgument &operator<<(QDBusArgument &a, const iiibiiay &i)
 {
     a.beginStructure();
-    a << i.width<<i.height<<i.rowstride<<i.hasAlpha<<i.bitsPerSample<<i.channels<<i.image;
+    a << i.width << i.height << i.rowstride << i.hasAlpha << i.bitsPerSample << i.channels << i.image;
     a.endStructure();
     return a;
 }
@@ -35,7 +36,7 @@ QDBusArgument &operator<<(QDBusArgument &a, const iiibiiay &i)
 const QDBusArgument & operator >>(const QDBusArgument &a,  iiibiiay &i)
 {
     a.beginStructure();
-    a >> i.width>> i.height>> i.rowstride>> i.hasAlpha>> i.bitsPerSample>> i.channels>> i.image;
+    a >> i.width>> i.height >> i.rowstride >> i.hasAlpha >> i.bitsPerSample >> i.channels >> i.image;
     a.endStructure();
     return a;
 }
@@ -79,15 +80,16 @@ uint AsemanLinuxNativeNotification::sendNotify(const QString &title, const QStri
     QVariantList args;
     args << QCoreApplication::applicationName();
     args << replace_id;
-    args << (icon.type() == QVariant::Type::String ? icon.toString() : "TitanIM");
+    args << "TitanIM64";
     args << title;
     args << body;
     args << QVariant::fromValue<QStringList>(actions);
 
     QVariantMap hints;
+    hints.insert("category", "im");
     if (icon.type() == QVariant::Type::Pixmap)
     {
-        QPixmap px(qvariant_cast<QPixmap>(icon));
+        QPixmap px(qvariant_cast<QPixmap>(icon).scaledToWidth(50, Qt::FastTransformation));
         hints.insert("image-data", QVariant(iiibiiay::id).fromValue(iiibiiay(px)));
     }
 
