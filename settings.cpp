@@ -43,8 +43,7 @@ Settings::Settings()
     #if defined(Q_OS_MAC)
     _dataDir = QCoreApplication::applicationDirPath() + "/../Resources/data";
     #elif defined(Q_OS_UNIX)
-    _dataDir = QString("/opt/%1/%2/data").arg(QCoreApplication::organizationName(),
-                                              QCoreApplication::applicationName().toLower());
+    _dataDir = QString("/opt/%1/data").arg(QCoreApplication::applicationName().toLower());
     #elif defined(Q_OS_WIN)
     _dataDir = QCoreApplication::applicationDirPath() + "/data";
     #else
