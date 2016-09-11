@@ -1,11 +1,13 @@
 [Desktop Entry]
 Encoding=UTF-8
-Version=2.0
+Version=2.1
 Type=Application
 Terminal=false
 Name=TitanIM
+Comment=Conversations in VK social network
 Exec=/opt/titanim/bin/titanim
 Icon=TitanIM64
 X-Window-Icon=
 X-HildonDesk-ShowInToolbar=true
 X-Osso-Type=application/x-executable
+Categories=Network;InstantMessaging;Qt;
