@@ -62,20 +62,12 @@ Item {
         maximumHeight: height
         minimumWidth: width
         minimumHeight: height
-        flags: Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint //| Qt.ToolTip
+        flags: Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.ToolTip
         visible: box.activeFocus
-        color: "transparent"
-
-        BorderImage {
-            id: borderImage
-            anchors.fill: parent
-            border { left: 4; top: 4; right: 45; bottom: 15 }
-            source: "images/emoticons_popover.png"
-        }
 
         Item {
             id: box
-            anchors.fill: borderImage
+            anchors.fill: parent
             anchors.margins: 1
             anchors.bottomMargin: rowEmojiBlock.height + 13
             clip: true

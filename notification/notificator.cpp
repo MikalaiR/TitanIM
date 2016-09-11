@@ -31,14 +31,17 @@ void Notificator::destroy()
         delete aInstance, aInstance = 0;
 }
 
-Notificator::Notificator()
+Notificator::Notificator() : p(new AsemanNotification), player(new QMediaPlayer)
 {
 #if defined(Q_OS_MAC)
     connect(MacNotification::instance(), SIGNAL(notificationClicked(int,int)), this, SIGNAL(notificationClicked(int,int)));
     connect(MacNotification::instance(), SIGNAL(notificationReplied(int,int,QString)), this, SIGNAL(notificationReplied(int,int,QString)));
+#else
+    connect(p.get(), SIGNAL(notifyAction(uint, QString)), this, SLOT(notifyAction(uint, const QString &)));
 #endif
-    p = new AsemanNotification();
-    connect(p, SIGNAL(notifyAction(uint, QString)), this, SLOT(notifyAction(uint, const QString &)));
+
+    player->setMedia(QUrl::fromLocalFile(Settings::instance()->dataDir() + "/sounds/message.wav"));
+    player->setVolume(100);
 }
 
 Notificator::~Notificator()
@@ -52,8 +55,6 @@ void Notificator::showNotification(const int peer, const int mid, const QString 
 {
 #if defined(Q_OS_MAC)
     MacNotification::instance()->showNotification(peer, mid, title, message, withReply, pixmap);
-#elif defined(Q_OS_WIN)
-    //todo win
 #else
     uint id = p->sendNotify(title, message, QVariant::fromValue<QPixmap>(pixmap), 0, -1, QStringList({"default", "Open"}));
     nl[id] = { peer, mid };
@@ -62,7 +63,7 @@ void Notificator::showNotification(const int peer, const int mid, const QString 
 
 void Notificator::playSoundMessageIn()
 {
-    QSound::play(Settings::instance()->dataDir() + "/sounds/message.wav");
+    player->play();
 }
 
 void Notificator::setBadge(const int count)
@@ -77,8 +78,8 @@ void Notificator::setBadge(const int count)
 void Notificator::notifyAction(uint id, const QString &act)
 {
     if (act != "default") return;
-    auto it = nl.find(id);
 
+    auto it = nl.find(id);
     if (it != nl.end())
     {
         int peer = it->first;
