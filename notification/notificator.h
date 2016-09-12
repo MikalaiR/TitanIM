@@ -21,7 +21,14 @@
 #include "settings.h"
 #include <memory>
 
+#if defined(Q_OS_LINUX)
 #define LINUX_NATIVE_ASEMAN_NOTIFICATION
+#elif defined(Q_OS_MAC)
+#define MAC_NATIVE_ASEMAN_NOTIFICATION
+#else
+#define NATIVE_ASEMAN_NOTIFICATION
+#endif
+
 #include "asemantools/asemannotification.h"
 
 class Notificator : public QObject

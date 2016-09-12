@@ -53,7 +53,7 @@ uint AsemanNativeNotification::sendNotify(const QString &title, const QString &b
 
     item->setTitle(title);
     item->setBody(body);
-    item->setIcon(icon.toString());
+    item->setIcon(icon);
     item->setActions(actions);
     item->setTimeOut(timeOut);
     item->show();

@@ -193,9 +193,12 @@ void AsemanNativeNotificationItem::setBody(const QString &body)
     p->body_lbl->setText(body.left(100) + "...");
 }
 
-void AsemanNativeNotificationItem::setIcon(const QString &icon)
+void AsemanNativeNotificationItem::setIcon(const QVariant &icon)
 {
-    p->icon_lbl->setPixmap( QPixmap(icon) );
+    if (icon.type() == QVariant::Type::Pixmap)
+        p->icon_lbl->setPixmap( qvariant_cast<QPixmap>(icon) );
+    else
+        p->icon_lbl->setPixmap( QPixmap(icon.toString()) );
 }
 
 void AsemanNativeNotificationItem::setTimeOut(int timeOut)

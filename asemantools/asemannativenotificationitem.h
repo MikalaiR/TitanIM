@@ -20,7 +20,7 @@ public:
     void setActions(const QStringList & actions);
     void setTitle(const QString &title);
     void setBody(const QString &body);
-    void setIcon(const QString &icon);
+    void setIcon(const QVariant &icon);
     void setTimeOut(int timeOut);
 
 signals:

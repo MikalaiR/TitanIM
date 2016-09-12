@@ -253,7 +253,7 @@ Rectangle {
 
     Aseman.SystemTray
     {
-        icon: dialogsHandler.unreadDialogs ? "images/logo_vk_msg.png" : "images/logo_vk.png"
+        icon: "images/logo_vk_tray.png"
         visible: true
         property ApplicationWindow mainTWindow
 
@@ -278,6 +278,10 @@ Rectangle {
                 break
             }
         }
+        badgeCount: dialogsHandler.unreadDialogs
+        badgeFillColor: "#888888"
+        badgeTextColor: "#FFFFFF"
+
     }
 
 
