@@ -21,7 +21,7 @@ RosterModel::RosterModel(QObject *parent) :
 
     _rosterPacket = new RosterPacket(Client::instance()->connection());
     _rosterPacket->setNeedFavorites(true);
-    connect(_rosterPacket, SIGNAL(roster(const RosterPacket*,const ProfileList)), SLOT(onRosterLoaded(const RosterPacket*,const ProfileList)));
+    connect(_rosterPacket, &RosterPacket::roster, this, &RosterModel::onRosterLoaded);
 }
 
 RosterModel::~RosterModel()

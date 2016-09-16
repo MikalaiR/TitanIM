@@ -15,16 +15,16 @@
 
 Authorization::Authorization()
 {
-    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
-    connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
-    connect(Client::instance()->connection(), SIGNAL(sessionChanged(int,QString,QString)), this, SLOT(saveSession(int,QString,QString)));
+    connect(Client::instance()->connection(), &Connection::authorized, this, &Authorization::onAuthorized);
+    connect(Client::instance()->connection(), &Connection::logout, this, &Authorization::onLogout);
+    connect(Client::instance()->connection(), &Connection::error, this, &Authorization::onError);
+    connect(Client::instance()->connection(), &Connection::sessionChanged, this, &Authorization::saveSession);
 
-    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SIGNAL(authorized(int,QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SIGNAL(logout(int)));
-    connect(Client::instance()->connection(), SIGNAL(captcha(QString,QString)), this, SIGNAL(captcha(QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(validation(QString)), this, SIGNAL(validation(QString)));
-    connect(Client::instance()->connection(), SIGNAL(verification(QString,QString,bool,QString)), this, SIGNAL(verification(QString,QString,bool,QString)));
+    connect(Client::instance()->connection(), &Connection::authorized, this, &Authorization::authorized);
+    connect(Client::instance()->connection(), &Connection::logout, this, &Authorization::logout);
+    connect(Client::instance()->connection(), &Connection::captcha, this, &Authorization::captcha);
+    connect(Client::instance()->connection(), &Connection::validation, this, &Authorization::validation);
+    connect(Client::instance()->connection(), &Connection::verification, this, &Authorization::verification);
 }
 
 void Authorization::connectToVk()

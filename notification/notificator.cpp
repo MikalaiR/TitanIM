@@ -37,7 +37,7 @@ Notificator::Notificator() : p(new AsemanNotification), player(new QMediaPlayer)
     connect(MacNotification::instance(), SIGNAL(notificationClicked(int,int)), this, SIGNAL(notificationClicked(int,int)));
     connect(MacNotification::instance(), SIGNAL(notificationReplied(int,int,QString)), this, SIGNAL(notificationReplied(int,int,QString)));
 #else
-    connect(p.get(), SIGNAL(notifyAction(uint, QString)), this, SLOT(notifyAction(uint, const QString &)));
+    connect(p.get(), &AsemanNotification::notifyAction, this, &Notificator::notifyAction);
 #endif
 
     player->setMedia(QUrl::fromLocalFile(Settings::instance()->dataDir() + "/sounds/message.wav"));

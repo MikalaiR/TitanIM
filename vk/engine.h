@@ -38,7 +38,7 @@ private:
     QList<PhotoItem> _currentPhotosProfile;
 
 protected:
-    void getSelfProfile();
+    Q_INVOKABLE void getSelfProfile();
 
 public slots:
     int uid() const;

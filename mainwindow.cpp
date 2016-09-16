@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWindow *parent) :
     setDefaultFont();
     engine()->setNetworkAccessManagerFactory(new NetworkAccessManagerFactory);
 
-    connect(Notificator::instance(), SIGNAL(notificationClicked(int,int)), SLOT(notificationClicked(int,int)));
-    connect(Notificator::instance(), SIGNAL(notificationReplied(int,int,QString)), SLOT(notificationReplied(int,int,QString)));
+    connect(Notificator::instance(), &Notificator::notificationClicked, this, &MainWindow::notificationClicked);
+    connect(Notificator::instance(), &Notificator::notificationReplied, this, &MainWindow::notificationReplied);
 
     QString emoticonsTheme = Settings::instance()->dataDir() + "/smilies/default/"; //todo
     QString emoticonsRecent = Settings::instance()->configDir() + "/recentEmojis";
@@ -34,18 +34,18 @@ MainWindow::MainWindow(QWindow *parent) :
 
     authorization = new Authorization();
 
-    connect(authorization, SIGNAL(showAuthPage()), this, SLOT(showAuthPage()));
-    connect(authorization, SIGNAL(showMainPage()), this, SLOT(showMainPage()));
+    connect(authorization, &Authorization::showAuthPage, this, &MainWindow::showAuthPage);
+    connect(authorization, &Authorization::showMainPage, this, &MainWindow::showMainPage);
 
-    connect(this, SIGNAL(activeChanged()), this, SLOT(onActiveChanged()));
+    connect(this, &MainWindow::activeChanged, this, &MainWindow::onActiveChanged);
 
-    connect(Client::instance()->connection(), SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
-    connect(Client::instance()->connection(), SIGNAL(logout(int)), this, SLOT(onLogout(int)));
-    connect(Client::instance()->connection(), SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
+    connect(Client::instance()->connection(), &Connection::authorized, this, &MainWindow::onAuthorized);
+    connect(Client::instance()->connection(), &Connection::logout, this, &MainWindow::onLogout);
+    connect(Client::instance()->connection(), &Connection::error, this, &MainWindow::onError);
 
-    connect(Client::instance()->longPoll(), SIGNAL(started()), this, SLOT(onLongPollStarted()));
-    connect(Client::instance()->longPoll(), SIGNAL(stopped()), this, SLOT(onLongPollStopped()));
-    connect(Client::instance()->longPoll(), SIGNAL(rebuild()), this, SLOT(onRebuild()));
+    connect(Client::instance()->longPoll(), &LongPoll::started, this, &MainWindow::onLongPollStarted);
+    connect(Client::instance()->longPoll(), &LongPoll::stopped, this, &MainWindow::onLongPollStopped);
+    connect(Client::instance()->longPoll(), &LongPoll::rebuild, this, &MainWindow::onRebuild);
 
     dialogsHandler = new DialogsHandler();
     rosterHandler = new RosterHandler();

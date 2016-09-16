@@ -27,7 +27,7 @@ Client *Client::instance()
 void Client::destroy()
 {
     if (aInstance)
-        delete aInstance, aInstance = 0;
+        delete aInstance, aInstance = nullptr;
 }
 
 Client::Client()

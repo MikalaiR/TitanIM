@@ -6,7 +6,8 @@ QT += network \
       multimedia \
       webengine \
       widgets \
-      dbus
+      dbus \
+      quick 
 
 TARGET = titanim
 TEMPLATE = app

@@ -21,27 +21,19 @@ Chat::Chat()
     _outAttachments = 0;
 
     _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
-    connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
-    connect(_sendMessageHandler, SIGNAL(successfullyMessageSent(int,int)), this, SLOT(onSuccessfullyMessageSent(int,int)));
-    connect(_sendMessageHandler, SIGNAL(unsuccessfullyMessageSent(int)), this, SLOT(onUnsuccessfullyMessageSent(int)));
+    connect(_sendMessageHandler, &SendMessageHandler::sending, this, &Chat::onMessageSending);
+    connect(_sendMessageHandler, &SendMessageHandler::successfullyMessageSent, this, &Chat::onSuccessfullyMessageSent);
+    connect(_sendMessageHandler, &SendMessageHandler::unsuccessfullyMessageSent, this, &Chat::onUnsuccessfullyMessageSent);
 }
 
-Chat::Chat(const DialogItem dialog)
+Chat::Chat(const DialogItem dialog) : Chat()
 {
     _dialog = dialog;
     connect(_dialog.data(), SIGNAL(newTyping(TypingItem)), this, SLOT(addTyping(TypingItem)));
 
     _model = new ChatModel(_dialog, this);
-    connect(_model, SIGNAL(rowsAllReplaced()), this, SLOT(onModelRowsAllReplaced()));
-    connect(_model, SIGNAL(selectedCountChanged(int)), this, SIGNAL(selectedCountChanged(int)));
-
-    _countUnsent = 0;
-    _outAttachments = 0;
-
-    _sendMessageHandler = new SendMessageHandler(Client::instance()->connection());
-    connect(_sendMessageHandler, SIGNAL(sending(int)), this, SLOT(onMessageSending(int)));
-    connect(_sendMessageHandler, SIGNAL(successfullyMessageSent(int,int)), this, SLOT(onSuccessfullyMessageSent(int,int)));
-    connect(_sendMessageHandler, SIGNAL(unsuccessfullyMessageSent(int)), this, SLOT(onUnsuccessfullyMessageSent(int)));
+    connect(_model, &ChatModel::rowsAllReplaced, this, &Chat::onModelRowsAllReplaced);
+    connect(_model, &ChatModel::selectedCountChanged, this, &Chat::selectedCountChanged);
 }
 
 Chat::~Chat()
