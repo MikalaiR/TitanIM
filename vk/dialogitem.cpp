@@ -22,9 +22,9 @@ DialogItemPrivate::DialogItemPrivate()
     _isCurrent = false;
     _isLoading = false;
 
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(displayNameChanged())); //todo
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(decorationChanged())); //todo
-    connect(this, SIGNAL(propertyChanged(int,QString)), this, SIGNAL(descriptionChanged())); //todo
+    connect(this, &DialogItemPrivate::propertyChanged, this, &DialogItemPrivate::displayNameChanged); //todo
+    connect(this, &DialogItemPrivate::propertyChanged, this, &DialogItemPrivate::decorationChanged); //todo
+    connect(this, &DialogItemPrivate::propertyChanged, this, &DialogItemPrivate::descriptionChanged); //todo
 }
 
 DialogItemPrivate::~DialogItemPrivate()
@@ -73,7 +73,7 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
     {
         if (_profile)
         {
-            disconnect(_profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
+            disconnect(_profile.data(), &ProfileItemPrivate::propertyChanged, this, &DialogItemPrivate::onProfilePropertyChanged);
         }
 
         _profile = profile;
@@ -83,7 +83,7 @@ void DialogItemPrivate::setProfile(const ProfileItem profile)
             _id = _profile->id();
         }
 
-        connect(profile.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onProfilePropertyChanged(int,QString)));
+        connect(profile.data(), &ProfileItemPrivate::propertyChanged, this, &DialogItemPrivate::onProfilePropertyChanged);
         emitPropertyChanged("profile");
     }
 }
@@ -99,7 +99,7 @@ void DialogItemPrivate::setMessage(const MessageItem message)
     {
         if (_message)
         {
-            disconnect(_message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onMessagePropertyChanged(int,QString)));
+            disconnect(_message.data(), &MessageItemPrivate::propertyChanged, this, &DialogItemPrivate::onMessagePropertyChanged);
         }
 
         _message = message;
@@ -118,7 +118,7 @@ void DialogItemPrivate::setMessage(const MessageItem message)
             _typingHandler->stop(message->uid());
         }
 
-        connect(message.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onMessagePropertyChanged(int,QString)));
+        connect(message.data(), &MessageItemPrivate::propertyChanged, this, &DialogItemPrivate::onMessagePropertyChanged);
         emitPropertyChanged("message");
     }
 }
@@ -135,7 +135,7 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
     {
         if (_groupChatHandler)
         {
-            disconnect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
+            disconnect(_groupChatHandler, &GroupChatHandler::propertyChanged, this, &DialogItemPrivate::onGroupChatPropertyChanged);
             delete _groupChatHandler;
         }
 
@@ -143,7 +143,7 @@ void DialogItemPrivate::setGroupChatHandler(GroupChatHandler *groupChatHandler)
 
         _id = groupChatHandler->id();
 
-        connect(_groupChatHandler, SIGNAL(propertyChanged(int,QString)), this, SLOT(onGroupChatPropertyChanged(int,QString)));
+        connect(_groupChatHandler, &GroupChatHandler::propertyChanged, this, &DialogItemPrivate::onGroupChatPropertyChanged);
         emitPropertyChanged("groupChat");
     }
 }
@@ -267,7 +267,7 @@ void DialogItemPrivate::getAllFields(Connection *connection, const bool want)
     packet->addParam("preview_length", 50);
     packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &DialogItemPrivate::loadFinished);
     connection->appendQuery(packet);
 }
 
@@ -279,7 +279,7 @@ void DialogItemPrivate::getLastMessage(Connection *connection)
     setIsLoading(true);
 
     HistoryPacket *historyPacket = new HistoryPacket(connection);
-    connect(historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onGetMessageFinished(const HistoryPacket*,int,MessageList)));
+    connect(historyPacket, &HistoryPacket::history, this, &DialogItemPrivate::onGetMessageFinished);
 
     historyPacket->load(_id, 0, 1);
 }
@@ -289,8 +289,8 @@ void DialogItemPrivate::typing(const int uid)
     if (!_typingHandler)
     {
         _typingHandler = new TypingHandler(this);
-        connect(_typingHandler, SIGNAL(activeChanged(bool)), this, SLOT(onTypingActiveChanged(bool)));
-        connect(_typingHandler, SIGNAL(newTyping(TypingItem)), this, SIGNAL(newTyping(TypingItem)));
+        connect(_typingHandler, &TypingHandler::activeChanged, this, &DialogItemPrivate::onTypingActiveChanged);
+        connect(_typingHandler, &TypingHandler::newTyping, this, &DialogItemPrivate::newTyping);
     }
 
     _typingHandler->setTyping(uid);

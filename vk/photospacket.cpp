@@ -25,7 +25,7 @@ void PhotosPacket::getPhotos(const int id, const QString &albumId)
     packet->addParam("owner_id", id);
     packet->addParam("album_id", albumId);
     packet->addParam("rev", 1);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getPhotosFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &PhotosPacket::getPhotosFinished);
     _connection->appendQuery(packet);
 }
 

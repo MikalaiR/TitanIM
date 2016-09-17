@@ -24,7 +24,7 @@ TypingItemPrivate::TypingItemPrivate()
     _timer->setSingleShot(true);
     _timer->setInterval(8000);
 
-    connect(_timer, SIGNAL(timeout()), this, SLOT(onTimerTimeout()));
+    connect(_timer, &QTimer::timeout, this, &TypingItemPrivate::onTimerTimeout);
 
     _timer->start();
 }

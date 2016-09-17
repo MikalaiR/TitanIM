@@ -28,7 +28,7 @@ void UploadDocItem::upload(AttachmentItem item) const
 
         Packet *getUploadServer = new Packet("docs.getUploadServer");
         getUploadServer->setProperty("item", QVariant::fromValue(doc));
-        connect(getUploadServer, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onGetUploadServerFinished(const Packet*,QVariantMap)));
+        connect(getUploadServer, &Packet::finished, this, &UploadDocItem::onGetUploadServerFinished);
         _connection->appendQuery(getUploadServer);
     }
 }
@@ -41,8 +41,8 @@ void UploadDocItem::onGetUploadServerFinished(const Packet *sender, const QVaria
 
     UploadFile *uploadFile = new UploadFile(this, 10, 90);
     uploadFile->setProperty("item", QVariant::fromValue(doc));
-    connect(uploadFile, SIGNAL(finished(QByteArray)), this, SLOT(onUploadFileFinished(QByteArray)));
-    connect(uploadFile, SIGNAL(uploadProgress(int)), doc.data(), SLOT(setUploadProgress(int)));
+    connect(uploadFile, &UploadFile::finished, this, &UploadDocItem::onUploadFileFinished);
+    connect(uploadFile, &UploadFile::uploadProgress, doc.data(), &DocItemPrivate::setUploadProgress);
     uploadFile->upload(uploadUrl, doc->url().toLocalFile(), "file", _manager);
 
     emit nextItem();
@@ -58,7 +58,7 @@ void UploadDocItem::onUploadFileFinished(const QByteArray &result)
     Packet *packet = new Packet("docs.save");
     packet->addParam("file", response.value("file").toString());
     packet->setProperty("item", QVariant::fromValue(doc));
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSaveMessagesDocFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &UploadDocItem::onSaveMessagesDocFinished);
 
     _connection->appendQuery(packet);
 

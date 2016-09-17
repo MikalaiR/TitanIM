@@ -28,7 +28,7 @@ void UploadAudioItem::upload(AttachmentItem item) const
 
         Packet *getUploadServer = new Packet("audio.getUploadServer");
         getUploadServer->setProperty("item", QVariant::fromValue(audio));
-        connect(getUploadServer, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onGetUploadServerFinished(const Packet*,QVariantMap)));
+        connect(getUploadServer, &Packet::finished, this, &UploadAudioItem::onGetUploadServerFinished);
         _connection->appendQuery(getUploadServer);
     }
 }
@@ -41,8 +41,8 @@ void UploadAudioItem::onGetUploadServerFinished(const Packet *sender, const QVar
 
     UploadFile *uploadFile = new UploadFile(this, 10, 90);
     uploadFile->setProperty("item", QVariant::fromValue(audio));
-    connect(uploadFile, SIGNAL(finished(QByteArray)), this, SLOT(onUploadFileFinished(QByteArray)));
-    connect(uploadFile, SIGNAL(uploadProgress(int)), audio.data(), SLOT(setUploadProgress(int)));
+    connect(uploadFile, &UploadFile::finished, this, &UploadAudioItem::onUploadFileFinished);
+    connect(uploadFile, &UploadFile::uploadProgress, audio.data(), &AudioItemPrivate::setUploadProgress);
     uploadFile->upload(uploadUrl, audio->url().toLocalFile(), "file", _manager);
 
     emit nextItem();
@@ -61,8 +61,8 @@ void UploadAudioItem::onUploadFileFinished(const QByteArray &result)
     packet->addParam("audio", response.value("audio").toString());
     packet->addParam("hash", response.value("hash").toString());
     packet->setProperty("item", QVariant::fromValue(audio));
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSaveMessagesAudioFinished(const Packet*,QVariantMap)));
-    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(onSaveMessagesAudioError(const Packet*,const ErrorResponse*)));
+    connect(packet, &Packet::finished, this, &UploadAudioItem::onSaveMessagesAudioFinished);
+    connect(packet, &Packet::error, this, &UploadAudioItem::onSaveMessagesAudioError);
 
     _connection->appendQuery(packet);
 

@@ -51,7 +51,7 @@ void UploadFile::upload(const QUrl &url, const QString &fileName, const QString 
     QNetworkRequest request(url);
     QNetworkReply *networkReply = nam->post(request, multiPart);
 
-    auto uploadFinished = [=]()
+    connect(networkReply, &QNetworkReply::finished, [=]()
     {
         file->close();
 
@@ -70,10 +70,9 @@ void UploadFile::upload(const QUrl &url, const QString &fileName, const QString 
         networkReply->deleteLater();
 
         emit finished(result);
-    };
+    });
 
-    connect(networkReply, &QNetworkReply::finished, uploadFinished);
-    connect(networkReply, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(uploadProgressHandler(qint64,qint64)));
+    connect(networkReply, &QNetworkReply::uploadProgress, this, &UploadFile::uploadProgressHandler);
 }
 
 void UploadFile::uploadProgressHandler(qint64 bytesSent, qint64 bytesTotal)

@@ -16,15 +16,15 @@
 PushSettings::PushSettings(Connection *connection)
 {
     _connection = connection;
-    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
-    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
+    connect(_connection, &Connection::authorized, this, &PushSettings::onAuthorized);
+    connect(_connection, &Connection::logout, this, &PushSettings::onLogout);
 }
 
 void PushSettings::getSettings()
 {
     Packet *packet = new Packet("account.getPushSettings");
     packet->addParam("device_id", "titanim_f883acd927af5ff1"); //todo
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onGetSettings(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &PushSettings::onGetSettings);
     _connection->appendQuery(packet);
 }
 

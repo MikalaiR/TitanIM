@@ -40,7 +40,7 @@ void RosterPacket::load(const int offset, const int count)
     packet->addParam("count", _count);
     packet->addParam("order", "name");
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &RosterPacket::loadFinished);
     _connection->appendQuery(packet);
 }
 

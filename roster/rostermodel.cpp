@@ -17,7 +17,7 @@ RosterModel::RosterModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _roster = ProfileList::create();
-    connect(_roster.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+    connect(_roster.data(), &ProfileListPrivate::itemChanged, this, &RosterModel::onItemChanged);
 
     _rosterPacket = new RosterPacket(Client::instance()->connection());
     _rosterPacket->setNeedFavorites(true);

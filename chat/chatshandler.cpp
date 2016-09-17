@@ -17,12 +17,12 @@ ChatsHandler::ChatsHandler()
 {
     LongPoll *longPoll = Client::instance()->longPoll();
 
-    connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
-    connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
-    connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
-    connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
-    connect(longPoll, SIGNAL(obsoleteFriendsOnline()), this, SLOT(onObsoleteFriendsOnline()));
-    connect(longPoll, SIGNAL(rebuild()), this, SLOT(onRebuild()));
+    connect(longPoll, &LongPoll::messageInAdded, this, &ChatsHandler::onLongPollMessageInAdded);
+    connect(longPoll, &LongPoll::messageOutAdded, this, &ChatsHandler::onLongPollMessageOutAdded);
+    connect(longPoll, &LongPoll::messageFlagsSet, this, &ChatsHandler::onMessageFlagsSet);
+    connect(longPoll, &LongPoll::messageFlagsReseted, this, &ChatsHandler::onMessageFlagsReseted);
+    connect(longPoll, &LongPoll::obsoleteFriendsOnline, this, &ChatsHandler::onObsoleteFriendsOnline);
+    connect(longPoll, &LongPoll::rebuild, this, &ChatsHandler::onRebuild);
 }
 
 ChatsHandler::~ChatsHandler()

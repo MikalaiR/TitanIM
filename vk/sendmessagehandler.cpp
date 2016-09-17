@@ -41,8 +41,8 @@ void SendMessageHandler::createUploadAttach()
     if (!_uploadAttachments)
     {
         _uploadAttachments = new UploadAttachments(_connection);
-        connect(_uploadAttachments, SIGNAL(finished()), this, SLOT(sendMessage()));
-        connect(_uploadAttachments, SIGNAL(error()), this, SLOT(uploadAttachmentError()));
+        connect(_uploadAttachments, &UploadAttachments::finished, this, &SendMessageHandler::sendMessage);
+        connect(_uploadAttachments, &UploadAttachments::error, this, &SendMessageHandler::uploadAttachmentError);
     }
 }
 
@@ -50,8 +50,8 @@ void SendMessageHandler::deleteUploadAttach()
 {
     if (_uploadAttachments)
     {
-        disconnect(_uploadAttachments, SIGNAL(finished()), this, SLOT(sendMessage()));
-        disconnect(_uploadAttachments, SIGNAL(error()), this, SLOT(uploadAttachmentError()));
+        disconnect(_uploadAttachments, &UploadAttachments::finished, this, &SendMessageHandler::sendMessage);
+        disconnect(_uploadAttachments, &UploadAttachments::error, this, &SendMessageHandler::uploadAttachmentError);
         _uploadAttachments->deleteLater();
         _uploadAttachments = 0;
     }
@@ -76,7 +76,7 @@ void SendMessageHandler::execSendMessageQuery()
         return;
     }
 
-    connect(message.data(), SIGNAL(deleted(int)), SLOT(onMessageDeleted(int)));
+    connect(message.data(), &MessageItemPrivate::deleted, this, &SendMessageHandler::onMessageDeleted);
 
     if (message->attachments() && message->attachments()->count() > 0)
     {
@@ -93,7 +93,7 @@ void SendMessageHandler::execSendMessageQuery()
 void SendMessageHandler::sendMessage()
 {
     MessageItem message = _messageQuery.dequeue();
-    disconnect(message.data(), SIGNAL(deleted(int)), this, SLOT(onMessageDeleted(int)));
+    disconnect(message.data(), &MessageItemPrivate::deleted, this, &SendMessageHandler::onMessageDeleted);
 
     int internalMid = message->id();
     _messagesInProcessing[internalMid] = message;
@@ -142,8 +142,8 @@ void SendMessageHandler::sendMessage()
 
     packet->addParam("guid", QString::number(message->date().toMSecsSinceEpoch()));
     packet->setId(internalMid);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(sendMessageFinished(const Packet*,QVariantMap)));
-    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(sendMessageError(const Packet*,const ErrorResponse*)));
+    connect(packet, &Packet::finished, this, &SendMessageHandler::sendMessageFinished);
+    connect(packet, &Packet::error, this, &SendMessageHandler::sendMessageError);
     emit sending(internalMid);
     _connection->appendQuery(packet);
 

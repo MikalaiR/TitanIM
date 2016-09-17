@@ -28,7 +28,7 @@ void UploadPhotoItem::upload(AttachmentItem item) const
 
         Packet *getUploadServer = new Packet("photos.getMessagesUploadServer");
         getUploadServer->setProperty("item", QVariant::fromValue(photo));
-        connect(getUploadServer, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onGetUploadServerFinished(const Packet*,QVariantMap)));
+        connect(getUploadServer, &Packet::finished, this, &UploadPhotoItem::onGetUploadServerFinished);
         _connection->appendQuery(getUploadServer);
     }
 }
@@ -41,8 +41,8 @@ void UploadPhotoItem::onGetUploadServerFinished(const Packet *sender, const QVar
 
     UploadFile *uploadFile = new UploadFile(this, 10, 80);
     uploadFile->setProperty("item", QVariant::fromValue(photo));
-    connect(uploadFile, SIGNAL(finished(QByteArray)), this, SLOT(onUploadFileFinished(QByteArray)));
-    connect(uploadFile, SIGNAL(uploadProgress(int)), photo.data(), SLOT(setUploadProgress(int)));
+    connect(uploadFile, &UploadFile::finished, this, &UploadPhotoItem::onUploadFileFinished);
+    connect(uploadFile, &UploadFile::uploadProgress, photo.data(), &PhotoItemPrivate::setUploadProgress);
     uploadFile->upload(uploadUrl, photo->src().toLocalFile(), "photo", _manager);
 
     emit nextItem();
@@ -60,7 +60,7 @@ void UploadPhotoItem::onUploadFileFinished(const QByteArray &result)
     saveMessagesPhoto->addParam("photo", response.value("photo").toString());
     saveMessagesPhoto->addParam("hash", response.value("hash").toString());
     saveMessagesPhoto->setProperty("item", QVariant::fromValue(photo));
-    connect(saveMessagesPhoto, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onSaveMessagesPhotoFinished(const Packet*,QVariantMap)));
+    connect(saveMessagesPhoto, &Packet::finished, this, &UploadPhotoItem::onSaveMessagesPhotoFinished);
 
     photo->setUploadProgress(photo->uploadProgress() + 10);
 

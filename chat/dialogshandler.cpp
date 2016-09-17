@@ -19,7 +19,7 @@ DialogsHandler::DialogsHandler()
     _flagMarkAsRead = false;
 
     _model = new DialogsModel(this);
-    connect(_model, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
+    connect(_model, &DialogsModel::unreadDialogs, this, &DialogsHandler::setUnreadDialogs);
 
     _proxy = new QSortFilterProxyModel(_model);
     _proxy->setDynamicSortFilter(true);
@@ -31,16 +31,16 @@ DialogsHandler::DialogsHandler()
 
     LongPoll *longPoll = Client::instance()->longPoll();
 
-    connect(longPoll, SIGNAL(obsoleteFriendsOnline()), this, SLOT(getCounterUnreadDialogs()));
-    connect(longPoll, SIGNAL(messageInAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageInAdded(int,MessageItem,ProfileItem)));
-    connect(longPoll, SIGNAL(messageOutAdded(int,MessageItem,ProfileItem)), this, SLOT(onLongPollMessageOutAdded(int,MessageItem,ProfileItem)));
-    connect(longPoll, SIGNAL(chatTyping(int,int,int)), this, SLOT(onLongPollChatTyping(int,int,int)));
-    connect(longPoll, SIGNAL(unreadDialogs(int)), this, SLOT(setUnreadDialogs(int)));
-    connect(longPoll, SIGNAL(inMessagesRead(int,int)), this, SLOT(onInMessagesRead(int,int)));
-    connect(longPoll, SIGNAL(outMessagesRead(int,int)), this, SLOT(onOutMessagesRead(int,int)));
-    connect(longPoll, SIGNAL(messageFlagsSet(int,int,int)), this, SLOT(onMessageFlagsSet(int,int,int)));
-    connect(longPoll, SIGNAL(messageFlagsReseted(int,int,int,uint)), this, SLOT(onMessageFlagsReseted(int,int,int,uint)));
-    connect(longPoll, SIGNAL(groupChatUpdated(int,bool)), this, SLOT(onGroupChatUpdated(int,bool)));
+    connect(longPoll, &LongPoll::obsoleteFriendsOnline, this, &DialogsHandler::getCounterUnreadDialogs);
+    connect(longPoll, &LongPoll::messageInAdded, this, &DialogsHandler::onLongPollMessageInAdded);
+    connect(longPoll, &LongPoll::messageOutAdded, this, &DialogsHandler::onLongPollMessageOutAdded);
+    connect(longPoll, &LongPoll::chatTyping, this, &DialogsHandler::onLongPollChatTyping);
+    connect(longPoll, &LongPoll::unreadDialogs, this, &DialogsHandler::setUnreadDialogs);
+    connect(longPoll, &LongPoll::inMessagesRead, this, &DialogsHandler::onInMessagesRead);
+    connect(longPoll, &LongPoll::outMessagesRead, this, &DialogsHandler::onOutMessagesRead);
+    connect(longPoll, &LongPoll::messageFlagsSet, this, &DialogsHandler::onMessageFlagsSet);
+    connect(longPoll, &LongPoll::messageFlagsReseted, this, &DialogsHandler::onMessageFlagsReseted);
+    connect(longPoll, &LongPoll::groupChatUpdated, this, &DialogsHandler::onGroupChatUpdated);
 
     qRegisterMetaType<DialogsModel*>("DialogsModel*");
 
@@ -116,7 +116,7 @@ void DialogsHandler::getCounterUnreadDialogs()
 {
     Packet *packet = new Packet("account.getCounters");
     packet->addParam("filter", "messages");
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onCounterUnreadDialogs(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &DialogsHandler::onCounterUnreadDialogs);
     Client::instance()->connection()->appendQuery(packet);
 }
 

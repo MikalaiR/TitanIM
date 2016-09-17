@@ -33,28 +33,28 @@ void Client::destroy()
 Client::Client()
 {
     _connection = new Connection(clientId, clientSecret);
-    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));
-    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
-    connect(_connection, SIGNAL(error(ErrorResponse::Error,QString,bool,bool)), this, SLOT(onError(ErrorResponse::Error,QString,bool,bool)));
-    connect(_connection, SIGNAL(networkOnlineChanged(bool)), this, SLOT(onNetworkOnlineChanged(bool)));
-    connect(_connection, SIGNAL(validation(QString)), this, SLOT(onValidation()));
-    connect(_connection, SIGNAL(verification(QString,QString,bool,QString)), this, SLOT(onValidation()));
-    connect(_connection, SIGNAL(sessionChanged(int,QString,QString)), this, SLOT(onSessionChanged(int,QString,QString)));
+    connect(_connection, &Connection::authorized, this, &Client::onAuthorized);
+    connect(_connection, &Connection::logout, this, &Client::onLogout);
+    connect(_connection, &Connection::error, this, &Client::onError);
+    connect(_connection, &Connection::networkOnlineChanged, this, &Client::onNetworkOnlineChanged);
+    connect(_connection, &Connection::validation, this, &Client::onValidation);
+    connect(_connection, &Connection::verification, this, &Client::onValidation);
+    connect(_connection, &Connection::sessionChanged, this, &Client::onSessionChanged);
 
     _engine = new Engine(_connection);
     _longPoll = new LongPoll(_connection, _engine);
     _pushSettings = new PushSettings(_connection);
 
-    connect(_longPoll, SIGNAL(userOnline(int)), _engine, SLOT(setUserOnline(int)));
-    connect(_longPoll, SIGNAL(userOffline(int,bool)), _engine, SLOT(setUserOffline(int,bool)));
-    connect(_longPoll, SIGNAL(obsoleteFriendsOnline()), _engine, SLOT(getFriendsOnline()));
-    connect(_longPoll, SIGNAL(silenceModeUpdated(int,bool,uint)), _pushSettings, SLOT(longPollSilenceModeUpdated(int,bool,uint)));
+    connect(_longPoll, &LongPoll::userOnline, _engine, &Engine::setUserOnline);
+    connect(_longPoll, &LongPoll::userOffline, _engine, &Engine::setUserOffline);
+    connect(_longPoll, &LongPoll::obsoleteFriendsOnline, _engine, &Engine::getFriendsOnline);
+    connect(_longPoll, &LongPoll::silenceModeUpdated, _pushSettings, &PushSettings::longPollSilenceModeUpdated);
 
     _authSignup = 0;
 
     _timerOnline = new QTimer(this);
     _timerOnline->setInterval(USER_OFFLINE_AWAY * 1000);
-    connect(_timerOnline, SIGNAL(timeout()), this, SLOT(onKeepOnlineTimerTimeout()));
+    connect(_timerOnline, &QTimer::timeout, this, &Client::onKeepOnlineTimerTimeout);
 }
 
 Client::~Client()

@@ -17,12 +17,12 @@ DialogsModel::DialogsModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _dialogs = DialogList::create();
-    connect(_dialogs.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+    connect(_dialogs.data(), &DialogListPrivate::itemChanged, this, &DialogsModel::onItemChanged);
 
     _dialogsPacket = new DialogsPacket(Client::instance()->connection());
-    connect(_dialogsPacket, SIGNAL(dialogs(const DialogsPacket*,const DialogList)), SLOT(onDialogsLoaded(const DialogsPacket*,const DialogList)));
+    connect(_dialogsPacket, &DialogsPacket::dialogs, this, &DialogsModel::onDialogsLoaded);
 
-    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SLOT(onMuteUserChanged(int,bool)));
+    connect(Client::instance()->pushSettings(), &PushSettings::muteUserChanged, this, &DialogsModel::onMuteUserChanged);
 
     _serverCount = 0;
     _isLoading = false;

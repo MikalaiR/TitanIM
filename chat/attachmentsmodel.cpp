@@ -18,9 +18,9 @@ AttachmentsModel::AttachmentsModel(QObject *parent) :
 {
     _attachments = 0;
 
-    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SIGNAL(attachmentsCountChanged()));
-    connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SIGNAL(attachmentsCountChanged()));
-    connect(this, SIGNAL(modelReset()), this, SIGNAL(attachmentsCountChanged()));
+    connect(this, &AttachmentsModel::rowsInserted, this, &AttachmentsModel::attachmentsCountChanged);
+    connect(this, &AttachmentsModel::rowsRemoved, this, &AttachmentsModel::attachmentsCountChanged);
+    connect(this, &AttachmentsModel::modelReset, this, &AttachmentsModel::attachmentsCountChanged);
 }
 
 void AttachmentsModel::setAttachments(AttachmentList *attachments)
@@ -30,7 +30,7 @@ void AttachmentsModel::setAttachments(AttachmentList *attachments)
 
     if (_attachments)
     {
-        disconnect(_attachments, SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+        disconnect(_attachments, &AttachmentList::itemChanged, this, &AttachmentsModel::onItemChanged);
     }
 
     beginResetModel();
@@ -39,7 +39,7 @@ void AttachmentsModel::setAttachments(AttachmentList *attachments)
 
     if (attachments)
     {
-        connect(attachments, SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+        connect(attachments, &AttachmentList::itemChanged, this, &AttachmentsModel::onItemChanged);
     }
 }
 

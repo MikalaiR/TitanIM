@@ -255,7 +255,6 @@ Rectangle {
     {
         icon: "images/logo_vk_tray.png"
         visible: true
-        property ApplicationWindow mainTWindow
 
         menu: [qsTr("Show"), "", qsTr("Quit")]
 

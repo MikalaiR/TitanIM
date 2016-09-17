@@ -39,10 +39,10 @@ Chats::Chats()
     _isSelectUser = false;
 
     _timerUpdater = new QTimer(this);
-    connect(_timerUpdater, SIGNAL(timeout()), this, SLOT(onTimerUpdaterTimeout()));
+    connect(_timerUpdater, &QTimer::timeout, this, &Chats::onTimerUpdaterTimeout);
     _timerUpdater->start(60000);
 
-    connect(Client::instance()->pushSettings(), SIGNAL(muteUserChanged(int,bool)), SIGNAL(muteUserChanged(int,bool)));
+    connect(Client::instance()->pushSettings(), &PushSettings::muteUserChanged, this, &Chats::muteUserChanged);
 
     qmlRegisterType<Chat>("TitanIM", 2, 0, "Chat");
     qmlRegisterType<DialogItemPrivate>("TitanIM", 2, 0, "DialogItem");
@@ -130,9 +130,9 @@ void Chats::setCurrentChat(const int id)
         int exCurrentChatId = _currentChatId;
         _currentChatId = id;
 
-        disconnect(_chatsHandler->chat(exCurrentChatId), SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
+        disconnect(_chatsHandler->chat(exCurrentChatId), &Chat::outAttachmentsChanged, _currentChatAttachments, &AttachmentsModel::setAttachments);
         _currentChatAttachments->setAttachments(chat->outAttachments());
-        connect(chat, SIGNAL(outAttachmentsChanged(AttachmentList*)), _currentChatAttachments, SLOT(setAttachments(AttachmentList*)));
+        connect(chat, &Chat::outAttachmentsChanged, _currentChatAttachments, &AttachmentsModel::setAttachments);
 
         if (Settings::instance()->loadProfile("chat/autoRead", true).toBool())
         {

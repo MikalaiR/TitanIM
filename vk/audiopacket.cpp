@@ -34,7 +34,7 @@ void AudioPacket::load(const int offset, const int count, const int ownerId, con
         packet->addParam("album_id", albumId);
     }
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &AudioPacket::loadFinished);
     _connection->appendQuery(packet);
 }
 
@@ -49,7 +49,7 @@ void AudioPacket::getAlbums(const int offset, const int count, const int ownerId
         packet->addParam("owner_id", ownerId);
     }
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getAlbumsFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &AudioPacket::getAlbumsFinished);
     _connection->appendQuery(packet);
 }
 
@@ -58,7 +58,7 @@ void AudioPacket::getRecommendations(const int offset, const int count)
     Packet *packet = new Packet("audio.getRecommendations");
     packet->addParam("offset", offset);
     packet->addParam("count", count);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getRecommendationsFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &AudioPacket::getRecommendationsFinished);
     _connection->appendQuery(packet);
 }
 
@@ -67,7 +67,7 @@ void AudioPacket::getPopular(const int offset, const int count)
     Packet *packet = new Packet("audio.getPopular");
     packet->addParam("offset", offset);
     packet->addParam("count", count);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getPopularFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &AudioPacket::getPopularFinished);
     _connection->appendQuery(packet);
 }
 
@@ -79,7 +79,7 @@ void AudioPacket::getSearch(const QString &query, const int offset, const int co
     packet->addParam("search_own", 1);
     packet->addParam("offset", offset);
     packet->addParam("count", count);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(searchFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &AudioPacket::searchFinished);
     _connection->appendQuery(packet);
 }
 

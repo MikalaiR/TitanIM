@@ -16,8 +16,8 @@
 Engine::Engine(Connection *connection)
 {
     _connection = connection;
-    connect(_connection, SIGNAL(authorized(int,QString,QString)), this, SLOT(onAuthorized(int,QString,QString)));//todo
-    connect(_connection, SIGNAL(logout(int)), this, SLOT(onLogout(int)));
+    connect(_connection, &Connection::authorized, this, &Engine::onAuthorized);//todo
+    connect(_connection, &Connection::logout, this, &Engine::onLogout);
 
     _profiles = new QHash<int, ProfileItem>();
     _photosPacket = 0;
@@ -68,7 +68,7 @@ void Engine::getFriendsOnline()
     Packet *packet = new Packet("friends.getOnline");
     packet->setPerishable(true);
     packet->addParam("order", "hints");
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onFriendsOnline(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &Engine::onFriendsOnline);
     _connection->appendQuery(packet);
 }
 
@@ -130,7 +130,7 @@ void Engine::getPhotosProfile(const int uid)
     if (!_photosPacket)
     {
         _photosPacket = new PhotosPacket(_connection);
-        connect(_photosPacket, SIGNAL(photos(int,QList<PhotoItem>)), this, SLOT(onGetPhotosProfile(int,QList<PhotoItem>)));
+        connect(_photosPacket, &PhotosPacket::photos, this, &Engine::onGetPhotosProfile);
     }
 
     _photosPacket->getPhotos(uid, "profile");
@@ -167,7 +167,7 @@ void Engine::banUser(const int id)
     Packet *packet = new Packet("account.banUser");
     packet->setId(id);
     packet->addParam("user_id", id);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onBanUser(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &Engine::onBanUser);
     _connection->appendQuery(packet);
 
     if (_profiles->contains(id))
@@ -181,7 +181,7 @@ void Engine::unbanUser(const int id)
     Packet *packet = new Packet("account.unbanUser");
     packet->setId(id);
     packet->addParam("user_id", id);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onUnbanUser(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &Engine::onUnbanUser);
     _connection->appendQuery(packet);
 
     if (_profiles->contains(id))
@@ -195,7 +195,7 @@ void Engine::addFriend(const int id)
     Packet *packet = new Packet("friends.add");
     packet->setId(id);
     packet->addParam("user_id", id);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onAddFriend(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &Engine::onAddFriend);
     _connection->appendQuery(packet);
 }
 
@@ -204,7 +204,7 @@ void Engine::deleteFriend(const int id)
     Packet *packet = new Packet("friends.delete");
     packet->setId(id);
     packet->addParam("user_id", id);
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onDeleteFriend(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &Engine::onDeleteFriend);
     _connection->appendQuery(packet);
 }
 

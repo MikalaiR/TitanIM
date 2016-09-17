@@ -19,10 +19,10 @@ ChatModel::ChatModel(const DialogItem dialog, QObject *parent) :
     _dialog = dialog;
 
     _messages = MessageList::create();
-    connect(_messages.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+    connect(_messages.data(), &MessageListPrivate::itemChanged, this, &ChatModel::onItemChanged);
 
     _historyPacket = new HistoryPacket(Client::instance()->connection());
-    connect(_historyPacket, SIGNAL(history(const HistoryPacket*,int,MessageList)), this, SLOT(onHistoryLoaded(const HistoryPacket*,int,MessageList)));
+    connect(_historyPacket, &HistoryPacket::history, this, &ChatModel::onHistoryLoaded);
 
     _serverCount = 0;
     _lazyLoad = true;

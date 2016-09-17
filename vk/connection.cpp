@@ -30,11 +30,11 @@ Connection::Connection(const QString &clientId, const QString &clientSecret)
     httpApi = 0;
 
     bearer = new QNetworkConfigurationManager(this);
-    connect(bearer, SIGNAL(onlineStateChanged(bool)), SLOT(onNetworkOnlineChanged(bool)));
+    connect(bearer, &QNetworkConfigurationManager::onlineStateChanged, this, &Connection::onNetworkOnlineChanged);
 
     tooManyRequestsTimer = new QTimer();
     tooManyRequestsTimer->setInterval(700);
-    connect(tooManyRequestsTimer, SIGNAL(timeout()), this, SLOT(onTooManyRequestsTimerTick()));
+    connect(tooManyRequestsTimer, &QTimer::timeout, this, &Connection::onTooManyRequestsTimerTick);
 }
 
 Connection::~Connection()
@@ -52,7 +52,7 @@ void Connection::connectToVk(const QString &username, const QString &password, c
     setHttpsMode(https);
 
     httpApi = new QNetworkAccessManager(this);
-    connect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    connect(httpApi, &QNetworkAccessManager::finished, this, &Connection::apiResponse);
 
     _loginVars.username = username;
     _loginVars.password = password;
@@ -68,7 +68,7 @@ void Connection::connectToVk(const int uid, const QString &token, const QString 
     }
 
     httpApi = new QNetworkAccessManager(this);
-    connect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    connect(httpApi, &QNetworkAccessManager::finished, this, &Connection::apiResponse);
 
     _sessionVars.user_id = uid;
     _sessionVars.access_token = token;
@@ -83,7 +83,7 @@ void Connection::disconnectVk()
 {
     int uid = _sessionVars.user_id;
 
-    disconnect(httpApi, SIGNAL(finished(QNetworkReply*)), this, SLOT(apiResponse(QNetworkReply*)));
+    disconnect(httpApi, &QNetworkAccessManager::finished, this, &Connection::apiResponse);
 
     if (httpApi)
     {
@@ -124,7 +124,7 @@ void Connection::setHttpsMode(const bool isHttps)
 void Connection::getToken(const QString &version)
 {
     httpAuth = new QNetworkAccessManager(this);
-    connect(httpAuth, SIGNAL(finished(QNetworkReply*)), this, SLOT(getTokenFinished(QNetworkReply*)));
+    connect(httpAuth, &QNetworkAccessManager::finished, this, &Connection::getTokenFinished);
 
     QUrlQuery urlQuery;
     urlQuery.addQueryItem("grant_type", _loginVars.grant_type);
@@ -172,8 +172,8 @@ void Connection::checkToken()
     _isProcessing = false;
 
     Packet *packet = new Packet("execute.magic");
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(successfullyToken(const Packet*,QVariantMap)));
-    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(unsuccessfullyToken(const Packet*,const ErrorResponse*)));
+    connect(packet, &Packet::finished, this, &Connection::successfullyToken);
+    connect(packet, &Packet::error, this, &Connection::unsuccessfullyToken);
     appendQuery(packet);
 }
 

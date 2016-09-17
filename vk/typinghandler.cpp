@@ -37,7 +37,7 @@ void TypingHandler::stop(const int uid)
 void TypingHandler::setTyping(const TypingItem typing)
 {
     _typingUserList[typing->uid()] = typing;
-    connect(typing.data(), SIGNAL(activeChanged(int,int,bool)), this, SLOT(onTypingItemActiveChanged(int,int,bool)));
+    connect(typing.data(), &TypingItemPrivate::activeChanged, this, &TypingHandler::onTypingItemActiveChanged);
     updateActive(typing->uid(), typing->isActive());
 
     emit newTyping(typing);

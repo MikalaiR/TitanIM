@@ -18,20 +18,20 @@ UploadAttachments::UploadAttachments(Connection *connection)
     _manager = new QNetworkAccessManager(this);
 
     _uploadPhoto = new UploadPhotoItem(connection, _manager);
-    connect(_uploadPhoto, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
-    connect(_uploadPhoto, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+    connect(_uploadPhoto, &UploadPhotoItem::nextItem, this, &UploadAttachments::onNextUpload);
+    connect(_uploadPhoto, &UploadPhotoItem::finished, this, &UploadAttachments::onUploadFinished);
 
     _uploadDoc = new UploadDocItem(connection, _manager);
-    connect(_uploadDoc, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
-    connect(_uploadDoc, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+    connect(_uploadDoc, &UploadPhotoItem::nextItem, this, &UploadAttachments::onNextUpload);
+    connect(_uploadDoc, &UploadPhotoItem::finished, this, &UploadAttachments::onUploadFinished);
 
     _uploadAudio = new UploadAudioItem(connection, _manager);
-    connect(_uploadAudio, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
-    connect(_uploadAudio, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+    connect(_uploadAudio, &UploadPhotoItem::nextItem, this, &UploadAttachments::onNextUpload);
+    connect(_uploadAudio, &UploadPhotoItem::finished, this, &UploadAttachments::onUploadFinished);
 
     _uploadVideo = new UploadVideoItem(connection, _manager);
-    connect(_uploadVideo, SIGNAL(nextItem()), this, SLOT(onNextUpload()));
-    connect(_uploadVideo, SIGNAL(finished()), this, SLOT(onUploadFinished()));
+    connect(_uploadVideo, &UploadPhotoItem::nextItem, this, &UploadAttachments::onNextUpload);
+    connect(_uploadVideo, &UploadPhotoItem::finished, this, &UploadAttachments::onUploadFinished);
 }
 
 UploadAttachments::~UploadAttachments()

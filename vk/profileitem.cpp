@@ -328,7 +328,7 @@ void ProfileItemPrivate::getAllFields(Connection *connection)
     packet->addParam("user_ids", _id);
     packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &ProfileItemPrivate::loadFinished);
     connection->appendQuery(packet);
 }
 
@@ -337,7 +337,7 @@ void ProfileItemPrivate::getLastActivity(Connection *connection)
     Packet *packet = new Packet("messages.getLastActivity");
     packet->addParam("user_id", _id);
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLastActivityFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &ProfileItemPrivate::getLastActivityFinished);
     connection->appendQuery(packet);
 }
 

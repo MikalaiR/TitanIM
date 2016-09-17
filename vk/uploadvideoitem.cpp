@@ -29,7 +29,7 @@ void UploadVideoItem::upload(AttachmentItem item) const
         Packet *packet = new Packet("video.save");
         packet->addParam("is_private", 1);
         packet->setProperty("item", QVariant::fromValue(video));
-        connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(onVideoSave(const Packet*,QVariantMap)));
+        connect(packet, &Packet::finished, this, &UploadVideoItem::onVideoSave);
         _connection->appendQuery(packet);
     }
 }
@@ -44,8 +44,8 @@ void UploadVideoItem::onVideoSave(const Packet *sender, const QVariantMap &resul
 
     UploadFile *uploadFile = new UploadFile(this, 10, 90);
     uploadFile->setProperty("item", QVariant::fromValue(video));
-    connect(uploadFile, SIGNAL(finished(QByteArray)), this, SLOT(onUploadFileFinished(QByteArray)));
-    connect(uploadFile, SIGNAL(uploadProgress(int)), video.data(), SLOT(setUploadProgress(int)));
+    connect(uploadFile, &UploadFile::finished, this, &UploadVideoItem::onUploadFileFinished);
+    connect(uploadFile, &UploadFile::uploadProgress, video.data(), &VideoItemPrivate::setUploadProgress);
     uploadFile->upload(uploadUrl, video->url().toLocalFile(), "video_file", _manager);
 
     emit nextItem();

@@ -30,11 +30,11 @@ void Audio::destroy()
 Audio::Audio()
 {
     _audioPacket = new AudioPacket(Client::instance()->connection());
-    connect(_audioPacket, SIGNAL(audio(const AudioPacket*,AudioList)), SLOT(getAudioFinished(const AudioPacket*,AudioList)));
-    connect(_audioPacket, SIGNAL(albums(const AudioPacket*,QVector<QPair<int,QString> >)), SLOT(getAlbumsFinished(const AudioPacket*,QVector<QPair<int,QString> >)));
-    connect(_audioPacket, SIGNAL(recommendations(const AudioPacket*,AudioList)), this, SLOT(getRecommendFinished(const AudioPacket*,AudioList)));
-    connect(_audioPacket, SIGNAL(popular(const AudioPacket*,AudioList)), this, SLOT(getPopularFinished(const AudioPacket*,AudioList)));
-    connect(_audioPacket, SIGNAL(search(const AudioPacket*,AudioList)), this, SLOT(searchFinished(const AudioPacket*,AudioList)));
+    connect(_audioPacket, &AudioPacket::audio, this, &Audio::getAudioFinished);
+    connect(_audioPacket, &AudioPacket::albums, this, &Audio::getAlbumsFinished);
+    connect(_audioPacket, &AudioPacket::recommendations, this, &Audio::getRecommendFinished);
+    connect(_audioPacket, &AudioPacket::popular, this, &Audio::getPopularFinished);
+    connect(_audioPacket, &AudioPacket::search, this, &Audio::searchFinished);
 
     _albums = new AudioAlbumsModel(this);
     _model = new AudioModel(this);

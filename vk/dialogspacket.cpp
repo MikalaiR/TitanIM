@@ -35,7 +35,7 @@ void DialogsPacket::load(const int offset, const int count)
     packet->addParam("preview_length", 50);
     packet->addParam("fields", _fields);
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &DialogsPacket::loadFinished);
     _connection->appendQuery(packet);
 }
 

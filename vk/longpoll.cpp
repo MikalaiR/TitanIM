@@ -24,12 +24,12 @@ LongPoll::LongPoll(Connection *connection, Engine *engine)
     _status = Offline;
 
     _httpLongPoll = new QNetworkAccessManager(this);
-    connect(_httpLongPoll, SIGNAL(finished(QNetworkReply*)), this, SLOT(longPollResponse(QNetworkReply*)));
+    connect(_httpLongPoll, &QNetworkAccessManager::finished, this, &LongPoll::longPollResponse);
 
     connect(this, SIGNAL(rebuild()), this, SLOT(onRebuild()));
 
     _timerRequest = new QTimer(this);
-    connect(_timerRequest, SIGNAL(timeout()), this, SLOT(onTimerRequestTimeout()));
+    connect(_timerRequest, &QTimer::timeout, this, &LongPoll::onTimerRequestTimeout);
 }
 
 int LongPoll::wait() const
@@ -77,7 +77,7 @@ void LongPoll::getLongPollServer()
     packet->addParam("use_ssl", QString::number(isHttps));
     packet->addParam("need_pts", 1);
     packet->setProperty("proto", isHttps ? "https://" : "http://");
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollServerFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &LongPoll::getLongPollServerFinished);
     _connection->appendQuery(packet);
 }
 
@@ -127,8 +127,8 @@ void LongPoll::longPoll()
     QNetworkRequest request;
     request.setUrl(requestUrl);
     QNetworkReply *replyLongPoll = _httpLongPoll->get(request);
-    connect(this, SIGNAL(stopped()), replyLongPoll, SLOT(abort()));
-    connect(this, SIGNAL(stopped()), _timerRequest, SLOT(stop()));
+    connect(this, &LongPoll::stopped, replyLongPoll, &QNetworkReply::abort);
+    connect(this, &LongPoll::stopped, _timerRequest, &QTimer::stop);
 
     _timerRequest->start((_longPollVars.wait + 35) * 1000);
 }
@@ -196,8 +196,8 @@ void LongPoll::getLongPollHistory()
     packet->addParam("msgs_limit", 7000);
     packet->addParam("fields", "photo_100,online,last_seen,sex,domain,bdate,city,contacts,friend_status,blacklisted_by_me");
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(getLongPollHistoryFinished(const Packet*,QVariantMap)));
-    connect(packet, SIGNAL(error(const Packet*,const ErrorResponse*)), this, SLOT(getLongPollHistoryError(const Packet*,const ErrorResponse*)));
+    connect(packet, &Packet::finished, this, &LongPoll::getLongPollHistoryFinished);
+    connect(packet, &Packet::error, this, &LongPoll::getLongPollHistoryError);
     _connection->appendQuery(packet);
 }
 

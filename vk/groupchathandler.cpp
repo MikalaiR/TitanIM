@@ -22,7 +22,7 @@ GroupChatHandler::GroupChatHandler(const int chatId) : NotifyPropertyBase()
     _selfProfile = Client::instance()->engine()->getProfile();
 
     _users = ProfileList::create();
-    connect(_users.data(), SIGNAL(itemChanged(int)), this, SLOT(onUserChanged(int)));
+    connect(_users.data(), &ProfileListPrivate::itemChanged, this, &GroupChatHandler::onUserChanged);
 
     _cover.clear();
     _usersCount = 0;
@@ -243,7 +243,7 @@ void GroupChatHandler::getAllFields()
     packet->addParam("chat_id", _chatId);
     packet->addParam("fields", "photo_100,online,last_seen,sex,domain");
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &GroupChatHandler::loadFinished);
     Client::instance()->connection()->appendQuery(packet);
 }
 
