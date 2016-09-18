@@ -16,6 +16,7 @@
 #include <QtWebEngine>
 #include <QSystemTrayIcon>
 #include "mainwindow.h"
+#include "version.h"
 
 int main(int argc, char *argv[])
 {
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
     QtWebEngine::initialize();
 
     QCoreApplication::setApplicationName("TitanIM");
-    QCoreApplication::setApplicationVersion("2.1.0");
+    QCoreApplication::setApplicationVersion(TITANIM_VERSION);
     QCoreApplication::setOrganizationName("rnazarov");
     QCoreApplication::setOrganizationDomain("http://titanim.ru");
 

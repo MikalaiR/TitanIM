@@ -222,7 +222,8 @@ HEADERS += \
     asemantools/asemanmacnativenotification.h \
     asemantools/asemannativenotification.h \
     asemantools/asemannativenotificationitem.h \
-    asemantools/asemannotification.h
+    asemantools/asemannotification.h \
+    version.h
 
 macx:HEADERS += \
     notification/macnotification.h \
