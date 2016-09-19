@@ -19,7 +19,6 @@
 #include <QtMultimedia/QMediaPlayer>
 #include "vk/utils.h"
 #include "settings.h"
-#include <memory>
 
 #if defined(Q_OS_LINUX)
 #define LINUX_NATIVE_ASEMAN_NOTIFICATION
@@ -51,11 +50,13 @@ public slots:
 private:
     QMap<uint, QPair<int, int>> nl;
     static Notificator *aInstance;
-    std::unique_ptr<AsemanNotification> p;
-    std::unique_ptr<QMediaPlayer> player;
+    AsemanNotification *_notificator;
+    QMediaPlayer *_player;
 
 private slots:
-    void notifyAction(uint id, const QString &act);
+    void onNotifyAction(uint id, const QString &act);
+    void onNotifyClosed(uint id);
+    void onNotifyTimedOut(uint id);
 
 signals:
     void notificationClicked(const int peer, const int mid);

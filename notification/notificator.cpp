@@ -31,17 +31,21 @@ void Notificator::destroy()
         delete aInstance, aInstance = 0;
 }
 
-Notificator::Notificator() : p(new AsemanNotification), player(new QMediaPlayer)
+Notificator::Notificator()
 {
+    _notificator = new AsemanNotification(this);
+    _player = new QMediaPlayer(this);
 #if defined(Q_OS_MAC)
     connect(MacNotification::instance(), SIGNAL(notificationClicked(int,int)), this, SIGNAL(notificationClicked(int,int)));
     connect(MacNotification::instance(), SIGNAL(notificationReplied(int,int,QString)), this, SIGNAL(notificationReplied(int,int,QString)));
 #else
-    connect(p.get(), &AsemanNotification::notifyAction, this, &Notificator::notifyAction);
+    connect(_notificator, &AsemanNotification::notifyAction, this, &Notificator::onNotifyAction);
+    connect(_notificator, &AsemanNotification::notifyClosed, this, &Notificator::onNotifyClosed);
+    connect(_notificator, &AsemanNotification::notifyTimedOut, this, &Notificator::onNotifyTimedOut);
 #endif
 
-    player->setMedia(QUrl::fromLocalFile(Settings::instance()->dataDir() + "/sounds/message.wav"));
-    player->setVolume(100);
+    _player->setMedia(QUrl::fromLocalFile(Settings::instance()->dataDir() + "/sounds/message.wav"));
+    _player->setVolume(100);
 }
 
 Notificator::~Notificator()
@@ -56,14 +60,14 @@ void Notificator::showNotification(const int peer, const int mid, const QString 
 #if defined(Q_OS_MAC)
     MacNotification::instance()->showNotification(peer, mid, title, message, withReply, pixmap);
 #else
-    uint id = p->sendNotify(title, message, QVariant::fromValue<QPixmap>(pixmap), 0, -1, QStringList({"default", "Open"}));
+    uint id = _notificator->sendNotify(title, message, QVariant::fromValue<QPixmap>(pixmap), 0, -1, QStringList({"default", "Open"}));
     nl[id] = { peer, mid };
 #endif
 }
 
 void Notificator::playSoundMessageIn()
 {
-    player->play();
+    _player->play();
 }
 
 void Notificator::setBadge(const int count)
@@ -75,16 +79,28 @@ void Notificator::setBadge(const int count)
 #endif
 }
 
-void Notificator::notifyAction(uint id, const QString &act)
+void Notificator::onNotifyAction(uint id, const QString &act)
 {
-    if (act != "default") return;
+    if (act == "default")
+    {
+        auto it = nl.find(id);
+        if (it != nl.end())
+        {
+            emit notificationClicked(it->first, it->second);
+        }
+    }
+}
 
+void Notificator::onNotifyTimedOut(uint id)
+{
+    return onNotifyClosed(id);
+}
+
+void Notificator::onNotifyClosed(uint id)
+{
     auto it = nl.find(id);
     if (it != nl.end())
     {
-        int peer = it->first;
-        int mid = it->second;
         nl.erase(it);
-        emit notificationClicked(peer, mid);
     }
 }
