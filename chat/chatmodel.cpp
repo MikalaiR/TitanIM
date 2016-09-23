@@ -197,7 +197,7 @@ void ChatModel::copyTextSelectedItems()
     {
         MessageItem msg = qobject_cast<MessageItem>(_messages->at(i));
 
-        if (msg->isChecked())
+        if (msg && msg->isChecked())
         {
             msg->setChecked(false);
 
