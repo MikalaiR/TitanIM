@@ -484,7 +484,7 @@ QVector<int> Utils::toVectorInt(const QVariantList &list)
 {
     QVector<int> v;
 
-    foreach (QVariant item, list) {
+    for (QVariant item: list) {
         v.append(item.toInt());
     }
 

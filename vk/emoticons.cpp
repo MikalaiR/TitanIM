@@ -57,11 +57,11 @@ void Emoticons::setCurrentTheme(const QString &path)
     const QStringList &blocks = data.split("\n", QString::SkipEmptyParts);
     int _blockIndex = 1;
 
-    foreach(const QString &g, blocks)
+    for (const QString &g: blocks)
     {
         const QStringList &list = g.split("\t", QString::SkipEmptyParts);
 
-        foreach(const QString &code, list)
+        for (const QString &code: list)
         {
             _emojis.insert(code);
             _blocks[_blockIndex].append(code);
@@ -165,7 +165,7 @@ void Emoticons::loadRecent(const QString &file)
     const QString data = recentFile.readAll();
     const QStringList &list = data.split("\t", QString::SkipEmptyParts);
 
-    foreach(const QString &code, list)
+    for (const QString &code: list)
     {
         _blocks[0].append(code);
     }

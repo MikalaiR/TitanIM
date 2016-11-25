@@ -14,20 +14,19 @@
 #include "client.h"
 #include "signup.h"
 
-Client *Client::aInstance = 0;
+Client *Client::aInstance = nullptr;
 QString Client::clientId = "1950109";
 QString Client::clientSecret = "bJKfYSu0LS6N52M0HnBo";
 
 Client *Client::instance()
 {
-    if (!aInstance) aInstance = new Client();
-    return aInstance;
+    return aInstance ? aInstance : aInstance = new Client;
 }
 
 void Client::destroy()
 {
-    if (aInstance)
-        delete aInstance, aInstance = nullptr;
+    delete aInstance;
+    aInstance = nullptr;
 }
 
 Client::Client()

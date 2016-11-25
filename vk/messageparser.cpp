@@ -111,7 +111,7 @@ MessageList MessageParser::parser(const QVariantList &items)
 {
     MessageList messages = MessageList::create();
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         messages->add(parser(item.toMap()));
     }

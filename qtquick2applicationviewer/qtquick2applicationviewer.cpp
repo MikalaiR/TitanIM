@@ -47,7 +47,7 @@ QtQuick2ApplicationViewer::QtQuick2ApplicationViewer(QWindow *parent)
     : QQuickView(parent)
     , d(new QtQuick2ApplicationViewerPrivate())
 {
-    connect(engine(), SIGNAL(quit()), SLOT(close()));
+    connect(engine(), &QQmlEngine::quit, this, &QtQuick2ApplicationViewer::close);
     setResizeMode(QQuickView::SizeRootObjectToView);
 }
 

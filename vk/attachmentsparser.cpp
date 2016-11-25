@@ -20,7 +20,7 @@ AttachmentList* AttachmentsParser::parser(const QVariantList &items)
     QMetaEnum metaEnum = Attachment::metaEnumerator("AttachmentType");
     int type;
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         QString strType = item.toMap()["type"].toString();
         QVariantMap attachment = item.toMap()[strType].toMap();

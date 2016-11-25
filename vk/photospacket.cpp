@@ -36,7 +36,7 @@ void PhotosPacket::getPhotosFinished(const Packet *sender, const QVariantMap &re
 
     QList<PhotoItem> list;
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         PhotoItem photo = PhotoParser::parser(item.toMap());
         list.append(photo);

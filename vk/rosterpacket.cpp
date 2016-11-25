@@ -85,7 +85,7 @@ void RosterPacket::loadFinished(const Packet *sender, const QVariantMap &result)
     {
         profiles = ProfileList::create();
 
-        foreach (QVariant item, response.value("favorites").toMap().value("items").toList())
+        for (QVariant item: response.value("favorites").toMap().value("items").toList())
         {
             ProfileItem profile = ProfileParser::parser(item.toMap());
             profile->setFriendStatus(ProfileItemPrivate::Friend);

@@ -29,7 +29,7 @@ Chat::Chat()
 Chat::Chat(const DialogItem dialog) : Chat()
 {
     _dialog = dialog;
-    connect(_dialog.data(), SIGNAL(newTyping(TypingItem)), this, SLOT(addTyping(TypingItem)));
+    connect(_dialog.data(), &DialogItemPrivate::newTyping, [this](const TypingItem typing){ addTyping(typing); });
 
     _model = new ChatModel(_dialog, this);
     connect(_model, &ChatModel::rowsAllReplaced, this, &Chat::onModelRowsAllReplaced);

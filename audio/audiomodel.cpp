@@ -17,7 +17,7 @@ AudioModel::AudioModel(QObject *parent) :
     QAbstractListModel(parent)
 {
     _items = AudioList::create();
-    connect(_items.data(), SIGNAL(itemChanged(int)), this, SLOT(onItemChanged(int)));
+    connect(_items.data(), &AudioListPrivate::itemChanged, this, &AudioModel::onItemChanged);
 }
 
 AudioModel::~AudioModel()

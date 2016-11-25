@@ -26,7 +26,7 @@ LongPoll::LongPoll(Connection *connection, Engine *engine)
     _httpLongPoll = new QNetworkAccessManager(this);
     connect(_httpLongPoll, &QNetworkAccessManager::finished, this, &LongPoll::longPollResponse);
 
-    connect(this, SIGNAL(rebuild()), this, SLOT(onRebuild()));
+    connect(this, &LongPoll::rebuild, this, &LongPoll::onRebuild);
 
     _timerRequest = new QTimer(this);
     connect(_timerRequest, &QTimer::timeout, this, &LongPoll::onTimerRequestTimeout);

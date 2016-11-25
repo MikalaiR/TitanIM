@@ -16,7 +16,7 @@
 
 struct iiibiiay
 {
-    iiibiiay(QPixmap& img);
+    iiibiiay(const QPixmap& img);
     iiibiiay();
     static const int id;
     int width;

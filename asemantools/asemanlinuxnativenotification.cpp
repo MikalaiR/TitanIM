@@ -8,7 +8,7 @@
 
 #include "asemanlinuxnativenotification.h"
 
-iiibiiay::iiibiiay(QPixmap& pixmap)
+iiibiiay::iiibiiay(const QPixmap& pixmap)
 {
     QImage img = pixmap.toImage();
     if(img.format() != QImage::Format_ARGB32)
@@ -89,8 +89,7 @@ uint AsemanLinuxNativeNotification::sendNotify(const QString &title, const QStri
     hints.insert("category", "im");
     if (icon.type() == QVariant::Type::Pixmap)
     {
-        QPixmap px(qvariant_cast<QPixmap>(icon).scaledToWidth(50, Qt::FastTransformation));
-        hints.insert("image-data", QVariant(iiibiiay::id).fromValue(iiibiiay(px)));
+        hints.insert("image-data", QVariant(iiibiiay::id).fromValue(iiibiiay(qvariant_cast<QPixmap>(icon))));
     }
 
     args << QVariant::fromValue<QVariantMap>(hints);
@@ -100,7 +99,7 @@ uint AsemanLinuxNativeNotification::sendNotify(const QString &title, const QStri
     QDBusMessage omsg = QDBusMessage::createMethodCall( DBUS_SERVICE , DBUS_PATH , DBUS_OBJECT , DBUS_NOTIFY );
     omsg.setArguments( args );
 
-    const QDBusMessage & imsg = p->connection->call( omsg , QDBus::BlockWithGui );
+    const QDBusMessage & imsg = p->connection->call( omsg , QDBus::Block );
     const QVariantList & res = imsg.arguments();
     if( res.isEmpty() )
         return 0;

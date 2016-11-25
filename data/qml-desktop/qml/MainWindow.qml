@@ -70,7 +70,8 @@ Rectangle {
                 title: "dialogs"
                 icon: "images/messages_tab.png"
                 badge: dialogsHandler.unreadDialogs;
-                Dialogs {id: dialogs}
+                Dialogs{ id: dialogs }
+
 
                 onClicked: {
                     if (!chats.isSelectUser) {

@@ -76,7 +76,7 @@ ProfileList ProfileParser::parser(const QVariantList &items, const bool isCached
 {
     ProfileList profiles = ProfileList::create();
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         profiles->add(parser(item.toMap(), isCached));
     }

@@ -21,14 +21,12 @@ Notificator *Notificator::aInstance = 0;
 
 Notificator *Notificator::instance()
 {
-    if (!aInstance) aInstance = new Notificator();
-    return aInstance;
+    return aInstance ? aInstance : aInstance = new Notificator;
 }
 
 void Notificator::destroy()
 {
-    if (aInstance)
-        delete aInstance, aInstance = 0;
+    delete aInstance, aInstance = nullptr;
 }
 
 Notificator::Notificator()

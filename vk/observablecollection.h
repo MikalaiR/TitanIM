@@ -32,7 +32,6 @@ signals:
     void itemChanged(const int i);
 };
 
-
 template <typename T>
 class ObservableCollection : public ObservableCollectionPrivate
 {
@@ -65,7 +64,7 @@ template <typename T>
 void ObservableCollection<T>::add(T item)
 {
     _items.append(item);
-    connect(item.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    connect(item.data(), &T::Type::propertyChanged, this, &ObservableCollection<T>::onItemChanged);
 }
 
 template <typename T>
@@ -81,7 +80,7 @@ template <typename T>
 void ObservableCollection<T>::prepend(T item)
 {
     _items.prepend(item);
-    connect(item.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    connect(item.data(), &T::Type::propertyChanged, this, &ObservableCollection<T>::onItemChanged);
 }
 
 template <typename T>
@@ -101,9 +100,9 @@ bool ObservableCollection<T>::replace(const T item)
 template <typename T>
 void ObservableCollection<T>::replace(const int i, const T item)
 {
-    disconnect(_items.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    disconnect(_items.at(i).data(), &T::Type::propertyChanged, this, &ObservableCollection<T>::onItemChanged);
     _items.replace(i, item);
-    connect(item.data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    connect(item.data(), &T::Type::propertyChanged, this, &ObservableCollection<T>::onItemChanged);
 
     emit itemChanged(i);
 }
@@ -123,7 +122,7 @@ int ObservableCollection<T>::indexOf(const int id) const
 template <typename T>
 T ObservableCollection<T>::item(const int id) const
 {
-    foreach (T i, _items)
+    for (T i: _items)
     {
         if (i->id() == id)
             return i;
@@ -137,17 +136,14 @@ T ObservableCollection<T>::item(const int id) const
 template <typename T>
 inline void ObservableCollection<T>::removeAt(const int i)
 {
-    disconnect(_items.at(i).data(), SIGNAL(propertyChanged(int,QString)), this, SLOT(onItemChanged(int,QString)));
+    disconnect(_items.at(i).data(), &T::Type::propertyChanged, this, &ObservableCollection<T>::onItemChanged);
     _items.removeAt(i);
 }
 
 template <typename T>
 void ObservableCollection<T>::clear()
 {
-    while (_items.count())
-    {
-        removeAt(0);
-    }
+    _items.clear();
 }
 
 #endif // OBSERVABLECOLLECTION_H

@@ -49,7 +49,7 @@ void DialogParser::parser(const QVariantMap &item, DialogItemPrivate *dialog, co
         }
 
         ProfileList chatActiveList = ProfileList::create();
-        foreach (int uid, chatActive)
+        for (int uid: chatActive)
         {
             chatActiveList->add(profiles->item(uid));
         }
@@ -103,7 +103,7 @@ DialogList DialogParser::parser(const QVariantList &items, const ProfileList &pr
 {
     DialogList dialogs = DialogList::create();
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         DialogItem dialog = DialogItem::create();
         parser(item.toMap(), dialog.data(), profiles);

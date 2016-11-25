@@ -192,7 +192,7 @@ void SendMessageHandler::sendMessageError(const Packet *sender, const ErrorRespo
 void SendMessageHandler::uploadAttachmentError()
 {
     MessageItem message = _messageQuery.dequeue();
-    disconnect(message.data(), SIGNAL(deleted(int)), this, SLOT(onMessageDeleted(int)));
+    disconnect(message.data(), &MessageItemPrivate::deleted, this, &SendMessageHandler::onMessageDeleted);
     message->setIsError(true);
 
     emit unsuccessfullyMessageSent(message->id());

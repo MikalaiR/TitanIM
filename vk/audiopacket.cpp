@@ -101,7 +101,7 @@ void AudioPacket::getAlbumsFinished(const Packet *sender, const QVariantMap &res
 
     QVector<QPair<int, QString>> albumsList;
 
-    foreach (QVariant item, items)
+    for (QVariant item: items)
     {
         albumsList.append(QPair<int, QString>(item.toMap().value("id").toInt(), item.toMap().value("title").toString()));
     }

@@ -311,7 +311,7 @@ void MessageItemPrivate::getAllFields(Connection *connection)
     Packet *packet = new Packet("execute.messagesGetById");
     packet->addParam("mid", _id);
 
-    connect(packet, SIGNAL(finished(const Packet*,QVariantMap)), this, SLOT(loadFinished(const Packet*,QVariantMap)));
+    connect(packet, &Packet::finished, this, &MessageItemPrivate::loadFinished);
     connection->appendQuery(packet);
 }
 

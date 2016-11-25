@@ -142,7 +142,7 @@ QVariantList Engine::photosProfile(const int uid)
 
     QVariantList list;
 
-    foreach (PhotoItem photo, _currentPhotosProfile) {
+    for (PhotoItem photo: _currentPhotosProfile) {
         list.append(QVariant::fromValue(photo.data()));
     }
 
@@ -213,7 +213,7 @@ void Engine::onFriendsOnline(const Packet *sender, const QVariantMap &result)
     QVariantList response = result.value("response").toList();
     QSet<int> uids;
 
-    foreach (QVariant item, response)
+    for (QVariant item: response)
     {
         uids.insert(item.toInt());
     }
